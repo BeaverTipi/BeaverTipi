@@ -86,4 +86,8 @@ buildNumber.properties
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 
+<<<<<<< HEAD
 # End of https://www.toptal.com/developers/gitignore/api/maven,eclipse
+=======
+# End of https://www.toptal.com/developers/gitignore/api/maven,eclipse
+>>>>>>> refs/remotes/origin/main
