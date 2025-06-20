@@ -1,3 +1,7 @@
+<<<<<<< HEAD
 # BeaverTipt
+=======
+# BeaverTipi
+>>>>>>> refs/remotes/origin/main
 대덕인재개발원 최종 프로젝트
 2025-06-16 11:43 ^0^
