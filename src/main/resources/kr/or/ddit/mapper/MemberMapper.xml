@@ -9,7 +9,7 @@
 <select id="selectMemberByMail">
 	SELECT *
 	FROM MEMBER
-	WHERE MEM_ID=#{username}
+	WHERE MEM_ID=#{username}ndeyhm
 </select>
 
 </mapper>
