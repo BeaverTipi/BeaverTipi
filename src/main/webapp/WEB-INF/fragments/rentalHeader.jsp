@@ -25,7 +25,7 @@
               </a>
             </li>
          <li class="nav-item ">
-              <a class="nav-link" href="${pageContext.request.contextPath}/admin/pages/tables/bootstrap-tables.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/resident/myhouse">
                 <span class="font-large text-gray-800">마이하우스</span>
               </a>
             </li>
