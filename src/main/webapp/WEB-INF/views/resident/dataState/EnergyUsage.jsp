@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+<h1>에너지 사용량 조회 페이지</h1>
 </body>
 </html>

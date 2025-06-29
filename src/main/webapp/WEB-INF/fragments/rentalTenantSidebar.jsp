@@ -68,26 +68,20 @@
           id="submenu-pages" aria-expanded="false">
           <ul class="flex-column nav">
             <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/examples/sign-in.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/resident/notice">
                 <span class="sidebar-text">공지사항</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/examples/forgot-password.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/resident/board">
                 <span class="sidebar-text">주민게시판</span>
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/examples/forgot-password.html">
-                <span class="sidebar-text">투표</span>
-              </a>
-            </li>
-            
           </ul>
         </div>
       </li>
                  <li class="nav-item">
-        <a href="${pageContext.request.contextPath}/" class="nav-link">
+        <a href="${pageContext.request.contextPath}/resident/calendar" class="nav-link">
           <span class="sidebar-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-check me-2" viewBox="0 0 16 16">
   <path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
@@ -98,7 +92,7 @@
         </a>
       </li>
                  <li class="nav-item">
-        <a href="${pageContext.request.contextPath}/" class="nav-link">
+        <a href="${pageContext.request.contextPath}/resident/chargeBillResident" class="nav-link">
           <span class="sidebar-icon">
            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-credit-card me-2" viewBox="0 0 16 16">
   <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z"/>
@@ -130,12 +124,12 @@
           id="submenu-components" aria-expanded="false">
           <ul class="flex-column nav">
             <li class="nav-item ">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/components/buttons.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/resident/dataState/bill">
                 <span class="sidebar-text">공과금 조회</span>
               </a>
             </li>
             <li class="nav-item ">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/components/notifications.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/resident/dataState/energy">
                 <span class="sidebar-text">에너지 사용량 조회</span>
               </a>
             </li>
@@ -145,7 +139,7 @@
       </li>
             
        <li class="nav-item">
-        <a href="${pageContext.request.contextPath}/" class="nav-link">
+        <a href="${pageContext.request.contextPath}/resident/chat" class="nav-link">
           <span class="sidebar-icon">
 		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-right-dots me-2" viewBox="0 0 16 16">
   <path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/>

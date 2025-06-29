@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+<h1>주민게시판 페이지</h1>
 </body>
 </html>

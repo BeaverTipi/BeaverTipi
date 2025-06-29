@@ -7,8 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h1>
-	연결확인
-</h1>
+<h1>공지사항 페이지</h1>
 </body>
 </html>
