@@ -116,7 +116,7 @@
               </a>
             </li>
             <li class="nav-item ">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/tables/bootstrap-tables.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/admin/adcList">
                 <span class="sidebar-text">업체 광고 관리</span>
               </a>
             </li>
@@ -145,7 +145,7 @@
           id="submenu-pages" aria-expanded="false">
           <ul class="flex-column nav">
             <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/examples/sign-in.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/admin/noticeList">
                 <span class="sidebar-text">공지사항</span>
               </a>
             </li>
@@ -155,7 +155,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/examples/forgot-password.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/admin/reportList">
                 <span class="sidebar-text">신고관리</span>
               </a>
             </li>
