@@ -1,12 +1,43 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
 
-</body>
-</html>
+    <!-- Core -->
+<script src="${pageContext.request.contextPath}/volt/vendor/@popperjs/core/dist/umd/popper.min.js"></script>
+<script src="${pageContext.request.contextPath}/volt/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<!-- Vendor JS -->
+<script src="${pageContext.request.contextPath}/volt/vendor/onscreen/dist/on-screen.umd.min.js"></script>
+
+<!-- Slider -->
+<script src="${pageContext.request.contextPath}/volt/vendor/nouislider/distribute/nouislider.min.js"></script>
+
+<!-- Smooth scroll -->
+<script src="${pageContext.request.contextPath}/volt/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
+
+<!-- Charts -->
+<script src="${pageContext.request.contextPath}/volt/vendor/chartist/dist/chartist.min.js"></script>
+<script src="${pageContext.request.contextPath}/volt/vendor/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js"></script>
+
+<!-- Datepicker -->
+<script src="${pageContext.request.contextPath}/volt/vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
+
+<!-- Sweet Alerts 2 -->
+<script src="${pageContext.request.contextPath}/volt/vendor/sweetalert2/dist/sweetalert2.all.min.js"></script>
+
+<!-- Moment JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+
+<!-- Vanilla JS Datepicker -->
+<script src="${pageContext.request.contextPath}/volt/vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
+
+<!-- Notyf -->
+<script src="${pageContext.request.contextPath}/volt/vendor/notyf/notyf.min.js"></script>
+
+<!-- Simplebar -->
+<script src="${pageContext.request.contextPath}/volt/vendor/simplebar/dist/simplebar.min.js"></script>
+
+<!-- Github buttons -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+<!-- Volt JS -->
+<script src="${pageContext.request.contextPath}/volt/assets/js/volt.js"></script>
