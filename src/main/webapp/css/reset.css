@@ -84,3 +84,21 @@ body .material-symbols-outlined{
 h3 {
 	color:red;
 }
+
+/*header 가로 일자 정렬*/
+.navbar-nav{
+	display: flex;
+	align-items: center;
+}
+
+.nav-item{
+	margin-right: 15px;
+}
+
+.nav-item:last-child{
+	margin-right: 0;
+}
+
+.navbar-nav .nav-item:last-child {
+	margin-right: 0;
+}
