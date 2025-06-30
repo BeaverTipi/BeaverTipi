@@ -6,7 +6,7 @@ import org.springframework.web.service.annotation.GetExchange;
 
 @Controller
 public class ProductAddController {
-	@GetMapping
+	@GetMapping("/building/")
 	public String brokerProduct() {
 		return "product/productAdd/brokerProductAdd";
 	}

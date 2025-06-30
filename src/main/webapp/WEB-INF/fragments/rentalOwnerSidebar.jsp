@@ -153,7 +153,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/examples/forgot-password.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/payments/receipt/list">
                 <span class="sidebar-text">납부 증빙</span>
               </a>
             </li>
