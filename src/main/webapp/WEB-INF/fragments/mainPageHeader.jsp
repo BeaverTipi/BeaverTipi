@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
+<%@ taglib uri="http://www.springframework.org/security/tags"  prefix="security"%>
 
  <nav class="navbar navbar-top navbar-expand navbar-dashboard navbar-dark ps-0 pe-2 pb-0">
   <div class="container-fluid px-0">
@@ -26,9 +26,21 @@
               </a>
             </li>
          <li class="nav-item ">
+         <security:authorize access="">
               <a class="nav-link" href="${pageContext.request.contextPath}/resident/myhouse">
                 <span class="font-large text-gray-800">마이하우스</span>
               </a>
+         </security:authorize>
+         <security:authorize access="">
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/myhouse">
+                <span class="font-large text-gray-800">마이하우스</span>
+              </a>
+         </security:authorize>
+         <security:authorize access="anon">
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/myhouse">
+                <span class="font-large text-gray-800">마이하우스</span>
+              </a>
+         </security:authorize>
             </li>
          <li class="nav-item ">
               <a class="nav-link" href="${pageContext.request.contextPath}/admin/pages/tables/bootstrap-tables.html">
