@@ -1,6 +1,7 @@
 /**
  * 
  */
+document.addEventListener("DOMContentLoaded",()=>{
     // 공시 비율 도넛 차트
     new Chart(document.getElementById('gongsiChartA'), {
       type: 'doughnut',
@@ -82,3 +83,5 @@
         }
       }
     });
+    
+    })

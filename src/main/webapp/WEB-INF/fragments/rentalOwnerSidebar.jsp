@@ -64,7 +64,7 @@
           role="list" id="submenu-dashboard" aria-expanded="false">
           <ul class="flex-column nav">
             <li class="nav-item ">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/tables/bootstrap-tables.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/">
                 <span class="sidebar-text">내 매물 정보</span>
               </a>
             </li>
@@ -97,17 +97,17 @@
           id="submenu-management" aria-expanded="false">
           <ul class="flex-column nav">
             <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/examples/sign-in.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/managed/list">
                 <span class="sidebar-management">내 건물 정보</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/examples/forgot-password.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/managed/add">
                 <span class="sidebar-management">신규 건물 등록</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/examples/forgot-password.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/managed/outsourcing">
                 <span class="sidebar-management">외부 업체</span>
               </a>
             </li>
@@ -137,17 +137,17 @@
           id="submenu-pages" aria-expanded="false">
           <ul class="flex-column nav">
             <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/examples/sign-in.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/savingAccount">
                 <span class="sidebar-text">수납 계좌</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/examples/forgot-password.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/virtualAccount">
                 <span class="sidebar-text">가상 계좌</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/examples/forgot-password.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/accountBill/write">
                 <span class="sidebar-text">지로 발행</span>
               </a>
             </li>
@@ -157,7 +157,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/examples/forgot-password.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/certificate/list">
                 <span class="sidebar-text">사업자 등록 관리</span>
               </a>
             </li>
@@ -185,12 +185,12 @@
           role="list" id="submenu-app" aria-expanded="false">
           <ul class="flex-column nav">
             <li class="nav-item ">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/tables/bootstrap-tables.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/moveIn">
                 <span class="sidebar-text">입주 정보</span>
               </a>
             </li>
             <li class="nav-item ">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/tables/bootstrap-tables.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/resident/read">
                 <span class="sidebar-text">입주민 설정</span>
               </a>
             </li>
