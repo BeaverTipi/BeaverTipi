@@ -31,14 +31,13 @@
 </div>
 
   <!-- 태그 -->
-  <div class="mb-4 text-center tag-box">
+  <div class="mb-5 text-center tag-box">
     <button class="tag-btn">#원룸</button>
     <button class="tag-btn">#인기매물</button>
     <button class="tag-btn">#안심</button>
   </div>
 
   <!-- 매물 슬라이더 -->
-  <h5 class="section-title"><i class="bi bi-building"></i> 매물</h5>
   <div id="roomCarousel" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner">
 
