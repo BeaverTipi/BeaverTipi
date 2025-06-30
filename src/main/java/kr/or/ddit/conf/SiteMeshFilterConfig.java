@@ -22,6 +22,7 @@ public class SiteMeshFilterConfig {
 							.addExcludedPath("/ajax/**")
 							.addExcludedPath("/rest/**")
 							.addExcludedPath("*.html")
+							.addExcludedPath("/")
 							.addDecoratorPath("/admin/**", "adminDecorator.jsp")
 							.addDecoratorPath("/building/**", "rentalOwnerDecorator.jsp")
 							.addDecoratorPath("/resident/**", "rentalTenantDecorator.jsp")
