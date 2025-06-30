@@ -1,13 +1,13 @@
-package kr.or.ddit.member.controller;
+package kr.or.ddit.main.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class MemberInfoController {
+public class MemberReportController {
 
-	@GetMapping("/account/update")
+	@GetMapping("/report/userReport")
 	public String info() {
-		return "member/info";
+		return "report/userReport";
 	}
 }
