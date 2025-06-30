@@ -65,11 +65,8 @@
           <ul class="flex-column nav">
             <li class="nav-item ">
 
-              <a class="nav-link" href="${pageContext.request.contextPath}/building/realEstateProperties/myProperties.jsp">
-
-
-
-                <span class="sidebar-text">내 매물 정보</span>
+              <a class="nav-link" href="${pageContext.request.contextPath}/">
+               <span class="sidebar-text">내 매물 정보</span>
               </a>
             </li>
             <li class="nav-item ">
