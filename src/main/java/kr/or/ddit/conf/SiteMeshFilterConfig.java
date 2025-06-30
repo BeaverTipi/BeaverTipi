@@ -25,6 +25,7 @@ public class SiteMeshFilterConfig {
 							.addDecoratorPath("/admin/**", "adminDecorator.jsp")
 							.addDecoratorPath("/building/**", "rentalOwnerDecorator.jsp")
 							.addDecoratorPath("/resident/**", "rentalTenantDecorator.jsp")
+							.addDecoratorPath("/**", "mainDecorator.jsp")
 							
 				)
 			);
