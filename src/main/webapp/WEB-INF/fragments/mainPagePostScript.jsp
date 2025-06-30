@@ -3,8 +3,8 @@
 
     <!-- Core -->
 <script src="${pageContext.request.contextPath}/volt/vendor/@popperjs/core/dist/umd/popper.min.js"></script>
-<script src="${pageContext.request.contextPath}/volt/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Vendor JS -->
 <script src="${pageContext.request.contextPath}/volt/vendor/onscreen/dist/on-screen.umd.min.js"></script>
 
