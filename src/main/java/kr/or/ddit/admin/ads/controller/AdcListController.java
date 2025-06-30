@@ -1,4 +1,4 @@
-package kr.or.ddit.admin.adc.controller;
+package kr.or.ddit.admin.ads.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
