@@ -35,7 +35,7 @@ let verified = false;
       }
      authCodeWrapper.classList.remove("hidden");
      
-      fetch("/auth/sendCode", {
+      fetch("/member/verification", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ phone })

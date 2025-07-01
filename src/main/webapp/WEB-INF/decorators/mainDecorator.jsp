@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="security"%>
+<%@ taglib uri="jakarta.tags.core"  prefix="c"%>
 <!DOCTYPE html>
 
 <head> 
@@ -33,6 +36,20 @@
 <%@ include file="/WEB-INF/fragments/mainPagePreStyle.jsp"%>
 <!-- NOTICE: You can use the _analytics.html partial to include production code specific code & trackers -->
 <sitemesh:write property="head"/>
+
+<c:if test="${not empty message}">
+  <input type="hidden" id="alertMessage" value="${message}" />
+  <script>
+    window.addEventListener("DOMContentLoaded", function () {
+      const msg = document.getElementById("alertMessage").value;
+      Swal.fire({
+        icon: 'info',
+        title: '알림',
+        text: msg
+      });
+    });
+  </script>
+</c:if>
 </head>
 
 <body>	

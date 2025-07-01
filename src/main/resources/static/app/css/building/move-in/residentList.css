@@ -59,3 +59,19 @@
     input[type="checkbox"] {
       transform: scale(1.2);
     }
+     .filter-bar {
+      margin-bottom: 20px;
+    }
+
+    .filter-bar label {
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    .filter-bar select {
+      padding: 6px 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    

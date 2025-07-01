@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="security"%>
-
 <nav class="navbar navbar-expand-lg bg-white px-4 py-2">
   <div class="container-fluid d-flex justify-content-between align-items-center">
     <a class="navbar-brand d-flex align-items-center" href="${pageContext.request.contextPath}/">
@@ -29,7 +28,7 @@
             <li><a class="dropdown-item" href="#">내 정보</a></li>
             <li><a class="dropdown-item" href="#">알림</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" href="<c:url value='/logout'/>">로그아웃</a></li>
+            <li><a class="dropdown-item text-danger" href="/member/logout">로그아웃</a></li>
           </ul>
         </li>
       </security:authorize>
@@ -46,7 +45,7 @@
 </nav>
 <!-- 🔐 로그인 모달 -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <form:form method="post" action="${pageContext.request.contextPath}/member/login">
         <div class="modal-header">
@@ -81,7 +80,7 @@
     <img src="${pageContext.request.contextPath}/volt/assets/img/authentication/google.svg" alt="Google">
     <span class="d-none d-sm-inline-block">Google 로그인</span>
   </a>
-  <a href="${pageContext.request.contextPath}/oauth2/authorization/kakao" class="btn social-btn google-btn">
+  <a href="${pageContext.request.contextPath}/oauth2/authorization/kakao" class="btn social-btn kakao-btn">
      <img src="${pageContext.request.contextPath }/volt/assets/img/authentication/kakao.png" alt="img">
   </a>
 </div>
