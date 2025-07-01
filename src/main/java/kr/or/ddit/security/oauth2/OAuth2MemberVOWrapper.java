@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 import kr.or.ddit.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.RoleAchievedVO;
 import lombok.ToString;
 
 	/**
@@ -46,7 +47,10 @@ import lombok.ToString;
 
 		@Override
 		public Collection<? extends GrantedAuthority> getAuthorities() {
-			Collection<? extends GrantedAuthority> authorities1 = AuthorityUtils.createAuthorityList(realUser.getMemRole());
+			Collection<? extends GrantedAuthority> authorities1 = AuthorityUtils.createAuthorityList(realUser.getMemRoleList()
+																												.stream()
+																												.map(RoleAchievedVO::getUserRoleId)
+																												.toArray(String[]::new));
 			Collection<? extends GrantedAuthority> authorities2 = oidcUser.getAuthorities();
 			
 			return Stream.concat(authorities1.stream(), authorities2.stream()).collect(Collectors.toSet());

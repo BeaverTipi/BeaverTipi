@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -127,13 +128,9 @@
     <!-- 슬라이드 2 -->
     <div class="carousel-item">
       <div class="d-flex justify-content-center align-items-center ad-slide-box">
-        <div class="ad-left-box">
-          <img src="/volt/assets/img/images/sample-logo2.png" alt="로고2" class="ad-logo">
-          <div class="ad-title">커피빈</div>
-          <div class="ad-desc">스페셜티 커피 전문점<br>조용한 분위기에서 공부해요</div>
-        </div>
+     
         <div class="ad-right-box">
-          <img src="/volt/assets/img/images/sample-bg2.png" class="ad-image" alt="커피빈 배경">
+          <img src="/volt/assets/img/images/여운선2.png" class="ad-image" alt="여운선 배경">
         </div>
       </div>
     </div>
@@ -141,13 +138,17 @@
     <!-- 슬라이드 3 -->
     <div class="carousel-item">
       <div class="d-flex justify-content-center align-items-center ad-slide-box">
-        <div class="ad-left-box">
-          <img src="/volt/assets/img/images/sample-logo3.png" alt="로고3" class="ad-logo">
-          <div class="ad-title">미미네떡볶이</div>
-          <div class="ad-desc">매콤달콤 추억의 맛<br>학교 앞 분식집의 정석</div>
-        </div>
+   
         <div class="ad-right-box">
-          <img src="/volt/assets/img/images/sample-bg3.png" class="ad-image" alt="미미네 배경">
+          <img src="/volt/assets/img/images/여운선3.png" class="ad-image" alt="여운선 배경">
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="d-flex justify-content-center align-items-center ad-slide-box">
+   
+        <div class="ad-right-box">
+          <img src="/volt/assets/img/images/여운선4.png" class="ad-image" alt="여운선 배경">
         </div>
       </div>
     </div>
@@ -162,49 +163,7 @@
     <span class="carousel-control-next-icon"></span>
   </button>
 </div>
-<!-- 🔐 로그인 모달 -->
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form method="post" action="${pageContext.request.contextPath}/login">
-        <div class="modal-header">
-          <h5 class="modal-title" id="loginModalLabel">로그인</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
-        </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="username" class="form-label">아이디</label>
-            <input type="text" class="form-control" name="username" id="username">
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">비밀번호</label>
-            <input type="password" class="form-control" name="password" id="password">
-          </div>
-          <button type="submit" class="btn btn-primary w-100">로그인</button>
 
-          <!-- 🔗 아이디/비번/회원가입 링크 추가 -->
-          <div class="text-center my-3 small-link-group">
-            <a href="#" class="small-link">아이디 찾기</a> |
-            <a href="#" class="small-link">비밀번호 찾기</a> |
-            <a href="#" class="small-link">회원가입</a>
-          </div>
-
-          <!-- 소셜 로그인 -->
-          <!-- 소셜 로그인 버튼들 -->
-<div class="d-grid gap-2">
-  <a href="${pageContext.request.contextPath}/oauth2/authorization/google" class="btn social-btn google-btn">
-    <i class="bi bi-google me-2"></i> Google 로그인
-  </a>
-  <a href="${pageContext.request.contextPath}/oauth2/authorization/kakao" class="btn social-btn kakao-btn">
-    <i class="bi bi-chat-right-dots-fill me-2"></i> Kakao 로그인
-  </a>
-</div>
-
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
 
 
 

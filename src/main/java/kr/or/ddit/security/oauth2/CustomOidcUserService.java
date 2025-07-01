@@ -7,7 +7,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
-import kr.or.ddit.mapper.MemberMapper;
+import kr.or.ddit.member.mapper.MemberMapper;
+import kr.or.ddit.validate.exception.OidcUserNotRegisteredException;
 import kr.or.ddit.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j	
 @RequiredArgsConstructor
 public class CustomOidcUserService extends OidcUserService{
-	
 	private final MemberMapper mapper;
+	private final String deleteValue;
 	
 	@Override
 	public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
@@ -46,8 +47,8 @@ public class CustomOidcUserService extends OidcUserService{
  		
 		if(realUser==null) {
  		//clientRegistration -> 어디에서 가입하는데 가입이 안되었는지 client==우리어플리케이션. 이메일정보를 유지하면서 해줘야하는것임. 필요정보를 다 담아줘야함.
-			throw new UserNotRegisteredException(oidcUser, clientRegistration);
-		}else if(realUser.isMemDelete()) {
+			throw new OidcUserNotRegisteredException(oidcUser, clientRegistration);
+		}else if(realUser.getMbrStatusCode().equals(deleteValue)) {
 			throw new OAuth2AuthenticationException(new OAuth2Error("deleted-user"), "이미 탈퇴한 회원입니다.");
 		}
 		
