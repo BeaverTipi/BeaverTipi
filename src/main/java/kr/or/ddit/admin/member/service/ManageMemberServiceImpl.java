@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import kr.or.ddit.mapper.MemberMapper;
+import kr.or.ddit.member.mapper.MemberMapper;
 import kr.or.ddit.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
 
