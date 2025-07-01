@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kr.or.ddit.member.service.MemberService;
 import kr.or.ddit.validate.InsertGroup;
 import kr.or.ddit.validate.exception.OidcUserNotRegisteredException;
@@ -35,13 +38,16 @@ public class MemberRegisterController {
 	    @SessionAttribute(name = WebAttributes.AUTHENTICATION_EXCEPTION, required = false)
 	    Exception lastException
 	) {
+	    // 예외가 있더라도, OAuth 회원가입 경로에서만 적용되게
+	    if (!isOAuthRegisterRequest()) {
+	        return new MemberVO(); // 일반 회원가입일 경우 무시
+	    }
 	    MemberVO member = new MemberVO();
-
+	    if (lastException == null) return new MemberVO();
 	    if (lastException instanceof OidcUserNotRegisteredException oidcEx) {
 	        var user = oidcEx.getUnRegisteredUser();
 	        member.setMbrId(user.getName());
 	        member.setMbrEmlAddr(user.getEmail());
-
 	    } else if (lastException instanceof OAuth2AuthenticationException oauth2Ex) {
 	    	if ("register-required".equals(oauth2Ex.getError().getErrorCode())) {
 	            Throwable cause = oauth2Ex.getCause();
@@ -65,6 +71,11 @@ public class MemberRegisterController {
 	    }
 
 	    return member;
+	}
+	private boolean isOAuthRegisterRequest() {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		String uri = request.getRequestURI();
+	    return uri.contains("/member/oauth2/register");
 	}
 	@GetMapping("${myapp.register-url}")
 	public String registerPage() {
