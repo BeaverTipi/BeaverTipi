@@ -1,0 +1,316 @@
+@charset "UTF-8";
+
+:root {
+  /* ===== 공통 색상 ===== */
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --color-gray-100: #f9f9f9;
+  --color-gray-200: #f5f7fa;
+  --color-gray-300: #f5f5f5;
+  --color-gray-400: #ddd;
+  --color-gray-500: #ccc;
+  --color-gray-600: #bbb;
+  --color-gray-700: #666;
+  --color-gray-800: #444;
+  --color-gray-900: #333;
+
+  --color-blue: #007BFF;
+
+  --color-kakao: #fee500;
+  --color-kakao-hover: #ffe100;
+
+  /* ===== 기타 ===== */
+  --color-hover-text: var(--color-gray-900);
+  --color-border: var(--color-gray-500);
+  --color-border-light: var(--color-gray-400);
+  --color-border-hover: var(--color-gray-600);
+
+  --color-google-text: var(--color-gray-800);
+  --color-google-border: var(--color-gray-500);
+  --color-google-hover: var(--color-gray-300);
+
+  /* ===== 폰트, 패딩, 크기 ===== */
+  --font-default: 'Segoe UI', sans-serif;
+  --radius-full: 999px;
+  --radius-medium: 10px;
+  --radius-small: 0.5rem;
+  --padding-small: 10px;
+  --padding-medium: 12px 20px;
+  --font-size-small: 14px;
+  --font-size-base: 16px;
+  --font-size-large: 18px;
+  --font-size-xlarge: 28px;
+}
+
+/* ===== Base ===== */
+body {
+  font-family: var(--font-default);
+  background-color: var(--color-white);
+  color: var(--color-gray-900);
+}
+
+/* ===== Header ===== */
+.navbar {
+  border-bottom: 1px solid var(--color-border-light);
+}
+.navbar-brand img {
+  height: 32px;
+}
+.navbar-nav .nav-link {
+  color: var(--color-black) !important;
+  font-weight: 500;
+}
+
+/* ===== Search Section ===== */
+.search-section {
+  padding: 40px 20px;
+  background-color: var(--color-gray-200);
+}
+.search-box {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+.search-input {
+  width: 100%;
+  max-width: 600px;
+  padding: var(--padding-medium);
+  font-size: var(--font-size-base);
+  border: none;
+  border-radius: var(--radius-full);
+  background-color: var(--color-white);
+  box-shadow: 0 0 0 1px var(--color-border);
+}
+
+/* ===== Category & Banner ===== */
+.category-banner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  align-items: flex-start;
+}
+.categories {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+.category-btn {
+  width: 140px;
+  height: 100px;
+  font-size: var(--font-size-base);
+  font-weight: bold;
+  border: 2px solid var(--color-gray-900);
+  border-radius: var(--radius-medium);
+  background-color: var(--color-white);
+  text-align: center;
+  line-height: 1.4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.category-btn i {
+  font-size: 24px;
+  margin-top: 5px;
+}
+.banner img {
+  width: 320px;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-medium);
+  object-fit: contain;
+}
+
+/* ===== Tag Buttons ===== */
+.tag-box {
+  text-align: center;
+  margin: 48px 0;
+}
+.tag-btn {
+  font-size: var(--font-size-base);
+  font-weight: bold;
+  border: none;
+  background: var(--color-gray-300);
+  border-radius: 20px;
+  padding: 8px 20px;
+  margin: 8px 10px;
+}
+
+/* ===== Room Carousel ===== */
+#roomCarousel .carousel-inner {
+  height: auto !important;
+  display: flex;
+  flex-direction: column;
+}
+.carousel-item {
+  display: none;
+}
+.carousel-item.active {
+  display: block;
+}
+.room-card {
+  border: none;
+  background-color: transparent;
+}
+.room-image {
+  height: 200px;
+  object-fit: cover;
+  border-radius: var(--radius-small);
+}
+.room-card .card-body {
+  text-align: left;
+  padding: 20px 15px;
+  white-space: normal;
+  word-break: keep-all;
+}
+.room-title {
+  font-size: var(--font-size-base);
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.room-card p {
+  margin: 0;
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+
+/* ===== Ad Slider ===== */
+.ad-section-title {
+  margin-top: 80px; /* 또는 60px */
+  margin-bottom: 20px;
+}
+
+#adSlider {
+  margin-top: 60px;
+  margin-bottom: 40px;
+}
+#adSlider .carousel-inner {
+  height: auto !important;
+  display: flex;
+  flex-direction: column;
+}
+#adSlider .carousel-item {
+  display: none;
+}
+#adSlider .carousel-item.active {
+  display: block;
+}
+.ad-slide-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+.ad-left-box {
+  flex: 1 1 300px;
+  max-width: 400px;
+  text-align: center;
+  word-break: keep-all;
+}
+.ad-right-box {
+  flex: 2 1 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.ad-logo {
+  width: 220px;
+  height: auto;
+}
+.ad-title {
+  font-size: var(--font-size-xlarge);
+  font-weight: bold;
+  color: var(--color-blue);
+  margin-top: 20px;
+  white-space: nowrap;
+}
+.ad-desc {
+  font-size: var(--font-size-large);
+  color: var(--color-gray-900);
+  margin-top: 12px;
+  line-height: 1.6;
+  word-break: keep-all;
+  white-space: normal;
+}
+.ad-image {
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ===== Carousel Buttons ===== */
+.carousel-control-prev,
+.carousel-control-next {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5%;
+}
+
+/* ===== Footer ===== */
+.footer {
+  background-color: var(--color-gray-100);
+  padding: 40px 0;
+  font-size: var(--font-size-small);
+  color: var(--color-gray-900);
+  width: 100%;
+}
+.footer h6 {
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+.footer ul {
+  padding-left: 0;
+  list-style: none;
+}
+.footer li {
+  margin-bottom: 8px;
+}
+.small-link-group .small-link {
+  color: var(--color-gray-700);
+  font-size: 0.9rem;
+  margin: 0 5px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.small-link:hover {
+  color: var(--color-hover-text);
+  text-decoration: underline;
+}
+
+/* ===== Social Buttons ===== */
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: var(--padding-small);
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+/* Google 스타일 */
+.google-btn {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-google-border);
+  color: var(--color-google-text);
+}
+.google-btn:hover {
+  background-color: var(--color-google-hover);
+  border-color: var(--color-border-hover);
+}
+
+/* Kakao 스타일 */
+.kakao-btn {
+  background-color: var(--color-kakao);
+  color: #3c1e1e;
+  border: none;
+}
+.kakao-btn:hover {
+  background-color: var(--color-kakao-hover);
+}

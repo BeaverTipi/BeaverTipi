@@ -42,9 +42,9 @@
 	
 	<sitemesh:write property="body"/>
 	
-    <%@ include file="/WEB-INF/fragments/mainPageFooter.jsp" %>
 
         </main>
+    <%@ include file="/WEB-INF/fragments/mainPageFooter.jsp" %>
 
     <%@ include file="/WEB-INF/fragments/mainPagePostScript.jsp"%>
 </body>
