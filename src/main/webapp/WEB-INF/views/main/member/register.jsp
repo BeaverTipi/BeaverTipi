@@ -94,8 +94,8 @@
           <div class="form-group hidden" id="authCodeWrapper">
             <label for="authCode">인증번호</label>
             <input type="text" name="authCode" id="authCode" class="form-control" placeholder="인증번호 6자 입력" maxlength="6" required />
-          </div>
-
+			  <span id="timerText" style="margin-left: 10px; color: red;"></span>
+			</div>
         </div>
 
 
@@ -157,7 +157,7 @@
       <!-- 버튼 -->
       <div class="form-actions">
         <button type="submit" class="btn-primary">가입하기</button>
-        <button type="reset" class="btn-outline">다시쓰기</button>
+        <button type="reset" id="resetBtn" class="btn-outline">뒤로가기</button>
       </div>
     </form:form>
   </div>

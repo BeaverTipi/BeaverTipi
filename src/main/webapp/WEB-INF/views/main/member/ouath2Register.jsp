@@ -12,40 +12,7 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/member/register.css">
 
   <style>
-    .form-section {
-      margin-bottom: 30px;
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-    }
 
-    .form-section h3 {
-      margin-bottom: 15px;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    .form-control {
-      width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
-    }
-
-    .btn-primary, .btn-outline, .btn-secondary {
-      padding: 8px 16px;
-      margin-top: 10px;
-    }
-
-    .form-actions {
-      text-align: center;
-    }
-
-    .text-danger {
-      color: red;
-      font-size: 0.9em;
-    }
   </style>
 </head>
 <body>
@@ -54,7 +21,7 @@
   <div class="signup-container">
     <h2 class="signup-title">회원가입</h2>
 
-    <form:form class="signup-form" method="post" action="/member/register" modelAttribute="member">
+    <form:form class="signup-form" id="signup-form" method="post" action="/member/register" modelAttribute="member">
       
       <!-- 양쪽 배치용 Flex -->
       <div class="form-flex-wrapper">
@@ -86,6 +53,7 @@
             <div class="phone-auth-group">
               <form:input path="mbrTelno" type="tel" class="form-control" placeholder="전화번호 입력" required="true" />
               <button type="button" id="requestAuthBtn" class="btn-auth-code">인증요청</button>
+            	
             </div>
             <form:errors path="mbrTelno" class="text-danger" />
           </div>
@@ -94,8 +62,8 @@
           <div class="form-group hidden" id="authCodeWrapper">
             <label for="authCode">인증번호</label>
             <input type="text" name="authCode" id="authCode" class="form-control" placeholder="인증번호 6자 입력" maxlength="6" required />
-          </div>
-
+			  
+			</div>
         </div>
 
 
@@ -157,7 +125,7 @@
       <!-- 버튼 -->
       <div class="form-actions">
         <button type="submit" class="btn-primary">가입하기</button>
-        <button type="reset" class="btn-outline">다시쓰기</button>
+        <button type="reset" id="resetBtn" class="btn-outline">뒤로가기</button>
       </div>
     </form:form>
   </div>
