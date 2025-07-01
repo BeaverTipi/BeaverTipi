@@ -45,7 +45,7 @@
 </nav>
 <!-- 🔐 로그인 모달 -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <form:form method="post" action="${pageContext.request.contextPath}/member/login">
         <div class="modal-header">
@@ -80,7 +80,7 @@
     <img src="${pageContext.request.contextPath}/volt/assets/img/authentication/google.svg" alt="Google">
     <span class="d-none d-sm-inline-block">Google 로그인</span>
   </a>
-  <a href="${pageContext.request.contextPath}/oauth2/authorization/kakao" class="btn social-btn google-btn">
+  <a href="${pageContext.request.contextPath}/oauth2/authorization/kakao" class="btn social-btn kakao-btn">
      <img src="${pageContext.request.contextPath }/volt/assets/img/authentication/kakao.png" alt="img">
   </a>
 </div>

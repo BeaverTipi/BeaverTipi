@@ -18,4 +18,5 @@
 
 <!-- Volt CSS -->
 <link type="text/css" href="${pageContext.request.contextPath}/volt/css/admin_volt.css" rel="stylesheet">
+<link type="text/css" href="${pageContext.request.contextPath}/app/css/modal.css" rel="stylesheet">
 
