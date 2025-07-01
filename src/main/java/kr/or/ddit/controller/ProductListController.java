@@ -5,15 +5,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class ProductListController {
-//	@GetMapping()
-//	public String brokerProductList() {
-//		return
-//	}
-//	public String rentalOwnerProductList() {
-//		return
-//	}
-//	public String userProductList() {
-//		return
-//	}
+	@GetMapping("/building/brokerProduct/list")
+	public String brokerProductList() {
+		return "/product/productList/brokerProductList";
+	}
+	@GetMapping("/building/rentalOwnerProduct/list")
+	public String rentalOwnerProductList() {
+		return "/product/productList/rentalOwnerProductList.jsp";
+	}
+	@GetMapping("/building/userProduct/list")
+	public String userProductList() {
+		return "/product/productList/userProductList";
+	}
 
 }
