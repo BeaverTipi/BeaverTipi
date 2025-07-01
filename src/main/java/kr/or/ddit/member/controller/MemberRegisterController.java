@@ -52,9 +52,14 @@ public class MemberRegisterController {
 	                String id = String.valueOf(attributes.get("id"));
 	                Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
 	                String email = (String) kakaoAccount.get("email");
+	                Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+	                String nickname = (String) profile.get("nickname");
+	                String phone = (String) kakaoAccount.get("phone_number");
 
 	                member.setMbrId(id);
 	                member.setMbrEmlAddr(email);
+	                member.setMbrNnm(nickname);
+	                member.setMbrTelno(phone);
 	            }
 	        }
 	    }
