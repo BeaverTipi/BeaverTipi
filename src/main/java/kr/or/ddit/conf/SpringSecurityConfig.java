@@ -26,8 +26,9 @@ import org.springframework.util.AntPathMatcher;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.or.ddit.mapper.MemberMapper;
+import kr.or.ddit.member.mapper.MemberMapper;
 import kr.or.ddit.security.auth.CustomUserDetailsService;
+import kr.or.ddit.security.oauth2.CustomOAuth2UserService;
 import kr.or.ddit.security.oauth2.CustomOidcUserService;
 import kr.or.ddit.security.oauth2.OAuth2AuthenticationFailureHandler;
 import lombok.Data;
@@ -42,6 +43,8 @@ public class SpringSecurityConfig {
 	private String loginUrl; 
 	private String logoutUrl; 
 	private String registerUrl;
+	private String oauth2RegisterUrl;
+	private String deleteValue;
 	
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -61,7 +64,7 @@ public class SpringSecurityConfig {
 	 */
 	@Bean
 	public CustomUserDetailsService userDetailsService() {
-		CustomUserDetailsService service = new CustomUserDetailsService(mapper);
+		CustomUserDetailsService service = new CustomUserDetailsService(mapper,deleteValue);
 		return service;
 	}
 	
@@ -71,7 +74,15 @@ public class SpringSecurityConfig {
 	 */
 	@Bean
 	public CustomOidcUserService oidcUserService() {
-		return new CustomOidcUserService(mapper);
+		return new CustomOidcUserService(mapper,deleteValue);
+	}
+	/**
+	 * 소셜 로그인 사용자의 정보 조회
+	 * @return
+	 */
+	@Bean
+	public CustomOAuth2UserService oAuth2UserService() {
+		return new CustomOAuth2UserService(mapper,deleteValue);
 	}
 	
 	/**
@@ -82,7 +93,7 @@ public class SpringSecurityConfig {
 	 */
 	@Bean
 	public OAuth2AuthenticationFailureHandler failureHandler() {
-		OAuth2AuthenticationFailureHandler handler =  new OAuth2AuthenticationFailureHandler(registerUrl);
+		OAuth2AuthenticationFailureHandler handler =  new OAuth2AuthenticationFailureHandler(oauth2RegisterUrl);
 		handler.setDefaultFailureUrl(loginUrl + "?error");
 		return handler;
 	}
@@ -163,13 +174,18 @@ public class SpringSecurityConfig {
 			.oauth2Login(oauth2->
 			oauth2.loginPage(loginUrl)
 			.failureHandler(failureHandler())
-			
+			.userInfoEndpoint(user -> 
+	        user
+	            .userService(oAuth2UserService()) // 카카오 등
+	            .oidcUserService(oidcUserService()) // 구글
+	    )
 					)
 			.formLogin(login ->
 				login
 					.loginPage(loginUrl)
 					.loginProcessingUrl(loginUrl)
 					.defaultSuccessUrl("/",false)
+					.failureUrl("/?error=true")
 				)
 			.requestCache(requestCache->
 				requestCache

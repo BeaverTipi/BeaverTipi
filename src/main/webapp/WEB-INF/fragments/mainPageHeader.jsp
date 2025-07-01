@@ -84,10 +84,52 @@
         </li>
       </security:authorize>
     </ul>
-<!-- >>>>>>> branch 'main' of https://github.com/arin903/BeaverTipi.git -->
   </div>
 </nav>
-<!-- <<<<<<< HEAD -->
-<!-- ======= -->
+<!-- 🔐 로그인 모달 -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form:form method="post" action="${pageContext.request.contextPath}/member/login">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModalLabel">로그인</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="username" class="form-label">아이디</label>
+            <input type="text" class="form-control" name="username" id="username">
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">비밀번호</label>
+            <input type="password" class="form-control" name="password" id="password">
+          </div>
+          <div id="login-error-msg" class="alert alert-danger" style="display: none;">
+			  아이디 또는 비밀번호가 올바르지 않습니다.
+			</div>
+          <button type="submit" class="btn btn-primary w-100">로그인</button>
 
-<!-- >>>>>>> branch 'main' of https://github.com/arin903/BeaverTipi.git -->
+          <!-- 🔗 아이디/비번/회원가입 링크 추가 -->
+          <div class="text-center my-3 small-link-group">
+            <a href="#" class="small-link">아이디 찾기</a> |
+            <a href="#" class="small-link">비밀번호 찾기</a> |
+            <a href="#" class="small-link">회원가입</a>
+          </div>
+
+          <!-- 소셜 로그인 -->
+          <!-- 소셜 로그인 버튼들 -->
+<div class="d-grid gap-2">
+  <a href="${pageContext.request.contextPath}/oauth2/authorization/google-login" class="btn social-btn google-btn">
+    <img src="${pageContext.request.contextPath}/volt/assets/img/authentication/google.svg" alt="Google">
+    <span class="d-none d-sm-inline-block">Google 로그인</span>
+  </a>
+  <button id="kakao-login-btn" class="btn social-btn kakao-btn">
+     <img src="${pageContext.request.contextPath }/volt/assets/img/authentication/kakao.png" alt="img">
+  </button>
+</div>
+
+        </div>
+      </form:form>
+    </div>
+  </div>
+</div>

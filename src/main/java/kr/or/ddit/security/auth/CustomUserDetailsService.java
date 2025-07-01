@@ -4,13 +4,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import kr.or.ddit.mapper.MemberMapper;
+import kr.or.ddit.member.mapper.MemberMapper;
 import kr.or.ddit.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
 // 직접 bean 등록.
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService{
 	private final MemberMapper mapper;
+	private final String deleteValue;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -20,6 +21,6 @@ public class CustomUserDetailsService implements UserDetailsService{
 			throw new UsernameNotFoundException(String.format("%s 회원 없음", username));
 		}
 		
-		return new MemberVOWrapper(realUser);
+		return new MemberVOWrapper(realUser,deleteValue);
 	}
 }
