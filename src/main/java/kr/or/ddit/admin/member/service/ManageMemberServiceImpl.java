@@ -1,6 +1,7 @@
 package kr.or.ddit.admin.member.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -15,8 +16,8 @@ public class ManageMemberServiceImpl implements ManageMemberService {
 	private final MemberMapper mapper;
 	
 	@Override
-	public List<MemberVO> readMemberList() {
-		return mapper.selectMemberList();
+	public List<MemberVO> readMemberList(Map<String, Object> param) {
+		return mapper.selectMemberList(param);
 	}
 	
 }

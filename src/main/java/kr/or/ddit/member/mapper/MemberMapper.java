@@ -1,6 +1,7 @@
 package kr.or.ddit.member.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -9,7 +10,7 @@ import kr.or.ddit.vo.MemberVO;
 
 @Mapper
 public interface MemberMapper {
-	public List<MemberVO> selectMemberList();
+	public List<MemberVO> selectMemberList(Map<String, Object> param);
 	
 	public MemberVO selectMemberByUsername(@Param("username")String username);
 	

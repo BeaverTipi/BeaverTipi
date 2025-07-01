@@ -104,11 +104,11 @@
             <input type="text" id="memberNameInput" placeholder="회원명을 입력해주세요">
         </div>
         <div class="search-item">
-            <label for="mbrFrstRegDtFrom"></label>
+            <label for="mbrFrstRegDtFrom">가입일(시작)</label>
             <input type="date" id="mbrFrstRegDtFrom">
         </div>
         <div class="search-item">
-            <label for="mbrFrstRegDtTo"></label>
+            <label for="mbrFrstRegDtTo">가입일(종료)</label>
             <input type="date" id="mbrFrstRegDtTo">
         </div>
         <div class="search-item">
@@ -138,21 +138,17 @@
                 </tr>
             </thead>
             <tbody>
-                <c:if test="${not empty memberList }">
-                    <c:forEach items="${memberList }" var="member">
-                        <tr>
-<%--                             상세 페이지 링크는 필요에 따라 구현 (예: memberDetail.do) --%>
-<%--                             <c:url value="/member/memberDetail.do" var="detailURL"> --%>
-<%--                                 <c:param name="what" value="${member.memberId }" /> --%>
-<%--                             </c:url> --%>
-                            <td>${member.memCd }</td>
-                            <td>${member.memNm }</td>
-                            <td>${member.memFrstRegDt }</td>
-                            <td>${member.memMbrStatusCode }</td>
-                            <td>${member.memMbrEmlAddr }</td>
-                        </tr>
-                    </c:forEach>
-                </c:if>
+                <c:if test="${not empty memberList}">
+				  <c:forEach items="${memberList}" var="member">
+				    <tr>
+				      <td>${member.mbrCd}</td>
+				      <td>${member.mbrNm}</td>
+				      <td>${member.mbrFrstRegDt}</td>
+				      <td>${member.mbrStatusCode}</td>
+				      <td>${member.mbrEmlAddr}</td>
+				    </tr>
+				  </c:forEach>
+				</c:if>
                 <c:if test="${empty memberList }">
                     <tr>
                         <td colspan="5" class="no-data-center">회원 없음</td>
