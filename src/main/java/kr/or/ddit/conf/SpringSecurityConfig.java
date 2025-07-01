@@ -190,12 +190,7 @@ public class SpringSecurityConfig {
 			.requestCache(requestCache->
 				requestCache
 					.requestCache(requestCache())
-					)
-			.logout(logout ->
-				logout
-					.logoutUrl(logoutUrl)
-			
-				);
+					);
 		return http.build();
 	}
 	@Bean

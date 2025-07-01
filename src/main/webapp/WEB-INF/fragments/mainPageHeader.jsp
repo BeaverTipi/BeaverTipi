@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="security"%>
-
 <nav class="navbar navbar-expand-lg bg-white px-4 py-2">
   <div class="container-fluid d-flex justify-content-between align-items-center">
     <a class="navbar-brand d-flex align-items-center" href="${pageContext.request.contextPath}/">
@@ -29,7 +28,7 @@
             <li><a class="dropdown-item" href="#">내 정보</a></li>
             <li><a class="dropdown-item" href="#">알림</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" href="<c:url value='/logout'/>">로그아웃</a></li>
+            <li><a class="dropdown-item text-danger" href="/member/logout">로그아웃</a></li>
           </ul>
         </li>
       </security:authorize>

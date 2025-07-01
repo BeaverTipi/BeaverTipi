@@ -34,8 +34,4 @@ public class LoginController {
 		return "login/loginForm";
 	}
 
-	@GetMapping("${myapp.logout-url}")
-	public String logout() {
-		return "login/logout";
-	}
 }
