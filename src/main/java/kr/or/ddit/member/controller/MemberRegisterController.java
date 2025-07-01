@@ -3,6 +3,8 @@ package kr.or.ddit.member.controller;
 import java.util.Map;
 
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -40,22 +42,25 @@ public class MemberRegisterController {
 	        member.setMbrId(user.getName());
 	        member.setMbrEmlAddr(user.getEmail());
 
-	    } else if (lastException instanceof UserNotRegisteredException oauth2Ex) {
-	        var user = oauth2Ex.getUnRegisteredUser();
-	        Map<String, Object> attributes = user.getAttributes();
+	    } else if (lastException instanceof OAuth2AuthenticationException oauth2Ex) {
+	    	if ("register-required".equals(oauth2Ex.getError().getErrorCode())) {
+	            Throwable cause = oauth2Ex.getCause();
+	            if (cause instanceof UserNotRegisteredException ex) {
+	                OAuth2User user = ex.getUnRegisteredUser();
+	                Map<String, Object> attributes = user.getAttributes();
 
-	        // 카카오 로그인 정보 추출 (예시)
-	        String id = String.valueOf(attributes.get("id"));
-	        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
-	        String email = (String) kakaoAccount.get("email");
+	                String id = String.valueOf(attributes.get("id"));
+	                Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+	                String email = (String) kakaoAccount.get("email");
 
-	        member.setMbrId("kakao_" + id); // ID는 원하는 방식으로 가공 가능
-	        member.setMbrEmlAddr(email);
+	                member.setMbrId(id);
+	                member.setMbrEmlAddr(email);
+	            }
+	        }
 	    }
 
 	    return member;
 	}
-
 	@GetMapping("${myapp.register-url}")
 	public String registerPage() {
 		return "main/member/register";
@@ -65,7 +70,7 @@ public class MemberRegisterController {
 		return "main/member/ouath2Register";
 	}
 	
-	@PostMapping
+	@PostMapping("${myapp.register-url}")
 	public String formProcess(@SessionAttribute(name = WebAttributes.AUTHENTICATION_EXCEPTION, required = false) 
 																			OidcUserNotRegisteredException lastException
 			, @Validated(InsertGroup.class) @ModelAttribute(MODELNAME) MemberVO member
