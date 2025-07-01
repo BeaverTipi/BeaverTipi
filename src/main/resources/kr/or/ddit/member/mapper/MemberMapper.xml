@@ -8,6 +8,7 @@
 			<id property="userRoleId" column="USER_ROLE_ID"/>
 		</collection>
 	</resultMap>
+
 <select id="selectMemberList" resultMap="memberMap">
 		SELECT MBR_CD
 				, MBR_ID
@@ -26,6 +27,7 @@
 				, USER_ROLE_ID
 		FROM MEMBER NATURAL JOIN ROLE_ACHIEVED
 </select>
+
 <select id="selectMemberByUsername" parameterType="String" resultMap="memberMap">
 		SELECT MBR_CD
 				, MBR_ID
