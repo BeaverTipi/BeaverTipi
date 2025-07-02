@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.admin.member.mapper.ManageMemberMapper">
+<resultMap type="MemberVO" id="memberMap" autoMapping="true">
+		<id property="mbrCd" column="MBR_CD"/>
+		<collection property="memRoleList" javaType="list" ofType="RoleAchievedVO">
+			<id property="mbrCd" column="MBR_CD"/>			
+			<id property="userRoleId" column="USER_ROLE_ID"/>
+		</collection>
+	</resultMap>
+
+<select id="selectMemberList" resultMap="memberMap">
+		SELECT MBR_CD
+				, MBR_ID
+				, MBR_PW
+				, MBR_NM
+				, MBR_NNM
+				, MBR_TELNO
+				, MBR_EML_ADDR
+				, MBR_BASIC_ADDR
+				, MBR_DETAIL_ADDR
+				, MBR_PROFIL_IMAGE
+				, MBR_FRST_REG_DT
+				, MBR_STATUS_CODE
+				, MBR_DELETE_DATE
+				, MBR_ZIP
+				, USER_ROLE_ID
+		FROM MEMBER NATURAL JOIN ROLE_ACHIEVED
+		<where>
+      <if test="userRoleId != null and userRoleId != ''">
+        AND USER_ROLE_ID = #{userRoleId}
+      </if>
+      <if test="mbrId != null and mbrId != ''">
+        AND MBR_ID LIKE '%' || #{mbrId} || '%'
+      </if>
+      <if test="mbrFrstRegDtFrom != null">
+        AND MBR_FRST_REG_DT &gt;= #{mbrFrstRegDtFrom}
+      </if>
+      <if test="mbrFrstRegDtTo != null">
+  		AND MBR_FRST_REG_DT &lt; TRUNC(#{mbrFrstRegDtTo}) + 1
+	  </if>
+      <if test="mbrStatusCode != null and mbrStatusCode != ''">
+        AND MBR_STATUS_CODE = #{mbrStatusCode}
+      </if>
+      <if test="mbrEmlAddr != null and mbrEmlAddr != ''">
+        AND MBR_EML_ADDR LIKE '%' || #{mbrEmlAddr} || '%'
+      </if>
+    </where>
+    ORDER BY MBR_FRST_REG_DT DESC
+</select>
+
+</mapper>
