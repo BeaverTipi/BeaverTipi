@@ -11,6 +11,7 @@
 	<groupId>kr.or.ddit</groupId>
 	<artifactId>BeaverTipi</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>BeaverTipi</name>
 	<description>DDIT 최종 프로젝트</description>
 	<url/>
