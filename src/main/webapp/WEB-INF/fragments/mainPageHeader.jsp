@@ -26,7 +26,10 @@
           </a>
           <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="userDropdown">
             <li><a class="dropdown-item" href="#">내 정보</a></li>
-            <li><a class="dropdown-item" href="#">알림</a></li>
+            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/resident/myhouse">마이하우스(입주민)</a></li>
+            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/building/myhouse">마이하우스(임대인)</a></li>
+            <li><a class="dropdown-item" href="#">마이오피스(중개인)</a></li>
+            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/admin">시스템 관리자</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item text-danger" href="/member/logout">로그아웃</a></li>
           </ul>
@@ -70,7 +73,7 @@
           <div class="text-center my-3 small-link-group">
             <a href="#" class="small-link">아이디 찾기</a> |
             <a href="#" class="small-link">비밀번호 찾기</a> |
-            <a href="#" class="small-link">회원가입</a>
+            <a href="${pageContext.request.contextPath}/member/register" class="small-link">회원가입</a>
           </div>
 
           <!-- 소셜 로그인 -->
