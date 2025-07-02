@@ -148,7 +148,7 @@
       <div class="d-flex justify-content-center align-items-center ad-slide-box">
    
         <div class="ad-right-box">
-          <img src="/volt/assets/img/images/여운선3.png" class="ad-image" alt="여운선 배경">
+          <img src="/volt/assets/img/images/여운선4.png" class="ad-image" alt="여운선 배경">
         </div>
       </div>
     </div>

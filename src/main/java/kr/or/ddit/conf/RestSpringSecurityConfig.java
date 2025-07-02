@@ -1,25 +1,21 @@
 package kr.or.ddit.conf;
 
-import java.util.List;
-
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.nimbusds.jose.JWSAlgorithm;
 
@@ -29,24 +25,9 @@ import lombok.Data;
 @Configuration
 //@EnableWebSecurity
 public class RestSpringSecurityConfig {
-	
-	private List<String> allowedOrigins;
-	private List<String> allowedMethods;
-	private List<String> allowedHeaders;
-	private boolean allowedCredentials;
-	
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration corsConfig = new CorsConfiguration();
-		corsConfig.setAllowedOrigins(allowedOrigins);
-		corsConfig.setAllowedMethods(allowedMethods);
-		corsConfig.setAllowedHeaders(allowedHeaders); // 해야할게 너무 많아서 *로 함.
-		 corsConfig.setAllowCredentials(allowedCredentials);
-		UrlBasedCorsConfigurationSource corsConfigSource = 
-				new UrlBasedCorsConfigurationSource();
-		corsConfigSource.registerCorsConfiguration("/rest/**", corsConfig);
-		return corsConfigSource;
-	}
+	@Autowired
+	private CorsConfigurationSource restCorsConfigurationSource;
+
 	@Value("${jwt.secrete-key}")
 	private byte[] secreteKey;
 	
@@ -64,7 +45,7 @@ public class RestSpringSecurityConfig {
 		http.securityMatcher("/rest/**")
 			.csrf(csrf->csrf.disable())
 			.cors(cors ->
-				cors.configurationSource(corsConfigurationSource())
+				cors.configurationSource(restCorsConfigurationSource)
 					)
 			.authorizeHttpRequests(authorize ->
 				authorize.requestMatchers("/rest/auth").permitAll()

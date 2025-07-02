@@ -25,9 +25,11 @@ import kr.or.ddit.validate.exception.PKDuplicatedException;
 import kr.or.ddit.validate.exception.UserNotRegisteredException;
 import kr.or.ddit.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class MemberRegisterController {
 	private final MemberService service;
 	
@@ -83,35 +85,45 @@ public class MemberRegisterController {
 	}
 	@GetMapping("${myapp.oauth2-register-url}")
 	public String oauthRegisterPage() {
-		return "main/member/ouath2Register";
+		return "main/member/oauth2Register";
 	}
 	
 	@PostMapping("${myapp.register-url}")
 	public String formProcess(@SessionAttribute(name = WebAttributes.AUTHENTICATION_EXCEPTION, required = false) 
-																			OidcUserNotRegisteredException lastException
+		Exception lastException
 			, @Validated(InsertGroup.class) @ModelAttribute(MODELNAME) MemberVO member
 			, BindingResult errors
 			, RedirectAttributes redirectAttributes
 			) {
+		log.info("🔍 formProcess 진입: member={}", member);
 		String lvn = null;
 		if(errors.hasErrors()) {
 			String errorName = BindingResult.MODEL_KEY_PREFIX+MODELNAME;
 			redirectAttributes.addFlashAttribute(MODELNAME, member);
 			redirectAttributes.addFlashAttribute(errorName, errors);
-			lvn = "redirect:/member/register";
+			if (lastException != null) {
+		        lvn = "redirect:/member/oauth2/register";
+		    } else {
+		        lvn = "redirect:/member/register";
+		    }
 		}else {
 			try {
 				service.createMember(member);
 				lvn = "redirect:/";
-				if(lastException !=null) {
-					// 등록 완료 후 다시 oauth 로그인 절차 진행
-					String registrationId = lastException.getClientRegistration().getRegistrationId();
-					lvn = "redirect:" + OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI +"/" + registrationId;
-				}
+				  if (lastException instanceof OAuth2AuthenticationException oauth2Ex) {
+		                Throwable cause = oauth2Ex.getCause();
+		                if (cause instanceof UserNotRegisteredException ex) {
+		                    String registrationId = ex.getClientRegistration().getRegistrationId();
+		                    lvn = "redirect:" + OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI + "/" + registrationId;
+		                }
+		            } else if (lastException instanceof OidcUserNotRegisteredException oidcEx) {
+		                String registrationId = oidcEx.getClientRegistration().getRegistrationId();
+		                lvn = "redirect:" + OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI + "/" + registrationId;
+		            }
 			}catch (PKDuplicatedException e) {
 				redirectAttributes.addFlashAttribute(MODELNAME, member);
 				redirectAttributes.addFlashAttribute("message", "아이디가 중복되었습니다.");
-				lvn = "redirect:/member/memberInsert.do";
+				 lvn = (lastException != null) ? "redirect:/member/oauth2/register" : "redirect:/member/register";
 			}
 		
 		}

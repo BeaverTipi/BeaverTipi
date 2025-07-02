@@ -41,3 +41,9 @@
 
 <!-- Volt JS -->
 <script src="${pageContext.request.contextPath}/volt/assets/js/volt.js"></script>
+
+<!-- axios -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!-- Custom axios -->
+<script src="${pageContext.request.contextPath}/volt/assets/js/customAxios.js"></script>

@@ -20,7 +20,7 @@ public class MemberVO implements Serializable {
 	@NotBlank
 	private String mbrNm;
 	private String mbrNnm;
-	@NotBlank
+//	@NotBlank
 	private String mbrTelno;
 	private String mbrEmlAddr;
 	private String mbrBasicAddr;
