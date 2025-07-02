@@ -82,4 +82,19 @@ public class JwtProvider {
 		return authentication;
 
 	}
+	
+	public boolean validateToken(String token) {
+	    try {
+	        SecretKey secretKey = new SecretKeySpec(secreteKey, JWSAlgorithm.HS256.getName());
+	        NimbusJwtDecoder decoder = NimbusJwtDecoder
+	            .withSecretKey(secretKey)
+	            .macAlgorithm(MacAlgorithm.HS256)
+	            .build();
+
+	        decoder.decode(token); // 여기서 유효하지 않으면 예외 발생
+	        return true;
+	    } catch (Exception e) {
+	        return false;
+	    }
+	}
 }

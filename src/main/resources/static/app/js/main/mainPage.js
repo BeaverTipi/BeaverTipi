@@ -32,7 +32,13 @@ document.addEventListener("DOMContentLoaded", function() {
 		const json = axios.formToJSON(e.target);
 		customAxios.post("/account/login", json)
 			.then(resp => {
-				history.back();
+				const params = new URLSearchParams(location.search);
+      			const redirect = params.get("redirect");
+				if(redirect){
+					location.href = redirect;
+				}else{
+					history.back();
+				}
 			})
 			.catch(err => {
 				if (err.response && err.response.status === 401) {
