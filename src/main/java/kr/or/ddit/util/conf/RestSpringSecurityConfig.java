@@ -15,10 +15,13 @@ import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.nimbusds.jose.JWSAlgorithm;
 
+import kr.or.ddit.util.security.jwt.JwtAuthenticationFilter;
+import kr.or.ddit.util.security.jwt.JwtProvider;
 import lombok.Data;
 @Data
 @ConfigurationProperties(prefix = "cors")
@@ -30,7 +33,8 @@ public class RestSpringSecurityConfig {
 
 	@Value("${jwt.secrete-key}")
 	private byte[] secreteKey;
-	
+	@Autowired
+	private JwtProvider jwtProvider;
 	// 프로바이더 역할 대신..
 	@Bean
 	public JwtDecoder jwtDecoder() {
@@ -60,9 +64,9 @@ public class RestSpringSecurityConfig {
 			.sessionManagement(session->
 			session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 관리하지 않겠다. ==> 세션기반의 인증 사용 못함. form로그인..이런거 못씀.
 			)
-			.oauth2ResourceServer(oauth2RS ->
-			oauth2RS.jwt(jwt-> jwt.decoder(jwtDecoder()))// 생략해도 자동으로 들어가긴함. 눈으로 볼려고 하는거..
-					);
+			.addFilterBefore(new JwtAuthenticationFilter(jwtProvider), 
+					 UsernamePasswordAuthenticationFilter.class);
+
 		return http.build();
 	}
 	

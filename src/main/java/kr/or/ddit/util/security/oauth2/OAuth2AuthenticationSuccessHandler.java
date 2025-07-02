@@ -3,12 +3,12 @@ package kr.or.ddit.util.security.oauth2;
 import java.io.IOException;
 
 import org.springframework.boot.web.server.Cookie.SameSite;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.or.ddit.util.security.jwt.CookieBearerTokenResolver;
@@ -38,12 +38,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 					.maxAge(JwtProvider.VALID_TERM / 1000)
 					.build();
 			
-			 Cookie servletCookie = new Cookie(tokenCookie.getName(), tokenCookie.getValue());
-			    servletCookie.setPath(tokenCookie.getPath());
-			    servletCookie.setMaxAge((int) tokenCookie.getMaxAge().getSeconds());
-			    servletCookie.setHttpOnly(tokenCookie.isHttpOnly());
-
-			 response.addCookie(servletCookie);
+			response.addHeader(HttpHeaders.SET_COOKIE, tokenCookie.toString());	
 
 		        // 로그인 성공 후 리다이렉트
 		       response.sendRedirect("/");
