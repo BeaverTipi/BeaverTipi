@@ -30,8 +30,7 @@
           <h3>기본 정보 입력 (필수)</h3>
           <!-- 아이디 -->
    		  <div class="form-group">
-            <label for="mbrId">회원 ID</label>
-            <form:input path="mbrId" class="form-control" placeholder="회원 ID (선택)" />
+            <form:input path="mbrId" type="hidden" class="form-control" placeholder="회원 ID" required="true"/>
             <form:errors path="mbrId" class="text-danger" />
           </div>
           <!-- 비밀번호 -->
@@ -47,24 +46,24 @@
             <form:errors path="mbrNm" class="text-danger" />
           </div>
 
-          <!-- 전화번호 -->
+          <!-- 전화번호  required 넣기 -->
           <div class="form-group">
             <label for="mbrTelno">전화번호</label>
             <div class="phone-auth-group">
-              <form:input path="mbrTelno" type="tel" class="form-control" placeholder="전화번호 입력" required="true" />
+              <form:input path="mbrTelno" type="tel" class="form-control" placeholder="전화번호 입력" />
               <button type="button" id="requestAuthBtn" class="btn-auth-code">인증요청</button>
-            	
             </div>
             <form:errors path="mbrTelno" class="text-danger" />
           </div>
 
-          <!-- 인증번호 -->
+          <!-- 인증번호  required 넣기 -->
           <div class="form-group hidden" id="authCodeWrapper">
             <label for="authCode">인증번호</label>
-            <input type="text" name="authCode" id="authCode" class="form-control" placeholder="인증번호 6자 입력" maxlength="6" required />
-			  
+            <input type="text" name="authCode" id="authCode" class="form-control" placeholder="인증번호 6자 입력" maxlength="6" />
+			  <span id="timerText" style="margin-left: 10px; color: red;"></span>
 			</div>
         </div>
+
 
 
 
@@ -80,8 +79,7 @@
 
           <!-- 이메일 -->
           <div class="form-group">
-            <label for="mbrEmlAddr">이메일</label>
-            <form:input path="mbrEmlAddr" class="form-control" placeholder="회원 이메일" />
+            <form:input path="mbrEmlAddr" type="hidden" class="form-control" placeholder="회원 이메일" />
             <form:errors path="mbrEmlAddr" class="text-danger" />
           </div>
 

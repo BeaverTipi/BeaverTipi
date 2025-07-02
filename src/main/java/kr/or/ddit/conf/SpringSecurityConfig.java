@@ -18,19 +18,28 @@ import org.springframework.security.oauth2.client.JdbcOAuth2AuthorizedClientServ
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.context.DelegatingSecurityContextRepository;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.or.ddit.member.mapper.MemberMapper;
 import kr.or.ddit.security.auth.CustomUserDetailsService;
+import kr.or.ddit.security.jwt.JwtProvider;
 import kr.or.ddit.security.oauth2.CustomOAuth2UserService;
 import kr.or.ddit.security.oauth2.CustomOidcUserService;
 import kr.or.ddit.security.oauth2.OAuth2AuthenticationFailureHandler;
+import kr.or.ddit.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -97,6 +106,14 @@ public class SpringSecurityConfig {
 		handler.setDefaultFailureUrl(loginUrl + "?error");
 		return handler;
 	}
+	
+	@Autowired
+	private JwtProvider jwtProvider;
+	@Bean
+	public OAuth2AuthenticationSuccessHandler successHandler() {
+		OAuth2AuthenticationSuccessHandler handler =  new OAuth2AuthenticationSuccessHandler(jwtProvider);
+		return handler;
+	}
 	@Autowired
 	private DataSource dataSource;
 
@@ -142,18 +159,40 @@ public class SpringSecurityConfig {
 //		return new HttpSessionEventPublisher();
 //	}
 	
+	@Autowired
+	private CorsConfigurationSource authCorsConfigurationSource;
+	
+	@Bean
+	public SecurityContextRepository securityContextRepository() {
+		return new DelegatingSecurityContextRepository(
+			new HttpSessionSecurityContextRepository()
+			, new RequestAttributeSecurityContextRepository()
+		);
+	}
+	
+	@Bean
+	public LogoutHandler logoutHandler() {
+		SecurityContextLogoutHandler handler =  new SecurityContextLogoutHandler();
+		handler.setClearAuthentication(true);
+		handler.setInvalidateHttpSession(true);
+		return handler;		
+	}
+	
+	
 	@Bean
 	@Order(2)
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		
 		http
 			.csrf(csrf -> csrf.disable())
+			.cors(cors->cors.configurationSource(authCorsConfigurationSource))
 			.authorizeHttpRequests(authorize ->
 				authorize
 				.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // redirection으로 이동하는 것도 감지함. 그래서 막아버림. 그것도 풀어줘라 하는 게 필요.
 					.requestMatchers(WHITE_LIST).permitAll()
-					.requestMatchers(loginUrl).permitAll()
 					.requestMatchers(new AntPathRequestMatcher(registerUrl)).permitAll()
+					.requestMatchers(new AntPathRequestMatcher("account/login/**")).permitAll()
+					.requestMatchers(new AntPathRequestMatcher("account/logout/**")).permitAll()
 					.requestMatchers(new AntPathRequestMatcher("/mypage")).authenticated()
 					.requestMatchers(new AntPathRequestMatcher("/prod/*Insert*")).hasAnyRole("ADMIN")
 					.requestMatchers(new AntPathRequestMatcher("/prod/*Update*")).hasAnyRole("ADMIN")
@@ -172,9 +211,10 @@ public class SpringSecurityConfig {
 						// 분산되어있는 서버에서 한쪽서버에서 새로운세션이 만들어 지더라도 세션을 확인 못함. 이걸 쓸려면 넣어야하는게 있음.(분산서버에서)
 			)
 			.oauth2Login(oauth2->
-			oauth2.loginPage(loginUrl)
-			.failureHandler(failureHandler())
-			.userInfoEndpoint(user -> 
+			oauth2.loginPage("/")
+					.successHandler(successHandler())
+					.failureHandler(failureHandler())
+					.userInfoEndpoint(user -> 
 	        user
 	            .userService(oAuth2UserService()) // 카카오 등
 	            .oidcUserService(oidcUserService()) // 구글
@@ -182,10 +222,8 @@ public class SpringSecurityConfig {
 					)
 			.formLogin(login ->
 				login
-					.loginPage(loginUrl)
-					.loginProcessingUrl(loginUrl)
-					.defaultSuccessUrl("/",false)
-					.failureUrl("/?error=true")
+					.loginPage("/login")
+					
 				)
 			.requestCache(requestCache->
 				requestCache
