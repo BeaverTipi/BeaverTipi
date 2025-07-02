@@ -50,7 +50,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			Swal.fire({
 				icon: 'warning',
 				title: '알림',
-				text: "유효한 전화번호를 입력해주세요."
+				text: "유효한 전화번호를 입력해주세요.",
+				confirmButtonText: '확인'
 			});
 			phoneInput.focus();
 			return;
@@ -62,7 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			Swal.fire({
 				icon: 'warning',
 				title: '알림',
-				text: "전화번호를 입력하세요."
+				text: "전화번호를 입력하세요.",
+				confirmButtonText: '확인'
 			});
 			return;
 		}
@@ -85,7 +87,8 @@ document.addEventListener("DOMContentLoaded", () => {
 					Swal.fire({
 						icon: 'info',
 						title: '알림',
-						text: "인증번호가 전송되었습니다."
+						text: "인증번호가 전송되었습니다.",
+						confirmButtonText: '확인'
 					});
 					authCodeInput.disabled = false;
 					authCodeInput.value = "";
@@ -97,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				}
 			});
 	});
-
+/* 
 	signupForm.addEventListener("submit", async (e) => {
 		e.preventDefault();
 
@@ -105,7 +108,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			Swal.fire({
 				icon: 'warning',
 				title: '알림',
-				text: "전화번호 인증을 먼저 완료해주세요."
+				text: "전화번호 인증을 먼저 완료해주세요.",
+				confirmButtonText: '확인'
 			});
 			return;
 		}
@@ -115,7 +119,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			Swal.fire({
 				icon: 'warning',
 				title: '알림',
-				text: "인증번호를 입력하세요."
+				text: "인증번호를 입력하세요.",
+				confirmButtonText: '확인'
 			});
 			return;
 		}
@@ -131,7 +136,8 @@ document.addEventListener("DOMContentLoaded", () => {
 					Swal.fire({
 						icon: 'success',
 						title: '인증 성공',
-						text: '회원가입을 계속 진행합니다.'
+						text: '회원가입을 계속 진행합니다.',
+						confirmButtonText: '확인'
 					}).then(() => {
 						verified = true;
 						clearInterval(timer);
@@ -144,24 +150,28 @@ document.addEventListener("DOMContentLoaded", () => {
 						Swal.fire({
 							icon: 'error',
 							title: '인증 실패',
-							text: '❌ 3회 실패했습니다. 인증번호를 다시 요청하세요.'
+							text: '❌ 3회 실패했습니다. 인증번호를 다시 요청하세요.',
+							confirmButtonText: '확인'
 						});
 					} else if (result === "invalid") {
 						Swal.fire({
 							icon: 'warning',
 							title: '알림',
-							text: `❌ 인증번호가 일치하지 않습니다. (${failCount}/3)`
+							text: `❌ 인증번호가 일치하지 않습니다. (${failCount}/3)`,
+							confirmButtonText: '확인'
 						});
 					} else if (result === "expired") {
 						Swal.fire({
 							icon: 'warning',
 							title: '알림',
-							text: "⏰ 인증번호가 만료되었습니다"
+							text: "⏰ 인증번호가 만료되었습니다",
+							confirmButtonText: '확인'
 						});
 					}
 				}
 			});
 	});
+*/
 });
 
 function toggleOptionalInfo() {

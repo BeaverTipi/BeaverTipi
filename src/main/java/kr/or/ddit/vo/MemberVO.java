@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
-import kr.or.ddit.validate.UpdateGroup;
+import kr.or.ddit.util.validate.UpdateGroup;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,7 +20,7 @@ public class MemberVO implements Serializable {
 	@NotBlank
 	private String mbrNm;
 	private String mbrNnm;
-	@NotBlank
+//	@NotBlank
 	private String mbrTelno;
 	private String mbrEmlAddr;
 	private String mbrBasicAddr;

@@ -28,10 +28,10 @@
             <li><a class="dropdown-item" href="#">내 정보</a></li>
             <li><a class="dropdown-item" href="${pageContext.request.contextPath}/resident/myhouse">마이하우스(입주민)</a></li>
             <li><a class="dropdown-item" href="${pageContext.request.contextPath}/building/myhouse">마이하우스(임대인)</a></li>
-            <li><a class="dropdown-item" href="#">마이오피스(중개인)</a></li>
+            <li><a class="dropdown-item" href="http://localhost:81/broker/myoffice">마이오피스(중개인)</a></li>
             <li><a class="dropdown-item" href="${pageContext.request.contextPath}/admin">시스템 관리자</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" href="/member/logout">로그아웃</a></li>
+            <li><a class="dropdown-item text-danger" id="logout" href="/account/logout">로그아웃</a></li>
           </ul>
         </li>
       </security:authorize>
@@ -50,7 +50,7 @@
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <form:form method="post" action="${pageContext.request.contextPath}/member/login">
+      <form:form method="post" id="loginForm" action="${pageContext.request.contextPath}/account/login">
         <div class="modal-header">
           <h5 class="modal-title" id="loginModalLabel">로그인</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>

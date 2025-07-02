@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import kr.or.ddit.admin.board.mapper.NoticePostMapper;
+import kr.or.ddit.admin.mapper.NoticePostMapper;
 import kr.or.ddit.vo.BoardVO;
 import lombok.RequiredArgsConstructor;
 
