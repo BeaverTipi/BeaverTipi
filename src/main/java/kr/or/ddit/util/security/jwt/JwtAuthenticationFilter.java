@@ -28,7 +28,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         HttpServletResponse response,
         FilterChain filterChain
     ) throws ServletException, IOException {
-    	System.out.println("✅ JwtAuthenticationFilter 실행됨: " + request.getRequestURI());
         String token = resolveTokenFromCookie(request);
 
         if (StringUtils.hasText(token) && jwtProvider.validateToken(token)) {
