@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="security"%>
+
 <nav class="navbar navbar-expand-lg bg-white px-4 py-2">
   <div class="container-fluid d-flex justify-content-between align-items-center">
     <a class="navbar-brand d-flex align-items-center" href="${pageContext.request.contextPath}/">
@@ -50,7 +51,8 @@
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <form:form method="post" id="loginForm" action="${pageContext.request.contextPath}/account/login">
+      <form method="post" id="loginForm" action="${pageContext.request.contextPath}/account/login">
+        <security:csrfInput/>
         <div class="modal-header">
           <h5 class="modal-title" id="loginModalLabel">로그인</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
@@ -58,11 +60,11 @@
         <div class="modal-body">
           <div class="mb-3">
             <label for="username" class="form-label">아이디</label>
-            <input type="text" class="form-control" name="username" id="username">
+            <input type="text" class="form-control" name="mbrId" id="username">
           </div>
           <div class="mb-3">
             <label for="password" class="form-label">비밀번호</label>
-            <input type="password" class="form-control" name="password" id="password">
+            <input type="password" class="form-control" name="mbrPw" id="password">
           </div>
           <div id="login-error-msg" class="alert alert-danger" style="display: none;">
 			  아이디 또는 비밀번호가 올바르지 않습니다.
@@ -89,7 +91,7 @@
 </div>
 
         </div>
-      </form:form>
+      </form>
     </div>
   </div>
 </div>

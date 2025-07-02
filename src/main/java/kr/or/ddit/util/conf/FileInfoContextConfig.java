@@ -39,12 +39,7 @@ public class FileInfoContextConfig implements WebMvcConfigurer{
 		registry.addResourceHandler(imagesUrl + "/**")
 				.addResourceLocations(imagesLocation);
 	}
-	
-	@PostConstruct
-	public void init(){
-		log.info("=====================> user.dir : {}", userDir);
-		log.info("=====================> imagesLocation : {}", imagesLocation);
-	}
+
 	
 	@Value("${cloud.aws.credentials.access-key}")
     private String accessKey;

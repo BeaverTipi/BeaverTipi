@@ -16,9 +16,9 @@
             <div class="search-item">
                 <label for="memberTypeSelect">회원구분</label>
                 <%-- path는 모델 객체(searchCondition)의 필드 이름을 지정 --%>
-                <form:select path="userRoleId" id="memberTypeSelect" class="select-field">
-                    <form:option value="">--선택--</form:option>
-                    <form:option value="USER" label="입주민"/>
+                <form:select path="userRoleId" id="memberTypeSelect" class="select-field" multiple="true">
+                    <form:option value="USER" label="일반회원"/>
+                    <form:option value="" label="입주민"/>
                     <form:option value="TENANCY" label="임차인"/>
                     <form:option value="BROKER" label="중개인"/>
                 </form:select>
@@ -70,7 +70,11 @@
                 <c:if test="${not empty memberList}">
                   <c:forEach items="${memberList}" var="member">
                     <tr>
-                      <td>${member.mbrCd}</td>
+                      <td>
+                      	<c:forEach items="${member.memRoleList}" var="role" varStatus="status">
+                              ${role.userRoleId}<c:if test="${!status.last}">, </c:if>
+                        </c:forEach>
+					  </td>
                       <td>${member.mbrNm}</td>
                       <td>${member.mbrFrstRegDt}</td>
                       <td>${member.mbrStatusCode}</td>

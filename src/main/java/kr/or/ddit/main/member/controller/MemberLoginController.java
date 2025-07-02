@@ -66,7 +66,7 @@ public class MemberLoginController {
 			, HttpServletResponse resp
 			) {
 	UsernamePasswordAuthenticationToken inputData =
-			UsernamePasswordAuthenticationToken.unauthenticated(auth.getMbrCd(), auth.getMbrPw());
+			UsernamePasswordAuthenticationToken.unauthenticated(auth.getMbrId(), auth.getMbrPw());
 
 	try {
 		Authentication authentication = authenticationManager.authenticate(inputData);
