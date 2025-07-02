@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import kr.or.ddit.admin.member.mapper.ManageMemberMapper; // 새로 생성한 매퍼 인터페이스 임포트
+import kr.or.ddit.admin.mapper.ManageMemberMapper;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.SearchConditionVO;
 import lombok.RequiredArgsConstructor; // Lombok @RequiredArgsConstructor 사용

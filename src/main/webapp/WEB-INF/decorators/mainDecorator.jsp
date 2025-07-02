@@ -45,7 +45,8 @@
       Swal.fire({
         icon: 'info',
         title: '알림',
-        text: msg
+        text: msg,
+        confirmButtonText: '확인'
       });
     });
   </script>

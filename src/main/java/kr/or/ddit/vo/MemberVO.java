@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
-import kr.or.ddit.validate.UpdateGroup;
+import kr.or.ddit.util.validate.UpdateGroup;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="kr.or.ddit.admin.member.mapper.ManageMemberMapper">
+<mapper namespace="kr.or.ddit.admin.mapper.ManageMemberMapper">
 <resultMap type="MemberVO" id="memberMap" autoMapping="true">
 		<id property="mbrCd" column="MBR_CD"/>
 		<collection property="memRoleList" javaType="list" ofType="RoleAchievedVO">
