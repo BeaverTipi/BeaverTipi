@@ -24,7 +24,7 @@ public class VerificationController {
 		Message message = new Message();
 		message.setFrom("01089526419");
 		message.setTo(phone);
-		String sendMessage = String.format("[beaverTipi] 인증번호는 [%s]입니다.\\n- 유효시간 5분입니다.\\n- 타인 노출 주의", code);
+		String sendMessage = String.format("[beaverTipi] 인증번호는 [%s]입니다.\n- 유효시간 5분입니다.\n- 타인 노출 주의", code);
 		message.setText(sendMessage);
 		String result = "success";
 		try {
