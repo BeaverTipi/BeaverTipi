@@ -1,7 +1,7 @@
 package kr.or.ddit.vo;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.List; // java.util.List 임포트
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -9,13 +9,20 @@ import jakarta.validation.constraints.NotBlank;
 import kr.or.ddit.util.validate.UpdateGroup;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Data
 @EqualsAndHashCode(of = "mbrCd")
+@NoArgsConstructor
+@AllArgsConstructor
 public class SearchConditionVO implements Serializable {
-	@NotBlank(groups = UpdateGroup.class)
-	private String mbrCd;
-	private String userRoleId;
+    @NotBlank(groups = UpdateGroup.class)
+    private String mbrCd;
+
+    // userRoleId를 List<String>으로 변경 (여러 역할을 받을 수 있도록)
+    private List<String> userRoleId;
+
     private String mbrId;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate mbrFrstRegDtFrom;
@@ -24,24 +31,4 @@ public class SearchConditionVO implements Serializable {
     private String mbrStatusCode;
     private String mbrEmlAddr;
 
-    // 기본 생성자
-    public SearchConditionVO() {}
-
-    // 모든 필드를 포함하는 생성자 (선택 사항)
-    public SearchConditionVO(String userRoleId, String mbrId, LocalDate mbrFrstRegDtFrom,
-                             LocalDate mbrFrstRegDtTo, String mbrStatusCode, String mbrEmlAddr) {
-        this.userRoleId = userRoleId;
-        this.mbrId = mbrId;
-        this.mbrFrstRegDtFrom = mbrFrstRegDtFrom;
-        this.mbrFrstRegDtTo = mbrFrstRegDtTo;
-        this.mbrStatusCode = mbrStatusCode;
-        this.mbrEmlAddr = mbrEmlAddr;
-    }
-    
-    @Override
-    public String toString() {
-        return "SearchConditionVO [userRoleId=" + userRoleId + ", mbrId=" + mbrId + ", mbrFrstRegDtFrom="
-                + mbrFrstRegDtFrom + ", mbrFrstRegDtTo=" + mbrFrstRegDtTo + ", mbrStatusCode=" + mbrStatusCode
-                + ", mbrEmlAddr=" + mbrEmlAddr + "]";
-    }
 }

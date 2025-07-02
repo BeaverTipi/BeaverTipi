@@ -4,49 +4,52 @@
 <resultMap type="MemberVO" id="memberMap" autoMapping="true">
 		<id property="mbrCd" column="MBR_CD"/>
 		<collection property="memRoleList" javaType="list" ofType="RoleAchievedVO">
-			<id property="mbrCd" column="MBR_CD"/>			
+			<id property="mbrCd" column="MBR_CD"/>
 			<id property="userRoleId" column="USER_ROLE_ID"/>
 		</collection>
-	</resultMap>
+</resultMap>
 
 <select id="selectMemberList" resultMap="memberMap">
-		SELECT MBR_CD
-				, MBR_ID
-				, MBR_PW
-				, MBR_NM
-				, MBR_NNM
-				, MBR_TELNO
-				, MBR_EML_ADDR
-				, MBR_BASIC_ADDR
-				, MBR_DETAIL_ADDR
-				, MBR_PROFIL_IMAGE
-				, MBR_FRST_REG_DT
-				, MBR_STATUS_CODE
-				, MBR_DELETE_DATE
-				, MBR_ZIP
-				, USER_ROLE_ID
-		FROM MEMBER NATURAL JOIN ROLE_ACHIEVED
-		<where>
-      <if test="userRoleId != null and userRoleId != ''">
-        AND USER_ROLE_ID = #{userRoleId}
+		SELECT MBR.MBR_CD
+				, MBR.MBR_ID
+				, MBR.MBR_PW
+				, MBR.MBR_NM
+				, MBR.MBR_NNM
+				, MBR.MBR_TELNO
+				, MBR.MBR_EML_ADDR
+				, MBR.MBR_BASIC_ADDR
+				, MBR.MBR_DETAIL_ADDR
+				, MBR.MBR_PROFIL_IMAGE
+				, MBR.MBR_FRST_REG_DT
+				, MBR.MBR_STATUS_CODE
+				, MBR.MBR_DELETE_DATE
+				, MBR.MBR_ZIP
+				, RA.USER_ROLE_ID
+		FROM MEMBER MBR
+		INNER JOIN ROLE_ACHIEVED RA ON MBR.MBR_CD = RA.MBR_CD <where>
+      <if test="userRoleId != null and userRoleId.size() > 0">
+        AND RA.USER_ROLE_ID IN
+        <foreach item="roleId" collection="userRoleId" open="(" separator="," close=")">
+          #{roleId}
+        </foreach>
       </if>
       <if test="mbrId != null and mbrId != ''">
-        AND MBR_ID LIKE '%' || #{mbrId} || '%'
+        AND MBR.MBR_ID LIKE '%' || #{mbrId} || '%'
       </if>
       <if test="mbrFrstRegDtFrom != null">
-        AND MBR_FRST_REG_DT &gt;= #{mbrFrstRegDtFrom}
+        AND MBR.MBR_FRST_REG_DT &gt;= #{mbrFrstRegDtFrom}
       </if>
       <if test="mbrFrstRegDtTo != null">
-  		AND MBR_FRST_REG_DT &lt; TRUNC(#{mbrFrstRegDtTo}) + 1
+  		AND MBR.MBR_FRST_REG_DT &lt; TRUNC(#{mbrFrstRegDtTo}) + 1
 	  </if>
       <if test="mbrStatusCode != null and mbrStatusCode != ''">
-        AND MBR_STATUS_CODE = #{mbrStatusCode}
+        AND MBR.MBR_STATUS_CODE = #{mbrStatusCode}
       </if>
       <if test="mbrEmlAddr != null and mbrEmlAddr != ''">
-        AND MBR_EML_ADDR LIKE '%' || #{mbrEmlAddr} || '%'
+        AND MBR.MBR_EML_ADDR LIKE '%' || #{mbrEmlAddr} || '%'
       </if>
     </where>
-    ORDER BY MBR_FRST_REG_DT DESC
+    ORDER BY MBR.MBR_FRST_REG_DT DESC
 </select>
 
 </mapper>
