@@ -19,7 +19,7 @@ public class CorsConfig {
 	private List<String> allowedOrigins;
 	private List<String> allowedMethods;
 	private List<String> allowedHeaders;
-	private boolean allowCredentials;
+	private boolean allowedCredentials;
 
 	@Bean
 	public CorsConfigurationSource restCorsConfigurationSource() {
@@ -28,7 +28,7 @@ public class CorsConfig {
 		corsConfig.setAllowedOrigins(allowedOrigins);
 		corsConfig.setAllowedMethods(allowedMethods);
 		corsConfig.setAllowedHeaders(allowedHeaders);
-		corsConfig.setAllowCredentials(allowCredentials);
+		corsConfig.setAllowCredentials(allowedCredentials);
 		
 		UrlBasedCorsConfigurationSource corsConfigSource = 
 				new UrlBasedCorsConfigurationSource();
@@ -43,7 +43,7 @@ public class CorsConfig {
 		corsConfig.setAllowedOrigins(allowedOrigins);
 		corsConfig.setAllowedMethods(allowedMethods);
 		corsConfig.setAllowedHeaders(allowedHeaders);
-		corsConfig.setAllowCredentials(allowCredentials);
+		corsConfig.setAllowCredentials(allowedCredentials);
 		
 		UrlBasedCorsConfigurationSource corsConfigSource = 
 				new UrlBasedCorsConfigurationSource();
