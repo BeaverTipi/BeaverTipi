@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.validation.constraints.NotBlank;
-import kr.or.ddit.validate.UpdateGroup;
+import kr.or.ddit.util.validate.UpdateGroup;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

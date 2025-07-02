@@ -44,7 +44,8 @@
       Swal.fire({
         icon: 'info',
         title: '알림',
-        text: msg
+        text: msg,
+        confirmButtonText: '확인'
       });
     });
   </script>
@@ -62,6 +63,6 @@
 
         </main>
 
-    <%@ include file="/WEB-INF/fragments/adminPostScript.jsp"%>
+    <%@ include file="/WEB-INF/fragments/mainPagePostScript.jsp"%>
 </body>
 </html>
