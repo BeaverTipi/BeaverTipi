@@ -60,11 +60,11 @@
         <div class="modal-body">
           <div class="mb-3">
             <label for="username" class="form-label">아이디</label>
-            <input type="text" class="form-control" name="username" id="username">
+            <input type="text" class="form-control" name="mbrId" id="username">
           </div>
           <div class="mb-3">
             <label for="password" class="form-label">비밀번호</label>
-            <input type="password" class="form-control" name="password" id="password">
+            <input type="password" class="form-control" name="mbrPw" id="password">
           </div>
           <div id="login-error-msg" class="alert alert-danger" style="display: none;">
 			  아이디 또는 비밀번호가 올바르지 않습니다.
