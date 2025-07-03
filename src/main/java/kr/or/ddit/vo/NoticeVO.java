@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(of="noticeNo")
 public class NoticeVO {
 	private String noticeNo;
-	private String faqQnaId;
+	private String faq;
 	private String noticeType;
 	private String noticeTop;
 	private LocalDate noticeEndDtm;

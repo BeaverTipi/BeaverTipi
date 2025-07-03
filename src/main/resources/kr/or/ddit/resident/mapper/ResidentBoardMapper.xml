@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.resident.mapper.ResidentBoardMapper">
+
+
+  <!-- 전체 목록 조회 -->
+  <select id="selectBoardList" resultType="Resident_BoardVO">
+    SELECT * FROM resident_board
+    WHERE rsd_brd_del_yn = 'N'
+    ORDER BY rsd_brd_pbls_dtm DESC
+  </select>
+
+  <!-- 단건 조회 -->
+  <select id="selectBoardById" parameterType="String" resultType="Resident_BoardVO">
+    SELECT * FROM resident_board
+    WHERE rsd_brd_id = #{rsdBrdId}
+  </select>
+
+  <!-- 글 등록 -->
+  <insert id="insertBoard" parameterType="Resident_BoardVO">
+    INSERT INTO resident_board (
+      rsd_brd_id, rsd_brd_titl, rsd_brd_cont, rsd_brd_pbls_dtm,
+      rsd_brd_cnt, rsd_brd_mod_dtm, rsd_brd_del_yn, brd_code, mbr_cd
+    ) VALUES (
+      #{rsdBrdId}, #{rsdBrdTitl}, #{rsdBrdCont}, #{rsdBrdPblsDtm},
+      #{rsdBrdCnt}, #{rsdBrdModDtm}, #{rsdBrdDelYn}, #{brdCode}, #{mbrCd}
+    )
+  </insert>
+
+  <!-- 수정 -->
+  <update id="updateBoard" parameterType="Resident_BoardVO">
+    UPDATE resident_board
+    SET rsd_brd_titl = #{rsdBrdTitl},
+        rsd_brd_cont = #{rsdBrdCont},
+        rsd_brd_mod_dtm = #{rsdBrdModDtm}
+    WHERE rsd_brd_id = #{rsdBrdId}
+  </update>
+
+  <!-- 삭제 -->
+  <delete id="deleteBoard" parameterType="String">
+    DELETE FROM resident_board
+    WHERE rsd_brd_id = #{rsdBrdId}
+  </delete>
+	
+</mapper>
