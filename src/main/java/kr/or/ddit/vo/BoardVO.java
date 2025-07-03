@@ -8,13 +8,15 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(of="brdNo")
 public class BoardVO {
-	public String brdNo;
-	public String brdCode;
-	public String mbrCd;
-	public String brdTitlNm;
-	public String brdCont;
-	public LocalDateTime brdPblsDtm;
-	public Integer brdVmCnt;
-	public LocalDateTime brdModDtm;
-	public String brdDelYn;
+	private String brdNo;
+	private String brdCode;
+	private String mbrCd;
+	private String brdTitlNm;
+	private String brdCont;
+	private LocalDateTime brdPblsDtm;
+	private Integer brdVmCnt;
+	private LocalDateTime brdModDtm;
+	private String brdDelYn;
+	
+	private MemberVO member;
 }
