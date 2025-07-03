@@ -2,17 +2,26 @@ package kr.or.ddit.resident.mapper;
 
 import java.util.List;
 
-import kr.or.ddit.vo.Resident_BoardVO;
+import org.apache.ibatis.annotations.Mapper;
 
+import kr.or.ddit.util.page.PaginationInfo;
+import kr.or.ddit.vo.ResidentBoardVO;
+
+@Mapper
 public interface ResidentBoardMapper {
 
-	public List<Resident_BoardVO> selectBoardList();
-	
-	public Resident_BoardVO selectBoardById(String brdNo);
-	
-	public int updateBoard(Resident_BoardVO boardVO);
-	
-	public int insertBoard(Resident_BoardVO boardVO);
-	
-	public int deleteBoard(String brdNo);
+	List<ResidentBoardVO> selectBoardList(PaginationInfo paging);
+
+	int selectTotalCount(PaginationInfo paging);
+
+	ResidentBoardVO selectBoardById(String rsdBrdId);
+
+	int updateBoard(ResidentBoardVO boardVO);
+
+	int insertBoard(ResidentBoardVO boardVO);
+
+	int deleteBoard(String rsdBrdId);
+
+	int updateBoardViewCount(String rsdBrdId);
+
 }
