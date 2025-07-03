@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import kr.or.ddit.vo.ListingVO;
+import kr.or.ddit.vo.ListingPackVO;
 
 /**
  * @author developer_KCY
@@ -18,5 +18,5 @@ public interface BrokerListingMapper {
 	 * @param String mbrCd
 	 * @return List<ListingVO> lstgList;
 	 */
-	public List<ListingVO> selectLstgListByMbrCd(String mbrCd);
+	public List<ListingPackVO> selectLstgListByMbrCd(String mbrCd);
 }

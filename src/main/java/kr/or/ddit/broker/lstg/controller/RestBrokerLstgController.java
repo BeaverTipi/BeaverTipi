@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.or.ddit.broker.lstg.service.BrokerLstgService;
-import kr.or.ddit.vo.ListingVO;
+import kr.or.ddit.vo.ListingPackVO;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -26,7 +26,7 @@ public class RestBrokerLstgController {
 	BrokerLstgService service;
 	
 	@GetMapping("/list/{mbrCd}")
-	public List<ListingVO> lstgList(
+	public List<ListingPackVO> lstgList(
 //			@PathVariable String mbrCd
 			Principal principal
 	) {
