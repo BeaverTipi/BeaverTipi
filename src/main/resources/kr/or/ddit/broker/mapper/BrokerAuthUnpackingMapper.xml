@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper	namespace="kr.or.ddit.broker.mapper.BrokerAuthUnpackingMapper">
+<!-- Broker 정보 매핑 -->
+<resultMap id="BrokerMap" type="BrokerVO" autoMapping="true">
+	<id property="mbrCd" column="MBR_CD" />
+	<result property="brokNm" column="BROK_NM" />
+	<result property="brokRegNo" column="BROK_REG_NO" />
+	<result property="crtfNo" column="CRTF_NO" />
+	<result property="reprNm" column="REPR_NM" />
+	<result property="reprTelNo" column="REPR_TEL_NO" />
+	<result property="regDtm" column="REG_DTM" />
+	<result property="brokAddr1" column="BROK_ADDR1" />
+	<result property="brokAddr2" column="BROK_ADDR2" />
+	<result property="mbrId" column="MBR_ID" />
+	<result property="mbrPw" column="MBR_PW" />
+	<result property="mbrNm" column="MBR_NM" />
+	<result property="mbrNnm" column="MBR_NNM" />
+	<result property="mbrTelno" column="MBR_TELNO" />
+	<result property="mbrEmlAddr" column="MBR_EML_ADDR" />
+	<result property="mbrBasicAddr" column="MBR_BASIC_ADDR" />
+	<result property="mbrDetailAddr" column="MBR_DETAIL_ADDR" />
+	<result property="mbrProfilImage" column="MBR_PROFILE_IMAGE" />
+	<result property="mbrFrstRegDt" column="MBR_FRST_REG_DT" />
+	<result property="mbrStatusCode" column="MBR_STATUS_CODE" />
+	<result property="mbrDeleteDate" column="MBR_DELETE_DATE" />
+	<result property="mbrZip" column="MBR_ZIP" />
+</resultMap>
+
+<select id="selectMbrCdByUsername" parameterType="String" resultType="String">
+     SELECT B.MBR_CD
+	  FROM MEMBER M
+	 INNER JOIN BROKER B ON(M.MBR_CD = B.MBR_CD)
+	 WHERE M.MBR_ID = #{username}
+</select>
+<select id="selectBrokerByUsername" parameterType="String" resultMap="BrokerMap">
+	SELECT *
+	  FROM MEMBER M
+	 INNER JOIN BROKER B ON(M.MBR_CD = B.MBR_CD)
+	 WHERE M.MBR_ID = #{mbrId}
+</select>
+</mapper>

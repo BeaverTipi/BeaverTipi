@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 @SuppressWarnings("serial")
 @Data
 @EqualsAndHashCode(of = "lstgId")
-public class ListingVO implements Serializable {
+public class ListingPackVO implements Serializable {
 	@NotBlank
 		private String lstgId;
 	@NotBlank
@@ -61,11 +61,10 @@ public class ListingVO implements Serializable {
 	@Size(max = 5)
 		private String lstgTrdTypeGroupCd;
 	
-	/** 시설 옵션 정보 리스트로 받아옴 **/
-	private List<FacilityOptionVO> facOptions;
-	
 	/** 매물 한 건에 대한 임대인의 정보; 있을수도 없을수도 있음. **/
 	private transient TenancyVO tenancyInfo;
 	private transient BrokerVO brokerInfo;
 	
+	/** 시설 옵션 정보 리스트로 받아옴 **/
+	private List<LstgFacOptVO> lstgFacOptInfo;
 }

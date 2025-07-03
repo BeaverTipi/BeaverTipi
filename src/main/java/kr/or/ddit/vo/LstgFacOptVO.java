@@ -9,7 +9,9 @@ import lombok.EqualsAndHashCode;
 @SuppressWarnings("serial")
 @Data
 @EqualsAndHashCode(of = "facOptId")
-public class FacilityOptionVO implements Serializable {
+public class LstgFacOptVO implements Serializable {
+	@NotBlank
+	private String lstgId;
 	@NotBlank
 	private String facOptId;
 	private String facOptTypeCd;

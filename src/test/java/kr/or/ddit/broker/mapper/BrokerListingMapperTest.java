@@ -9,7 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import kr.or.ddit.vo.BrokerVO;
-import kr.or.ddit.vo.ListingVO;
+import kr.or.ddit.vo.ListingPackVO;
+import kr.or.ddit.vo.LstgFacOptVO;
 import kr.or.ddit.vo.TenancyVO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +33,7 @@ class BrokerListingMapperTest {
 	@Test
 	void testSelectLstgListByMbrCd() {
 		String mbrCd = "M2507000110";
-		List<ListingVO> lstgList = mapper.selectLstgListByMbrCd(mbrCd);
+		List<ListingPackVO> lstgList = mapper.selectLstgListByMbrCd(mbrCd);
 		log.error("{}", lstgList);
 		log.error("{}개의 매물 출현;", lstgList.size());
 		lstgList.forEach(lstg -> {
@@ -47,6 +48,12 @@ class BrokerListingMapperTest {
 			log.info("{}", broker.getBrokRegNo());
 			log.info("{}", broker.getMbrNm());
 			log.info("{}", broker.getMbrCd());
+			List<LstgFacOptVO> lstgFacOptList = lstg.getLstgFacOptInfo();
+			log.info("시설/옵션 리스트: {}", lstgFacOptList);
+			lstgFacOptList.forEach( lfo -> {
+				log.info("시설정보");
+				log.info("- {}, {}, {}", lfo.getFacOptId(), lfo.getFacOptNm(), lfo.getFacOptDesc());
+			});
 			log.info("------------------------");
 		});
 	}

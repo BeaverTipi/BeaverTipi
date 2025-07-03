@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.broker.mapper.BrokerListingMapper;
-import kr.or.ddit.vo.ListingVO;
+import kr.or.ddit.vo.ListingPackVO;
 
 @Service
 public class BrokerLstgServiceImpl implements BrokerLstgService{
@@ -15,8 +15,8 @@ public class BrokerLstgServiceImpl implements BrokerLstgService{
 	BrokerListingMapper mapper;
 	
 	@Override
-	public List<ListingVO> readLstgListByMbrCd(String mbrCd) {
-		List<ListingVO> lstgList =  mapper.selectLstgListByMbrCd(mbrCd);
+	public List<ListingPackVO> readLstgListByMbrCd(String mbrCd) {
+		List<ListingPackVO> lstgList =  mapper.selectLstgListByMbrCd(mbrCd);
 		return lstgList;
 	}
 	
