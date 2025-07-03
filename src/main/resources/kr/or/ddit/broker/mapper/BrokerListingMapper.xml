@@ -3,7 +3,16 @@
 <mapper namespace="kr.or.ddit.broker.mapper.BrokerListingMapper">
 
 <select id="selectLstgListByMbrCd" parameterType="String" resultType="ListingVO">
-	SELECT * FROM LISTING WHERE MBR_CD = #{mbrCd} ORDER BY LSTG_TYPE_CODE ASC
+	WITH TENANCY_LIST AS(
+	    SELECT *
+	      FROM TENANCY T
+	     INNER JOIN MEMBER M ON(T.MBR_CD = M.MBR_CD)
+	)
+	SELECT *
+	  FROM LISTING L
+	  LEFT OUTER JOIN TENANCY_LIST V ON(L.RENTAL_PTY_ID = V.RENTAL_PTY_ID)
+	WHERE L.MBR_CD = #{mbrCd}
+	ORDER BY LSTG_TYPE_CODE ASC
 </select>
 
 </mapper>

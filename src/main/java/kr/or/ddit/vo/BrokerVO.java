@@ -21,7 +21,7 @@ public class BrokerVO extends MemberVO implements Serializable{
 		private String reprNm;
 	@Size(max = 20) //@Pattern(regexp = "^\\d{2,4}-\\d{3,4}-\\d{4}$", message = "전화번호 형식이 올바르지 않습니다 (예: 010-1234-5678)")
 		private String reprTelNo;
-	@Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}(?:[ T]\\d{2}:\\d{2}(:\\d{2})?)?$", message = "날짜 형식이 올바르지 않습니다 (예: 2025-07-03 또는 2025-07-03T14:00)")
+	//@Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}(?:[ T]\\d{2}:\\d{2}(:\\d{2})?)?$", message = "날짜 형식이 올바르지 않습니다 (예: 2025-07-03 또는 2025-07-03T14:00)")
 		private String regDtm;
 	@Size(max = 255)
 		private String brokAddr1;
