@@ -7,6 +7,8 @@
 <meta charset="UTF-8">
 <title>회원 정보</title>
 <link rel="stylesheet"
+	href="${pageContext.request.contextPath}/app/css/main/member/member.css">
+<link rel="stylesheet"
 	href="${pageContext.request.contextPath}/app/css/main/member/memberPage.css">
 
 </head>
@@ -32,10 +34,7 @@
 					</c:choose>
 				</div>
 			</div>
-			<div class="form-group">
-				<label>ID</label>
-				<div class="form-control">${member.mbrId}</div>
-			</div>
+
 			<div class="form-group">
 				<label>이름</label>
 				<div class="form-control">${member.mbrNm}</div>
@@ -59,6 +58,17 @@
 			<div class="form-group">
 				<label>상세 주소</label>
 				<div class="form-control">${member.mbrDetailAddr}</div>
+			</div>
+			<div class="form-group">
+				<label>가입 경로</label>
+				<div class="form-control">
+					<c:choose>
+						<c:when test="${logInfo eq 'LOCAL'}">일반회원</c:when>
+						<c:when test="${logInfo eq 'KAKAO'}">카카오</c:when>
+						<c:when test="${logInfo eq 'GOOGLE'}">구글</c:when>
+						<c:otherwise>소셜 로그인</c:otherwise>
+					</c:choose>
+				</div>
 			</div>
 			<div class="form-group">
 				<label>가입 일시</label>

@@ -26,11 +26,11 @@
             <i class="bi bi-person-circle fs-4"></i>
           </a>
           <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="userDropdown">
-            <li><a class="dropdown-item" href="#">내 정보</a></li>
             <li><a class="dropdown-item" href="${pageContext.request.contextPath}/resident/myhouse">마이하우스(입주민)</a></li>
             <li><a class="dropdown-item" href="${pageContext.request.contextPath}/building/myhouse">마이하우스(임대인)</a></li>
             <li><a class="dropdown-item" href="http://localhost:81/broker/myoffice">마이오피스(중개인)</a></li>
             <li><a class="dropdown-item" href="${pageContext.request.contextPath}/admin">시스템 관리자</a></li>
+            <li><a class="dropdown-item" href="#">구독 / 가맹</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item text-danger" id="logout" href="/account/logout">로그아웃</a></li>
           </ul>

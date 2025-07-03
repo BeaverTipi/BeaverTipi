@@ -125,11 +125,6 @@
 </div>
 
 
-  <!-- JS 라이브러리 -->
-  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@17.0.19/build/js/intlTelInput.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@17.0.19/build/js/utils.js"></script>
-<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-  <!-- 커스텀 JS -->
   <script src="${pageContext.request.contextPath}/app/js/main/member/register.js"></script>
 
 
