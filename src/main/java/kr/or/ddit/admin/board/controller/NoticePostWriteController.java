@@ -1,3 +1,4 @@
+
 package kr.or.ddit.admin.board.controller;
 
 import org.springframework.stereotype.Controller;
@@ -13,3 +14,4 @@ public class NoticePostWriteController {
 		return "admin/notice/noticeForm";
 	}
 }
+

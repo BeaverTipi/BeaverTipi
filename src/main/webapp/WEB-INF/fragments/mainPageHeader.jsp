@@ -9,7 +9,7 @@
     <ul class="navbar-nav flex-row gap-4 align-items-center mb-0">
       <li class="nav-item"><a class="nav-link" href="#">공지사항</a></li>
       <security:authorize access="isAuthenticated()">
-      <li class="nav-item"><a class="nav-link fw-bold" href="#">마이페이지</a></li>
+      <li class="nav-item"><a class="nav-link fw-bold" href="${pageContext.request.contextPath}/account/read">마이페이지</a></li>
       </security:authorize>
       <security:authorize access="isAnonymous()">
       <li class="nav-item">

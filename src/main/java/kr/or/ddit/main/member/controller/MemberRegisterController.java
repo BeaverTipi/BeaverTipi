@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberRegisterController {
 	private final MemberService service;
 	
-	private static final String MODELNAME = "member";
+	public static final String MODELNAME = "member";
 	
 	@ModelAttribute(MODELNAME)
 	public MemberVO member(

@@ -1,0 +1,246 @@
+@charset "UTF-8";
+
+/* ✅ 전체 wrapper */
+.register-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 60px 20px;
+  background-color: #f5f6f8;
+  overflow-y: auto;
+}
+
+/* ✅ 카드형 폼 */
+.signup-container {
+  width: 100%;
+  max-width: 720px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+  padding: 60px 40px;
+  box-sizing: border-box;
+}
+
+/* ✅ 제목 */
+.signup-title {
+  font-size: 28px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 32px;
+  color: #333;
+}
+
+/* ✅ 각 섹션 간격 */
+.form-group {
+  margin-bottom: 24px;
+}
+
+/* ✅ 필드 라벨 */
+label {
+  font-weight: 500;
+  display: block;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 15px;
+}
+
+/* ✅ 인풋 필드 */
+.form-control {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  border-color: #5c9ded;
+  outline: none;
+}
+
+/* ✅ 전화번호 + 인증 버튼 */
+.phone-auth-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.phone-auth-group.full-width input {
+  flex: 1 1 100%;
+}
+
+.phone-auth-group:not(.full-width) input {
+  flex: 1;
+}
+
+.btn-auth-code {
+  padding: 10px 16px;
+  background-color: #5c9ded;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.btn-auth-code:hover {
+  background-color: #417ace;
+}
+
+/* ✅ 인증번호 입력 필드 */
+#authCodeWrapper {
+  margin-top: 16px;
+}
+
+#authCodeWrapper.hidden {
+  display: none;
+}
+
+#timerText {
+  font-size: 14px;
+  margin-left: 10px;
+  color: red;
+}
+
+/* ✅ 프로필 이미지 */
+.profile-image-preview {
+  display: block;
+  margin: 0 auto 24px;
+  width: 500px;
+  height: 500px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px dashed #ccc;
+}
+
+/* ✅ 파일 업로드 */
+.custom-file-upload {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.file-label {
+  background-color: #5c9ded;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.file-label:hover {
+  background-color: #417ace;
+}
+
+.file-name {
+  font-size: 14px;
+  color: #555;
+}
+
+.file-input {
+  display: none;
+}
+
+.zip-code-group {
+  display: flex;
+  align-items: stretch; /* ✅ 높이 맞춤 */
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.zip-code-group .form-control {
+  flex: 1;
+  height: auto; /* ✅ 폼컨트롤 높이에 자동 맞춤 */
+}
+
+/* 주소 검색 버튼 높이 문제 해결 */
+.btn-address-search {
+  padding: 14px 16px; /* ✅ 인풋과 동일하게 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background-color: #5c9ded;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  height: auto; /* ✅ form-control과 동기화 */
+  box-sizing: border-box;
+}
+
+.btn-address-search:hover {
+  background-color: #417ace;
+}
+
+/* ✅ 에러 메시지 */
+.text-danger {
+  color: #dc3545;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.form-actions button {
+  flex: 1 1 50%;
+  padding: 14px 0;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-align: center;
+}
+
+
+.btn-primary,
+.btn-outline {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background-color: #5c9ded;
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #417ace;
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: #5c9ded;
+  border: 1px solid #5c9ded;
+}
+
+.btn-outline:hover {
+  background-color: #e5f0ff;
+}
+label {
+  display: block;
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 8px;
+  color: #444;
+  padding-left: 4px;
+  letter-spacing: -0.3px;
+}
