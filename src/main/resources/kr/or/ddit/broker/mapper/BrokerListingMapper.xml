@@ -81,7 +81,7 @@
 	<association property="tenancyInfo" resultMap="TenancyMap" />
 	<association property="brokerInfo" resultMap="BrokerMap" />
 </resultMap>
-
+FF
 FF
 <select id="selectLstgListByMbrCd" parameterType="String" resultMap="ListingMap">
 	WITH TENANCY_LIST AS(
