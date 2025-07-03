@@ -1,3 +1,4 @@
+
 package kr.or.ddit.vo;
 
 import java.time.LocalDate;
@@ -15,3 +16,4 @@ public class NoticeVO {
 	private LocalDate noticeEndDtm;
 	private String noticeDelYn;
 }
+
