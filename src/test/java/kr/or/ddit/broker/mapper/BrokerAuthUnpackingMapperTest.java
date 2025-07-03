@@ -29,6 +29,7 @@ class BrokerAuthUnpackingMapperTest {
 		BrokerVO broker = mapper.selectBrokerByUsername(mbrId);
 		log.info("{}", broker);
 		log.info("{}", broker.getMbrNm());
+		log.info("{}", broker.getMbrPw());
 	}
 
 }
