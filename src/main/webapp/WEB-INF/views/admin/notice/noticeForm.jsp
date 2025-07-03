@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -15,4 +16,5 @@
 		<button type="reset" class="btn btn-danger">취소</button>
 	</div>
 </body>
+
 </html>
