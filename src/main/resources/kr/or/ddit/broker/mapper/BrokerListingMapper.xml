@@ -82,7 +82,7 @@
 	<association property="brokerInfo" resultMap="BrokerMap" />
 </resultMap>
 
-
+FF
 <select id="selectLstgListByMbrCd" parameterType="String" resultMap="ListingMap">
 	WITH TENANCY_LIST AS(
 	    SELECT T.RENTAL_PTY_ID AS RENTAL_PTY_ID_T
