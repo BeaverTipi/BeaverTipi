@@ -145,7 +145,7 @@
           id="submenu-pages" aria-expanded="false">
           <ul class="flex-column nav">
             <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/admin/noticeList">
+              <a class="nav-link" href="${pageContext.request.contextPath}/admin/notice/list">
                 <span class="sidebar-text">공지사항</span>
               </a>
             </li>
