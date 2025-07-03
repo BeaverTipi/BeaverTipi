@@ -12,6 +12,9 @@ import kr.or.ddit.broker.lstg.service.BrokerLstgService;
 import kr.or.ddit.vo.ListingVO;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author developer_KCY
+ */
 @Slf4j
 @RestController
 @RequestMapping("/rest/broker/myoffice/lstg")

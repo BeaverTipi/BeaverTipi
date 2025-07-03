@@ -7,6 +7,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * @author developer_KCY
+ */
 @SuppressWarnings("serial")
 @Data
 @EqualsAndHashCode(callSuper = true)

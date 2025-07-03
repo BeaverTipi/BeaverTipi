@@ -13,6 +13,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * @author developer_KCY
+ */
 @SuppressWarnings("serial")
 @Data
 @EqualsAndHashCode(of = "lstgId")
@@ -60,4 +63,6 @@ public class ListingVO implements Serializable {
 	
 	/** 매물 한 건에 대한 임대인의 정보; 있을수도 없을수도 있음. **/
 	private transient TenancyVO tenancyInfo;
+	private transient BrokerVO brokerInfo;
+	
 }
