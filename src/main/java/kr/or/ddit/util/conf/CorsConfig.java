@@ -11,6 +11,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import kr.or.ddit.util.security.jwt.CookieBearerTokenResolver;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 @Data
 @ConfigurationProperties(prefix = "cors")
@@ -24,7 +25,6 @@ public class CorsConfig {
 	@Bean
 	public CorsConfigurationSource restCorsConfigurationSource() {
 		CorsConfiguration corsConfig = new CorsConfiguration();
-		
 		corsConfig.setAllowedOrigins(allowedOrigins);
 		corsConfig.setAllowedMethods(allowedMethods);
 		corsConfig.setAllowedHeaders(allowedHeaders);

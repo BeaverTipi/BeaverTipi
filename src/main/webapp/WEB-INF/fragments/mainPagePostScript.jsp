@@ -9,7 +9,7 @@
 <script src="${pageContext.request.contextPath}/volt/vendor/onscreen/dist/on-screen.umd.min.js"></script>
 
 <!-- Slider -->
-<script src="${pageContext.request.contextPath}/volt/vendor/nouislider/distribute/nouislider.min.js"></script>
+<script src="${pageContext.request.contextPath}/volt/vendor/nouislider/dist/nouislider.min.js"></script>
 
 <!-- Smooth scroll -->
 <script src="${pageContext.request.contextPath}/volt/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
