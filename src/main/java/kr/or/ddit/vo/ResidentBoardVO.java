@@ -1,13 +1,15 @@
 package kr.or.ddit.vo;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(of = "rsdBrdId")
-public class Resident_BoardVO {
+public class ResidentBoardVO {
 	private String rsdBrdId;
 	private String rsdBrdTitl;
 	private String rsdBrdCont;
@@ -17,4 +19,10 @@ public class Resident_BoardVO {
 	private String rsdBrdDelYn;
 	private String brdCode;
 	private String mbrCd;
+	
+	public Date getRsdBrdPblsDate() {
+		if(rsdBrdPblsDtm ==null) return null;
+		return Date.from(rsdBrdPblsDtm.atZone(ZoneId.systemDefault()).toInstant());
+	}
+	
 }
