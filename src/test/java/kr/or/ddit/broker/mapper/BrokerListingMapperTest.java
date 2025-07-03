@@ -13,6 +13,10 @@ import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.TenancyVO;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * 	@author developer_KCY
+ * 	BrokerListingMapper CLASS의 테스트케이스.
+ */
 @Slf4j
 @SpringBootTest
 class BrokerListingMapperTest {
@@ -20,6 +24,11 @@ class BrokerListingMapperTest {
 	@Autowired
 	BrokerListingMapper mapper;
 	
+	/**
+	 * 	selectLstgListByMbrCd() 메소드
+	 * 	2025-07-03 16:01 성공.
+	 * 
+	 */
 	@Test
 	void testSelectLstgListByMbrCd() {
 		String mbrCd = "M2507000110";

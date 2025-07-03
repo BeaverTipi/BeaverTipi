@@ -6,6 +6,10 @@
 	/broker/myoffice 에서 사용할 REST 요청 SQL QUERY
 	
 	- selectLstgListByMbrCd
+		한 명의 중개인이 담당하고 있는 매물 리스트.
+		매물 한 건에 대한 레코드(ListingVO)를 List에 담아 반환.
+		ListingVO 안의 tenancyInfo, brokerInfo를 통해
+		해당 매물의 임대인회원(TenancyVO), 중개인회원(BrokerVO)의 정보도 함께 저장.
 	
  -->
 
