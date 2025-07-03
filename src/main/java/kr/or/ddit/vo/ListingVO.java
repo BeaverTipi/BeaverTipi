@@ -1,9 +1,9 @@
 package kr.or.ddit.vo;
 
 import java.io.Serializable;
+import java.util.List;
 
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -60,6 +60,9 @@ public class ListingVO implements Serializable {
 		private String lstgTypeGroupCd;
 	@Size(max = 5)
 		private String lstgTrdTypeGroupCd;
+	
+	/** 시설 옵션 정보 리스트로 받아옴 **/
+	private List<FacilityOptionVO> facOptions;
 	
 	/** 매물 한 건에 대한 임대인의 정보; 있을수도 없을수도 있음. **/
 	private transient TenancyVO tenancyInfo;

@@ -1,8 +1,10 @@
 package kr.or.ddit.broker.lstg.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,13 +27,16 @@ public class RestBrokerLstgController {
 	
 	@GetMapping("/list/{mbrCd}")
 	public List<ListingVO> lstgList(
-			@PathVariable String mbrCd
+//			@PathVariable String mbrCd
+			Principal principal
 	) {
+		String username = principal.getName();
+		log.error("{}", username);
 //		String mbrCd = "M2507000110";
-		log.error("요청한 BROKER의 MEMBER CODE: {}", mbrCd);
+//		log.error("요청한 BROKER의 MEMBER CODE: {}", mbrCd);
 		
-		List<ListingVO> lstgList = service.readLstgListByMbrCd(mbrCd);
-		log.error("BROKER의 LSTG LIST: {}", lstgList);
-		return lstgList;
+//		List<ListingVO> lstgList = service.readLstgListByMbrCd(mbrCd);
+//		log.error("BROKER의 LSTG LIST: {}", lstgList);
+		return null;
 	}
 }

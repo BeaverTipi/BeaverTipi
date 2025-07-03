@@ -2,7 +2,6 @@ package kr.or.ddit.vo;
 
 import java.io.Serializable;
 
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

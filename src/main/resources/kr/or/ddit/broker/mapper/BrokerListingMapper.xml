@@ -10,11 +10,19 @@
 		매물 한 건에 대한 레코드(ListingVO)를 List에 담아 반환.
 		ListingVO 안의 tenancyInfo, brokerInfo를 통해
 		해당 매물의 임대인회원(TenancyVO), 중개인회원(BrokerVO)의 정보도 함께 저장.
-	
  -->
 
+<!-- Facility Option 정보 매핑 -->
+<resultMap id="FacilityOptionMap" type="FacilityOptionVO">
+	<id property="facOptId" column="FAC_OPT_ID" /> 
+	<result property="facOptTypeCd" column="FAC_OPT_TYPE_CD" />
+	<result property="facOptNm" column="FAC_OPT_NM" />
+	<result property="facOptDesc" column="FAC_OPT_DESC" />
+	<result property="facTypeGroupCd" column="FAC_TYPE_GROUP_CD" />
+</resultMap>
+
 <!-- Tenancy 정보 매핑 -->
-<resultMap id="TenancyMap" type="kr.or.ddit.vo.TenancyVO">
+<resultMap id="TenancyMap" type="TenancyVO">
 	<result property="rentalPtyId" column="RENTAL_PTY_ID_T" />
 	<result property="rentalPtyBizRegFilePath" column="RENTAL_PTY_BIZ_REG_FILE_PATH" />
 	<result property="rentalPtyRegBldgCnt" column="RENTAL_PTY_REG_BLDG_CNT" />
@@ -42,7 +50,7 @@
 </resultMap>
 
 <!-- Broker 정보 매핑 -->
-<resultMap id="BrokerMap" type="kr.or.ddit.vo.BrokerVO">
+<resultMap id="BrokerMap" type="BrokerVO">
 	<result property="brokNm" column="BROK_NM" />
 	<result property="brokRegNo" column="BROK_REG_NO" />
 	<result property="crtfNo" column="CRTF_NO" />
@@ -68,7 +76,7 @@
 </resultMap>
 
 <!-- 최종 매물 정보 -->
-<resultMap id="ListingMap" type="kr.or.ddit.vo.ListingVO" autoMapping="true">
+<resultMap id="ListingMap" type="ListingVO" autoMapping="true">
 	<id property="lstgId" column="LSTG_ID" />
 	<association property="tenancyInfo" resultMap="TenancyMap" />
 	<association property="brokerInfo" resultMap="BrokerMap" />

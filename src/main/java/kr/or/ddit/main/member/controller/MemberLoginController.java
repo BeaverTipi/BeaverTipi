@@ -77,9 +77,7 @@ public class MemberLoginController {
 					.value(encodedToken)
 					.path("/")
 					.httpOnly(true)
-//					.sameSite(SameSite.STRICT.attributeValue())
-					.sameSite("None") //0703_KCY
-					.secure(false) //0703_KCY
+					.sameSite(SameSite.STRICT.attributeValue())
 					.maxAge(JwtProvider.VALID_TERM / 1000)
 					.build().toString();
 		
