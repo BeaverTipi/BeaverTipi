@@ -10,6 +10,8 @@
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/intl-tel-input@17.0.19/build/css/intlTelInput.min.css" />
 <link rel="stylesheet"
+	href="${pageContext.request.contextPath}/app/css/main/member/member.css" />
+<link rel="stylesheet"
 	href="${pageContext.request.contextPath}/app/css/main/member/memberUpdate.css" />
 </head>
 <body>
