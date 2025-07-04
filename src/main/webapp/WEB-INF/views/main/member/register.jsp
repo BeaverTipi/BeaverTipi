@@ -9,7 +9,44 @@
 
   <!-- CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@17.0.19/build/css/intlTelInput.min.css" />
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/main/member/register.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/member/register.css">
+
+  <style>
+    .form-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    .form-section h3 {
+      margin-bottom: 15px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+
+    .btn-primary, .btn-outline, .btn-secondary {
+      padding: 8px 16px;
+      margin-top: 10px;
+    }
+
+    .form-actions {
+      text-align: center;
+    }
+
+    .text-danger {
+      color: red;
+      font-size: 0.9em;
+    }
+  </style>
 </head>
 <body>
   <!-- container -->

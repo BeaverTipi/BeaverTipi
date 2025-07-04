@@ -9,7 +9,7 @@
 
   <!-- CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@17.0.19/build/css/intlTelInput.min.css" />
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/main/member/register.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/member/register.css">
 
   <style>
 
@@ -33,7 +33,12 @@
             <form:input path="mbrId" type="hidden" class="form-control" placeholder="회원 ID" required="true"/>
             <form:errors path="mbrId" class="text-danger" />
           </div>
-
+          <!-- 비밀번호 -->
+          <div class="form-group">
+            <label for="mbrPw">비밀번호</label>
+            <form:input path="mbrPw" type="password" class="form-control" placeholder="비밀번호 입력" required="true" />
+            <form:errors path="mbrPw" class="text-danger" />
+          </div>
           <!-- 이름 -->
           <div class="form-group">
             <label for="mbrNm">이름</label>
@@ -125,6 +130,11 @@
 </div>
 
 
+  <!-- JS 라이브러리 -->
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@17.0.19/build/js/intlTelInput.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@17.0.19/build/js/utils.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <!-- 커스텀 JS -->
   <script src="${pageContext.request.contextPath}/app/js/main/member/register.js"></script>
 
 

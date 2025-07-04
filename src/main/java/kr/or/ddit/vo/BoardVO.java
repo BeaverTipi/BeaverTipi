@@ -1,6 +1,7 @@
 package kr.or.ddit.vo;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,4 +20,5 @@ public class BoardVO {
 	private String brdDelYn;
 	
 	private MemberVO member;
+	private List<NoticeVO> notice;
 }

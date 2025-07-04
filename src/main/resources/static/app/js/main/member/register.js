@@ -100,89 +100,82 @@ document.addEventListener("DOMContentLoaded", () => {
 				}
 			});
 	});
-	/* 
-		signupForm.addEventListener("submit", async (e) => {
-			e.preventDefault();
-	
-			if (verified) {
-				Swal.fire({
-					icon: 'warning',
-					title: '알림',
-					text: "전화번호 인증을 먼저 완료해주세요.",
-					confirmButtonText: '확인'
-				});
-				return;
-			}
-	
-			const inputCode = authCodeInput.value.trim();
-			if (authCodeInput.disabled || !inputCode) {
-				Swal.fire({
-					icon: 'warning',
-					title: '알림',
-					text: "인증번호를 입력하세요.",
-					confirmButtonText: '확인'
-				});
-				return;
-			}
-	
-			fetch("/member/verification-check", {
-				method: "POST",
-				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-				body: new URLSearchParams({ code: inputCode })
-			})
-				.then(res => res.text())
-				.then(result => {
-					if (result === "valid") {
+/* 
+	signupForm.addEventListener("submit", async (e) => {
+		e.preventDefault();
+
+		if (verified) {
+			Swal.fire({
+				icon: 'warning',
+				title: '알림',
+				text: "전화번호 인증을 먼저 완료해주세요.",
+				confirmButtonText: '확인'
+			});
+			return;
+		}
+
+		const inputCode = authCodeInput.value.trim();
+		if (authCodeInput.disabled || !inputCode) {
+			Swal.fire({
+				icon: 'warning',
+				title: '알림',
+				text: "인증번호를 입력하세요.",
+				confirmButtonText: '확인'
+			});
+			return;
+		}
+
+		fetch("/member/verification-check", {
+			method: "POST",
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+			body: new URLSearchParams({ code: inputCode })
+		})
+			.then(res => res.text())
+			.then(result => {
+				if (result === "valid") {
+					Swal.fire({
+						icon: 'success',
+						title: '인증 성공',
+						text: '회원가입을 계속 진행합니다.',
+						confirmButtonText: '확인'
+					}).then(() => {
+						verified = true;
+						clearInterval(timer);
+						signupForm.submit();
+					});
+				} else {
+					failCount++;
+					if (failCount >= 3) {
+						authCodeInput.disabled = true;
 						Swal.fire({
-							icon: 'success',
-							title: '인증 성공',
-							text: '회원가입을 계속 진행합니다.',
+							icon: 'error',
+							title: '인증 실패',
+							text: '❌ 3회 실패했습니다. 인증번호를 다시 요청하세요.',
 							confirmButtonText: '확인'
-						}).then(() => {
-							verified = true;
-							clearInterval(timer);
-							signupForm.submit();
 						});
-					} else {
-						failCount++;
-						if (failCount >= 3) {
-							authCodeInput.disabled = true;
-							Swal.fire({
-								icon: 'error',
-								title: '인증 실패',
-								text: '❌ 3회 실패했습니다. 인증번호를 다시 요청하세요.',
-								confirmButtonText: '확인'
-							});
-						} else if (result === "invalid") {
-							Swal.fire({
-								icon: 'warning',
-								title: '알림',
-								text: `❌ 인증번호가 일치하지 않습니다. (${failCount}/3)`,
-								confirmButtonText: '확인'
-							});
-						} else if (result === "expired") {
-							Swal.fire({
-								icon: 'warning',
-								title: '알림',
-								text: "⏰ 인증번호가 만료되었습니다",
-								confirmButtonText: '확인'
-							});
-						}
+					} else if (result === "invalid") {
+						Swal.fire({
+							icon: 'warning',
+							title: '알림',
+							text: `❌ 인증번호가 일치하지 않습니다. (${failCount}/3)`,
+							confirmButtonText: '확인'
+						});
+					} else if (result === "expired") {
+						Swal.fire({
+							icon: 'warning',
+							title: '알림',
+							text: "⏰ 인증번호가 만료되었습니다",
+							confirmButtonText: '확인'
+						});
 					}
-				});
-		});
-	*/
+				}
+			});
+	});
+*/
 });
 
 function toggleOptionalInfo() {
 	const section = document.querySelector("#optionalInfo");
-	const mode = section.dataset.mode;
-	
-	if (mode === "update") {
-	  section.style.display = "block";
-	  return;
-	}
-	
 	const isVisible = section.style.display === "block";
 	section.style.display = isVisible ? "none" : "block";
 }
