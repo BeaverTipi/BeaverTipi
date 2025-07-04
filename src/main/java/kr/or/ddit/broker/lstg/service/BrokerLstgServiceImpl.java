@@ -19,6 +19,12 @@ public class BrokerLstgServiceImpl implements BrokerLstgService{
 		List<ListingPackVO> lstgList =  mapper.selectLstgListByMbrCd(mbrCd);
 		return lstgList;
 	}
+
+	@Override
+	public ListingPackVO readLstgDetails(String mbrCd, String lstgId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 }
