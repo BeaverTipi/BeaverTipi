@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(of = "rsdBrdId")
+@EqualsAndHashCode(of = {"rsdBrdId","bldgId"})
 public class ResidentBoardVO {
 	private String rsdBrdId;
 	private String rsdBrdTitl;
@@ -19,6 +19,8 @@ public class ResidentBoardVO {
 	private String rsdBrdDelYn;
 	private String brdCode;
 	private String mbrCd;
+	
+	private String bldgId;
 	
 	public Date getRsdBrdPblsDate() {
 		if(rsdBrdPblsDtm ==null) return null;

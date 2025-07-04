@@ -24,4 +24,6 @@ import lombok.Data;
 public class SimpleSearch {
 	private String searchType;
 	private String searchWord;
+	
+	private String bldgId;
 }

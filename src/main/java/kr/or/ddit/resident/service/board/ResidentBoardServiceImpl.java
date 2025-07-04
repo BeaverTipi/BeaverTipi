@@ -1,4 +1,4 @@
-package kr.or.ddit.resident.service;
+package kr.or.ddit.resident.service.board;
 
 import java.time.LocalDateTime;
 import java.util.List;
