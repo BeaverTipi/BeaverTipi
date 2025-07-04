@@ -34,7 +34,7 @@ public class MemberVO implements Serializable {
 	private String mbrZip;
 	private List<RoleAchievedVO> memRoleList;
 	private List<UnitResidentVO> residentList;
-	private TenancyVO tenacy;
+	private TenancyVO tenancy;
 	private BrokerVO broker;
 	
 }
