@@ -23,7 +23,7 @@ public class ManagedAddController {
 	
 	@GetMapping("/add")
 	public String addForm(Model model) {
-	    model.addAttribute("buildingManagedVO", new BuildingVO());
+	    model.addAttribute("buildingVO", new BuildingVO());
 	    return "building/managed/managedAdd";
 	}
 	

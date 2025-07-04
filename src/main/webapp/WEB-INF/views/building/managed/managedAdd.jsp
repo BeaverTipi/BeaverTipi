@@ -12,7 +12,7 @@
 
 <h2>신규 건물 등록</h2>
 
-<form:form modelAttribute="buildingManagedVO" method="post" action="/building/managed/add">
+<form:form modelAttribute="buildingVO" method="post" action="/building/managed/add">
 
   <div class="form-container">
     <div class="form-box">
