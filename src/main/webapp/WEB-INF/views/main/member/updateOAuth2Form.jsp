@@ -15,7 +15,7 @@
   <div class="register-wrapper">
     <div class="signup-container">
       <h2 class="signup-title">내 정보 수정</h2>
-      <form:form class="signup-form" method="post" action="/member/update" modelAttribute="member">
+      <form:form class="signup-form" method="post" action="/account/oauth2/update" modelAttribute="member">
 
         <form:input path="mbrId" type="hidden" class="form-control" />
         <form:input path="mbrCd" type="hidden" class="form-control" />

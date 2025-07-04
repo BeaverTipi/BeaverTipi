@@ -19,7 +19,7 @@
 		<div class="signup-container">
 			<h2 class="signup-title">회원정보 수정</h2>
 
-			<form:form class="signup-form" method="post" action="/member/update"
+			<form:form class="signup-form" method="post" action="/account/update"
 				modelAttribute="member">
 				<input type="hidden" id="originalPhone" value="${member.mbrTelno}" />
 				<input type="hidden" name="mode" value="update" />
