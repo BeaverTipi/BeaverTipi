@@ -1,6 +1,7 @@
 package kr.or.ddit.broker.lstg.service;
 
 import java.util.List;
+import java.util.Map;
 
 import kr.or.ddit.vo.ListingPackVO;
 
@@ -9,5 +10,5 @@ import kr.or.ddit.vo.ListingPackVO;
  */
 public interface BrokerLstgService {
 	public List<ListingPackVO> readLstgListByMbrCd(String mbrCd);
-	public ListingPackVO readLstgDetails(String mbrCd, String lstgId);
+	public ListingPackVO readLstgDetails(Map<String, String> lstgDetailParams);
 }
