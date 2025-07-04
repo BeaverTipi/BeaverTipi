@@ -20,7 +20,7 @@
   </resultMap>
 
   <!-- 세대 정보 + 건물 정보 + 임대인 정보 포함 -->
-  <resultMap id="unitResultMap" type="kr.or.ddit.vo.BuildingManagedVO">
+  <resultMap id="unitResultMap" type="kr.or.ddit.vo.BuildingVO">
     <id property="unitId" column="UNIT_ID"/>
     <result property="bldgId" column="BLDG_ID"/>
     <result property="rentalPtyId" column="RENTAL_PTY_ID"/>
@@ -42,7 +42,7 @@
   </resultMap>
 
   <!-- 세대 등록 -->
-  <insert id="insertUnit" parameterType="kr.or.ddit.vo.BuildingManagedVO">
+  <insert id="insertUnit" parameterType="kr.or.ddit.vo.BuildingVO">
     INSERT INTO UNIT (
       UNIT_ID, BLDG_ID, RENTAL_PTY_ID,
       UNIT_FLR_NO, UNIT_CMAR, UNIT_XUAR,
@@ -98,7 +98,7 @@
   </select>
 
   <!-- 세대 수정 -->
-  <update id="updateUnit" parameterType="kr.or.ddit.vo.BuildingManagedVO">
+  <update id="updateUnit" parameterType="kr.or.ddit.vo.BuildingVO">
     UPDATE UNIT SET
       BLDG_ID = #{bldgId},
       RENTAL_PTY_ID = #{rentalPtyId},

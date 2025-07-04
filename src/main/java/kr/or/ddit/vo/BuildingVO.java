@@ -27,5 +27,15 @@ public class BuildingVO {
     private String bldgNm;
     private String bldgImgPath;
 
+    // JSP에서 바인딩하는 필드들
+    private String bldgZipNo;
+    private String bldgAddr;
+    private String bldgDtlAddr;
+    private String bldgTypeCode;
+    private String bldgCmpltnDt;
+    private Integer bldgFlrCnt;
+    private Integer bldgUnitCnt;
+    private BigDecimal bldgGrossArea;
+    
     private TenancyVO tenancyInfo;
 }
