@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.or.ddit.building.managed.service.ManagedService;
 import kr.or.ddit.vo.BuildingVO;
+import kr.or.ddit.vo.UnitVO;
 @Controller
 @RequestMapping("/building/managed")
 public class ManagedUpdateController {

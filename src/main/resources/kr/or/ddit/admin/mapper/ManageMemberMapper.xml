@@ -7,6 +7,12 @@
 			ofType="kr.or.ddit.vo.RoleAchievedVO" column="MBR_CD"
 			select="selectRolesForMember" />
 	</resultMap>
+<resultMap type="MemberVO" id="memberMap" autoMapping="true">
+		<id property="mbrCd" column="MBR_CD"/>
+		<collection property="memRoleList" javaType="list" ofType="kr.or.ddit.vo.RoleAchievedVO"
+		            column="MBR_CD" select="selectRolesForMember" />
+</resultMap>
+
 	<select id="selectRolesForMember" resultType="RoleAchievedVO">
 		SELECT USER_ROLE_ID, MBR_CD
 		FROM ROLE_ACHIEVED
@@ -77,5 +83,12 @@
 	</update>
 
 
+<update id="updateMemberStatus" parameterType="MemberVO">
+    UPDATE MEMBER
+    SET
+        MBR_STATUS_CODE = #{mbrStatusCode}
+    WHERE
+        MBR_CD = #{mbrCd}
+</update>
 
 </mapper>

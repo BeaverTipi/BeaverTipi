@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.or.ddit.building.managed.service.ManagedService;
 import kr.or.ddit.vo.BuildingVO;
+
 @Controller
 @RequestMapping("/building/managed")
 public class ManagedListController {
@@ -29,5 +30,6 @@ public class ManagedListController {
 	
     }
 
+	
 
 }

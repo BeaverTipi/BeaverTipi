@@ -1,4 +1,4 @@
-package kr.or.ddit.resident.controller.board;
+package kr.or.ddit.resident.controller.Board;
 
 import java.util.List;
 

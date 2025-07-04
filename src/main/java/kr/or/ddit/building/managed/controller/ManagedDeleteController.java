@@ -13,7 +13,6 @@ import kr.or.ddit.building.managed.service.ManagedService;
 @RequestMapping("/building/managed")
 public class ManagedDeleteController {
 
-
 	@Autowired
 	private ManagedService managedService;
 
@@ -22,4 +21,5 @@ public class ManagedDeleteController {
 		managedService.deleteUnit(unitId);
 		return "redirect:/building/managed/list?bldgId=" + bldgId;
 	}
+
 }
