@@ -1,4 +1,4 @@
-package kr.or.ddit.resident.controller;
+package kr.or.ddit.resident.chating.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
