@@ -37,7 +37,7 @@
     <result property="bldgNm" column="BLDG_NM"/>
     <result property="bldgImgPath" column="BLDG_IMG_PATH"/>
 
-    <association property="tenancyInfo" resultMap="tenancyResultMap"/>
+  <!--   <association property="tenancyInfo" resultMap="tenancyResultMap"/> -->
   </resultMap>
 
   <!-- 세대 등록 -->
