@@ -6,6 +6,7 @@
 <html>
 <head>
 	<title>회원 목록</title>
+	<link rel="stylesheet" href="/app/css/admin/common_admin.css">
 	<link rel="stylesheet" href="/app/css/admin/memberManagement/memberList.css">
 	<script src="/app/js/admin/memberManagement/memberList.js"></script> 
 </head>
@@ -16,46 +17,53 @@
 <div class="container">
     <form:form modelAttribute="searchCondition" action="/admin/member/list" method="get" id="searchForm"> 
         <div class="search-area">
-            <div class="search-item">
-                <label for="memberTypeSelect">회원구분</label>
-                <form:select path="userRoleId" id="memberTypeSelect" class="select-field" multiple="multiple">
-                    <form:option value="USER" label="일반회원"/>
-                    <form:option value="TENANCY" label="임차인"/>
-                    <form:option value="BROKER" label="중개인"/>
-                    <form:option value="ADMIN" label="관리자"/> 
-                </form:select>
-            </div>
-            <div class="search-item">
-                <label for="memberNameInput">회원아이디</label>
-                <form:input path="mbrId" id="memberNameInput" placeholder="회원아이디" class="input-field"/>
-            </div>
-            <div class="search-item">
-                <label>가입일</label> 
-                <div class="date-range-group">
-                    <form:input type="date" path="mbrFrstRegDtFrom" id="mbrFrstRegDtFrom" class="input-field"/>
-                    <span>~</span>
-                    <form:input type="date" path="mbrFrstRegDtTo" id="mbrFrstRegDtTo" class="input-field"/>
+            <div class="search-row top-row">
+                <div class="search-item">
+                    <label for="memberTypeSelect">회원구분</label>
+                    <form:select path="userRoleId" id="memberTypeSelect" class="select-field" multiple="multiple">
+                        <form:option value="USER" label="일반회원"/>
+                        <form:option value="TENANCY" label="임차인"/>
+                        <form:option value="BROKER" label="중개인"/>
+                        <form:option value="ADMIN" label="관리자"/> 
+                    </form:select>
+                </div>
+                <div class="search-item">
+                    <label for="memberNameInput">회원아이디</label>
+                    <form:input path="mbrId" id="memberNameInput" placeholder="회원아이디를 입력해주세요" class="input-field"/>
+                </div>
+                <div class="search-item">
+                    <label>가입일</label> 
+                    <div class="date-range-group">
+                        <form:input type="date" path="mbrFrstRegDtFrom" id="mbrFrstRegDtFrom" class="input-field"/>
+                        <span>~</span>
+                        <form:input type="date" path="mbrFrstRegDtTo" id="mbrFrstRegDtTo" class="input-field"/>
+                    </div>
                 </div>
             </div>
-            <div class="search-item">
-                <label for="memberStatusSelect">회원상태</label>
-                <form:select path="mbrStatusCode" id="memberStatusSelect" class="select-field">
-                    <form:option value="">--선택--</form:option>
-                    <form:option value="ACTIVE" label="정상"/>
-                    <form:option value="INACTIVE" label="비활성"/>
-                    <form:option value="SUSPENDED" label="정지"/>
-                    <form:option value="WITHDRAWN" label="탈퇴"/>
-                </form:select>
+            <div class="search-row bottom-row">
+                <div class="search-item">
+                    <label for="memberStatusSelect">회원상태</label>
+                    <form:select path="mbrStatusCode" id="memberStatusSelect" class="select-field">
+                        <form:option value="">--선택--</form:option>
+                        <form:option value="ACTIVE" label="정상"/>
+                        <form:option value="INACTIVE" label="비활성"/>
+                        <form:option value="SUSPENDED" label="정지"/>
+                        <form:option value="WITHDRAWN" label="탈퇴"/>
+                    </form:select>
+                </div>
+                <div class="search-item">
+                    <label for="memberEmailInput">이메일</label>
+                    <form:input path="mbrEmlAddr" id="memberEmailInput" placeholder="이메일을 입력해주세요" class="input-field"/>
+                </div>
+                <div class="search-item search-buttons-in-row">
+                    <button type="button" id="resetButton" class="reset-button">초기화</button> 
+                    <button type="submit">검색</button>
+                </div>
             </div>
-            <div class="search-item">
-                <label for="memberEmailInput">이메일</label>
-                <form:input path="mbrEmlAddr" id="memberEmailInput" placeholder="이메일을 입력해주세요" class="input-field"/>
             </div>
-        </div>
         <div class="search-actions">
-            <button type="button" id="resetButton" class="reset-button">초기화</button> 
-            <button type="submit">검색</button>
-            <button type="button" id="saveButton" class="save-button">저장</button> </div>
+            <button type="button" id="saveButton" class="save-button">저장하기</button> 
+        </div>
     </form:form>
 
     <div class="table-container">

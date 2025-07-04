@@ -1,171 +1,25 @@
 @charset "UTF-8";
-	h2 {
-	    text-align: center;
-	    margin-top: 20px; /* 상단 여백 추가 (선택 사항) */
-	    margin-bottom: 20px; /* 하단 여백 추가 (선택 사항) */
-	}
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        background-color: #f9f9f9;
-    }
-    .container {
-        background-color: white;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-    
-    .search-section {
-        /* 간격 조정이나 구분선 직접 관리하지 않음 */
-    }
+/*
+   여기에 해당 페이지(memberList)에만 특화된 CSS를 정의합니다.
+   (예: 특정 요소의 마진, 패딩, 폰트 크기 등 개별적인 미세 조정)
+*/
 
-    .search-area {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px 30px;
-        margin-bottom: 20px; /* 검색 필드와 검색 버튼 사이의 간격 */
-        padding-bottom: 0;
-        border-bottom: none;
-    }
-    .search-item {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        flex: 0 0 auto;
-        min-width: 120px;
-    }
-    .search-item label {
-        font-weight: bold;
-        color: #555;
-        font-size: 0.9em;
-    }
-    .search-item .input-field,
-    .search-item .select-field {
-        padding: 8px 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 1em;
-        width: 150px;
-        box-sizing: border-box;
-        /* height 속성 제거 또는 auto로 설정 (리스트 박스 형태로 표시) */
-        vertical-align: middle;
-        -webkit-appearance: auto; /* 브라우저 기본 UI 사용 */
-        -moz-appearance: auto;
-        appearance: auto;
-        overflow: visible; /* 내용이 잘리지 않도록 유지 */
-    }
+/* ⭐⭐⭐ 모든 개별 width 속성 제거 (주석 처리 또는 삭제) ⭐⭐⭐ */
+/* #memberNameInput {  */
+/* width: 250px; */
+/* } */
 
-    .date-range-group {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
+/* #memberStatusSelect {  */
+/* width: 175px; */
+/* } */
 
-    /* 특정 검색 항목의 너비 조정 */
-    .search-item #memberEmailInput {
-        width: 237px;
-    }
-    .search-item #memberNameInput {
-        width: 120px;
-    }
-    .date-range-group .input-field {
-        width: 150px;
-    }
+/* #memberEmailInput {  */
+/* width: 250px; */
+/* } */
 
-
-    /* 검색 버튼과 초기화 버튼을 위한 스타일 */
-    .search-actions {
-        display: flex;
-        justify-content: flex-end; /* 버튼들을 오른쪽으로 정렬 */
-        gap: 10px; /* 버튼들 사이의 간격 추가 */
-        margin-top: 20px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #eee;
-        margin-bottom: 30px;
-    }
-    .search-actions button {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 1em;
-        transition: background-color 0.2s;
-    }
-    /* 검색 버튼 스타일 */
-    .search-actions button[type="submit"] {
-        background-color: #007bff;
-        color: white;
-    }
-    .search-actions button[type="submit"]:hover {
-        background-color: #0056b3;
-    }
-
-    /* 초기화 버튼 스타일 (JSP에서 type="button"으로 변경되었으므로, 해당 버튼의 class="reset-button"으로 스타일 적용됨) */
-    .reset-button { /* type 선택자 대신 class 선택자를 사용하거나, type="button"으로 변경된 것에 맞춰야 합니다. */
-        background-color: #6c757d; /* 회색 계열 */
-        color: white;
-    }
-    .reset-button:hover {
-        background-color: #5a6268;
-    }
-
-    /* 테이블 관련 스타일 */
-    .table-container {
-        overflow-x: auto;
-    }
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 0;
-        table-layout: fixed; /* 테이블 레이아웃 고정 (CSS 잘린 부분 보완) */
-    }
-    .table th, .table td {
-        border: 1px solid #eee;
-        padding: 12px 15px;
-        text-align: left;
-        word-wrap: break-word;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: normal;
-    }
-
-    /* 각 컬럼의 너비 지정 */
-    .table th:nth-child(1), .table td:nth-child(1) { /* 회원구분 */
-        width: 15%;
-    }
-    .table th:nth-child(2), .table td:nth-child(2) { /* 회원명 */
-        width: 15%;
-    }
-    .table th:nth-child(3), .table td:nth-child(3) { /* 가입일 */
-        width: 25%;
-    }
-    .table th:nth-child(4), .table td:nth-child(4) { /* 회원상태 */
-        width: 15%;
-    }
-    .table th:nth-child(5), .table td:nth-child(5) { /* 이메일 */
-        width: 30%;
-    }
-
-    .table thead th {
-        background-color: #f2f2f2;
-        font-weight: bold;
-        color: #333;
-    }
-    .table tbody tr:nth-child(even) {
-        background-color: #fcfcfc;
-    }
-    .table tbody tr:hover {
-        background-color: #f0f8ff;
-    }
-    .table tbody td a {
-        color: #007bff;
-        text-decoration: none;
-    }
-    .table tbody td a:hover {
-        text-decoration: underline;
-    }
-    .no-data-center {
-        text-align: center !important;
-    }
+/*
+   예시: 만약 memberList 페이지에만 특정 테이블 셀이 더 넓어야 한다면:
+   .table td:nth-child(2) {
+       width: 200px;
+   }
+*/
