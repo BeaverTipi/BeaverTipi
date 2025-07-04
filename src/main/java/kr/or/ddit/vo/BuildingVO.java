@@ -2,7 +2,6 @@ package kr.or.ddit.vo;
 
 import java.math.BigDecimal;
 
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

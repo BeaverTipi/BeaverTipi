@@ -18,6 +18,7 @@
     <div class="form-box">
       <div class="form-split">
 
+
         <!-- 왼쪽 -->
         <div class="form-half">
           <div class="form-row">
@@ -28,6 +29,7 @@
             <label for="rentalPtyId">임대인 ID</label>
             <form:input path="rentalPtyId" id="rentalPtyId" placeholder="예: L2025070001" />
           </div>
+
           <div class="form-row">
             <label for="bldgNm">건물 이름</label>
             <form:input path="bldgNm" id="bldgNm" placeholder="입력해주세요" />

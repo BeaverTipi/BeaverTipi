@@ -29,6 +29,7 @@ public class ManagedListController {
 	        return "building/managed/managedList";
 	
     }
+
 	
 
 }

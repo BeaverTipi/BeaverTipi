@@ -17,6 +17,7 @@ public class ResidentBoardServiceImpl implements ResidentBoardService {
 	@Autowired
 	private ResidentBoardMapper mapper;
 
+
 	@Override
 	public ResidentBoardVO getBoard(String rsdBrdId) {
 		return mapper.selectBoardById(rsdBrdId);
