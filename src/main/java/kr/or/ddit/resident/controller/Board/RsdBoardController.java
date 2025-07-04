@@ -1,5 +1,7 @@
 package kr.or.ddit.resident.controller.Board;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -10,9 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.or.ddit.resident.service.board.ResidentBoardService;
+import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.util.page.SimpleSearch;
+import kr.or.ddit.util.renderer.DefaultPaginationRenderer;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.ResidentBoardVO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
