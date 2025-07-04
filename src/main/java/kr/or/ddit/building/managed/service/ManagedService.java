@@ -9,14 +9,20 @@ import kr.or.ddit.vo.BuildingVO;
 
 
 public interface ManagedService {
-	    int insertUnit(BuildingVO unit);
 
-	    List<BuildingVO> selectUnitListByBldgId(String bldgId);
+    // 건물 등록
+    int insertBuilding(BuildingVO building);
 
-	    BuildingVO selectUnitById(String unitId);
+    // 건물 + 세대 목록 조회 (bldgId 기준)
+    List<BuildingVO> selectBuildingListByBldgId(String bldgId);
 
-	    int updateUnit(BuildingVO unit);
+    // 건물 단건 조회 (unitId 기준)
+    BuildingVO selectBuildingById(String unitId);
 
-	    int deleteUnit(String unitId);
+    // 건물 세대 정보 수정
+    int updateBuilding(BuildingVO building);
+
+    // 건물 세대 삭제
+    int deleteBuilding(String unitId);
 }
 

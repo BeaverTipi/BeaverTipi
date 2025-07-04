@@ -20,14 +20,14 @@ public class ManagedUpdateController {
 
 	    @GetMapping("/edit")
 	    public String editForm(@RequestParam("unitId") String unitId, Model model) {
-	        BuildingVO unit = managedService.selectUnitById(unitId);
+	        BuildingVO unit = managedService.selectBuildingById(unitId);
 	        model.addAttribute("buildingVO", unit);
 	        return "building/managed/managedEdit";
 	    }
 
 	    @PostMapping("/edit")
 	    public String editUnit(@ModelAttribute("buildingVO") BuildingVO unitVO) {
-	        managedService.updateUnit(unitVO);
+	        managedService.updateBuilding(unitVO);
 	        return "redirect:/building/managed/list?bldgId=" + unitVO.getBldgId();
 	    }
 }

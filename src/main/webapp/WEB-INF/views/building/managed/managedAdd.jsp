@@ -6,30 +6,20 @@
   <meta charset="UTF-8">
   <title>건물 등록</title>
   <link rel="stylesheet" href="/app/css/building/managed/managedAdd.css">
-  <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
 <body>
 
 <h2>신규 건물 등록</h2>
 
 <form:form modelAttribute="buildingVO" method="post" action="/building/managed/add">
+  <form:hidden path="rentalPtyId" />
 
   <div class="form-container">
     <div class="form-box">
       <div class="form-split">
 
-
         <!-- 왼쪽 -->
         <div class="form-half">
-          <div class="form-row">
-            <label for="bldgId">건물 ID</label>
-            <form:input path="bldgId" id="bldgId" placeholder="예: B2025070001" />
-          </div>
-          <div class="form-row">
-            <label for="rentalPtyId">임대인 ID</label>
-            <form:input path="rentalPtyId" id="rentalPtyId" placeholder="예: L2025070001" />
-          </div>
-
           <div class="form-row">
             <label for="bldgNm">건물 이름</label>
             <form:input path="bldgNm" id="bldgNm" placeholder="입력해주세요" />
@@ -57,10 +47,10 @@
             <label for="bldgTypeCode">건물 유형</label>
             <form:select path="bldgTypeCode" id="bldgTypeCode">
               <option value="">선택하세요</option>
-              <option value="APT">아파트</option>
-              <option value="OFFICE">오피스텔</option>
-              <option value="SHOP">상가</option>
-              <option value="ETC">기타</option>
+              <option value="001">아파트</option>
+              <option value="003">오피스텔</option>
+              <option value="005">상가</option>
+              <option value="008">기타</option>
             </form:select>
           </div>
           <div class="form-row">
@@ -94,7 +84,6 @@
   <div style="margin-top: 40px; clear: both;">
     <button class="submit-btn" type="submit">건물 등록</button>
   </div>
-
 </form:form>
 
 <script src="/app/js/building/managed/managedAdd.js"></script>

@@ -16,10 +16,11 @@ public class ManagedDeleteController {
 	@Autowired
 	private ManagedService managedService;
 
-	@PostMapping("/delete")
-	public String deleteUnit(@RequestParam("unitId") String unitId, @RequestParam("bldgId") String bldgId) {
-		managedService.deleteUnit(unitId);
-		return "redirect:/building/managed/list?bldgId=" + bldgId;
-	}
+  @PostMapping("/delete")
+    public String deleteUnit(@RequestParam("unitId") String unitId,
+                             @RequestParam("bldgId") String bldgId) {
+        managedService.deleteBuilding(unitId);
+        return "redirect:/building/managed/list?bldgId=" + bldgId;
+    }
 
 }

@@ -5,6 +5,25 @@
 
 <mapper namespace="kr.or.ddit.building.mapper.BuildingManagedMapper">
 
+  <resultMap id="buildingOnlyResultMap" type="kr.or.ddit.vo.BuildingVO">
+  <id property="bldgId" column="BLDG_ID"/>
+  <result property="rentalPtyId" column="RENTAL_PTY_ID"/>
+  <result property="bldgNm" column="BLDG_NM"/>
+  <result property="bldgZipNo" column="BLDG_ZIP_NO"/>
+  <result property="bldgAddr" column="BLDG_ADDR"/>
+  <result property="bldgDtlAddr" column="BLDG_DTL_ADDR"/>
+  <result property="bldgTypeCode" column="BLDG_TYPE_CODE"/>
+  <result property="bldgFlrCnt" column="BLDG_FLR_CNT"/>
+  <result property="bldgUnitCnt" column="BLDG_UNIT_CNT"/>
+  <result property="bldgCmpltnDt" column="BLDG_CMPLTN_DT"/>
+  <result property="bldgGrossArea" column="BLDG_GROSS_AREA"/>
+  <result property="bldgImgPath" column="BLDG_IMG_PATH"/>
+
+  <association property="tenancyInfo" resultMap="tenancyResultMap" autoMapping="true">
+  <result property="rentalPtyId" column="T_RENTAL_PTY_ID"/>
+  </association>
+</resultMap>
+  
   <!-- 임대인 정보 매핑 -->
   <resultMap id="tenancyResultMap" type="kr.or.ddit.vo.TenancyVO">
     <id property="rentalPtyId" column="RENTAL_PTY_ID"/>
@@ -19,85 +38,88 @@
     <result property="lsrTypeGroupCd" column="LSR_TYPE_GROUP_CD"/>
   </resultMap>
 
-  <!-- 단건 + 목록에 사용할 세대 + 건물 + 임대인 정보 -->
-  <resultMap id="unitResultMap" type="kr.or.ddit.vo.BuildingVO">
-    <id property="unitId" column="UNIT_ID"/>
-    <result property="bldgId" column="BLDG_ID"/>
-    <result property="rentalPtyId" column="RENTAL_PTY_ID"/>
-    <result property="unitFlrNo" column="UNIT_FLR_NO"/>
-    <result property="unitCmar" column="UNIT_CMAR"/>
-    <result property="unitXuar" column="UNIT_XUAR"/>
-    <result property="unitDsrMnthRentAmt" column="UNIT_DSR_MNTH_RENT_AMT"/>
-    <result property="unitDsrSaleAmt" column="UNIT_DSR_SALE_AMT"/>
-    <result property="unitDpstAmt" column="UNIT_DPST_AMT"/>
-    <result property="unitDtlDescCn" column="UNIT_DTL_DESC_CN"/>
-    <result property="unitStatCd" column="UNIT_STAT_CD"/>
+  <!-- BUILDING + TENANCY 매핑 -->
+  <resultMap id="buildingResultMap" type="kr.or.ddit.vo.BuildingVO">
+	<id property="bldgId" column="BLDG_ID"/>
+	<id property="rentalPtyId" column="RENTAL_PTY_ID"/>
+    <result property="bldgTypeGroupCd" column="BLDG_TYPE_GROUP_CD"/>
+	<result property="bldgNm" column="BLDG_NM"/>
+	<result property="bldgZipNo" column="BLDG_ZIP_NO"/>
+	<result property="bldgAddr" column="BLDG_ADDR"/>
+	<result property="bldgDtlAddr" column="BLDG_DTL_ADDR"/>
+	<result property="bldgTypeCode" column="BLDG_TYPE_CODE"/>
+	<result property="bldgFlrCnt" column="BLDG_FLR_CNT"/>
+	<result property="bldgUnitCnt" column="BLDG_UNIT_CNT"/>
+	<result property="bldgCmpltnDt" column="BLDG_CMPLTN_DT"/>
+	<result property="bldgGrossArea" column="BLDG_GROSS_AREA"/>
+	<result property="bldgImgPath" column="BLDG_IMG_PATH"/>
+    <association property="tenancyInfo" resultMap="tenancyResultMap" autoMapping="true">
+    <id property="rentalPtyId" column="T_RENTAL_PTY_ID"/>
+    </association>
 
-    <!-- 추가 건물 정보 -->
-    <result property="bldgNm" column="BLDG_NM"/>
-    <result property="bldgImgPath" column="BLDG_IMG_PATH"/>
-
-  <!--   <association property="tenancyInfo" resultMap="tenancyResultMap"/> -->
   </resultMap>
 
-  <!-- 세대 등록 -->
-  <insert id="insertUnit" parameterType="kr.or.ddit.vo.BuildingVO">
-    INSERT INTO UNIT (
-      UNIT_ID, BLDG_ID, RENTAL_PTY_ID,
-      UNIT_FLR_NO, UNIT_CMAR, UNIT_XUAR,
-      UNIT_DSR_MNTH_RENT_AMT, UNIT_DSR_SALE_AMT, UNIT_DPST_AMT,
-      UNIT_DTL_DESC_CN, UNIT_STAT_CD
-    ) VALUES (
-      #{unitId}, #{bldgId}, #{rentalPtyId},
-      #{unitFlrNo}, #{unitCmar}, #{unitXuar},
-      #{unitDsrMnthRentAmt}, #{unitDsrSaleAmt}, #{unitDpstAmt},
-      #{unitDtlDescCn}, #{unitStatCd}
-    )
+  <!-- 건물 등록 -->
+  <insert id="insertBuilding" parameterType="kr.or.ddit.vo.BuildingVO">
+    INSERT INTO BUILDING (
+    BLDG_ID, RENTAL_PTY_ID, BLDG_NM, BLDG_ZIP_NO, BLDG_ADDR,
+    BLDG_DTL_ADDR, BLDG_TYPE_CODE, BLDG_FLR_CNT, BLDG_UNIT_CNT,
+    BLDG_CMPLTN_DT, BLDG_GROSS_AREA, BLDG_IMG_PATH
+  ) VALUES (
+    #{bldgId}, #{rentalPtyId}, #{bldgNm}, #{bldgZipNo}, #{bldgAddr},
+    #{bldgDtlAddr}, #{bldgTypeCode}, #{bldgFlrCnt}, #{bldgUnitCnt},
+    #{bldgCmpltnDt}, #{bldgGrossArea}, #{bldgImgPath}
+  )
+    
   </insert>
 
-  <!-- 건물 기준 세대 목록 조회 -->
-  <select id="selectUnitListByBldgId" parameterType="String" resultMap="unitResultMap">
-    SELECT 
-      U.*, 
-      B.BLDG_NM, B.BLDG_IMG_PATH,
-      T.RENTAL_PTY_BIZ_REG_FILE_PATH,
-      T.RENTAL_PTY_REG_BLDG_CNT,
-      T.RENTAL_PTY_ACCT_NO,
-      T.RENTAL_PTY_BIZ_REG_NO,
-      T.RENTAL_PTY_FILE,
-      T.RENTAL_PTY_FILE2,
-      T.LSR_YN_TYPE_CD,
-      T.RENTAL_PTY_BANK_NM,
-      T.LSR_TYPE_GROUP_CD
-    FROM UNIT U
-    JOIN BUILDING B ON U.BLDG_ID = B.BLDG_ID
-    JOIN TENANCY T ON U.RENTAL_PTY_ID = T.RENTAL_PTY_ID
-    WHERE U.BLDG_ID = #{bldgId}
-    ORDER BY U.UNIT_ID ASC
+  <!-- 건물 목록 조회 (JOIN) -->
+  <select id="selectBuildingListByBldgId" parameterType="String" resultMap="buildingResultMap">
+  SELECT 
+    B.BLDG_ID,
+    B.RENTAL_PTY_ID,
+    B.BLDG_NM,
+    B.BLDG_ZIP_NO,
+    B.BLDG_ADDR,
+    B.BLDG_DTL_ADDR,
+    B.BLDG_TYPE_CODE,
+    B.BLDG_FLR_CNT,
+    B.BLDG_UNIT_CNT,
+    B.BLDG_CMPLTN_DT,
+    B.BLDG_GROSS_AREA,
+    B.BLDG_IMG_PATH,
+    
+    T.RENTAL_PTY_BANK_NM,
+    T.RENTAL_PTY_ACCT_NO,
+    T.RENTAL_PTY_ID T_RENTAL_PTY_ID
+
+  FROM BUILDING B
+  LEFT JOIN TENANCY T ON B.RENTAL_PTY_ID = T.RENTAL_PTY_ID
+  WHERE B.RENTAL_PTY_ID = #{rentalPtyId}
+  ORDER BY B.BLDG_ID ASC
   </select>
 
-  <!-- 세대 단건 조회 -->
-  <select id="selectUnitById" parameterType="String" resultMap="unitResultMap">
+  <!-- 건물 단건 조회 -->
+  <select id="selectBuildingById" parameterType="String" resultMap="buildingResultMap">
     SELECT 
-      U.*, 
+      U.UNIT_ID, U.BLDG_ID, U.RENTAL_PTY_ID,
+      U.UNIT_FLR_NO, U.UNIT_CMAR, U.UNIT_XUAR,
+      U.UNIT_DSR_MNTH_RENT_AMT, U.UNIT_DSR_SALE_AMT,
+      U.UNIT_DPST_AMT, U.UNIT_DTL_DESC_CN, U.UNIT_STAT_CD,
       B.BLDG_NM, B.BLDG_IMG_PATH,
-      T.RENTAL_PTY_BIZ_REG_FILE_PATH,
-      T.RENTAL_PTY_REG_BLDG_CNT,
-      T.RENTAL_PTY_ACCT_NO,
-      T.RENTAL_PTY_BIZ_REG_NO,
-      T.RENTAL_PTY_FILE,
-      T.RENTAL_PTY_FILE2,
-      T.LSR_YN_TYPE_CD,
-      T.RENTAL_PTY_BANK_NM,
-      T.LSR_TYPE_GROUP_CD
+      T.RENTAL_PTY_ID, T.RENTAL_PTY_BIZ_REG_FILE_PATH,
+      T.RENTAL_PTY_REG_BLDG_CNT, T.RENTAL_PTY_ACCT_NO,
+      T.RENTAL_PTY_BIZ_REG_NO, T.RENTAL_PTY_FILE,
+      T.RENTAL_PTY_FILE2, T.LSR_YN_TYPE_CD,
+      T.RENTAL_PTY_BANK_NM, T.LSR_TYPE_GROUP_CD
     FROM UNIT U
     JOIN BUILDING B ON U.BLDG_ID = B.BLDG_ID
     JOIN TENANCY T ON U.RENTAL_PTY_ID = T.RENTAL_PTY_ID
     WHERE U.UNIT_ID = #{unitId}
   </select>
 
-  <!-- 세대 수정 -->
-  <update id="updateUnit" parameterType="kr.or.ddit.vo.BuildingVO">
+  <!-- 건물 수정 -->
+  <update id="updateBuilding" parameterType="kr.or.ddit.vo.BuildingVO">
     UPDATE UNIT SET
       BLDG_ID = #{bldgId},
       RENTAL_PTY_ID = #{rentalPtyId},
@@ -112,10 +134,9 @@
     WHERE UNIT_ID = #{unitId}
   </update>
 
-  <!-- 세대 삭제 -->
-  <delete id="deleteUnit" parameterType="String">
+  <!-- 건물 삭제 -->
+  <delete id="deleteBuilding" parameterType="String">
     DELETE FROM UNIT WHERE UNIT_ID = #{unitId}
   </delete>
-
 
 </mapper>
