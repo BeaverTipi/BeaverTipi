@@ -27,6 +27,7 @@ public class MemberReadController {
 		String logInfo = "LOCAL";
 		MemberVO member = service.readMember(username);
 		
+		
 		if (principal instanceof OAuth2User) {
 			logInfo = "KAKAO";
 		}else if(principal instanceof OidcUser) {

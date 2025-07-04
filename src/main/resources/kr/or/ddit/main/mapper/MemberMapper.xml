@@ -107,29 +107,29 @@
 
 	<select id="selectMemberByMail" parameterType="String"
 		resultMap="memberMap">
-		SELECT M.MBR_CD
+		SELECT 
+		M.MBR_CD
 		, M.MBR_ID
 		, M.MBR_PW
 		, M.MBR_NM
 		, M.MBR_NNM
-		,
-		M.MBR_TELNO
-		,
-		M.MBR_EML_ADDR
+		, M.MBR_TELNO
+		, M.MBR_EML_ADDR
 		, M.MBR_BASIC_ADDR
 		, M.MBR_DETAIL_ADDR
-		,
-		M.MBR_PROFIL_IMAGE
+		, M.MBR_PROFIL_IMAGE
 		, M.MBR_FRST_REG_DT
 		, M.MBR_STATUS_CODE
-		,
-		M.MBR_DELETE_DATE
+		, M.MBR_DELETE_DATE
 		, M.MBR_ZIP
+		, RA.MBR_CD RA_MBR_CD
 		, RA.USER_ROLE_ID
+		, UR.MBR_CD UR_MBR_CD
 		, UR.UNIT_ID
 		, UR.BLDG_ID
 		, UR.RENTAL_PTY_ID
 		, UR.MOVE_IN_DT
+		, B.MBR_CD B_MBR_CD
 		, B.BROK_NM
 		, B.BROK_REG_NO
 		, B.CRTF_NO
@@ -138,14 +138,12 @@
 		, B.REG_DTM
 		, B.BROK_ADDR2
 		, B.BROK_ADDR1
-		,
-		T.RENTAL_PTY_ACCT_NO
+		, T.MBR_CD T_MBR_CD
+		, T.RENTAL_PTY_ACCT_NO
 		, T.RENTAL_PTY_REG_BLDG_CNT
-		,
-		T.RENTAL_PTY_BIZ_REG_NO
+		, T.RENTAL_PTY_BIZ_REG_NO
 		, T.RENTAL_PTY_ID
-		,
-		T.RENTAL_PTY_BIZ_REG_FILE_PATH
+		, T.RENTAL_PTY_BIZ_REG_FILE_PATH
 		, T.RENTAL_PTY_FILE
 		, T.RENTAL_PTY_FILE2
 		, T.LSR_YN_TYPE_CD
@@ -170,19 +168,16 @@
 		, MBR_ID
 		, MBR_PW
 		, MBR_NM
-		,
-		MBR_NNM
+		, MBR_NNM
 		, MBR_TELNO
 		, MBR_EML_ADDR
 		, MBR_BASIC_ADDR
 		, MBR_DETAIL_ADDR
-		,
-		MBR_PROFIL_IMAGE
+		, MBR_PROFIL_IMAGE
 		, MBR_FRST_REG_DT
 		, MBR_STATUS_CODE
 		, MBR_DELETE_DATE
-		,
-		MBR_ZIP
+		, MBR_ZIP
 		) VALUES(
 		'M'||TRIM(TO_CHAR(SYSDATE,'YYMM'))||TRIM(TO_CHAR(SEQ_MBR_CD.NEXTVAL,'000000'))
 		, #{mbrId}
@@ -194,8 +189,7 @@
 		, #{mbrBasicAddr}
 		, #{mbrDetailAddr}
 		, #{mbrProfilImage}
-		,
-		#{mbrFrstRegDt}
+		, #{mbrFrstRegDt}
 		, #{mbrStatusCode}
 		, #{mbrDeleteDate}
 		, #{mbrZip}
@@ -210,14 +204,25 @@
 	<update id="updateMember">
 		UPDATE MEMBER
 		SET
+		<if test="mbrNm neq null">
 		MBR_NM = #{mbrNm}
-		MBR_NNM = #{mbrNnm}
-		MBR_TELNO =
-		#{mbrTelno}
-		MBR_EML_ADDR = #{mbrEmlAddr}
-		MBR_ZIP = #{mbrZip}
-		MBR_BASIC_ADDR = #{mbrBasicAddr}
-		MBR_DETAIL_ADDR = #{mbrDetailAddr}
+		</if>
+		<if test="mbrNnm neq null">
+		, MBR_NNM = #{mbrNnm}
+		</if>
+		<if test="mbrTelno neq null">
+		, MBR_TELNO = #{mbrTelno}
+		</if>
+		, MBR_EML_ADDR = #{mbrEmlAddr}
+		<if test="mbrZip neq null">
+		, MBR_ZIP = #{mbrZip}
+		</if>
+		<if test="mbrBasicAddr neq null">
+		, MBR_BASIC_ADDR = #{mbrBasicAddr}
+		</if>
+		<if test="mbrDetailAddr neq null">
+		, MBR_DETAIL_ADDR = #{mbrDetailAddr}
+		</if>
 		<if test="mbrProfilImage neq null">
 			MBR_PROFIL_IMAGE = #{mbrProfilImage}
 		</if>
