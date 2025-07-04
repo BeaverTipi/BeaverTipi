@@ -15,13 +15,14 @@ import kr.or.ddit.building.managed.service.ManagedService;
 @RequestMapping("/building/managed")
 public class ManagedDeleteController {
 	
-	@Autowired
-	private ManagedService managedService; 
-	
 
-     @PostMapping("/delete")
-     public String deleteUnit(@RequestParam("unitId") String unitId, @RequestParam("bldgId") String bldgId) {
-         managedService.deleteUnit(unitId);
-         return "redirect:/building/managed/list?bldgId=" + bldgId;
-	    }
+    @Autowired
+    private ManagedService managedService;
+
+    @PostMapping("/delete")
+    public String deleteUnit(@RequestParam("unitId") String unitId,
+                             @RequestParam("bldgId") String bldgId) {
+        managedService.deleteUnit(unitId);
+        return "redirect:/building/managed/list?bldgId=" + bldgId;
+    }
 }

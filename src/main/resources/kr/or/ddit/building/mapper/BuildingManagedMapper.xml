@@ -19,7 +19,7 @@
     <result property="lsrTypeGroupCd" column="LSR_TYPE_GROUP_CD"/>
   </resultMap>
 
-  <!-- 세대 정보 + 건물 정보 + 임대인 정보 포함 -->
+  <!-- 단건 + 목록에 사용할 세대 + 건물 + 임대인 정보 -->
   <resultMap id="unitResultMap" type="kr.or.ddit.vo.BuildingVO">
     <id property="unitId" column="UNIT_ID"/>
     <result property="bldgId" column="BLDG_ID"/>
@@ -37,7 +37,6 @@
     <result property="bldgNm" column="BLDG_NM"/>
     <result property="bldgImgPath" column="BLDG_IMG_PATH"/>
 
-    <!-- 임대인 정보 association -->
     <association property="tenancyInfo" resultMap="tenancyResultMap"/>
   </resultMap>
 
@@ -56,7 +55,7 @@
     )
   </insert>
 
-  <!-- 건물 기준 세대 목록 조회 + 임대인 JOIN -->
+  <!-- 건물 기준 세대 목록 조회 -->
   <select id="selectUnitListByBldgId" parameterType="String" resultMap="unitResultMap">
     SELECT 
       U.*, 
@@ -117,5 +116,6 @@
   <delete id="deleteUnit" parameterType="String">
     DELETE FROM UNIT WHERE UNIT_ID = #{unitId}
   </delete>
+
 
 </mapper>
