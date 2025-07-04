@@ -1,25 +1,32 @@
 package kr.or.ddit.admin.member.service;
 
 import java.util.List;
-// import java.util.Map; // Map 임포트는 더 이상 필요 없습니다.
 
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.admin.mapper.ManageMemberMapper;
 import kr.or.ddit.vo.MemberVO;
-import kr.or.ddit.vo.SearchConditionVO;
-import lombok.RequiredArgsConstructor; // Lombok @RequiredArgsConstructor 사용
+import kr.or.ddit.vo.MemberSearchVO;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor // final 필드를 주입받기 위해 사용
+@RequiredArgsConstructor
 public class ManageMemberServiceImpl implements ManageMemberService {
 
-    private final ManageMemberMapper mapper; // ManageMemberMapper 인터페이스 주입
+    private final ManageMemberMapper mapper;
 
+  //회원 상태 조회 메서드 구현
     @Override
-    public List<MemberVO> readMemberList(SearchConditionVO searchCondition) {
-        // 이제 SearchConditionVO를 Map으로 변환할 필요 없이,
-        // 매퍼 인터페이스의 메서드가 SearchConditionVO를 직접 받으므로 그대로 전달합니다.
-        return mapper.selectMemberList(searchCondition); // 매퍼 인터페이스를 통해 호출
+    public List<MemberVO> readMemberList(MemberSearchVO searchCondition) {
+        return mapper.selectMemberList(searchCondition);
+    }
+
+    //회원 상태 업데이트 메서드 구현
+    @Override
+    public int updateMemberStatus(String mbrCd, String mbrStatusCode) {
+        MemberVO memberVO = new MemberVO();
+        memberVO.setMbrCd(mbrCd);
+        memberVO.setMbrStatusCode(mbrStatusCode);
+        return mapper.updateMemberStatus(memberVO); // 매퍼의 updateMemberStatus 호출 (아래 6번에서 추가 예정)
     }
 }
