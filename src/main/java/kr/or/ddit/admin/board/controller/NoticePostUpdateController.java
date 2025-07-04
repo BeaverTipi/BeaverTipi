@@ -36,6 +36,6 @@ public class NoticePostUpdateController {
 		
 		model.addAttribute("board", board);
 		model.addAttribute("pageTitle","새 공지사항 등록");
-		return "admin/notice/noticeEdit";
+		return "admin/notice/adminNoticeEdit";
 	}
 }

@@ -10,6 +10,6 @@ public class NoticePostDeleteController {
 	
 	@GetMapping("/notice/delete")
 	public String noticeDelete() {
-		return "admin/notice/noticeDelete";
+		return "admin/notice/adminNoticeDelete";
 	}
 }

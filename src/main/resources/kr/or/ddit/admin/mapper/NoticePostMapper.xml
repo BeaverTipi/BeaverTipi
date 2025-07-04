@@ -4,19 +4,25 @@
 	<resultMap type="kr.or.ddit.vo.BoardVO" id="boardMap" autoMapping="true">
 		<id property="brdNo" column="BRD_NO"/>
 		<association property="member" javaType="kr.or.ddit.vo.MemberVO" autoMapping="true" />
-		<association property="boardCartegory" javaType="kr.or.ddit.vo.BoardCartegoryVO" autoMapping="true" />
+		<association property="boardCartegory" javaType="kr.or.ddit.vo.BoardCartegoryVO">
+			<result property="brdCtgry" column="BDC_BRD_CTGRY" />
+			<result property="brdCmntYn" column="BDC_BRD_CMNT_YN"/>
+			<result property="brdCode" column="BDC_BRD_CODE"/>
+		</association>
 	</resultMap>
 	<select id="selectNoticeList" resultMap="boardMap">
 		SELECT 
 			BD.BRD_NO,
-			BDC.BRD_CODE,
+			BDC.BRD_CODE AS BDC_BRD_CODE,
 			MEM.MBR_CD,
 			BD.BRD_TITL_NM,
 			BD.BRD_CONT,
 			BD.BRD_PBLS_DTM,
-			BD.BRD_VM_CNT,
+			BD.BRD_VW_CNT,
 			BD.BRD_MOD_DTM,
-			BD.BRD_DEL_YN
+			BD.BRD_DEL_YN,
+			BDC.BRD_CTGRY AS BDC_BRD_CTGRY,
+			BDC.BRD_CMNT_YN AS BDC_BRD_CMNT_YN
 		FROM
 			BOARD BD
 			LEFT JOIN MEMBER MEM ON BD.MBR_CD = MEM.MBR_CD
@@ -25,14 +31,16 @@
 	<select id="selectNoticeById" resultMap="boardMap">
 		SELECT 
 			BD.BRD_NO,
-			BDC.BRD_CODE,
+			BDC.BRD_CODE AS BDC_BRD_CODE,
 			MEM.MBR_CD,
 			BD.BRD_TITL_NM,
 			BD.BRD_CONT,
 			BD.BRD_PBLS_DTM,
-			BD.BRD_VM_CNT,
+			BD.BRD_VW_CNT,
 			BD.BRD_MOD_DTM,
-			BD.BRD_DEL_YN
+			BD.BRD_DEL_YN,
+			BDC.BRD_CTGRY AS BDC_BRD_CTGRY,
+			BDC.BRD_CMNT_YN AS BDC_BRD_CMNT_YN
 		FROM
 			BOARD BD
 			LEFT JOIN MEMBER MEM ON BD.MBR_CD = MEM.MBR_CD
@@ -68,7 +76,8 @@
 			BOARD
 		SET
 			BRD_TITL_NM = #{brdTitlNm},
-			BRD_CONT= #{brdCont}
+			BRD_CONT= #{brdCont},
+			BRD_MOD_DTM = SYSDATE
 		WHERE
 			BRD_NO = #{brdNo}
 	</update>
@@ -76,8 +85,9 @@
 		UPDATE
 			BOARD
 		SET
-			BRD_DEL_YN= #{brdDelYn}
+			BRD_DEL_YN= 'Y'
 		WHERE
 			BRD_NO = #{brdNo}
+			AND BRD_DEL_YN='N'
 	</update>
 </mapper>
