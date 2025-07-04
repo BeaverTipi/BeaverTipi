@@ -23,10 +23,11 @@ public class MemberReadController {
 	public String mypage(Model model,
 			Authentication auth) {
 		Object principal = auth.getPrincipal();
-		String username =auth.getName();
+		String username = auth.getName();
 		String logInfo = "LOCAL";
 		MemberVO member = service.readMember(username);
-	
+		
+		
 		if (principal instanceof OAuth2User) {
 			logInfo = "KAKAO";
 		}else if(principal instanceof OidcUser) {

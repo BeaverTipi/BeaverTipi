@@ -85,11 +85,80 @@
 					</c:choose>
 				</div>
 			</div>
+		
 			<div class="form-actions">
 				<a href="${pageContext.request.contextPath}/account/update"
 					class="btn-primary"
 					style="text-decoration: none; display: inline-block; text-align: center;">수정하기</a>
 			</div>
+			<c:if test="${member.broker ne null}">
+	<hr />
+	<h3 class="signup-title">공인중개사 정보</h3>
+
+	<div class="form-group">
+		<label>사무소 이름</label>
+		<div class="form-control">${member.broker.brokNm}</div>
+	</div>
+	<div class="form-group">
+		<label>공인중개사 사업자 등록번호</label>
+		<div class="form-control">${member.broker.brokRegNo}</div>
+	</div>
+	<div class="form-group">
+		<label>공인중개사 자격증</label>
+		<div class="form-control">${member.broker.crtfNo}</div>
+	</div>
+	<div class="form-group">
+		<label>대표자 이름</label>
+		<div class="form-control">${member.broker.reprNm}</div>
+	</div>
+	<div class="form-group">
+		<label>대표자 전화번호</label>
+		<div class="form-control">${member.broker.reprTelNo}</div>
+	</div>
+	<div class="form-group">
+		<label>등록 일시</label>
+		<div class="form-control">${member.broker.regDtm}</div>
+	</div>
+	<div class="form-group">
+		<label>기본 도로명 주소</label>
+		<div class="form-control">${member.broker.brokAddr1}</div>
+	</div>
+	<div class="form-group">
+		<label>동/호수/건물명 등</label>
+		<div class="form-control">${member.broker.brokAddr2}</div>
+	</div>
+</c:if>
+<c:if test="${member.tenancy ne null}">
+	<hr />
+	<h3 class="signup-title">임대인 정보</h3>
+
+	<div class="form-group">
+		<label>등록된 건물의 수</label>
+		<div class="form-control">${member.tenancy.rentalPtyRegBldgCnt}</div>
+	</div>
+	<div class="form-group">
+		<label>계좌번호(예:9999999999)</label>
+		<div class="form-control">${member.tenancy.rentalPtyAcctNo}</div>
+	</div>
+	<div class="form-group">
+		<label>기본 사업자등록번호</label>
+		<div class="form-control">${member.tenancy.rentalPtyBizRegNo}</div>
+	</div>
+	<div class="form-group">
+		<label>공동임대/1인임대/공동임차/1인임차</label>
+		<div class="form-control">${member.tenancy.lsrYnTypeCd}</div>
+	</div>
+	<div class="form-group">
+		<label>은행이름, 은행명칭</label>
+		<div class="form-control">${member.tenancy.rentalPtyBankNm}</div>
+	</div>
+	<div class="form-group">
+		<label>임대유형 코드</label>
+		<div class="form-control">${member.tenancy.lsrTypeGroupCd}</div>
+	</div>
+</c:if>
+
+			
 		</div>
 	</div>
 </body>

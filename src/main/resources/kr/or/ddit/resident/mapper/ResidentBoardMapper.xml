@@ -4,30 +4,29 @@
 	namespace="kr.or.ddit.resident.mapper.ResidentBoardMapper">
 	<resultMap type="ResidentBoardVO" id="residentBoardMap"
 		autoMapping="true" />
+<sql id="searchCondition">
+  <where>
+    rsd_brd_del_yn = 'N'
+    AND bldg_id = #{simpleSearch.bldgId}  
 
-	<sql id="searchCondition">
-		<where>
-			rsd_brd_del_yn = 'N'
-			<if
-				test="simpleSearch != null and simpleSearch.searchWord != null and !simpleSearch.searchWord.isEmpty()">
-				<choose>
-					<when test="simpleSearch.searchType == 'title'">
-						AND INSTR(rsd_brd_titl, #{simpleSearch.searchWord}) > 0
-					</when>
-					<when test="simpleSearch.searchType == 'writer'">
-						AND INSTR(mbr_cd, #{simpleSearch.searchWord}) > 0
-					</when>
-					<otherwise>
-						AND (
-						INSTR(rsd_brd_titl, #{simpleSearch.searchWord}) > 0
-						OR INSTR(mbr_cd, #{simpleSearch.searchWord}) > 0
-						)
-					</otherwise>
-				</choose>
-			</if>
-		</where>
-	</sql>
-
+    <if test="simpleSearch.searchWord != null and simpleSearch.searchWord != ''">
+      <choose>
+        <when test="simpleSearch.searchType == 'title'">
+          AND INSTR(rsd_brd_titl, #{simpleSearch.searchWord}) > 0
+        </when>
+        <when test="simpleSearch.searchType == 'writer'">
+          AND INSTR(mbr_cd, #{simpleSearch.searchWord}) > 0
+        </when>
+        <otherwise>
+          AND (
+            INSTR(rsd_brd_titl, #{simpleSearch.searchWord}) > 0
+            OR INSTR(mbr_cd,       #{simpleSearch.searchWord}) > 0
+          )
+        </otherwise>
+      </choose>
+    </if>
+  </where>
+</sql>
 
 	<!-- 전체 목록 조회 -->
 	<select id="selectBoardList"
@@ -54,11 +53,12 @@
 	</select>
 
 	<!-- 단건 조회 -->
-	<select id="selectBoardById" parameterType="String"
-		resultType="ResidentBoardVO">
-		SELECT *
-		FROM resident_board
-		WHERE rsd_brd_id = #{rsdBrdId}
+	<select id="selectBoardById" parameterType="ResidentBoardVO"
+		resultMap="residentBoardMap">
+		   SELECT *
+      FROM resident_board
+     WHERE rsd_brd_id = #{rsdBrdId}
+       AND bldg_id    = #{bldgId}
 	</select>
 
 	<!-- 글 등록 -->
