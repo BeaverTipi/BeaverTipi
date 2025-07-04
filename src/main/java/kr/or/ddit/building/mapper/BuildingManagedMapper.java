@@ -24,3 +24,4 @@ public interface BuildingManagedMapper {
     // 건물 세대 삭제
     int deleteBuilding(String unitId);
 }
+

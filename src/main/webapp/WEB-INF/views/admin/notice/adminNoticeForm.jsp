@@ -7,8 +7,8 @@
 <head>
 <meta charset="UTF-8">
 <title>새 공지사항 등록</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/board/notice.css">
-<script src="${pageContext.request.contextPath}/app/js/admin/board/boardToggle.js"></script>
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/board/adminNotice.css">
+	<script src="${pageContext.request.contextPath}/app/js/admin/board/boardToggle.js"></script>
 </head>
 <body>
 	<h1>새 공지사항 등록</h1>

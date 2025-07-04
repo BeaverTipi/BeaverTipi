@@ -13,15 +13,15 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest
 @Slf4j
 class MemberMapperTest {
-
+	// 테스트 완료
     @Autowired
     MemberMapper mapper;
 
     @Test
     void testSelectMemberByUsername() {
-//        String testUsername = "manual_user_08"; // 임대인
+        String testUsername = "manual_user_08"; // 임대인
 //        String testUsername = "youaremysodapop"; // 중개인
-        String testUsername = "youaremysodapop"; // 중개인
+//        String testUsername = "youaremysodapop"; // 중개인
     	
         MemberVO member = mapper.selectMemberByUsername(testUsername);
 

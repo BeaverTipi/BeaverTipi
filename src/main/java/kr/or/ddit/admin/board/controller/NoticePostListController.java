@@ -7,8 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.or.ddit.admin.board.service.NoticePostService;
+import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.vo.BoardVO;
 
 @Controller
@@ -19,9 +21,17 @@ public class NoticePostListController {
 	private NoticePostService service;
 	
 	@GetMapping("/notice/list")
-	public String noticeList(Model model) {
+	public String noticeList(
+		@RequestParam(name="Page", defaultValue = "1")	int page,
+		Model model
+	) {
+		PaginationInfo<BoardVO> paging = new PaginationInfo<>();
+		paging.setCurrentPageNo(page);
 		
-		List<BoardVO> boardList = service.readNoticeList();
+		int totalRecord = service.getTotalNoticeRecord(paging);
+		paging.setTotalRecordCount(totalRecord);
+		
+		List<BoardVO> boardList = service.readNoticeList(paging);
 		
 		model.addAttribute("boardList", boardList);
 		

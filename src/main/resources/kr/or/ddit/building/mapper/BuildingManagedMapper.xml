@@ -56,6 +56,7 @@
     <association property="tenancyInfo" resultMap="tenancyResultMap" autoMapping="true">
     <id property="rentalPtyId" column="T_RENTAL_PTY_ID"/>
     </association>
+
   </resultMap>
 
   <!-- 건물 등록 -->

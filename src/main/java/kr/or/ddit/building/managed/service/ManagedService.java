@@ -25,3 +25,4 @@ public interface ManagedService {
     // 건물 세대 삭제
     int deleteBuilding(String unitId);
 }
+

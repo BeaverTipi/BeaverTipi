@@ -2,9 +2,9 @@ package kr.or.ddit.broker.lstg.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,20 +31,29 @@ public class RestBrokerLstgController {
 	
 	@GetMapping("/list")
 	public List<ListingPackVO> lstgList(
-//			@PathVariable String mbrCd
 			Principal principal
 	) {
 		String username = principal.getName();
 		log.error("{}", username);
 		String mbrCd = authUnpack.getMbrCd(username);
-//		String mbrCd = "M2507000110";
-//		log.error("요청한 BROKER의 MEMBER CODE: {}", mbrCd);
-		
-//		List<ListingVO> lstgList = service.readLstgListByMbrCd(mbrCd);
-//		log.error("BROKER의 LSTG LIST: {}", lstgList);
-		
 		List<ListingPackVO> lstgList= service.readLstgListByMbrCd(mbrCd);
 		log.error("{}", lstgList);
 		return lstgList;
+	}
+	
+	@GetMapping("/listing-details/{lstgId}")
+	public ListingPackVO lstgDetails(
+			Principal principal,
+			@PathVariable String lstgId
+	) {
+		
+		String username = principal.getName();
+		log.error("Handler::lstgDetails() -> username: {}", username);
+		String mbrCd = authUnpack.getMbrCd(username);
+		
+		Map<String, String> lstgDetailsParams = Map.of("mbrCd", mbrCd, "lstgId", lstgId);
+		ListingPackVO lstgDetails = service.readLstgDetails(lstgDetailsParams);
+		log.error("{}", lstgDetails);
+		return lstgDetails;
 	}
 }

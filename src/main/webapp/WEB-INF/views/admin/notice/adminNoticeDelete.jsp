@@ -7,7 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>공지사항 삭제</title>
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/board/notice.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/board/adminNotice.css">
 </head>
 <body>
 <h1>공지사항 삭제</h1>

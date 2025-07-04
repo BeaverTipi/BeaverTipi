@@ -1,7 +1,5 @@
 package kr.or.ddit.building.managed.controller;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -14,15 +12,15 @@ import kr.or.ddit.building.managed.service.ManagedService;
 @Controller
 @RequestMapping("/building/managed")
 public class ManagedDeleteController {
-	
 
-    @Autowired
-    private ManagedService managedService;
+	@Autowired
+	private ManagedService managedService;
 
-    @PostMapping("/delete")
+  @PostMapping("/delete")
     public String deleteUnit(@RequestParam("unitId") String unitId,
                              @RequestParam("bldgId") String bldgId) {
         managedService.deleteBuilding(unitId);
         return "redirect:/building/managed/list?bldgId=" + bldgId;
     }
+
 }

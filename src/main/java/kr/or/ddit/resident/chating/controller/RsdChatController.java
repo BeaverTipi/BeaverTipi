@@ -12,4 +12,6 @@ public class RsdChatController {
 	public String noticeMyHousePage() {
 		 return "resident/chat/Chat"; 
 	}
+	
+	
 }
