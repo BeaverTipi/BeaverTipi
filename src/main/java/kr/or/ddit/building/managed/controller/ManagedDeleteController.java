@@ -22,7 +22,7 @@ public class ManagedDeleteController {
     @PostMapping("/delete")
     public String deleteUnit(@RequestParam("unitId") String unitId,
                              @RequestParam("bldgId") String bldgId) {
-        managedService.deleteUnit(unitId);
+        managedService.deleteBuilding(unitId);
         return "redirect:/building/managed/list?bldgId=" + bldgId;
     }
 }

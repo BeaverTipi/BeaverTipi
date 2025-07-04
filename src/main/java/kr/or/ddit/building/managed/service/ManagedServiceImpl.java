@@ -12,33 +12,34 @@ import kr.or.ddit.vo.BuildingVO;
 @Service
 public class ManagedServiceImpl implements ManagedService {
 		
-	@Autowired
+    @Autowired
     private BuildingManagedMapper buildingManagedMapper;
 
-	    @Override
-	    public int insertUnit(BuildingVO unit) {
-	        return buildingManagedMapper.insertUnit(unit);
-	    }
+    @Override
+    public int insertBuilding(BuildingVO building) {
+        return buildingManagedMapper.insertBuilding(building);
+    }
 
-	    @Override
-	    public List<BuildingVO> selectUnitListByBldgId(String bldgId) {
-	        return buildingManagedMapper.selectUnitListByBldgId(bldgId);
-	    }
+    @Override
+    public List<BuildingVO> selectBuildingListByBldgId(String bldgId) {
+        return buildingManagedMapper.selectBuildingListByBldgId(bldgId);
+    }
 
-	    @Override
-	    public BuildingVO selectUnitById(String unitId) {
-	        return buildingManagedMapper.selectUnitById(unitId);
-	    }
+    @Override
+    public BuildingVO selectBuildingById(String unitId) {
+        return buildingManagedMapper.selectBuildingById(unitId);
+    }
 
-	    @Override
-	    public int updateUnit(BuildingVO unit) {
-	        return buildingManagedMapper.updateUnit(unit);
-	    }
+    @Override
+    public int updateBuilding(BuildingVO building) {
+        return buildingManagedMapper.updateBuilding(building);
+    }
 
-	    @Override
-	    public int deleteUnit(String unitId) {
-	        return buildingManagedMapper.deleteUnit(unitId);
-	    }
+    @Override
+    public int deleteBuilding(String unitId) {
+        return buildingManagedMapper.deleteBuilding(unitId);
+    }
 
+	
 
 }
