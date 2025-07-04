@@ -63,6 +63,9 @@
       </p>
     </c:otherwise>
   </c:choose>
+<<<<<<< HEAD
 
+=======
+>>>>>>> branch 'developer_KSW' of https://github.com/BeaverTipi/BeaverTipi.git
 </body>
 </html>

@@ -9,9 +9,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+<<<<<<< HEAD
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+=======
+import org.springframework.web.bind.annotation.PostMapping;
+>>>>>>> branch 'developer_KSW' of https://github.com/BeaverTipi/BeaverTipi.git
 
 import kr.or.ddit.main.member.service.MemberService;
 import kr.or.ddit.util.validate.OAuth2UpdateGroup;
@@ -97,5 +101,6 @@ public class MemberUpdateController {
 			redirectAttributes.addFlashAttribute(errorName, errors);
 		}
 		return lvn;
+		
 	}
 }

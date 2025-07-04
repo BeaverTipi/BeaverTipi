@@ -7,7 +7,6 @@
 			ofType="kr.or.ddit.vo.RoleAchievedVO" column="MBR_CD"
 			select="selectRolesForMember" />
 	</resultMap>
-
 	<select id="selectRolesForMember" resultType="RoleAchievedVO">
 		SELECT USER_ROLE_ID, MBR_CD
 		FROM ROLE_ACHIEVED
@@ -76,5 +75,7 @@
 		WHERE
 		MBR_CD = #{mbrCd}
 	</update>
+
+
 
 </mapper>
