@@ -1,4 +1,9 @@
 @charset "UTF-8";
+	h2 {
+	    text-align: center;
+	    margin-top: 20px; /* 상단 여백 추가 (선택 사항) */
+	    margin-bottom: 20px; /* 하단 여백 추가 (선택 사항) */
+	}
     body {
         font-family: Arial, sans-serif;
         margin: 20px;
@@ -11,106 +16,136 @@
         padding: 20px;
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
+    
+    .search-section {
+        /* 간격 조정이나 구분선 직접 관리하지 않음 */
+    }
+
     .search-area {
         display: flex;
-        flex-wrap: wrap; /* 작은 화면에서 줄바꿈 */
-        gap: 20px 30px; /* 행과 열 사이의 간격 */
-        margin-bottom: 30px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #eee;
+        flex-wrap: wrap;
+        gap: 20px 30px;
+        margin-bottom: 20px; /* 검색 필드와 검색 버튼 사이의 간격 */
+        padding-bottom: 0;
+        border-bottom: none;
     }
     .search-item {
         display: flex;
         flex-direction: column;
         gap: 5px;
-        /* flex 속성 조정: 각 항목이 유연하게 늘어나거나 줄어들지 않고, 내용에 따라 너비 결정 */
         flex: 0 0 auto;
-        min-width: 120px; /* 각 검색 항목의 최소 너비 설정 (필요에 따라 조정) */
+        min-width: 120px;
     }
     .search-item label {
         font-weight: bold;
         color: #555;
         font-size: 0.9em;
     }
-    /* Spring form 태그에 맞게 스타일 선택자 수정 */
     .search-item .input-field,
     .search-item .select-field {
         padding: 8px 10px;
         border: 1px solid #ccc;
         border-radius: 4px;
         font-size: 1em;
-        width: 150px; /* 기본 너비를 고정합니다. 이 값이 중요합니다. */
+        width: 150px;
         box-sizing: border-box;
+        /* height 속성 제거 또는 auto로 설정 (리스트 박스 형태로 표시) */
+        vertical-align: middle;
+        -webkit-appearance: auto; /* 브라우저 기본 UI 사용 */
+        -moz-appearance: auto;
+        appearance: auto;
+        overflow: visible; /* 내용이 잘리지 않도록 유지 */
     }
 
-    /* 필요한 경우 특정 항목의 너비를 조절합니다. */
-    /* 이 값들을 조정하여 한 줄에 원하는 수의 요소가 들어가도록 맞추세요. */
+    .date-range-group {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* 특정 검색 항목의 너비 조정 */
     .search-item #memberEmailInput {
-        width: 200px; /* 이메일 입력 칸을 더 넓게 */
+        width: 237px;
     }
     .search-item #memberNameInput {
-        width: 120px; /* 회원명 입력 칸을 적절히 */
+        width: 120px;
     }
-    .search-item #mbrFrstRegDtFrom,
-    .search-item #mbrFrstRegDtTo {
-        width: 150px; /* 날짜 입력 칸 */
+    .date-range-group .input-field {
+        width: 150px;
     }
 
 
-    /* 검색 버튼 스타일 */
+    /* 검색 버튼과 초기화 버튼을 위한 스타일 */
     .search-actions {
         display: flex;
-        justify-content: flex-end;
+        justify-content: flex-end; /* 버튼들을 오른쪽으로 정렬 */
+        gap: 10px; /* 버튼들 사이의 간격 추가 */
         margin-top: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 30px;
     }
     .search-actions button {
         padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
         border: none;
         border-radius: 5px;
         cursor: pointer;
         font-size: 1em;
         transition: background-color 0.2s;
     }
-    .search-actions button:hover {
+    /* 검색 버튼 스타일 */
+    .search-actions button[type="submit"] {
+        background-color: #007bff;
+        color: white;
+    }
+    .search-actions button[type="submit"]:hover {
         background-color: #0056b3;
     }
 
+    /* 초기화 버튼 스타일 (JSP에서 type="button"으로 변경되었으므로, 해당 버튼의 class="reset-button"으로 스타일 적용됨) */
+    .reset-button { /* type 선택자 대신 class 선택자를 사용하거나, type="button"으로 변경된 것에 맞춰야 합니다. */
+        background-color: #6c757d; /* 회색 계열 */
+        color: white;
+    }
+    .reset-button:hover {
+        background-color: #5a6268;
+    }
+
+    /* 테이블 관련 스타일 */
     .table-container {
         overflow-x: auto;
     }
     .table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 20px;
-        table-layout: fixed; /* 이 속성이 표 크기 고정의 핵심입니다. */
+        margin-top: 0;
+        table-layout: fixed; /* 테이블 레이아웃 고정 (CSS 잘린 부분 보완) */
     }
     .table th, .table td {
         border: 1px solid #eee;
         padding: 12px 15px;
         text-align: left;
-        word-wrap: break-word; /* 긴 단어를 줄 바꿈 */
-        overflow: hidden;      /* 셀을 넘어가는 내용 숨기기 */
-        text-overflow: ellipsis; /* 숨겨진 내용에 ... 표시 (선택 사항) */
-        white-space: normal; /* 기본값으로, 필요시 줄바꿈 허용 */
+        word-wrap: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
     }
 
-    /* 각 컬럼의 너비를 지정합니다. 총합이 100%가 되도록 조정해 보세요. */
+    /* 각 컬럼의 너비 지정 */
     .table th:nth-child(1), .table td:nth-child(1) { /* 회원구분 */
-        width: 15%; /* 예시: MBR_CD */
+        width: 15%;
     }
     .table th:nth-child(2), .table td:nth-child(2) { /* 회원명 */
-        width: 15%; /* 예시: MBR_NM */
+        width: 15%;
     }
     .table th:nth-child(3), .table td:nth-child(3) { /* 가입일 */
-        width: 25%; /* 예시: MBR_FRST_REG_DT */
+        width: 25%;
     }
     .table th:nth-child(4), .table td:nth-child(4) { /* 회원상태 */
-        width: 15%; /* 예시: MBR_STATUS_CODE */
+        width: 15%;
     }
     .table th:nth-child(5), .table td:nth-child(5) { /* 이메일 */
-        width: 30%; /* 예시: MBR_EML_ADDR */
+        width: 30%;
     }
 
     .table thead th {

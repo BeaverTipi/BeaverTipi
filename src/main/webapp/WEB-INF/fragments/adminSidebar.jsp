@@ -68,12 +68,17 @@
               </a>
             </li>
             <li class="nav-item ">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/tables/bootstrap-tables.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}admin/member/list">
                 <span class="sidebar-text">회원 조회</span>
               </a>
             </li>
             <li class="nav-item ">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/tables/bootstrap-tables.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}admin/report/productlist">
+                <span class="sidebar-text">매물 신고 관리</span>
+              </a>
+            </li>
+            <li class="nav-item ">
+              <a class="nav-link" href="${pageContext.request.contextPath}admin/report/userList">
                 <span class="sidebar-text">회원 신고 관리</span>
               </a>
             </li>

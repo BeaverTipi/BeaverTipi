@@ -18,7 +18,7 @@
           
       </security:authorize>
       <li class="nav-item"><a class="nav-link" href="#">지도</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">상품등록</a></li>
+      <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/member/product/add">상품등록</a></li>
 
       <security:authorize access="isAuthenticated()">
         <li class="nav-item dropdown">
@@ -31,6 +31,7 @@
             <li><a class="dropdown-item d-flex align-items-center" href="http://localhost:81/broker/myoffice">마이오피스(중개인)</a></li>
             <li><a class="dropdown-item d-flex align-items-center" href="${pageContext.request.contextPath}/admin">시스템 관리자</a></li>
             <li><a class="dropdown-item d-flex align-items-center" href="#">구독/승인</a></li>
+
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item d-flex align-items-center text-danger" id="logout" href="/account/logout">로그아웃</a></li>
           </ul>

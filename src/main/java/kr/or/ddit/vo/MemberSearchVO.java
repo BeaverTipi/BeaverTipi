@@ -16,13 +16,14 @@ import lombok.AllArgsConstructor;
 @EqualsAndHashCode(of = "mbrCd")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SearchConditionVO implements Serializable {
+public class MemberSearchVO implements Serializable {
     @NotBlank(groups = UpdateGroup.class)
     private String mbrCd;
 
     // userRoleId를 List<String>으로 변경 (여러 역할을 받을 수 있도록)
     private List<String> userRoleId;
-
+    private int userRoleCount;
+    
     private String mbrId;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate mbrFrstRegDtFrom;
