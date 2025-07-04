@@ -1,39 +1,41 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>    
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %> <%-- Spring Form 태그 라이브러리 선언 --%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html>
 <head>
-<title>회원 목록</title>
-<link rel="stylesheet" href="/app/css/admin/memberManagement/memberList.css">
+	<title>회원 목록</title>
+	<link rel="stylesheet" href="/app/css/admin/memberManagement/memberList.css">
+	<script src="/app/js/admin/memberManagement/memberList.js"></script> 
 </head>
 <body>
+
+<h2>회원 상태 조회&관리</h2>
+
 <div class="container">
-    <%-- modelAttribute는 컨트롤러에서 Model에 담아준 객체의 이름을 지정 --%>
-    <form:form modelAttribute="searchCondition" action="/admin/member/list" method="get">
+    <form:form modelAttribute="searchCondition" action="/admin/member/list" method="get" id="searchForm"> 
         <div class="search-area">
             <div class="search-item">
                 <label for="memberTypeSelect">회원구분</label>
-                <%-- path는 모델 객체(searchCondition)의 필드 이름을 지정 --%>
-                <form:select path="userRoleId" id="memberTypeSelect" class="select-field" multiple="true">
+                <form:select path="userRoleId" id="memberTypeSelect" class="select-field" multiple="multiple">
                     <form:option value="USER" label="일반회원"/>
-                    <form:option value="" label="입주민"/>
                     <form:option value="TENANCY" label="임차인"/>
                     <form:option value="BROKER" label="중개인"/>
+                    <form:option value="ADMIN" label="관리자"/> 
                 </form:select>
             </div>
             <div class="search-item">
-                <label for="memberNameInput">회원명</label>
-                <form:input path="mbrId" id="memberNameInput" placeholder="회원명" class="input-field"/>
+                <label for="memberNameInput">회원아이디</label>
+                <form:input path="mbrId" id="memberNameInput" placeholder="회원아이디" class="input-field"/>
             </div>
             <div class="search-item">
-                <label for="mbrFrstRegDtFrom">가입일(시작)</label>
-                <form:input type="date" path="mbrFrstRegDtFrom" id="mbrFrstRegDtFrom" class="input-field"/>
-            </div>
-            <div class="search-item">
-                <label for="mbrFrstRegDtTo">가입일(종료)</label>
-                <form:input type="date" path="mbrFrstRegDtTo" id="mbrFrstRegDtTo" class="input-field"/>
+                <label>가입일</label> 
+                <div class="date-range-group">
+                    <form:input type="date" path="mbrFrstRegDtFrom" id="mbrFrstRegDtFrom" class="input-field"/>
+                    <span>~</span>
+                    <form:input type="date" path="mbrFrstRegDtTo" id="mbrFrstRegDtTo" class="input-field"/>
+                </div>
             </div>
             <div class="search-item">
                 <label for="memberStatusSelect">회원상태</label>
@@ -51,16 +53,16 @@
             </div>
         </div>
         <div class="search-actions">
+            <button type="button" id="resetButton" class="reset-button">초기화</button> 
             <button type="submit">검색</button>
-        </div>
+            <button type="button" id="saveButton" class="save-button">저장</button> </div>
     </form:form>
 
     <div class="table-container">
-        <table class="table">
-            <thead>
+        <table class="table" id="memberTable"> <thead>
                 <tr>
                     <th>회원구분</th>
-                    <th>회원명</th>
+                    <th>회원아이디</th>
                     <th>가입일</th>
                     <th>회원상태</th>
                     <th>이메일</th>
@@ -69,15 +71,21 @@
             <tbody>
                 <c:if test="${not empty memberList}">
                   <c:forEach items="${memberList}" var="member">
-                    <tr>
-                      <td>
+                    <tr data-mbr-cd="${member.mbrCd}"> <td>
                       	<c:forEach items="${member.memRoleList}" var="role" varStatus="status">
                               ${role.userRoleId}<c:if test="${!status.last}">, </c:if>
                         </c:forEach>
 					  </td>
-                      <td>${member.mbrNm}</td>
+                      <td>${member.mbrId}</td>
                       <td>${member.mbrFrstRegDt}</td>
-                      <td>${member.mbrStatusCode}</td>
+                      <td>
+                          <select class="member-status-select" name="mbrStatusCode" data-original-status="${member.mbrStatusCode}">
+                              <option value="ACTIVE" <c:if test="${member.mbrStatusCode eq 'ACTIVE'}">selected</c:if>>정상</option>
+                              <option value="INACTIVE" <c:if test="${member.mbrStatusCode eq 'INACTIVE'}">selected</c:if>>비활성</option>
+                              <option value="SUSPENDED" <c:if test="${member.mbrStatusCode eq 'SUSPENDED'}">selected</c:if>>정지</option>
+                              <option value="WITHDRAWN" <c:if test="${member.mbrStatusCode eq 'WITHDRAWN'}">selected</c:if>>탈퇴</option>
+                          </select>
+					  </td>
                       <td>${member.mbrEmlAddr}</td>
                     </tr>
                   </c:forEach>
@@ -90,6 +98,5 @@
             </tbody>
         </table>
     </div>
-</div>
 </body>
 </html>
