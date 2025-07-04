@@ -11,25 +11,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.or.ddit.building.managed.service.ManagedService;
 import kr.or.ddit.vo.BuildingVO;
+import kr.or.ddit.vo.UnitVO;
 @Controller
 @RequestMapping("/building/managed")
 public class ManagedUpdateController {
-	
-	@Autowired
-	private ManagedService managedService; 
-	
-	
-	
-	 @GetMapping("/edit")
-	 public String editForm(@RequestParam("unitId") String unitId, Model model) {
-	     BuildingVO unit = managedService.selectUnitById(unitId);
-	     model.addAttribute("unit", unit);
-	     return "building/managed/managedEdit";
-	}
-	 
-	 @PostMapping("/edit")
-	 public String editUnit(@ModelAttribute BuildingVO unitVO) {
-	     managedService.updateUnit(unitVO);
-	     return "redirect:/building/managed/list?bldgId=" + unitVO.getBldgId();
+	   @Autowired
+	    private ManagedService managedService;
+
+	    @GetMapping("/edit")
+	    public String editForm(@RequestParam("unitId") String unitId, Model model) {
+	        BuildingVO unit = managedService.selectUnitById(unitId);
+	        model.addAttribute("buildingVO", unit);
+	        return "building/managed/managedEdit";
+	    }
+
+	    @PostMapping("/edit")
+	    public String editUnit(@ModelAttribute("buildingVO") BuildingVO unitVO) {
+	        managedService.updateUnit(unitVO);
+	        return "redirect:/building/managed/list?bldgId=" + unitVO.getBldgId();
 	    }
 }

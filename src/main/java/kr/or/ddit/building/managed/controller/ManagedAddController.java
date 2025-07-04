@@ -21,16 +21,16 @@ public class ManagedAddController {
 	private ManagedService managedService; 
 	
 	
-	@GetMapping("/add")
-	public String addForm(Model model) {
-	    model.addAttribute("buildingVO", new BuildingVO());
-	    return "building/managed/managedAdd";
-	}
-	
-	@PostMapping("/add")
-	public String addUnit(@ModelAttribute BuildingVO unitVO) {
-		managedService.insertUnit(unitVO);
-		return "redirect:/building/managed/list?bldgId=" + unitVO.getBldgId();
-	}
+    @GetMapping("/add")
+    public String addForm(Model model) {
+        model.addAttribute("buildingVO", new BuildingVO());
+        return "building/managed/managedAdd";
+    }
+
+    @PostMapping("/add")
+    public String addUnit(@ModelAttribute("buildingVO") BuildingVO buildingVO) {
+        managedService.insertUnit(buildingVO);
+        return "redirect:/building/managed/list?bldgId=" + buildingVO.getBldgId();
+    }
 	
 }
