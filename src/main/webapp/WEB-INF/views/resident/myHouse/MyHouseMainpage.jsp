@@ -47,7 +47,7 @@
 <body>
   <div class="container">
     <div class="main-image">
-      <img src="" alt="대표 주택 이미지">
+      <img src="${pageContext.request.contextPath}/volt/assets/img/다운로드 (17).jpg" alt="대표 주택 이미지">
     </div>
 
     <div class="description-board">

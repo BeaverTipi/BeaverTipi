@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpSession;
-import kr.or.ddit.resident.service.ResidentBoardService;
+import kr.or.ddit.resident.service.board.ResidentBoardService;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.ResidentBoardVO;
 
