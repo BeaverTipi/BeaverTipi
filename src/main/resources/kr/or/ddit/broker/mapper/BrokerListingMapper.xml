@@ -91,8 +91,8 @@
 	</collection>
 </resultMap>
 
-<select id="selectLstgListByMbrCd" parameterType="String" resultMap="ListingPackMap">
-WITH TENANCY_LIST AS(
+<sql id="tenancyListView">
+TENANCY_LIST AS(
     SELECT T.RENTAL_PTY_ID AS RENTAL_PTY_ID_T
            ,T.RENTAL_PTY_BIZ_REG_FILE_PATH
            ,T.RENTAL_PTY_REG_BLDG_CNT
@@ -120,7 +120,9 @@ WITH TENANCY_LIST AS(
       FROM TENANCY T
      INNER JOIN MEMBER M ON(T.MBR_CD = M.MBR_CD)
 )
-, BROKER_LIST AS (
+</sql>
+<sql id="brokerListView">
+BROKER_LIST AS (
     SELECT B.BROK_NM
            ,B.BROK_REG_NO
            ,B.CRTF_NO
@@ -146,7 +148,9 @@ WITH TENANCY_LIST AS(
       FROM BROKER B
       JOIN MEMBER M ON B.MBR_CD = M.MBR_CD
 )
-, FAC_OPT_LIST AS (
+</sql>
+<sql id="facOptListView">
+FAC_OPT_LIST AS (
     SELECT LO.LSTG_ID AS LSTG_ID_OPT
            ,LO.FAC_OPT_ID
            ,FO.FAC_OPT_TYPE_CD
@@ -156,6 +160,11 @@ WITH TENANCY_LIST AS(
       FROM LISTING_OPTION LO
      INNER JOIN FACILITY_OPTION FO ON(LO.FAC_OPT_ID = FO.FAC_OPT_ID)
 )
+</sql>
+<select id="selectLstgListByMbrCd" parameterType="String" resultMap="ListingPackMap">
+WITH <include refid="tenancyListView" />
+, <include refid="brokerListView" />
+, <include refid="facOptListView" />
 SELECT L.*
        ,TL.*
        ,BL.*
@@ -168,43 +177,9 @@ SELECT L.*
  ORDER BY L.LSTG_ID ASC
 </select>
 
-<select id="selectLstgDetails" parameterType="Map" resultType="ListingPackVO">
-WITH BROKER_LIST AS (
-    SELECT B.BROK_NM
-           ,B.BROK_REG_NO
-           ,B.CRTF_NO
-           ,B.REPR_NM
-           ,B.REPR_TEL_NO
-           ,B.REG_DTM
-           ,B.BROK_ADDR1
-           ,B.BROK_ADDR2
-           ,M.MBR_CD   AS MBR_CD_B
-           ,M.MBR_ID   AS MBR_ID_B
-           ,M.MBR_PW   AS MBR_PW_B
-           ,M.MBR_NM   AS MBR_NM_B
-           ,M.MBR_NNM  AS MBR_NNM_B
-           ,M.MBR_TELNO AS BROK_MBR_TELNO_B
-           ,M.MBR_EML_ADDR AS BROK_MBR_EML_ADDR_B
-           ,M.MBR_BASIC_ADDR AS BROK_MBR_BASIC_ADDR_B
-           ,M.MBR_DETAIL_ADDR AS BROK_MBR_DETAIL_ADDR_B
-           ,M.MBR_PROFIL_IMAGE AS BROK_MBR_PROFIL_IMAGE_B
-           ,M.MBR_FRST_REG_DT  AS BROK_MBR_FRST_REG_DT_B
-           ,M.MBR_STATUS_CODE  AS BROK_MBR_STATUS_CODE_B
-           ,M.MBR_DELETE_DATE  AS BROK_MBR_DELETE_DATE_B
-           ,M.MBR_ZIP          AS BROK_MBR_ZIP_B
-      FROM BROKER B
-      JOIN MEMBER M ON B.MBR_CD = M.MBR_CD
-)
-, FAC_OPT_LIST AS (
-    SELECT LO.LSTG_ID AS LSTG_ID_OPT
-           ,LO.FAC_OPT_ID
-           ,FO.FAC_OPT_TYPE_CD
-           ,FO.FAC_OPT_NM
-           ,FO.FAC_OPT_DESC
-           ,FO.FAC_TYPE_GROUP_CD
-      FROM LISTING_OPTION LO
-     INNER JOIN FACILITY_OPTION FO ON(LO.FAC_OPT_ID = FO.FAC_OPT_ID)
-)
+<select id="selectLstgDetails" parameterType="Map" resultMap="ListingPackMap">
+WITH <include refid="brokerListView" />
+, <include refid="facOptListView" />
 SELECT L.*
        ,BL.*
        ,FL.*
