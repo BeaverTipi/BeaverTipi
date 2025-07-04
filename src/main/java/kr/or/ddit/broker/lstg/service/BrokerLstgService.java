@@ -9,4 +9,5 @@ import kr.or.ddit.vo.ListingPackVO;
  */
 public interface BrokerLstgService {
 	public List<ListingPackVO> readLstgListByMbrCd(String mbrCd);
+	public ListingPackVO readLstgDetails(String mbrCd, String lstgId);
 }

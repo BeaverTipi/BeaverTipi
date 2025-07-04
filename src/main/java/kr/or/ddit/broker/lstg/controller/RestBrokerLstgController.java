@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.or.ddit.broker.BrokerAuthUnpackingUtility;
 import kr.or.ddit.broker.lstg.service.BrokerLstgService;
 import kr.or.ddit.vo.ListingPackVO;
 import lombok.extern.slf4j.Slf4j;
@@ -25,18 +26,25 @@ public class RestBrokerLstgController {
 	@Autowired
 	BrokerLstgService service;
 	
-	@GetMapping("/list/{mbrCd}")
+	@Autowired
+	BrokerAuthUnpackingUtility authUnpack;
+	
+	@GetMapping("/list")
 	public List<ListingPackVO> lstgList(
 //			@PathVariable String mbrCd
 			Principal principal
 	) {
 		String username = principal.getName();
 		log.error("{}", username);
+		String mbrCd = authUnpack.getMbrCd(username);
 //		String mbrCd = "M2507000110";
 //		log.error("요청한 BROKER의 MEMBER CODE: {}", mbrCd);
 		
 //		List<ListingVO> lstgList = service.readLstgListByMbrCd(mbrCd);
 //		log.error("BROKER의 LSTG LIST: {}", lstgList);
-		return null;
+		
+		List<ListingPackVO> lstgList= service.readLstgListByMbrCd(mbrCd);
+		log.error("{}", lstgList);
+		return lstgList;
 	}
 }
