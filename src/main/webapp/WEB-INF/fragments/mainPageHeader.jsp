@@ -9,7 +9,7 @@
     <ul class="navbar-nav flex-row gap-4 align-items-center mb-0">
       <li class="nav-item"><a class="nav-link" href="#">공지사항</a></li>
       <security:authorize access="isAuthenticated()">
-      <li class="nav-item"><a class="nav-link fw-bold" href="#">마이페이지</a></li>
+      <li class="nav-item"><a class="nav-link fw-bold" href="${pageContext.request.contextPath}/account/read">마이페이지</a></li>
       </security:authorize>
       <security:authorize access="isAnonymous()">
       <li class="nav-item">
@@ -26,13 +26,14 @@
             <i class="bi bi-person-circle fs-4"></i>
           </a>
           <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="userDropdown">
-            <li><a class="dropdown-item" href="#">내 정보</a></li>
-            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/resident/myhouse">마이하우스(입주민)</a></li>
-            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/building/myhouse">마이하우스(임대인)</a></li>
-            <li><a class="dropdown-item" href="http://localhost:81/broker/myoffice">마이오피스(중개인)</a></li>
-            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/admin/member/list">시스템 관리자</a></li>
+            <li><a class="dropdown-item d-flex align-items-center" href="${pageContext.request.contextPath}/resident/myhouse">마이하우스(입주민)</a></li>
+            <li><a class="dropdown-item d-flex align-items-center" href="${pageContext.request.contextPath}/building/myhouse">마이하우스(임대인)</a></li>
+            <li><a class="dropdown-item d-flex align-items-center" href="http://localhost:81/broker/myoffice">마이오피스(중개인)</a></li>
+            <li><a class="dropdown-item d-flex align-items-center" href="${pageContext.request.contextPath}/admin">시스템 관리자</a></li>
+            <li><a class="dropdown-item d-flex align-items-center" href="#">구독/승인</a></li>
+
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" id="logout" href="/account/logout">로그아웃</a></li>
+            <li><a class="dropdown-item d-flex align-items-center text-danger" id="logout" href="/account/logout">로그아웃</a></li>
           </ul>
         </li>
       </security:authorize>
@@ -71,7 +72,6 @@
 			</div>
           <button type="submit" class="btn btn-primary w-100">로그인</button>
 
-          <!-- 🔗 아이디/비번/회원가입 링크 추가 -->
           <div class="text-center my-3 small-link-group">
             <a href="#" class="small-link">아이디 찾기</a> |
             <a href="#" class="small-link">비밀번호 찾기</a> |
