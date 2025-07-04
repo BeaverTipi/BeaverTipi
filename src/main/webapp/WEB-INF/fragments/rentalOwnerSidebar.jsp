@@ -65,12 +65,12 @@
           <ul class="flex-column nav">
             <li class="nav-item ">
 
-              <a class="nav-link" href="${pageContext.request.contextPath}/building/rentalOwnerProduct/list">
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/product/list">
                <span class="sidebar-text">내 매물 정보</span>
               </a>
             </li>
             <li class="nav-item ">
-              <a class="nav-link" href="${pageContext.request.contextPath}/">
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/product/add">
                 <span class="sidebar-text">신규 매물 등록</span>
               </a>
             </li>
