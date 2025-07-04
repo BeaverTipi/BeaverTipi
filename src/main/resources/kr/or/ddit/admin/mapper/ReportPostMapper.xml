@@ -1,104 +1,104 @@
-<!-- <?xml version="1.0" encoding="UTF-8"?> -->
-<!-- <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> -->
-<!-- <mapper namespace="kr.or.ddit.admin.mapper.ReportPostMapper"> -->
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.admin.mapper.ReportPostMapper">
 
-<!--     <resultMap type="kr.or.ddit.vo.BoardVO" id="boardReportMap"> -->
-<!--         <id property="brdNo" column="BRD_NO"/> -->
-<!--         <result property="brdCode" column="BRD_CODE"/> -->
-<!--         <result property="mbrCd" column="MBR_CD"/> -->
-<!--         <result property="brdTitlNm" column="BRD_TITL_NM"/> -->
-<!--         <result property="brdCont" column="BRD_CONT"/> -->
-<!--         <result property="brdPblsDtm" column="BRD_PBLS_DTM"/> -->
-<!--         <result property="brdVwCnt" column="BRD_VW_CNT"/> -->
-<!--         <result property="brdModDtm" column="BRD_MOD_DTM"/> -->
-<!--         <result property="brdDelYn" column="BRD_DEL_YN"/> -->
+    <resultMap type="kr.or.ddit.vo.BoardVO" id="boardReportMap">
+        <id property="brdNo" column="BRD_NO"/>
+        <result property="brdCode" column="BRD_CODE"/>
+        <result property="mbrCd" column="MBR_CD"/>
+        <result property="brdTitlNm" column="BRD_TITL_NM"/>
+        <result property="brdCont" column="BRD_CONT"/>
+        <result property="brdPblsDtm" column="BRD_PBLS_DTM"/>
+        <result property="brdVwCnt" column="BRD_VW_CNT"/>
+        <result property="brdModDtm" column="BRD_MOD_DTM"/>
+        <result property="brdDelYn" column="BRD_DEL_YN"/>
         
-<!--         <result property="reportId" column="REPORT_ID"/> -->
-<!--         <result property="rptCode" column="RPT_CODE"/> -->
-<!--         <result property="rptTargetId" column="RPT_TARGET_ID"/> -->
-<!--         <result property="rptStatusCode" column="RPT_STATUS_CODE"/> -->
-<!--         <result property="rptDelYn" column="RPT_DEL_YN"/> -->
-<!--     </resultMap> -->
+        <result property="reportId" column="REPORT_ID"/>
+        <result property="rptCode" column="RPT_CODE"/>
+        <result property="rptTargetId" column="RPT_TARGET_ID"/>
+        <result property="rptStatusCode" column="RPT_STATUS_CODE"/>
+        <result property="rptDelYn" column="RPT_DEL_YN"/>
+    </resultMap>
 
-<!--     <sql id="searchConditions"> -->
-<!--         <if test="detailSearch != null"> -->
-<!--             <if test="detailSearch.searchTitle != null and detailSearch.searchTitle != ''"> -->
-<!--                 AND B.BRD_TITL_NM LIKE '%' || #{detailSearch.searchTitle} || '%' -->
-<!--             </if> -->
-<!--             <if test="detailSearch.searchWriter != null and detailSearch.searchWriter != ''"> -->
-<!--                 AND B.MBR_CD LIKE '%' || #{detailSearch.searchWriter} || '%' -->
-<!--             </if> -->
-<!--             <if test="detailSearch.searchRptStatusCode != null and detailSearch.searchRptStatusCode != ''"> -->
-<!--                 AND R.RPT_STATUS_CODE = #{detailSearch.searchRptStatusCode} -->
-<!--             </if> -->
-<!--             <if test="detailSearch.brdPblsDtmFrom != null"> -->
-<!--                 AND B.BRD_PBLS_DTM >= #{detailSearch.brdPblsDtmFrom} -->
-<!--             </if> -->
-<!--             <if test="detailSearch.brdPblsDtmTo != null"> -->
-<!--                 AND B.BRD_PBLS_DTM &lt;= #{detailSearch.brdPblsDtmTo} -->
-<!--             </if> -->
-<!--         </if> -->
-<!--         <if test="simpleSearch != null"> -->
-<!--              <if test="simpleSearch.searchWord != null and simpleSearch.searchWord != ''"> -->
-<!--                  AND ( -->
-<!--                         B.BRD_TITL_NM LIKE '%' || #{simpleSearch.searchWord} || '%' OR -->
-<!--                         B.BRD_CONT LIKE '%' || #{simpleSearch.searchWord} || '%' -->
-<!--                      ) -->
-<!--              </if> -->
-<!--         </if> -->
-<!--     </sql> -->
+    <sql id="searchConditions">
+        <if test="detailSearch != null">
+            <if test="detailSearch.searchTitle != null and detailSearch.searchTitle != ''">
+                AND B.BRD_TITL_NM LIKE '%' || #{detailSearch.searchTitle} || '%'
+            </if>
+            <if test="detailSearch.searchWriter != null and detailSearch.searchWriter != ''">
+                AND B.MBR_CD LIKE '%' || #{detailSearch.searchWriter} || '%'
+            </if>
+            <if test="detailSearch.searchRptStatusCode != null and detailSearch.searchRptStatusCode != ''">
+                AND R.RPT_STATUS_CODE = #{detailSearch.searchRptStatusCode}
+            </if>
+            <if test="detailSearch.brdPblsDtmFrom != null">
+                AND B.BRD_PBLS_DTM >= #{detailSearch.brdPblsDtmFrom}
+            </if>
+            <if test="detailSearch.brdPblsDtmTo != null">
+                AND B.BRD_PBLS_DTM &lt;= #{detailSearch.brdPblsDtmTo}
+            </if>
+        </if>
+        <if test="simpleSearch != null">
+             <if test="simpleSearch.searchWord != null and simpleSearch.searchWord != ''">
+                 AND (
+                        B.BRD_TITL_NM LIKE '%' || #{simpleSearch.searchWord} || '%' OR
+                        B.BRD_CONT LIKE '%' || #{simpleSearch.searchWord} || '%'
+                     )
+             </if>
+        </if>
+    </sql>
 
-<!--     <select id="selectReportedPostList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultMap="boardReportMap"> -->
-<!--         SELECT -->
-<!--             A.* -->
-<!--         FROM ( -->
-<!--             SELECT -->
-<!--                 ROW_NUMBER() OVER (ORDER BY B.BRD_PBLS_DTM DESC) AS RNUM,  -->
-<!--                 B.BRD_NO, -->
-<!--                 B.BRD_TITL_NM, -->
-<!--                 B.BRD_CONT, -->
-<!--                 B.MBR_CD,  -->
-<!--                 B.BRD_PBLS_DTM,  -->
-<!--                 B.BRD_VW_CNT, -->
-<!--                 R.REPORT_ID, -->
-<!--                 R.RPT_CODE, -->
-<!--                 R.RPT_TARGET_ID, -->
-<!--                 R.RPT_STATUS_CODE -->
-<!--             FROM -->
-<!--                 BOARD B -->
-<!--             JOIN -->
-<!--                 REPORT R ON B.BRD_NO = R.BRD_NO -->
-<!--             WHERE -->
-<!--                 1=1 -->
-<!--                 AND R.RPT_DEL_YN = 'N' -->
-<!--                 AND B.BRD_DEL_YN = 'N' -->
-<!--                 AND R.RPT_CODE = '게시글'  -->
-<!--             <include refid="searchConditions" /> -->
-<!--         ) A -->
-<!--         WHERE RNUM BETWEEN #{firstRecordIndex} AND #{lastRecordIndex} -->
-<!--     </select> -->
+    <select id="selectReportedPostList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultMap="boardReportMap">
+        SELECT
+            A.*
+        FROM (
+            SELECT
+                ROW_NUMBER() OVER (ORDER BY B.BRD_PBLS_DTM DESC) AS RNUM, 
+                B.BRD_NO,
+                B.BRD_TITL_NM,
+                B.BRD_CONT,
+                B.MBR_CD, 
+                B.BRD_PBLS_DTM, 
+                B.BRD_VW_CNT,
+                R.REPORT_ID,
+                R.RPT_CODE,
+                R.RPT_TARGET_ID,
+                R.RPT_STATUS_CODE
+            FROM
+                BOARD B
+            JOIN
+                REPORT R ON B.BRD_NO = R.BRD_NO
+            WHERE
+                1=1
+                AND R.RPT_DEL_YN = 'N'
+                AND B.BRD_DEL_YN = 'N'
+                AND R.RPT_CODE = '게시글' 
+            <include refid="searchConditions" />
+        ) A
+        WHERE RNUM BETWEEN #{firstRecordIndex} AND #{lastRecordIndex}
+    </select>
 
-<!--     <select id="selectReportedPostCount" parameterType="kr.or.ddit.util.page.PaginationInfo" resultType="int"> -->
-<!--         SELECT -->
-<!--             COUNT(*) -->
-<!--         FROM -->
-<!--             BOARD B -->
-<!--         JOIN -->
-<!--             REPORT R ON B.BRD_NO = R.BRD_NO -->
-<!--         WHERE -->
-<!--             1=1 -->
-<!--             AND R.RPT_DEL_YN = 'N' -->
-<!--             AND B.BRD_DEL_YN = 'N' -->
-<!--             AND R.RPT_CODE = '게시글'  -->
-<!--         <include refid="searchConditions" /> -->
-<!--     </select> -->
+    <select id="selectReportedPostCount" parameterType="kr.or.ddit.util.page.PaginationInfo" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            BOARD B
+        JOIN
+            REPORT R ON B.BRD_NO = R.BRD_NO
+        WHERE
+            1=1
+            AND R.RPT_DEL_YN = 'N'
+            AND B.BRD_DEL_YN = 'N'
+            AND R.RPT_CODE = '게시글' 
+        <include refid="searchConditions" />
+    </select>
 
-<!--     <update id="updateReportStatus" parameterType="BoardVO"> -->
-<!--         UPDATE REPORT -->
-<!--         SET -->
-<!--             RPT_STATUS_CODE = #{rptStatusCode} -->
-<!--         WHERE -->
-<!--             REPORT_ID = #{reportId} -->
-<!--     </update> -->
+    <update id="updateReportStatus" parameterType="BoardVO">
+        UPDATE REPORT
+        SET
+            RPT_STATUS_CODE = #{rptStatusCode}
+        WHERE
+            REPORT_ID = #{reportId}
+    </update>
 
-<!-- </mapper> -->
+</mapper> 
