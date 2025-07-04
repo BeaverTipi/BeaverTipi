@@ -6,11 +6,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>새 공지사항 등록</title>
+<title>공지사항 수정</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/board/notice.css">
 </head>
 <body>
-	<h1>새 공지사항 등록</h1>
+	<h1>공지사항 수정</h1>
 	<div class="card">
 		<div class="card-body">
 			<form:form modelAttribute="board" method="post">
@@ -22,10 +22,9 @@
 					</div>
 					<div class="form-control">
 						<label class="label" for="brdCode">공지유형</label>
-						<form:radiobutton path="brdCode" value="N001"  />공지사항
-						<form:radiobutton path="brdCode" value="F001" />FAQ
-						<form:radiobutton path="brdCode" value="Q001" />QnA
-						<form:radiobutton path="brdCode" value="Q001" />QnA
+						<form:checkbox path="brdCode" value="공지사항" cssClass="" />공지사항
+						<form:checkbox path="brdCode" value="FAQ" cssClass="" />FAQ
+						<form:checkbox path="brdCode" value="QnA" cssClass="" />QnA
 						<form:errors path="brdCode" cssClass="text-danger" />			
 					</div>
 					<c:forEach var="noticeItem" items="${board.notice}" varStatus="status">

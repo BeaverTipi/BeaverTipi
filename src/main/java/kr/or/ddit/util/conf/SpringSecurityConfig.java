@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.client.JdbcOAuth2AuthorizedClientServ
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.context.DelegatingSecurityContextRepository;
@@ -35,6 +36,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.or.ddit.main.mapper.MemberMapper;
 import kr.or.ddit.util.security.auth.CustomUserDetailsService;
+import kr.or.ddit.util.security.jwt.JwtAuthenticationFilter;
 import kr.or.ddit.util.security.jwt.JwtProvider;
 import kr.or.ddit.util.security.oauth2.CustomOAuth2UserService;
 import kr.or.ddit.util.security.oauth2.CustomOidcUserService;

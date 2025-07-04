@@ -9,7 +9,7 @@
 <script src="${pageContext.request.contextPath}/volt/vendor/onscreen/dist/on-screen.umd.min.js"></script>
 
 <!-- Slider -->
-<script src="${pageContext.request.contextPath}/volt/vendor/nouislider/dist/nouislider.min.js"></script>
+<script src="${pageContext.request.contextPath}/volt/vendor/nouislider/distribute/nouislider.min.js"></script>
 
 <!-- Smooth scroll -->
 <script src="${pageContext.request.contextPath}/volt/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
@@ -38,14 +38,9 @@
 
 <!-- Github buttons -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-<!-- kakao주소 -->
-<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
-<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<!-- 전화번호 -->
-<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@17.0.19/build/js/utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@17.0.19/build/js/intlTelInput.min.js"></script>
 <!-- axios -->
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <!-- custom JS -->
 <script src="${pageContext.request.contextPath}/volt/assets/js/volt.js"></script>
 <!-- Custom axios -->

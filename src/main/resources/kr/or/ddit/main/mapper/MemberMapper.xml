@@ -76,8 +76,8 @@
 			, #{mbrBasicAddr}
 			, #{mbrDetailAddr}
 			, #{mbrProfilImage}
-			, SYSDATE
-			, 'ACTIVE'
+			, #{mbrFrstRegDt}
+			, #{mbrStatusCode}
 			, #{mbrDeleteDate}
 			, #{mbrZip}
 		)
