@@ -87,7 +87,7 @@
 		WHERE rsd_brd_id = #{rsdBrdId}
 	</delete>
 
-	<update id="updateBoardViewCount" parameterType="String">
+	<update id="updateBoardViewCount" parameterType="ResidentBoardVO">
 		UPDATE
 		RESIDENT_BOARD
 		SET RSD_BRD_CNT = RSD_BRD_CNT + 1

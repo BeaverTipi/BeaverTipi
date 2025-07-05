@@ -14,7 +14,7 @@ public interface ResidentBoardMapper {
 
 	int selectTotalCount(PaginationInfo paging);
 
-	ResidentBoardVO selectBoardById(String rsdBrdId);
+	ResidentBoardVO selectBoardById(ResidentBoardVO board);
 
 	int updateBoard(ResidentBoardVO boardVO);
 
@@ -22,6 +22,6 @@ public interface ResidentBoardMapper {
 
 	int deleteBoard(String rsdBrdId);
 
-	int updateBoardViewCount(String rsdBrdId);
+	int updateBoardViewCount(ResidentBoardVO board);
 
 }
