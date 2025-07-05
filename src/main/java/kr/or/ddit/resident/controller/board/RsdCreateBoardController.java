@@ -37,7 +37,7 @@ public class RsdCreateBoardController {
 	
 	@PostMapping("/board")
 	public String createBoard(	
-			ResidentBoardVO board,
+			@ModelAttribute("board") ResidentBoardVO board,
 			@AuthenticationPrincipal RealUserWrapper<MemberVO> principal
 			)
 	{
