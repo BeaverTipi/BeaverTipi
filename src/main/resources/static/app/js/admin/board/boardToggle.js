@@ -39,3 +39,4 @@ document.addEventListener("DOMContentLoaded",()=>{
 		if (selected) {
 			toggleDetail(selected.value);
 		}
+});
