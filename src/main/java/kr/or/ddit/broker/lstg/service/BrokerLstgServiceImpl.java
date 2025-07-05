@@ -22,12 +22,6 @@ public class BrokerLstgServiceImpl implements BrokerLstgService{
 	}
 
 	@Override
-	public ListingPackVO readLstgDetails(String mbrCd, String lstgId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public ListingPackVO readLstgDetails(Map<String, String> lstgDetailParams) {
 		ListingPackVO lstgDetails = mapper.selectLstgDetails(lstgDetailParams);
 		return lstgDetails;
