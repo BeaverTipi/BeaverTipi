@@ -17,11 +17,16 @@ public class ResidentBoardServiceImpl implements ResidentBoardService {
 	@Autowired
 	private ResidentBoardMapper mapper;
 
-	
+	@Override
+	public ResidentBoardVO getBoard(String rsdBrdId) {
+		return mapper.selectBoardById(rsdBrdId);
+	}
+
 	@Override
 	public void insertBoard(ResidentBoardVO boardVO) {
 		String id = UUID.randomUUID().toString().substring(0,8);
 		boardVO.setRsdBrdId(id);
+		
 		boardVO.setRsdBrdPblsDtm(LocalDateTime.now());
 		boardVO.setRsdBrdDelYn("N");
 		boardVO.setRsdBrdCnt(0);
@@ -40,7 +45,10 @@ public class ResidentBoardServiceImpl implements ResidentBoardService {
 		return mapper.deleteBoard(rsdBrdId);
 	}
 
-	
+	@Override
+	public void viewCount(String rsdBrdId) {
+		mapper.updateBoardViewCount(rsdBrdId);
+	}
 
 	@Override
 	public List<ResidentBoardVO> getBoardList(PaginationInfo paging) {
@@ -52,16 +60,6 @@ public class ResidentBoardServiceImpl implements ResidentBoardService {
 	public int getTotalRecord(PaginationInfo paging) {
 		// TODO Auto-generated method stub
 		return mapper.selectTotalCount(paging);
-	}
-
-	@Override
-	public ResidentBoardVO getBoard(ResidentBoardVO board) {
-		return mapper.selectBoardById(board);
-	}
-
-	@Override
-	public void viewCount(ResidentBoardVO board) {
-		mapper.updateBoardViewCount(board);
 	}
 
 	

@@ -4,25 +4,21 @@ import java.util.List;
 
 import kr.or.ddit.vo.BuildingVO;
 
-
-
-
-
 public interface ManagedService {
 
-    // 건물 등록
-    int insertBuilding(BuildingVO building);
-
-    // 건물 + 세대 목록 조회 (bldgId 기준)
-    List<BuildingVO> selectBuildingListByBldgId(String bldgId);
-
-    // 건물 단건 조회 (unitId 기준)
-    BuildingVO selectBuildingById(String unitId);
-
-    // 건물 세대 정보 수정
-    int updateBuilding(BuildingVO building);
-
-    // 건물 세대 삭제
-    int deleteBuilding(String unitId);
+    
+    // 세대 등록
+    int insertUnit(BuildingVO unit);
+    
+    // 세대 목록 조회 (건물 기준)
+    List<BuildingVO> selectUnitListByBldgId(String bldgId);
+    
+    // 세대 상세 조회
+    BuildingVO selectUnitById(String unitId);
+    
+    // 세대 수정
+    int updateUnit(BuildingVO unit);
+    
+    // 세대 삭제
+    int deleteUnit(String unitId);
 }
-

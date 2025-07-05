@@ -97,6 +97,5 @@ public class MemberUpdateController {
 			redirectAttributes.addFlashAttribute(errorName, errors);
 		}
 		return lvn;
-		
 	}
 }

@@ -14,5 +14,4 @@
 	 INNER JOIN BROKER B ON(M.MBR_CD = B.MBR_CD)
 	 WHERE M.MBR_ID = #{mbrId}
 </select>
-
 </mapper>

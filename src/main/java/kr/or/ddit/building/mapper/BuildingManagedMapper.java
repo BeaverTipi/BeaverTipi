@@ -6,22 +6,20 @@ import org.apache.ibatis.annotations.Mapper;
 
 import kr.or.ddit.vo.BuildingVO;
 
-
 @Mapper
 public interface BuildingManagedMapper {
-	 // 건물 등록
-    int insertBuilding(BuildingVO building);
+    // 세대 등록
+    int insertUnit(BuildingVO unit);
 
-    // 건물 기준 목록 조회 (세대 포함)
-    List<BuildingVO> selectBuildingListByBldgId(String bldgId);
+    // 세대 목록 조회 (특정 건물 기준 등)
+    List<BuildingVO> selectUnitListByBldgId(String bldgId);
 
-    // 건물 단건 조회 (세대 포함)
-    BuildingVO selectBuildingById(String unitId);
+    // 세대 상세 조회
+    BuildingVO selectUnitById(String unitId);
 
-    // 건물 세대 정보 수정 (UNIT 기준이지만 BUILDING 관리화면에서 처리)
-    int updateBuilding(BuildingVO building);
+    // 세대 수정
+    int updateUnit(BuildingVO unit);
 
-    // 건물 세대 삭제
-    int deleteBuilding(String unitId);
+    // 세대 삭제
+    int deleteUnit(String unitId);
 }
-

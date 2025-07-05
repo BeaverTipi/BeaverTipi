@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.admin.mapper.NoticePostMapper;
-import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.vo.BoardVO;
 import lombok.RequiredArgsConstructor;
 
@@ -17,8 +16,8 @@ public class NoticePostServiceImpl implements NoticePostService {
 	private final NoticePostMapper mapper;
 	
 	@Override
-	public List<BoardVO> readNoticeList(PaginationInfo<BoardVO> paging) {
-		return mapper.selectNoticeList(paging);
+	public List<BoardVO> readNoticeList() {
+		return mapper.selectNoticeList();
 	}
 
 	@Override
@@ -40,11 +39,6 @@ public class NoticePostServiceImpl implements NoticePostService {
 	public void deleteNotice(BoardVO board) {
 		mapper.deleteNotice(board);
 		
-	}
-
-	@Override
-	public int getTotalNoticeRecord(PaginationInfo<BoardVO> paging) {
-		return mapper.selectTotalNoticeRecord(paging);
 	}
 
 }

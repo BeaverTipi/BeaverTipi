@@ -238,11 +238,9 @@ label {
     border: 1px solid #ccc; 
     box-shadow: inset 0 2px 0 0 #f2f5f8;
 }
-
 .form-control label {
-  flex: 0 0 150px;
+  flex: 0 0 120px;
   margin-right: 10px;
-  white-space: nowrap;
 }
 
 .form-control input,
@@ -254,9 +252,9 @@ label {
 }
 
 .form-control textarea {
-  height: 500px;         
-  resize: none;           
-  width: 100%;            
+  height: 500px;          /* 고정 높이 */
+  resize: none;           /* 크기 조정 막기 */
+  width: 100%;            /* 가로는 꽉 채우기 */
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -264,42 +262,6 @@ label {
   background: #fff;
 }
 
-.form-detail {
-	display: flex;
-	flex-wrap: wrap;             
-	align-items: flex-start;     
-	justify-content: flex-start;
-	padding: 10px 15px;
-	margin-bottom: 15px;
-	border: 1px solid #ccc;
-	outline: none;
-	border-radius: 4px; 
-	line-height: 1.5em;
-	background: #fff;
-	box-shadow: inset 0 2px 0 0 #f2f5f8;
-	gap: 10px;                  
-}
-
-.form-detail > label {
-	flex: 0 0 100%;             
-	font-weight: bold;
-	margin-bottom: 5px;
-}
-
-.form-detail div {
-	display: flex;
-	align-items: center;
-	gap: 10px;                   
-}
-
-.form-detail div label {
-	margin-right: 5px;
-	white-space: nowrap;         
-}
-
-.form-detail input[type="radio"] {
-	margin-right: 3px;           
-}
 
 .input-group-addon {
     background-color: #f0f0f0; 

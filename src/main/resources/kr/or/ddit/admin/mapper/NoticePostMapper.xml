@@ -4,54 +4,35 @@
 	<resultMap type="kr.or.ddit.vo.BoardVO" id="boardMap" autoMapping="true">
 		<id property="brdNo" column="BRD_NO"/>
 		<association property="member" javaType="kr.or.ddit.vo.MemberVO" autoMapping="true" />
-		<association property="boardCartegory" javaType="kr.or.ddit.vo.BoardCartegoryVO">
-			<result property="brdCtgry" column="BDC_BRD_CTGRY" />
-			<result property="brdCmntYn" column="BDC_BRD_CMNT_YN"/>
-			<result property="brdCode" column="BDC_BRD_CODE"/>
-		</association>
+		<association property="boardCartegory" javaType="kr.or.ddit.vo.BoardCartegoryVO" autoMapping="true" />
 	</resultMap>
-	<select id="selectNoticeList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultMap="boardMap">
-	SELECT *
-	FROM
-	(
-		SELECT
-			ROWNUM rn, inner.*
-		FROM		
-			(SELECT 
-				BD.BRD_NO,
-				BDC.BRD_CODE AS BDC_BRD_CODE,
-				MEM.MBR_CD,
-				BD.BRD_TITL_NM,
-				BD.BRD_CONT,
-				BD.BRD_PBLS_DTM,
-				BD.BRD_VW_CNT,
-				BD.BRD_MOD_DTM,
-				BD.BRD_DEL_YN,
-				BDC.BRD_CTGRY AS BDC_BRD_CTGRY,
-				BDC.BRD_CMNT_YN AS BDC_BRD_CMNT_YN
-			FROM
-				BOARD BD
-				LEFT JOIN MEMBER MEM ON BD.MBR_CD = MEM.MBR_CD
-				LEFT JOIN BOARD_CARTEGORY BDC ON BD.BRD_CODE = BDC.BRD_CODE
-				ORDER BY BD.BRD_PBLS_DTM DESC
-				) inner
-			WHERE ROWNUM &lt;= #{lastRecordIndex}
-	)
-	WHERE rn &gt;= #{firstRecordIndex}
-	</select>
-	<select id="selectNoticeById" resultMap="boardMap">
+	<select id="selectNoticeList" resultMap="boardMap">
 		SELECT 
 			BD.BRD_NO,
-			BDC.BRD_CODE AS BDC_BRD_CODE,
+			BDC.BRD_CODE,
 			MEM.MBR_CD,
 			BD.BRD_TITL_NM,
 			BD.BRD_CONT,
 			BD.BRD_PBLS_DTM,
-			BD.BRD_VW_CNT,
+			BD.BRD_VM_CNT,
 			BD.BRD_MOD_DTM,
-			BD.BRD_DEL_YN,
-			BDC.BRD_CTGRY AS BDC_BRD_CTGRY,
-			BDC.BRD_CMNT_YN AS BDC_BRD_CMNT_YN
+			BD.BRD_DEL_YN
+		FROM
+			BOARD BD
+			LEFT JOIN MEMBER MEM ON BD.MBR_CD = MEM.MBR_CD
+			LEFT JOIN BOARD_CARTEGORY BDC ON BD.BRD_CODE = BDC.BRD_CODE
+	</select>
+	<select id="selectNoticeById" resultMap="boardMap">
+		SELECT 
+			BD.BRD_NO,
+			BDC.BRD_CODE,
+			MEM.MBR_CD,
+			BD.BRD_TITL_NM,
+			BD.BRD_CONT,
+			BD.BRD_PBLS_DTM,
+			BD.BRD_VM_CNT,
+			BD.BRD_MOD_DTM,
+			BD.BRD_DEL_YN
 		FROM
 			BOARD BD
 			LEFT JOIN MEMBER MEM ON BD.MBR_CD = MEM.MBR_CD
@@ -67,7 +48,7 @@
 			BRD_TITL_NM,
 			BRD_CONT,
 			BRD_PBLS_DTM,
-			BRD_VW_CNT,
+			BRD_VM_CNT,
 			BRD_MOD_DTM,
 			BRD_DEL_YN
 		) VALUES (
@@ -77,7 +58,7 @@
 			#{brdTitlNm},
 			#{brdCont},
 			#{brdPblsDtm},
-			#{brdVwCnt},
+			#{brdVmCnt},
 			#{brdModDtm},
 			#{brdDelYn}
 		)
@@ -87,8 +68,7 @@
 			BOARD
 		SET
 			BRD_TITL_NM = #{brdTitlNm},
-			BRD_CONT= #{brdCont},
-			BRD_MOD_DTM = SYSDATE
+			BRD_CONT= #{brdCont}
 		WHERE
 			BRD_NO = #{brdNo}
 	</update>
@@ -96,15 +76,8 @@
 		UPDATE
 			BOARD
 		SET
-			BRD_DEL_YN= 'Y'
+			BRD_DEL_YN= #{brdDelYn}
 		WHERE
 			BRD_NO = #{brdNo}
-			AND BRD_DEL_YN='N'
 	</update>
-	<select id="selectTotalNoticeRecord" resultType="int">
-		SELECT
-			COUNT(*)
-		FROM
-			BOARD
-	</select>
 </mapper>

@@ -91,8 +91,8 @@
 	</collection>
 </resultMap>
 
-<sql id="tenancyListView">
-TENANCY_LIST AS(
+<select id="selectLstgListByMbrCd" parameterType="String" resultMap="ListingPackMap">
+WITH TENANCY_LIST AS(
     SELECT T.RENTAL_PTY_ID AS RENTAL_PTY_ID_T
            ,T.RENTAL_PTY_BIZ_REG_FILE_PATH
            ,T.RENTAL_PTY_REG_BLDG_CNT
@@ -120,9 +120,7 @@ TENANCY_LIST AS(
       FROM TENANCY T
      INNER JOIN MEMBER M ON(T.MBR_CD = M.MBR_CD)
 )
-</sql>
-<sql id="brokerListView">
-BROKER_LIST AS (
+, BROKER_LIST AS (
     SELECT B.BROK_NM
            ,B.BROK_REG_NO
            ,B.CRTF_NO
@@ -148,9 +146,7 @@ BROKER_LIST AS (
       FROM BROKER B
       JOIN MEMBER M ON B.MBR_CD = M.MBR_CD
 )
-</sql>
-<sql id="facOptListView">
-FAC_OPT_LIST AS (
+, FAC_OPT_LIST AS (
     SELECT LO.LSTG_ID AS LSTG_ID_OPT
            ,LO.FAC_OPT_ID
            ,FO.FAC_OPT_TYPE_CD
@@ -160,11 +156,6 @@ FAC_OPT_LIST AS (
       FROM LISTING_OPTION LO
      INNER JOIN FACILITY_OPTION FO ON(LO.FAC_OPT_ID = FO.FAC_OPT_ID)
 )
-</sql>
-<select id="selectLstgListByMbrCd" parameterType="String" resultMap="ListingPackMap">
-WITH <include refid="tenancyListView" />
-, <include refid="brokerListView" />
-, <include refid="facOptListView" />
 SELECT L.*
        ,TL.*
        ,BL.*
@@ -175,19 +166,6 @@ SELECT L.*
   LEFT OUTER JOIN FAC_OPT_LIST FL ON(L.LSTG_ID = FL.LSTG_ID_OPT)
  WHERE L.MBR_CD = #{mbrCd}
  ORDER BY L.LSTG_ID ASC
-</select>
-
-<select id="selectLstgDetails" parameterType="Map" resultMap="ListingPackMap">
-WITH <include refid="brokerListView" />
-, <include refid="facOptListView" />
-SELECT L.*
-       ,BL.*
-       ,FL.*
-  FROM LISTING L
-  LEFT OUTER JOIN BROKER_LIST BL ON(L.MBR_CD = BL.MBR_CD_B)
-  LEFT OUTER JOIN FAC_OPT_LIST FL ON(L.LSTG_ID = FL.LSTG_ID_OPT)
- WHERE BL.MBR_CD_B = #{mbrCd}
-   AND L.LSTG_ID = #{lstgId}
 </select>
 
 </mapper>

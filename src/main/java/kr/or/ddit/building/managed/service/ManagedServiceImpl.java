@@ -7,40 +7,39 @@ import org.springframework.stereotype.Service;
 
 import kr.or.ddit.building.mapper.BuildingManagedMapper;
 import kr.or.ddit.vo.BuildingVO;
-
-
 @Service
 public class ManagedServiceImpl implements ManagedService {
-		
-    @Autowired
-    private BuildingManagedMapper buildingManagedMapper;
-
-    @Override
-    public int insertBuilding(BuildingVO building) {
-        return buildingManagedMapper.insertBuilding(building);
-    }
-
-    @Override
-    public List<BuildingVO> selectBuildingListByBldgId(String bldgId) {
-        return buildingManagedMapper.selectBuildingListByBldgId(bldgId);
-    }
-
-    @Override
-    public BuildingVO selectBuildingById(String unitId) {
-        return buildingManagedMapper.selectBuildingById(unitId);
-    }
-
-    @Override
-    public int updateBuilding(BuildingVO building) {
-        return buildingManagedMapper.updateBuilding(building);
-    }
-
-    @Override
-    public int deleteBuilding(String unitId) {
-        return buildingManagedMapper.deleteBuilding(unitId);
-    }
-
+	@Autowired
+	private BuildingManagedMapper buildingManagedMapper;
 	
+	@Override
+	public int insertUnit(BuildingVO unit) {
+		// TODO Auto-generated method stub
+		return buildingManagedMapper.insertUnit(unit);
+	}
+
+	@Override
+	public List<BuildingVO> selectUnitListByBldgId(String bldgId) {
+		// TODO Auto-generated method stub
+		return buildingManagedMapper.selectUnitListByBldgId(bldgId);
+	}
+
+	@Override
+	public BuildingVO selectUnitById(String unitId) {
+		// TODO Auto-generated method stub
+		return buildingManagedMapper.selectUnitById(unitId);
+	}
+
+	@Override
+	public int updateUnit(BuildingVO unit) {
+		// TODO Auto-generated method stub
+		return buildingManagedMapper.updateUnit(unit);
+	}
+
+	@Override
+	public int deleteUnit(String unitId) {
+		// TODO Auto-generated method stub
+		return buildingManagedMapper.deleteUnit(unitId);
+	}
 
 }
-

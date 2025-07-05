@@ -14,6 +14,4 @@ public class UnitResidentVO implements Serializable {
 	private String rentalPtyId;
 	private String moveInDt;
 	private String mbrCd;
-	
-	private BuildingVO building;
 }

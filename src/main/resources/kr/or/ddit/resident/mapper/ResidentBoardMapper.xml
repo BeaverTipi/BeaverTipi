@@ -4,6 +4,7 @@
 	namespace="kr.or.ddit.resident.mapper.ResidentBoardMapper">
 	<resultMap type="ResidentBoardVO" id="residentBoardMap"
 		autoMapping="true" />
+
 <sql id="searchCondition">
   <where>
     rsd_brd_del_yn = 'N'
@@ -27,6 +28,7 @@
     </if>
   </where>
 </sql>
+
 
 	<!-- 전체 목록 조회 -->
 	<select id="selectBoardList"
@@ -87,7 +89,7 @@
 		WHERE rsd_brd_id = #{rsdBrdId}
 	</delete>
 
-	<update id="updateBoardViewCount" parameterType="ResidentBoardVO">
+	<update id="updateBoardViewCount" parameterType="String">
 		UPDATE
 		RESIDENT_BOARD
 		SET RSD_BRD_CNT = RSD_BRD_CNT + 1

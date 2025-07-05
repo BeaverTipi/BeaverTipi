@@ -11,7 +11,7 @@ public interface ResidentBoardService {
 	
 	public int getTotalRecord(PaginationInfo paging);
 	
-	public ResidentBoardVO getBoard(ResidentBoardVO board);
+	public ResidentBoardVO getBoard(String rsdBrdId);
 	
 	public void insertBoard(ResidentBoardVO boardVO);
 	
@@ -19,6 +19,6 @@ public interface ResidentBoardService {
 	
 	public int deleteBoard(String rsdBrdId);
 	
-	public void viewCount(ResidentBoardVO board);
+	public void viewCount(String rsdBrdId);
 	
 }

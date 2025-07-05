@@ -1,54 +1,24 @@
 package kr.or.ddit.vo;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import jakarta.validation.constraints.NotBlank;
-import kr.or.ddit.util.validate.DeleteGroup;
-import kr.or.ddit.util.validate.InsertGroup;
-import kr.or.ddit.util.validate.UpdateGroup;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(of="brdNo")
-public class BoardVO implements Serializable{
-	@NotBlank(groups = {UpdateGroup.class, DeleteGroup.class})
+public class BoardVO {
 	private String brdNo;
-	@NotBlank
 	private String brdCode;
-	@NotBlank(groups = InsertGroup.class)
 	private String mbrCd;
-	@NotBlank
 	private String brdTitlNm;
-	@NotBlank
 	private String brdCont;
 	private LocalDateTime brdPblsDtm;
-	private int brdVwCnt;
+	private Integer brdVmCnt;
 	private LocalDateTime brdModDtm;
-	@NotBlank(groups = {InsertGroup.class, DeleteGroup.class})
 	private String brdDelYn;
 	
 	private MemberVO member;
-	private BoardCartegoryVO boardCartegory;
 	private List<NoticeVO> notice;
-	private List<FAQVO> faq;
-	private List<QnAVO> qna;
-	
-	
-	
-	// REPORT 테이블 관련 필드
-	private String reportId;        // REPORT_ID (신고 번호)
-    private String rptCode;         // RPT_CODE (신고 유형: '회원', '관리주택', '매물' 등)
-    private String rptTargetId;     // RPT_TARGET_ID (신고 대상 ID, 예: MBR_CD, BRD_NO)
-    private String rptStatusCode;   // RPT_STATUS_CODE (신고 처리 상태 코드: '등록', '접수처리중', '처리완료' 등)
-    private String rptDelYn;        // RPT_DEL_YN (신고 삭제 여부)
-
-    // 검색 조건을 위한 필드
-    private String searchTitle;     // 제목 검색
-    private String searchWriter;    // 작성자 ID (MBR_CD) 검색
-    private String searchRptStatusCode; // 신고 처리 상태 검색
-    private LocalDateTime brdPblsDtmFrom; // 게시글 게시일시 (신고일자로 사용) 시작
-    private LocalDateTime brdPblsDtmTo;   // 게시글 게시일시 (신고일자로 사용) 종료
 }

@@ -1,83 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.admin.mapper.ManageMemberMapper">
-	<resultMap type="MemberVO" id="memberMap" autoMapping="true">
-		<id property="mbrCd" column="MBR_CD" />
-		<collection property="memRoleList" javaType="list"
-			ofType="kr.or.ddit.vo.RoleAchievedVO" column="MBR_CD"
-			select="selectRolesForMember" />
-	</resultMap>
+<resultMap type="MemberVO" id="memberMap" autoMapping="true">
+		<id property="mbrCd" column="MBR_CD"/>
+		<collection property="memRoleList" javaType="list" ofType="kr.or.ddit.vo.RoleAchievedVO"
+		            column="MBR_CD" select="selectRolesForMember" />
+</resultMap>
 
-	<select id="selectRolesForMember" resultType="RoleAchievedVO">
-		SELECT USER_ROLE_ID, MBR_CD
-		FROM ROLE_ACHIEVED
-		WHERE MBR_CD = #{mbrCd}
-	</select>
+<select id="selectRolesForMember" resultType="RoleAchievedVO">
+    SELECT USER_ROLE_ID, MBR_CD
+    FROM ROLE_ACHIEVED
+    WHERE MBR_CD = #{mbrCd}
+</select>
 
-	<select id="selectMemberList" parameterType="MemberSearchVO"
-		resultMap="memberMap">
-		SELECT
-		MBR.MBR_CD,
-		MBR.MBR_ID,
-		MBR.MBR_PW,
-		MBR.MBR_NM,
-		MBR.MBR_NNM,
-		MBR.MBR_TELNO,
-		MBR.MBR_EML_ADDR,
-		MBR.MBR_BASIC_ADDR,
-		MBR.MBR_DETAIL_ADDR,
-		MBR.MBR_PROFIL_IMAGE,
-		MBR.MBR_FRST_REG_DT,
-		MBR.MBR_STATUS_CODE,
-		MBR.MBR_DELETE_DATE,
-		MBR.MBR_ZIP
-		FROM MEMBER MBR
-		<where>
-			<if test="mbrId != null and mbrId != ''">
-				AND MBR.MBR_ID LIKE '%' || #{mbrId} || '%'
-			</if>
-			<if test="mbrFrstRegDtFrom != null">
-				AND MBR.MBR_FRST_REG_DT <![CDATA[ >= ]]>
-				#{mbrFrstRegDtFrom}
-			</if>
-			<if test="mbrFrstRegDtTo != null">
-				AND MBR.MBR_FRST_REG_DT <![CDATA[ < ]]>
-				#{mbrFrstRegDtTo} + 1
-			</if>
-			<if test="mbrStatusCode != null and mbrStatusCode != ''">
-				AND MBR.MBR_STATUS_CODE = #{mbrStatusCode}
-			</if>
-			<if test="mbrEmlAddr != null and mbrEmlAddr != ''">
-				AND MBR.MBR_EML_ADDR LIKE '%' || #{mbrEmlAddr} || '%'
-			</if>
+<select id="selectMemberList" parameterType="MemberSearchVO" resultMap="memberMap">
+    SELECT
+        MBR.MBR_CD,
+        MBR.MBR_ID,
+        MBR.MBR_PW,
+        MBR.MBR_NM,
+        MBR.MBR_NNM,
+        MBR.MBR_TELNO,
+        MBR.MBR_EML_ADDR,
+        MBR.MBR_BASIC_ADDR,
+        MBR.MBR_DETAIL_ADDR,
+        MBR.MBR_PROFIL_IMAGE,
+        MBR.MBR_FRST_REG_DT,
+        MBR.MBR_STATUS_CODE,
+        MBR.MBR_DELETE_DATE,
+        MBR.MBR_ZIP
+    FROM MEMBER MBR
+    <where>
+        <if test="mbrId != null and mbrId != ''">
+            AND MBR.MBR_ID LIKE '%' || #{mbrId} || '%'
+        </if>
+        <if test="mbrFrstRegDtFrom != null">
+            AND MBR.MBR_FRST_REG_DT <![CDATA[ >= ]]> #{mbrFrstRegDtFrom}
+        </if>
+        <if test="mbrFrstRegDtTo != null">
+            AND MBR.MBR_FRST_REG_DT <![CDATA[ < ]]> #{mbrFrstRegDtTo} + 1
+        </if>
+        <if test="mbrStatusCode != null and mbrStatusCode != ''">
+            AND MBR.MBR_STATUS_CODE = #{mbrStatusCode}
+        </if>
+        <if test="mbrEmlAddr != null and mbrEmlAddr != ''">
+            AND MBR.MBR_EML_ADDR LIKE '%' || #{mbrEmlAddr} || '%'
+        </if>
+        
+        <if test="userRoleId != null and userRoleId.size() > 0">
+            AND MBR.MBR_CD IN (
+                SELECT
+                    RA_SUB.MBR_CD
+                FROM ROLE_ACHIEVED RA_SUB
+                WHERE RA_SUB.USER_ROLE_ID IN
+                <foreach item="roleId" collection="userRoleId" open="(" separator="," close=")">
+                    #{roleId}
+                </foreach>
+                GROUP BY RA_SUB.MBR_CD
+                HAVING COUNT(DISTINCT RA_SUB.USER_ROLE_ID) = #{userRoleCount}
+            )
+        </if>
+    </where>
+    ORDER BY MBR.MBR_FRST_REG_DT DESC
+</select>
 
-			<if test="userRoleId != null and userRoleId.size() > 0">
-				AND MBR.MBR_CD IN (
-				SELECT
-				RA_SUB.MBR_CD
-				FROM ROLE_ACHIEVED RA_SUB
-				WHERE RA_SUB.USER_ROLE_ID IN
-				<foreach item="roleId" collection="userRoleId" open="("
-					separator="," close=")">
-					#{roleId}
-				</foreach>
-				GROUP BY RA_SUB.MBR_CD
-				HAVING COUNT(DISTINCT RA_SUB.USER_ROLE_ID) = #{userRoleCount}
-				)
-			</if>
-		</where>
-		ORDER BY MBR.MBR_FRST_REG_DT DESC
-	</select>
-
-	<update id="updateMemberStatus" parameterType="MemberVO">
-		UPDATE MEMBER
-		SET
-		MBR_STATUS_CODE = #{mbrStatusCode}
-		WHERE
-		MBR_CD = #{mbrCd}
-	</update>
-
-
-
+<update id="updateMemberStatus" parameterType="MemberVO">
+    UPDATE MEMBER
+    SET
+        MBR_STATUS_CODE = #{mbrStatusCode}
+    WHERE
+        MBR_CD = #{mbrCd}
+</update>
 
 </mapper>

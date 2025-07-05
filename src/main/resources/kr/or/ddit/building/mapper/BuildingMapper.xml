@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.ddit.building.mapper.BuildingManagedMapper">
+
+  <!-- 임대인 정보 매핑 -->
+  <resultMap id="tenancyResultMap" type="kr.or.ddit.vo.TenancyVO">
+    <id property="rentalPtyId" column="RENTAL_PTY_ID"/>
+    <result property="rentalPtyBizRegFilePath" column="RENTAL_PTY_BIZ_REG_FILE_PATH"/>
+    <result property="rentalPtyRegBldgCnt" column="RENTAL_PTY_REG_BLDG_CNT"/>
+    <result property="rentalPtyAcctNo" column="RENTAL_PTY_ACCT_NO"/>
+    <result property="rentalPtyBizRegNo" column="RENTAL_PTY_BIZ_REG_NO"/>
+    <result property="rentalPtyFile" column="RENTAL_PTY_FILE"/>
+    <result property="rentalPtyFile2" column="RENTAL_PTY_FILE2"/>
+    <result property="lsrYnTypeCd" column="LSR_YN_TYPE_CD"/>
+    <result property="rentalPtyBankNm" column="RENTAL_PTY_BANK_NM"/>
+    <result property="lsrTypeGroupCd" column="LSR_TYPE_GROUP_CD"/>
+  </resultMap>
+
+  <!-- 세대 정보 + 건물 정보 + 임대인 정보 포함 -->
+  <resultMap id="unitResultMap" type="kr.or.ddit.vo.BuildingVO">
+    <id property="unitId" column="UNIT_ID"/>
+    <result property="bldgId" column="BLDG_ID"/>
+    <result property="rentalPtyId" column="RENTAL_PTY_ID"/>
+    <result property="unitFlrNo" column="UNIT_FLR_NO"/>
+    <result property="unitCmar" column="UNIT_CMAR"/>
+    <result property="unitXuar" column="UNIT_XUAR"/>
+    <result property="unitDsrMnthRentAmt" column="UNIT_DSR_MNTH_RENT_AMT"/>
+    <result property="unitDsrSaleAmt" column="UNIT_DSR_SALE_AMT"/>
+    <result property="unitDpstAmt" column="UNIT_DPST_AMT"/>
+    <result property="unitDtlDescCn" column="UNIT_DTL_DESC_CN"/>
+    <result property="unitStatCd" column="UNIT_STAT_CD"/>
+
+    <!-- 추가 건물 정보 -->
+    <result property="bldgNm" column="BLDG_NM"/>
+    <result property="bldgImgPath" column="BLDG_IMG_PATH"/>
+
+    <!-- 임대인 정보 association -->
+    <association property="tenancyInfo" resultMap="tenancyResultMap"/>
+  </resultMap>
+
+  <!-- 세대 등록 -->
+  <insert id="insertUnit" parameterType="kr.or.ddit.vo.BuildingVO">
+    INSERT INTO UNIT (
+      UNIT_ID, BLDG_ID, RENTAL_PTY_ID,
+      UNIT_FLR_NO, UNIT_CMAR, UNIT_XUAR,
+      UNIT_DSR_MNTH_RENT_AMT, UNIT_DSR_SALE_AMT, UNIT_DPST_AMT,
+      UNIT_DTL_DESC_CN, UNIT_STAT_CD
+    ) VALUES (
+      #{unitId}, #{bldgId}, #{rentalPtyId},
+      #{unitFlrNo}, #{unitCmar}, #{unitXuar},
+      #{unitDsrMnthRentAmt}, #{unitDsrSaleAmt}, #{unitDpstAmt},
+      #{unitDtlDescCn}, #{unitStatCd}
+    )
+  </insert>
+
+  <!-- 건물 기준 세대 목록 조회 + 임대인 JOIN -->
+  <select id="selectUnitListByBldgId" parameterType="String" resultMap="unitResultMap">
+    SELECT 
+      U.*, 
+      B.BLDG_NM, B.BLDG_IMG_PATH,
+      T.RENTAL_PTY_BIZ_REG_FILE_PATH,
+      T.RENTAL_PTY_REG_BLDG_CNT,
+      T.RENTAL_PTY_ACCT_NO,
+      T.RENTAL_PTY_BIZ_REG_NO,
+      T.RENTAL_PTY_FILE,
+      T.RENTAL_PTY_FILE2,
+      T.LSR_YN_TYPE_CD,
+      T.RENTAL_PTY_BANK_NM,
+      T.LSR_TYPE_GROUP_CD
+    FROM UNIT U
+    JOIN BUILDING B ON U.BLDG_ID = B.BLDG_ID
+    JOIN TENANCY T ON U.RENTAL_PTY_ID = T.RENTAL_PTY_ID
+    WHERE U.BLDG_ID = #{bldgId}
+    ORDER BY U.UNIT_ID ASC
+  </select>
+
+  <!-- 세대 단건 조회 -->
+  <select id="selectUnitById" parameterType="String" resultMap="unitResultMap">
+    SELECT 
+      U.*, 
+      B.BLDG_NM, B.BLDG_IMG_PATH,
+      T.RENTAL_PTY_BIZ_REG_FILE_PATH,
+      T.RENTAL_PTY_REG_BLDG_CNT,
+      T.RENTAL_PTY_ACCT_NO,
+      T.RENTAL_PTY_BIZ_REG_NO,
+      T.RENTAL_PTY_FILE,
+      T.RENTAL_PTY_FILE2,
+      T.LSR_YN_TYPE_CD,
+      T.RENTAL_PTY_BANK_NM,
+      T.LSR_TYPE_GROUP_CD
+    FROM UNIT U
+    JOIN BUILDING B ON U.BLDG_ID = B.BLDG_ID
+    JOIN TENANCY T ON U.RENTAL_PTY_ID = T.RENTAL_PTY_ID
+    WHERE U.UNIT_ID = #{unitId}
+  </select>
+
+  <!-- 세대 수정 -->
+  <update id="updateUnit" parameterType="kr.or.ddit.vo.BuildingVO">
+    UPDATE UNIT SET
+      BLDG_ID = #{bldgId},
+      RENTAL_PTY_ID = #{rentalPtyId},
+      UNIT_FLR_NO = #{unitFlrNo},
+      UNIT_CMAR = #{unitCmar},
+      UNIT_XUAR = #{unitXuar},
+      UNIT_DSR_MNTH_RENT_AMT = #{unitDsrMnthRentAmt},
+      UNIT_DSR_SALE_AMT = #{unitDsrSaleAmt},
+      UNIT_DPST_AMT = #{unitDpstAmt},
+      UNIT_DTL_DESC_CN = #{unitDtlDescCn},
+      UNIT_STAT_CD = #{unitStatCd}
+    WHERE UNIT_ID = #{unitId}
+  </update>
+
+  <!-- 세대 삭제 -->
+  <delete id="deleteUnit" parameterType="String">
+    DELETE FROM UNIT WHERE UNIT_ID = #{unitId}
+  </delete>
+
+</mapper>

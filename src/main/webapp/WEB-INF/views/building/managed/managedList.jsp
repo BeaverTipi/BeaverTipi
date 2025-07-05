@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -10,27 +11,20 @@
 <body>
 
   <c:choose>
-    <c:when test="${not empty buildingList}">
-      <c:forEach var="building" items="${buildingList}">
+    <c:when test="${not empty unitList}">
+      <c:forEach var="unit" items="${unitList}">
         <div class="building-section">
-          <div class="building-title">${building.bldgNm}</div>
+          <div class="building-title">${unit.bldgNm}</div>
           <div class="building-info">
-            <img src="${building.bldgImgPath}" alt="${building.bldgNm}" class="building-img">
+            <img src="${unit.bldgImgPath}" alt="${unit.bldgNm}" class="building-img">
             <div class="info-box">
               <table class="info-table">
-                <tr><td><strong>건물 이름</strong></td><td>${building.bldgNm}</td></tr>
-                <tr><td><strong>주소</strong></td><td>${building.bldgAddr} ${building.bldgDtlAddr}</td></tr>
-                <tr><td><strong>우편번호</strong></td><td>${building.bldgZipNo}</td></tr>
-                <tr><td><strong>건물유형</strong></td><td>${building.bldgTypeCode}</td></tr>
-                <tr><td><strong>층 수</strong></td><td>${building.bldgFlrCnt}</td></tr>
-                <tr><td><strong>호실 수</strong></td><td>${building.bldgUnitCnt}</td></tr>
-                <tr><td><strong>연면적</strong></td><td>${building.bldgGrossArea}㎡</td></tr>
-                <tr><td><strong>준공일</strong></td><td>${building.bldgCmpltnDt}</td></tr>
-                <tr><td><strong>임대인 계좌</strong></td>
+                <tr><td><strong>건물 이름</strong></td><td>${unit.bldgNm}</td></tr>
+                <tr><td><strong>우편번호 / 상세 주소</strong></td>
                   <td>
                     <c:choose>
-                      <c:when test="${not empty building.tenancyInfo}">
-                        ${building.tenancyInfo.rentalPtyBankNm} / ${building.tenancyInfo.rentalPtyAcctNo}
+                      <c:when test="${not empty unit.tenancyInfo}">
+                        ${unit.tenancyInfo.rentalPtyId} / ${unit.tenancyInfo.rentalPtyBankNm}
                       </c:when>
                       <c:otherwise>
                         정보 없음
@@ -38,15 +32,21 @@
                     </c:choose>
                   </td>
                 </tr>
+                <tr><td><strong>유형 코드</strong></td><td>${unit.unitStatCd}</td></tr>
+                <tr><td><strong>층수</strong></td><td>${unit.unitFlrNo}층</td></tr>
+                <tr><td><strong>호실 수</strong></td><td>${unit.unitId}</td></tr>
+                <tr><td><strong>연면적</strong></td><td>${unit.unitXuar}㎡</td></tr>
+                <tr><td><strong>준공일</strong></td><td>${unit.unitDtlDescCn}</td></tr>
               </table>
 
               <div class="button-box">
                 <form method="get" action="/building/managed/edit">
-                  <input type="hidden" name="bldgId" value="${building.bldgId}" />
+                  <input type="hidden" name="unitId" value="${unit.unitId}" />
                   <button type="submit" class="btn btn-edit">수정</button>
                 </form>
                 <form method="post" action="/building/managed/delete">
-                  <input type="hidden" name="bldgId" value="${building.bldgId}" />
+                  <input type="hidden" name="unitId" value="${unit.unitId}" />
+                  <input type="hidden" name="bldgId" value="${unit.bldgId}" />
                   <button type="submit" class="btn btn-delete">삭제</button>
                 </form>
               </div>
@@ -63,13 +63,5 @@
       </p>
     </c:otherwise>
   </c:choose>
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> branch 'developer_KSW' of https://github.com/BeaverTipi/BeaverTipi.git
-=======
-
->>>>>>> branch 'developer' of https://github.com/BeaverTipi/BeaverTipi.git
 </body>
 </html>
