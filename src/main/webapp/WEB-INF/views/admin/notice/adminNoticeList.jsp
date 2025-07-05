@@ -33,7 +33,7 @@
 								</td>
 								<td>${board.brdPblsDtm }</td>
 								<td>${board.boardCartegory.brdCode }</td>
-								<td>${board.brdVmCnt }</td>
+								<td>${board.brdVwCnt }</td>
 								<td>${board.boardCartegory.brdCmntYn }</td>
 							</tr>
 							<tr style="display: none;">
