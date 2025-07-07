@@ -13,3 +13,4 @@ public class RsdPaymentController {
 		 return "resident/chargeBillResident/Payment"; 
 	}
 }
+

@@ -58,6 +58,7 @@
       <include refid="searchCondition"/>
 	</select>
 
+
 	<!-- 단건 조회 -->
 	<select id="selectBoardById" parameterType="ResidentBoardVO" resultMap="residentBoardMap">
 	  SELECT rb.*, m.mbr_nnm

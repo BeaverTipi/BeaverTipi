@@ -60,6 +60,7 @@ public class RsdDetailBoardController {
         model.addAttribute("selectedBldgId", bldgId);
         model.addAttribute("board", board);
 
+        
         return "resident/Board/BoardDetail";
     }
 }

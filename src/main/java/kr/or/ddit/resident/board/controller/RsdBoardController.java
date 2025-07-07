@@ -77,7 +77,7 @@ public class RsdBoardController {
         List<ResidentBoardVO> boardList = boardService.getBoardList(paging);
         String pagingHTML = new DefaultPaginationRenderer()
                                  .renderPagination(paging, "fnPaging");
-
+        
         // 5) 모델에 데이터 바인딩
         model.addAttribute("unitList", units);
         model.addAttribute("selectedBldgId", bldgIdParam);

@@ -15,6 +15,7 @@
 	</association>
 </resultMap>
 
+
 <select id="selectByMember" parameterType="String" resultMap="unitResidentMap">
 	SELECT
 	  ur.unit_id,
