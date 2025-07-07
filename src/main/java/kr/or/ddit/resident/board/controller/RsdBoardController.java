@@ -1,6 +1,7 @@
 package kr.or.ddit.resident.board.controller;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,17 +54,16 @@ public class RsdBoardController {
         log.info("📌 simpleSearch.bldgId (before): {}", simpleSearch.getBldgId());
 
         // 2) 건물 선택이 안 됐으면 빈 리스트 리턴
-        if (bldgIdParam == null || bldgIdParam.isBlank()) {
-            model.addAttribute("unitList", units);
-            model.addAttribute("selectedBldgId", bldgIdParam);
-            model.addAttribute("boardList", Collections.emptyList());
-            model.addAttribute("pagingHTML", "");
-            model.addAttribute("pagingInfo", new PaginationInfo<ResidentBoardVO>());
-            return "resident/Board/ResidentBoard";
+        String selectedBldgId = bldgIdParam;
+        if(selectedBldgId == null || selectedBldgId.isBlank()) {
+        	selectedBldgId = units.stream()
+        		.min(Comparator.comparing(UnitResidentVO::getMoveInDt))
+        		.map(UnitResidentVO::getBldgId)
+        		.orElse(units.get(0).getBldgId());
         }
 
         // 3) 선택된 건물이 있으면 VO에 세팅
-        simpleSearch.setBldgId(bldgIdParam);
+        simpleSearch.setBldgId(selectedBldgId);
         log.info("📌 simpleSearch.bldgId (after): {}", simpleSearch.getBldgId());
 
         // 4) 페이징 및 검색 수행
@@ -80,7 +80,7 @@ public class RsdBoardController {
         
         // 5) 모델에 데이터 바인딩
         model.addAttribute("unitList", units);
-        model.addAttribute("selectedBldgId", bldgIdParam);
+        model.addAttribute("selectedBldgId", selectedBldgId);
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagingHTML", pagingHTML);
         model.addAttribute("pagingInfo", paging);
