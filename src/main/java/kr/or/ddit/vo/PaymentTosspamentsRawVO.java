@@ -1,0 +1,24 @@
+package kr.or.ddit.vo;
+import java.io.Serializable;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+@Data
+@EqualsAndHashCode(of= {"paymentKey"})
+public class PaymentTosspamentsRawVO implements Serializable{
+	private String paymentKey;
+	private String versionDate;
+	private String type;
+	private String orderId;
+	private String orderName;
+	private String mId;
+	private String currency;
+	private String method;
+	private Integer totalAmount;
+	private String status;
+	private String requestDate;
+	private String approveDate;
+	private String lastTransactionKey;
+	private Integer suppliedAmount;
+	private String country;
+}

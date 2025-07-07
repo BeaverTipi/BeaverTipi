@@ -1,0 +1,77 @@
+@charset "UTF-8";
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      font-family: Arial, sans-serif;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .header h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .edit-button {
+      background-color: #3498db;
+      color: white;
+    }
+
+    .delete-button {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+    }
+
+    th:first-child,
+    td:first-child {
+      width: 40px;
+    }
+
+    input[type="checkbox"] {
+      transform: scale(1.2);
+    }
+     .filter-bar {
+      margin-bottom: 20px;
+    }
+
+    .filter-bar label {
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    .filter-bar select {
+      padding: 6px 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    

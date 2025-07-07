@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.resident.mapper.RsdChatMapper">
+	<insert id="insertChatRoom" parameterType="ResidentChatRoomVO">		
+  <selectKey keyProperty="RESIDENT_CHAT_ROOM_ID" resultType="string" order="BEFORE">
+    SELECT LPAD(SEQ_CHAT_ROOM_ID.NEXTVAL, 10, '0') FROM DUAL
+  </selectKey>
+	INSERT INTO RESIDENT_CHAT_ROOM(
+	RESIDENT_CHAT_ROOM_ID
+	, BLDG_ID
+	, MBR_CD
+	, RESIDENT_CHAT_ROOM_DATE
+	, RESIDENT_CHAT_ROOM_TITLE
+	, RESIDENT_CHAT_ROOM_IS_PUBLIC
+	) VALUES(
+	#{RESIDENT_CHAT_ROOM_ID}
+	, #{BLDG_ID}
+	, #{MBR_CD}
+	, trunc(sysdate)
+	, #{RESIDENT_CHAT_ROOM_TITLE}
+	, #{RESIDENT_CHAT_ROOM_IS_PUBLIC}
+	)
+	
+</insert>
+
+	<select id="selectChatList" resultType="ResidentChatRoomVO">
+	SELECT CHAT_ROOM_TITLE
+	FROM RESIDENT_CHAT_ROOM
+	WHERE BLDG_ID = #{BLDG_ID}
+	ORDER BY RESIDENT_CHAT_ROOM_ID DESC
+	</select>
+
+</mapper>

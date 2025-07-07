@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper	namespace="kr.or.ddit.broker.mapper.BrokerAuthUnpackingMapper">
+
+<select id="selectMbrCdByUsername" parameterType="String" resultType="String">
+     SELECT B.MBR_CD
+	  FROM MEMBER M
+	 INNER JOIN BROKER B ON(M.MBR_CD = B.MBR_CD)
+	 WHERE M.MBR_ID = #{username}
+</select>
+<select id="selectBrokerByUsername" parameterType="String" resultType="BrokerVO">
+	SELECT *
+	  FROM MEMBER M
+	 INNER JOIN BROKER B ON(M.MBR_CD = B.MBR_CD)
+	 WHERE M.MBR_ID = #{mbrId}
+</select>
+
+</mapper>
