@@ -2,9 +2,19 @@
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
+
 <head>
 <meta charset="UTF-8">
 <title>회원 정보</title>
+<c:if test="${param.success eq 'true'}">
+<script>
+Swal.fire({
+	icon: 'success',
+	title: '결제가 완료되었습니다',
+	text: '요금제가 성공적으로 적용되었습니다.',
+	confirmButtonText: '확인'
+})
+</script>
 </head>
 <body>
 	<tr>

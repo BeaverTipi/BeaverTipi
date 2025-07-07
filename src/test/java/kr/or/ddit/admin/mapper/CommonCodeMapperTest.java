@@ -17,7 +17,8 @@ class CommonCodeMapperTest {
 	CommonCodeMapper mapper;
 	@Test // 테스트 완료
 	void testSelectCommonCodeList() {
-		List<CommonCodeVO> commonCodeList = mapper.selectCommonCodeList();
+		String code = "PAY";
+		List<CommonCodeVO> commonCodeList = mapper.selectCommonCodeList(code);
 		assertNotNull(commonCodeList);
 		commonCodeList.forEach(ccl ->
 		log.info("code 종류 : {}",ccl)
