@@ -35,7 +35,7 @@ public class MemberVO implements Serializable {
 	private LocalDate mbrFrstRegDt;
 	private String mbrStatusCode;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDate mbrDeleteDate;
+	private String mbrDeleteDate;
 	private String mbrZip;
 	private List<RoleAchievedVO> memRoleList;
 	private List<UnitResidentVO> residentList;

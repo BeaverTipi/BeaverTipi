@@ -60,7 +60,7 @@
                 B.MBR_CD, 
                 B.BRD_PBLS_DTM, 
                 B.BRD_VW_CNT,
-                R.REPORT_ID,
+                R.RPT_ID,
                 R.RPT_CODE,
                 R.RPT_TARGET_ID,
                 R.RPT_STATUS_CODE
@@ -68,11 +68,12 @@
                 BOARD B
             JOIN
                 REPORT R ON B.BRD_NO = R.BRD_NO
+                
             WHERE
                 1=1
                 AND R.RPT_DEL_YN = 'N'
                 AND B.BRD_DEL_YN = 'N'
-                AND R.RPT_CODE = '게시글' 
+                AND R.RPT_CODE = '0' 
             <include refid="searchConditions" />
         ) A
         WHERE RNUM BETWEEN #{firstRecordIndex} AND #{lastRecordIndex}
@@ -89,7 +90,7 @@
             1=1
             AND R.RPT_DEL_YN = 'N'
             AND B.BRD_DEL_YN = 'N'
-            AND R.RPT_CODE = '게시글' 
+            AND R.RPT_CODE = '0' 
         <include refid="searchConditions" />
     </select>
 

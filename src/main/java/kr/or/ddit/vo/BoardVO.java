@@ -2,6 +2,7 @@ package kr.or.ddit.vo;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
@@ -52,4 +53,15 @@ public class BoardVO implements Serializable{
     private String searchRptStatusCode; // 신고 처리 상태 검색
     private LocalDateTime brdPblsDtmFrom; // 게시글 게시일시 (신고일자로 사용) 시작
     private LocalDateTime brdPblsDtmTo;   // 게시글 게시일시 (신고일자로 사용) 종료
+    
+    
+    // ReportUserList를 위한 메서드
+    public String getFormattedBrdPblsDtm() {
+        if (this.brdPblsDtm == null) {
+            return "";
+        }
+        // JSP에서 원하는 "yyyy-MM-dd HH:mm" 포맷에 맞춰 포맷터 정의
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return this.brdPblsDtm.format(formatter);
+    }
 }
