@@ -1,8 +1,10 @@
+
 package kr.or.ddit.building.mapper;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import kr.or.ddit.vo.BuildingVO;
 
@@ -22,6 +24,7 @@ public interface BuildingManagedMapper {
     int updateBuilding(BuildingVO building);
 
     // 건물 세대 삭제
-    int deleteBuilding(String bldgId);
+    int deleteBuilding(@Param("bldgId") String bldgId, @Param("rentalPtyId") String rentalPtyId);
+
 }
 

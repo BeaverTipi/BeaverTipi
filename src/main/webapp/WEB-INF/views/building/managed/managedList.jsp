@@ -6,6 +6,58 @@
   <meta charset="UTF-8">
   <title>건물 정보</title>
   <link rel="stylesheet" href="/app/css/building/managed/managedList.css">
+  <style>
+    .building-section {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
+      background-color: #f9f9f9;
+    }
+    .building-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .building-info {
+      display: flex;
+    }
+    .building-img {
+      width: 180px;
+      height: 120px;
+      object-fit: cover;
+      margin-right: 20px;
+    }
+    .info-box {
+      flex-grow: 1;
+    }
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+    .info-table td {
+      padding: 6px 10px;
+    }
+    .button-box {
+      display: flex;
+      gap: 10px;
+    }
+    .btn {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-edit {
+      background-color: #4caf50;
+      color: white;
+    }
+    .btn-delete {
+      background-color: #f44336;
+      color: white;
+    }
+  </style>
 </head>
 <body>
 
@@ -45,19 +97,16 @@
                   <input type="hidden" name="bldgId" value="${building.bldgId}" />
                   <button type="submit" class="btn btn-edit">수정</button>
                 </form>
-					<form method="post" action="/building/managed/delete">
-					  <input type="hidden" name="bldgId" value="${building.bldgId}" />
-					  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-					  <button type="submit" class="btn btn-delete">삭제</button>
-					</form>
+                <form method="post" action="/building/managed/delete" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                  <input type="hidden" name="bldgId" value="${building.bldgId}" />
+                  <button type="submit" class="btn btn-delete">삭제</button>
+                </form>
               </div>
             </div>
           </div>
         </div>
-        <hr>
       </c:forEach>
     </c:when>
-
     <c:otherwise>
       <p style="text-align: center; margin-top: 2rem; font-size: 1.2rem;">
         등록된 건물이 없습니다.

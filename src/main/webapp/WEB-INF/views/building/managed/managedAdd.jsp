@@ -1,20 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>${mode eq 'edit' ? '건물 수정' : '건물 등록'}</title>
+  <title>신규 건물 등록</title>
   <link rel="stylesheet" href="/app/css/building/managed/managedAdd.css">
+<!-- 카카오 -->
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
+
+
 <body>
 
-<h2>${mode eq 'edit' ? '건물 수정' : '신규 건물 등록'}</h2>
+<h2>신규 건물 등록</h2>
 
-<form:form modelAttribute="buildingVO" method="post" action="${mode eq 'edit' ? '/building/managed/edit' : '/building/managed/add'}">
+<form:form modelAttribute="buildingVO" method="post" action="/building/managed/add">
   <form:hidden path="rentalPtyId" />
-  <form:hidden path="bldgId" />
 
   <div class="form-container">
     <div class="form-box">
@@ -26,21 +28,22 @@
             <label for="bldgNm">건물 이름</label>
             <form:input path="bldgNm" id="bldgNm" placeholder="입력해주세요" />
           </div>
-          <div class="form-row">
-            <label for="bldgZipNo">우편번호</label>
-            <div class="zipcode-box">
-              <form:input path="bldgZipNo" id="bldgZipNo" placeholder="우편번호" />
-              <button type="button">주소 찾기</button>
-            </div>
-          </div>
-          <div class="form-row">
-            <label for="bldgAddr">기본주소</label>
-            <form:input path="bldgAddr" id="bldgAddr" placeholder="기본 주소" />
-          </div>
-          <div class="form-row">
-            <label for="bldgDtlAddr">상세주소</label>
-            <form:input path="bldgDtlAddr" id="bldgDtlAddr" placeholder="상세 주소" />
-          </div>
+         <div class="form-row">
+		  <label for="bldgZipNo">우편번호</label>
+		  <div class="zipcode-box">
+		    <form:input path="bldgZipNo" id="bldgZipNo" placeholder="우편번호" readonly="true" />
+		    <button type="button" onclick="execDaumPostcode()">주소 찾기</button>
+		  </div>
+		</div>
+		<div class="form-row">
+		  <label for="bldgAddr">기본주소</label>
+		  <form:input path="bldgAddr" id="bldgAddr" placeholder="기본 주소" readonly="true" />
+		</div>
+		<div class="form-row">
+		  <label for="bldgDtlAddr">상세주소</label>
+		  <form:input path="bldgDtlAddr" id="bldgDtlAddr" placeholder="상세 주소" />
+		</div>
+		<input type="hidden" name="delYn" value="N">
         </div>
 
         <!-- 오른쪽 -->
@@ -84,15 +87,33 @@
 
   <!-- 하단 등록 버튼 -->
   <div style="margin-top: 40px; clear: both;">
-    <button class="submit-btn" type="submit">
-      <c:choose>
-        <c:when test="${mode eq 'edit'}">건물 수정</c:when>
-        <c:otherwise>건물 등록</c:otherwise>
-      </c:choose>
-    </button>
+    <button class="submit-btn" type="submit">건물 등록</button>
   </div>
 </form:form>
 
 <script src="/app/js/building/managed/managedAdd.js"></script>
+	<script type="text/javascript">
+	function execDaumPostcode() {
+	    new daum.Postcode({
+	        oncomplete: function(data) {
+	            // 우편번호
+	            document.getElementById('bldgZipNo').value = data.zonecode;
+	
+	            // 기본주소
+	            var fullAddr = '';
+	            if (data.userSelectedType === 'R') {
+	                fullAddr = data.roadAddress;
+	            } else {
+	                fullAddr = data.jibunAddress;
+	            }
+	
+	            document.getElementById('bldgAddr').value = fullAddr;
+	
+	            // 상세주소로 포커스 이동
+	            document.getElementById('bldgDtlAddr').focus();
+	        }
+	    }).open();
+	}
+	</script>
 </body>
 </html>

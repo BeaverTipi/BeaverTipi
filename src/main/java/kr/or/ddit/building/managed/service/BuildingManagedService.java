@@ -24,6 +24,6 @@ public interface BuildingManagedService {
     int updateBuilding(BuildingVO building);
 
     // 건물 세대 삭제
-    int deleteBuilding(String bldgId);
+    int deleteBuilding(String bldgId, String rentalPtyId);
 }
 

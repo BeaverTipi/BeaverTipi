@@ -19,8 +19,8 @@
     <result property="lsrTypeGroupCd" column="LSR_TYPE_GROUP_CD"/>
   </resultMap>
 
-  <!-- 단건 + 목록에 사용할 세대 + 건물 + 임대인 정보 -->
-    <resultMap id="buildingResultMap" type="kr.or.ddit.vo.BuildingVO">
+  <!-- 단건 + 목록에 사용할 BUILDING + TENANCY 정보 -->
+  <resultMap id="buildingResultMap" type="kr.or.ddit.vo.BuildingVO">
     <id property="bldgId" column="BLDG_ID"/>
     <result property="rentalPtyId" column="RENTAL_PTY_ID"/>
     <result property="bldgNm" column="BLDG_NM"/>
@@ -34,25 +34,25 @@
     <result property="bldgGrossArea" column="BLDG_GROSS_AREA"/>
     <result property="bldgImgPath" column="BLDG_IMG_PATH"/>
     <result property="bldgTypeGroupCd" column="BLDG_TYPE_GROUP_CD"/>
-    
+    <result property="delYn" column="DEL_YN"/>
     <association property="tenancyInfo" resultMap="tenancyResultMap"/>
   </resultMap>
 
-  <!-- 세대 등록 -->
+  <!-- 건물 등록 -->
   <insert id="insertBuilding" parameterType="kr.or.ddit.vo.BuildingVO">
     INSERT INTO BUILDING (
       BLDG_ID, RENTAL_PTY_ID, BLDG_NM, BLDG_ZIP_NO, BLDG_ADDR,
       BLDG_DTL_ADDR, BLDG_TYPE_CODE, BLDG_FLR_CNT, BLDG_UNIT_CNT,
-      BLDG_CMPLTN_DT, BLDG_GROSS_AREA, BLDG_IMG_PATH
+      BLDG_CMPLTN_DT, BLDG_GROSS_AREA, BLDG_IMG_PATH, DEL_YN
     ) VALUES (
       #{bldgId}, #{rentalPtyId}, #{bldgNm}, #{bldgZipNo}, #{bldgAddr},
       #{bldgDtlAddr}, #{bldgTypeCode}, #{bldgFlrCnt}, #{bldgUnitCnt},
-      #{bldgCmpltnDt}, #{bldgGrossArea}, #{bldgImgPath}
+      #{bldgCmpltnDt}, #{bldgGrossArea}, #{bldgImgPath}, #{delYn}
     )
   </insert>
 
-  <!-- 건물 기준 세대 목록 조회 -->
- <select id="selectBuildingListByRentalPtyId" parameterType="String" resultMap="buildingResultMap">
+  <!-- 건물 목록 조회 -->
+  <select id="selectBuildingListByRentalPtyId" parameterType="String" resultMap="buildingResultMap">
     SELECT 
       B.BLDG_ID,
       B.RENTAL_PTY_ID,
@@ -67,17 +67,19 @@
       B.BLDG_GROSS_AREA,
       B.BLDG_IMG_PATH,
       B.BLDG_TYPE_GROUP_CD,
+      B.DEL_YN,
       T.RENTAL_PTY_ID T_RENTAL_PTY_ID,
       T.RENTAL_PTY_BANK_NM,
       T.RENTAL_PTY_ACCT_NO
     FROM BUILDING B
     LEFT JOIN TENANCY T ON B.RENTAL_PTY_ID = T.RENTAL_PTY_ID
     WHERE B.RENTAL_PTY_ID = #{rentalPtyId}
+    AND DEL_YN = 'N'
     ORDER BY B.BLDG_ID ASC
   </select>
 
-  <!-- 세대 단건 조회 -->
- <select id="selectBuildingById" parameterType="String" resultMap="buildingResultMap">
+  <!-- 건물 단건 조회 -->
+  <select id="selectBuildingById" parameterType="String" resultMap="buildingResultMap">
     SELECT 
       B.BLDG_ID,
       B.RENTAL_PTY_ID,
@@ -92,34 +94,38 @@
       B.BLDG_GROSS_AREA,
       B.BLDG_IMG_PATH,
       B.BLDG_TYPE_GROUP_CD,
+      B.DEL_YN,
       T.RENTAL_PTY_ID T_RENTAL_PTY_ID,
       T.RENTAL_PTY_BANK_NM,
       T.RENTAL_PTY_ACCT_NO
     FROM BUILDING B
     LEFT JOIN TENANCY T ON B.RENTAL_PTY_ID = T.RENTAL_PTY_ID
     WHERE B.BLDG_ID = #{bldgId}
+    AND DEL_YN = 'N'
   </select>
 
-  <!-- 세대 수정 -->
-<update id="updateBuilding" parameterType="kr.or.ddit.vo.BuildingVO">
-  UPDATE BUILDING SET
-    BLDG_NM = #{bldgNm},
-    BLDG_ZIP_NO = #{bldgZipNo},
-    BLDG_ADDR = #{bldgAddr},
-    BLDG_DTL_ADDR = #{bldgDtlAddr},
-    BLDG_TYPE_CODE = #{bldgTypeCode},
-    BLDG_FLR_CNT = #{bldgFlrCnt},
-    BLDG_UNIT_CNT = #{bldgUnitCnt},
-    BLDG_CMPLTN_DT = #{bldgCmpltnDt},
-    BLDG_GROSS_AREA = #{bldgGrossArea},
-    BLDG_IMG_PATH = #{bldgImgPath}
+  <!-- 건물 수정 -->
+  <update id="updateBuilding" parameterType="kr.or.ddit.vo.BuildingVO">
+    UPDATE BUILDING SET
+      BLDG_NM = #{bldgNm},
+      BLDG_ZIP_NO = #{bldgZipNo},
+      BLDG_ADDR = #{bldgAddr},
+      BLDG_DTL_ADDR = #{bldgDtlAddr},
+      BLDG_TYPE_CODE = #{bldgTypeCode},
+      BLDG_FLR_CNT = #{bldgFlrCnt},
+      BLDG_UNIT_CNT = #{bldgUnitCnt},
+      BLDG_CMPLTN_DT = #{bldgCmpltnDt},
+      BLDG_GROSS_AREA = #{bldgGrossArea},
+      BLDG_IMG_PATH = #{bldgImgPath}
+    WHERE BLDG_ID = #{bldgId}
+  </update>
+
+  <!-- 건물 삭제 -->
+<update id="deleteBuilding">
+  UPDATE BUILDING
+  SET DEL_YN = 'Y'
   WHERE BLDG_ID = #{bldgId}
+    AND RENTAL_PTY_ID = #{rentalPtyId}
 </update>
-
-  <!-- 세대 삭제 -->
-	<delete id="deleteBuilding" parameterType="String">
-  	DELETE FROM BUILDING WHERE BLDG_ID = #{bldgId}
-	</delete>
-
 
 </mapper>

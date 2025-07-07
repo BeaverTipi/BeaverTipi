@@ -7,35 +7,35 @@ import org.springframework.stereotype.Service;
 
 import kr.or.ddit.building.mapper.RentalOwnerProductMapper;
 import kr.or.ddit.vo.ProductVO;
-
 @Service
 public class RentalOwnerProductServiceImpl implements RentalOwnerProductService {
 
+
     @Autowired
-    private RentalOwnerProductMapper mapper;
+    private RentalOwnerProductMapper productMapper;
 
     @Override
     public int insertProduct(ProductVO product) {
-        return mapper.insertProduct(product);
+        return productMapper.insertProduct(product);
     }
 
     @Override
-    public List<ProductVO> getProductListByMember(String mbrCd) {
-        return mapper.selectProductListByMember(mbrCd);
+    public List<ProductVO> selectProductList(String mbrCd) {
+        return productMapper.selectProductList(mbrCd);
     }
 
     @Override
-    public ProductVO getProductById(String lstgId) {
-        return mapper.selectProductById(lstgId);
+    public ProductVO selectProductById(String lstgId) {
+        return productMapper.selectProductById(lstgId);
     }
 
     @Override
     public int updateProduct(ProductVO product) {
-        return mapper.updateProduct(product);
+        return productMapper.updateProduct(product);
     }
 
     @Override
     public int deleteProduct(String lstgId) {
-        return mapper.deleteProduct(lstgId);
+        return productMapper.deleteProduct(lstgId);
     }
 }

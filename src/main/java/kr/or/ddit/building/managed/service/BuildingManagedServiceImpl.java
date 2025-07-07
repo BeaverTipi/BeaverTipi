@@ -35,7 +35,7 @@ public class BuildingManagedServiceImpl implements BuildingManagedService {
 	}
 
 	@Override
-	public int deleteBuilding(String bldgId) {
-		return buildingManagedMapper.deleteBuilding(bldgId);
+	public int deleteBuilding(String bldgId, String rentalPtyId) {
+	    return buildingManagedMapper.deleteBuilding(bldgId, rentalPtyId);
 	}
 }
