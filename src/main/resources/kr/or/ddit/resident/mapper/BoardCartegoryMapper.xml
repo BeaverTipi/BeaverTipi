@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.resident.mapper.BoardCartegoryMapper">
+
+<select id="selectAllCartegories" resultType="BoardCartegoryVO">
+	SELECT brd_code   AS brdCode
+         , brd_ctgry  AS brdCtgry
+         , brd_cmnt_yn AS brdCmntYn
+      FROM board_cartegory
+     ORDER BY brd_code
+</select>
+</mapper>

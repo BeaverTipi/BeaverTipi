@@ -1,0 +1,207 @@
+@charset "UTF-8";
+
+/* admin 공통css */
+
+/* --- 공통 레이아웃/컨테이너 스타일 --- */
+.container {
+    width: 90%; /* 화면 너비의 90% */
+    margin: 20px auto; /* 상하 20px, 좌우 자동 (중앙 정렬) */
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* --- 공통 헤더 스타일 --- */
+h2 {
+    text-align: center; /* 헤더 중앙 정렬 */
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #333; /* 헤더 색상 */
+    font-size: 1.8em; /* 헤더 폰트 크기 */
+}
+
+/* --- 공통 검색 영역 스타일 --- */
+.search-area {
+    display: flex;
+    flex-direction: column; /* 자식 요소들을 세로(줄)로 정렬 */
+    gap: 15px; /* search-row (줄) 간 간격 */
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.search-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px; /* search-item 간 간격 */
+    width: 100%;
+    justify-content: flex-start; /* 아이템들이 시작점을 맞추도록 flex-start로 변경 */
+    align-items: flex-start;
+}
+
+.search-item {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* 라벨과 입력 필드/그룹 간 간격 */
+    flex-shrink: 0; 
+    flex-basis: calc(30% - 10px); /* 해결된 값 */
+    min-width: 280px; /* 최소 너비를 확보하여 내용이 너무 압축되지 않도록 */
+    max-width: 400px; /* 최대 너비도 설정하여 너무 늘어나지 않도록 (선택 사항) */
+}
+
+.search-item label {
+    font-weight: bold;
+    min-width: 70px;
+    color: #555;
+    flex-shrink: 0;
+}
+
+.search-item .input-field,
+.search-item .select-field {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    width: 100%; /* 부모(search-item)의 남은 공간을 채우도록 100% 설정 */
+    box-sizing: border-box;
+    vertical-align: middle;
+}
+
+/* multi-select 태그에 대한 스타일 */
+.search-item select[multiple] {
+    height: 100px;
+    min-width: 150px;
+}
+
+.date-range-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-grow: 1; 
+}
+
+.date-range-group .input-field {
+    flex-grow: 1;
+}
+
+/* ⭐ 추가: search-item 내부의 버튼 그룹 스타일 ⭐ */
+.search-item.search-buttons-in-row {
+    display: flex;
+    justify-content: flex-end; /* 버튼들을 오른쪽으로 정렬 */
+    align-items: center;
+    gap: 10px; /* 버튼 간 간격 */
+    /* flex-basis와 min-width를 다른 search-item과 동일하게 가져가거나,
+       필요에 따라 이 버튼 그룹이 공간을 더 유연하게 차지하도록 설정할 수 있습니다. */
+    flex-grow: 1; /* 남은 공간을 채우도록 성장 */
+    min-width: unset; /* search-item의 min-width 제약을 받지 않도록 */
+    flex-basis: auto; /* 내용에 따라 크기 결정 */
+}
+
+.search-item.search-buttons-in-row button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+}
+.search-item.search-buttons-in-row button:hover {
+    opacity: 0.9;
+}
+.search-item.search-buttons-in-row button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+}
+.search-item.search-buttons-in-row .reset-button {
+    background-color: #6c757d;
+    color: white;
+}
+
+
+/* --- 공통 버튼 스타일 (search-actions) --- */
+.search-actions {
+    display: flex;
+    justify-content: flex-end; /* 버튼들을 오른쪽으로 정렬 */
+    gap: 10px; /* 버튼 간 간격 */
+    margin-top: 15px;
+}
+
+.search-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+}
+
+.search-actions button:hover {
+    opacity: 0.9;
+}
+
+/* 기존 버튼 색상 규칙은 그대로 유지하거나 필요한 버튼에만 적용 */
+/* .search-actions button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+}
+.search-actions .reset-button {
+    background-color: #6c757d;
+    color: white;
+} */ /* 이 두 규칙은 이제 search-buttons-in-row에 있는 버튼에만 해당될 수 있습니다. */
+
+.search-actions .save-button { /* 저장 버튼 */
+    background-color: #28a745; /* 녹색 */
+    color: white;
+    width: 120px;
+}
+
+
+/* --- 공통 테이블 스타일 --- */
+.table-container {
+    margin-top: 10px; /* 테이블과의 간격 */
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    border-top: 1px solid #ddd;
+}
+
+.table th, .table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left; 
+}
+
+.table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #333;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.table .member-status-select {
+    padding: 5px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.no-data-center {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+}

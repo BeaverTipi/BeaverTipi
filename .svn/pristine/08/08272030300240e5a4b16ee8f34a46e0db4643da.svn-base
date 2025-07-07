@@ -1,0 +1,25 @@
+@charset "UTF-8";
+/*
+   여기에 해당 페이지(memberList)에만 특화된 CSS를 정의합니다.
+   (예: 특정 요소의 마진, 패딩, 폰트 크기 등 개별적인 미세 조정)
+*/
+
+/* ⭐⭐⭐ 모든 개별 width 속성 제거 (주석 처리 또는 삭제) ⭐⭐⭐ */
+/* #memberNameInput {  */
+/* width: 250px; */
+/* } */
+
+/* #memberStatusSelect {  */
+/* width: 175px; */
+/* } */
+
+/* #memberEmailInput {  */
+/* width: 250px; */
+/* } */
+
+/*
+   예시: 만약 memberList 페이지에만 특정 테이블 셀이 더 넓어야 한다면:
+   .table td:nth-child(2) {
+       width: 200px;
+   }
+*/

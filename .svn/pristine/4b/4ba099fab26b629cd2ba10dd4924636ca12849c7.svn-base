@@ -1,0 +1,93 @@
+
+spring.application.name=BeaverTipi
+
+# oauth client 등록 정보 registration.registrationId(주소창에 마지막 부분).
+spring.security.oauth2.client.registration.google-login.client-id=516370633110-r380002jccvorrerg1qcgskt2tdtga65.apps.googleusercontent.com
+spring.security.oauth2.client.registration.google-login.client-secret=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
+# 아래꺼는 내가 원하는대로 value에 넣는 거임 
+spring.security.oauth2.client.registration.google-login.client-name=HELLOGOOGLE
+spring.security.oauth2.client.registration.google-login.redirect-uri=http://localhost/login/oauth2/code/google-login
+spring.security.oauth2.client.registration.google-login.provider=google
+
+# 리프레시 토큰을 발급받기 위한 access_type 변경(연습용)
+#spring.security.oauth2.client.provider.google.authorization-uri=https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline
+# 카카오 로그인 설정
+spring.security.oauth2.client.registration.kakao.client-id=68d929d2ec8b9ce97b384268af4086c2
+spring.security.oauth2.client.registration.kakao.redirect-uri=http://localhost/login/oauth2/code/kakao
+spring.security.oauth2.client.registration.kakao.authorization-grant-type=authorization_code
+spring.security.oauth2.client.registration.kakao.scope=profile_nickname,profile_image,account_email
+spring.security.oauth2.client.provider.kakao.authorization-uri=https://kauth.kakao.com/oauth/authorize
+spring.security.oauth2.client.provider.kakao.token-uri=https://kauth.kakao.com/oauth/token
+spring.security.oauth2.client.provider.kakao.user-info-uri=https://kapi.kakao.com/v2/user/me
+spring.security.oauth2.client.provider.kakao.user-name-attribute=id
+
+# 데이터 베이스 연결 정보
+spring.datasource.driver-class-name=oracle.jdbc.driver.OracleDriver
+spring.datasource.url=jdbc:oracle:thin:@112.220.114.131:1521:xe
+spring.datasource.username=team3_202501f
+spring.datasource.password=java
+
+# connection pooling설정 (hikaricp)
+spring.datasource.hikari.auto-commit=true
+spring.datasource.hikari.minimum-idle=3
+spring.datasource.hikari.maximum-pool-size=5
+spring.datasource.hikari.connection-timeout=20000
+
+# Mybatis 연동 설정 (type alias, mapper location, settings, ...)
+# mybatis 연동 설정 중 settings
+mybatis.configuration.map-underscore-to-camel-case=true
+mybatis.configuration.jdbc-type-for-null=varchar
+# mybatis 연동 설정중 type-alias
+mybatis.type-aliases-package=kr.or.ddit.vo
+# mapper.xml의 위치 설정==> mapper scan의 위치
+mybatis.mapper-locations=classpath:kr/or/ddit/**/mapper/**/*.xml
+
+# 로그 설정(level 조정)
+logging.level.root=error
+logging.level.kr.or.ddit=info
+#logging.level.org.springframework=info
+#logging.level.org.springframework.web.servlet.mvc=debug
+# 이건 properties 열어서 보자.
+#logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping=trace
+logging.level.p6spy=info
+
+# 내장 서버 설정(port조정,ssl설정,...)
+server.port=80
+# Character Encoding Filter 설정
+server.servlet.encoding.charset=UTF-8
+server.servlet.encoding.force=true
+
+# Spring mvc 모듈 설정
+spring.mvc.view.prefix=/WEB-INF/views/
+spring.mvc.view.suffix=.jsp
+
+# 파일 업로드 설정(multipart-config)
+# 이제부터 멀티파트 추가할거임. 이건 기본값이 true
+spring.servlet.multipart.enabled=true
+# 기본값 1MB
+spring.servlet.multipart.max-file-size=5MB
+# 기본값 10MB
+spring.servlet.multipart.max-request-size=50MB
+# 무조건 청크를 쪼개서 임시저장소에 저장. 10KB미만은 청크로 쪼개지않고 메모리상에 있게끔..
+spring.servlet.multipart.file-size-threshold=10KB
+
+# 로그인 / 로그아웃 / 가입 url
+myapp.login-url=/account/login
+myapp.logout-url=/account/logout
+myapp.register-url=/member/register
+myapp.oauth2-register-url=/member/oauth2/register
+myapp.delete-value = "WITHDRAWN"
+
+# CORS 헤더
+cors.allowed-origins=http://localhost:6060,http://localhost:81
+cors.allowed-methods=GET,POST,PUT,DELETE,HEAD
+cors.allowed-headers=*
+cors.allowed-credentials=true
+
+# JWT 토큰 생성(JwtProvider : RestLoginController) 및 
+# 파싱(NimbusJwtDecoder : BearerAuthenticationFilter--우리가 만든게 아님 주의.)에 사용할 키.
+jwt.secrete-key=4MGwe1QZNkBnCeWczvy8z1D42UukHT1Z
+# authority의 접두어로 사용되는 "SCOPE_" 없앰. 사실 이건 편법을 사용하고 있는거 역할을 양도하는 건 아님 대신 자원에 대한 접근 범위를 설정해주는 것임. 
+spring.security.oauth2.resourceserver.jwt.authority-prefix=
+
+

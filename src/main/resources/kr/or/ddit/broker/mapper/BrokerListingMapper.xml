@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.broker.mapper.BrokerListingMapper">
+<!-- 
+	@author developer_KCY
+	/broker/myoffice 에서 사용할 REST 요청 SQL QUERY
+	
+	- selectLstgListByMbrCd
+		한 명의 중개인이 담당하고 있는 매물 리스트.
+		매물 한 건에 대한 레코드(ListingVO)를 List에 담아 반환.
+		ListingVO 안의 tenancyInfo, brokerInfo를 통해
+		해당 매물의 임대인회원(TenancyVO), 중개인회원(BrokerVO)의 정보도 함께 저장.
+ -->
+
+<!-- Facility Option 정보 매핑 -->
+<resultMap id="LstgFacOptMap" type="LstgFacOptVO">
+	<id property="lstgId" column="LSTG_ID_OPT" />
+	<result property="facOptId" column="FAC_OPT_ID" /> 
+	<result property="facOptTypeCd" column="FAC_OPT_TYPE_CD" />
+	<result property="facOptNm" column="FAC_OPT_NM" />
+	<result property="facOptDesc" column="FAC_OPT_DESC" />
+	<result property="facTypeGroupCd" column="FAC_TYPE_GROUP_CD" />
+</resultMap>
+
+<!-- Tenancy 정보 매핑 -->
+<resultMap id="TenancyMap" type="TenancyVO">
+	<result property="rentalPtyId" column="RENTAL_PTY_ID_T" />
+	<result property="rentalPtyBizRegFilePath" column="RENTAL_PTY_BIZ_REG_FILE_PATH" />
+	<result property="rentalPtyRegBldgCnt" column="RENTAL_PTY_REG_BLDG_CNT" />
+	<result property="rentalPtyAcctNo" column="RENTAL_PTY_ACCT_NO" />
+	<result property="rentalPtyBizRegNo" column="RENTAL_PTY_BIZ_REG_NO" />
+	<result property="rentalPtyFile" column="RENTAL_PTY_FILE" />
+	<result property="rentalPtyFile2" column="RENTAL_PTY_FILE2" />
+	<result property="lsrYnTypeCd" column="LSR_YN_TYPE_CD" />
+	<result property="rentalPtyBankNm" column="RENTAL_PTY_BANK_NM" />
+	<result property="lsrTypeGroupCd" column="LSR_TYPE_GROUP_CD" />
+	<result property="mbrCd" column="MBR_CD_T" />
+	<result property="mbrId" column="MBR_ID_T" />
+	<result property="mbrPw" column="MBR_PW_T" />
+	<result property="mbrNm" column="MBR_NM_T" />
+	<result property="mbrNnm" column="MBR_NNM_T" />
+	<result property="mbrTelno" column="MBR_TELNO_T" />
+	<result property="mbrEmlAddr" column="MBR_EML_ADDR_T" />
+	<result property="mbrBasicAddr" column="MBR_BASIC_ADDR_T" />
+	<result property="mbrDetailAddr" column="MBR_DETAIL_ADDR_T" />
+	<result property="mbrProfilImage" column="MBR_PROFILE_IMAGE_T" />
+	<result property="mbrFrstRegDt" column="MBR_FRST_REG_DT_T" />
+	<result property="mbrStatusCode" column="MBR_STATUS_CODE_T" />
+	<result property="mbrDeleteDate" column="MBR_DELETE_DATE_T" />
+	<result property="mbrZip" column="MBR_ZIP_T" />
+</resultMap>
+
+<!-- Broker 정보 매핑 -->
+<resultMap id="BrokerMap" type="BrokerVO">
+	<result property="brokNm" column="BROK_NM" />
+	<result property="brokRegNo" column="BROK_REG_NO" />
+	<result property="crtfNo" column="CRTF_NO" />
+	<result property="reprNm" column="REPR_NM" />
+	<result property="reprTelNo" column="REPR_TEL_NO" />
+	<result property="regDtm" column="REG_DTM" />
+	<result property="brokAddr1" column="BROK_ADDR1" />
+	<result property="brokAddr2" column="BROK_ADDR2" />
+	<result property="mbrCd" column="MBR_CD_B" />
+	<result property="mbrId" column="MBR_ID_B" />
+	<result property="mbrPw" column="MBR_PW_B" />
+	<result property="mbrNm" column="MBR_NM_B" />
+	<result property="mbrNnm" column="MBR_NNM_B" />
+	<result property="mbrTelno" column="MBR_TELNO_B" />
+	<result property="mbrEmlAddr" column="MBR_EML_ADDR_B" />
+	<result property="mbrBasicAddr" column="MBR_BASIC_ADDR_B" />
+	<result property="mbrDetailAddr" column="MBR_DETAIL_ADDR_B" />
+	<result property="mbrProfilImage" column="MBR_PROFILE_IMAGE_B" />
+	<result property="mbrFrstRegDt" column="MBR_FRST_REG_DT_B" />
+	<result property="mbrStatusCode" column="MBR_STATUS_CODE_B" />
+	<result property="mbrDeleteDate" column="MBR_DELETE_DATE_B" />
+	<result property="mbrZip" column="MBR_ZIP_B" />
+</resultMap>
+
+<!-- 최종 매물 정보 -->
+<resultMap id="ListingPackMap" type="ListingPackVO" autoMapping="true">
+	<id property="lstgId" column="LSTG_ID" />
+	<association property="tenancyInfo" resultMap="TenancyMap" />
+	<association property="brokerInfo" resultMap="BrokerMap" />
+	<collection property="lstgFacOptInfo" javaType="List" ofType="LstgFacOptVO" >
+		<result property="lstgId" column="LSTG_ID_OPT" />
+		<result property="facOptId" column="FAC_OPT_ID" /> 
+		<result property="facOptTypeCd" column="FAC_OPT_TYPE_CD" />
+		<result property="facOptNm" column="FAC_OPT_NM" />
+		<result property="facOptDesc" column="FAC_OPT_DESC" />
+		<result property="facTypeGroupCd" column="FAC_TYPE_GROUP_CD" />
+	</collection>
+</resultMap>
+
+<sql id="tenancyListView">
+TENANCY_LIST AS(
+    SELECT T.RENTAL_PTY_ID AS RENTAL_PTY_ID_T
+           ,T.RENTAL_PTY_BIZ_REG_FILE_PATH
+           ,T.RENTAL_PTY_REG_BLDG_CNT
+           ,T.RENTAL_PTY_ACCT_NO
+           ,T.RENTAL_PTY_BIZ_REG_NO
+           ,T.RENTAL_PTY_FILE
+           ,T.RENTAL_PTY_FILE2
+           ,T.LSR_YN_TYPE_CD
+           ,T.RENTAL_PTY_BANK_NM
+           ,T.LSR_TYPE_GROUP_CD
+           ,M.MBR_CD AS MBR_CD_T
+           ,M.MBR_ID AS MBR_ID_T
+           ,M.MBR_PW AS MBR_PW_T
+           ,M.MBR_NM AS MBR_NM_T
+           ,M.MBR_NNM AS MBR_NNM_T
+           ,M.MBR_TELNO AS MBR_TELNO_T
+           ,M.MBR_EML_ADDR AS MBR_EML_ADDR_T
+           ,M.MBR_BASIC_ADDR AS MBR_BASIC_ADDR_T
+           ,M.MBR_DETAIL_ADDR AS MBR_DETAIL_ADDR_T
+           ,M.MBR_PROFIL_IMAGE AS MBR_PROFILE_IMAGE_T
+           ,M.MBR_FRST_REG_DT AS MBR_FRST_REG_DT_T
+           ,M.MBR_STATUS_CODE AS MBR_STATUS_CODE_T
+           ,M.MBR_DELETE_DATE AS MBR_DELETE_DATE_T
+           ,M.MBR_ZIP AS MBR_ZIP_T
+      FROM TENANCY T
+     INNER JOIN MEMBER M ON(T.MBR_CD = M.MBR_CD)
+)
+</sql>
+<sql id="brokerListView">
+BROKER_LIST AS (
+    SELECT B.BROK_NM
+           ,B.BROK_REG_NO
+           ,B.CRTF_NO
+           ,B.REPR_NM
+           ,B.REPR_TEL_NO
+           ,B.REG_DTM
+           ,B.BROK_ADDR1
+           ,B.BROK_ADDR2
+           ,M.MBR_CD   AS MBR_CD_B
+           ,M.MBR_ID   AS MBR_ID_B
+           ,M.MBR_PW   AS MBR_PW_B
+           ,M.MBR_NM   AS MBR_NM_B
+           ,M.MBR_NNM  AS MBR_NNM_B
+           ,M.MBR_TELNO AS BROK_MBR_TELNO_B
+           ,M.MBR_EML_ADDR AS BROK_MBR_EML_ADDR_B
+           ,M.MBR_BASIC_ADDR AS BROK_MBR_BASIC_ADDR_B
+           ,M.MBR_DETAIL_ADDR AS BROK_MBR_DETAIL_ADDR_B
+           ,M.MBR_PROFIL_IMAGE AS BROK_MBR_PROFIL_IMAGE_B
+           ,M.MBR_FRST_REG_DT  AS BROK_MBR_FRST_REG_DT_B
+           ,M.MBR_STATUS_CODE  AS BROK_MBR_STATUS_CODE_B
+           ,M.MBR_DELETE_DATE  AS BROK_MBR_DELETE_DATE_B
+           ,M.MBR_ZIP          AS BROK_MBR_ZIP_B
+      FROM BROKER B
+      JOIN MEMBER M ON B.MBR_CD = M.MBR_CD
+)
+</sql>
+<sql id="facOptListView">
+FAC_OPT_LIST AS (
+    SELECT LO.LSTG_ID AS LSTG_ID_OPT
+           ,LO.FAC_OPT_ID
+           ,FO.FAC_OPT_TYPE_CD
+           ,FO.FAC_OPT_NM
+           ,FO.FAC_OPT_DESC
+           ,FO.FAC_TYPE_GROUP_CD
+      FROM LISTING_OPTION LO
+     INNER JOIN FACILITY_OPTION FO ON(LO.FAC_OPT_ID = FO.FAC_OPT_ID)
+)
+</sql>
+<select id="selectLstgListByMbrCd" parameterType="String" resultMap="ListingPackMap">
+WITH <include refid="tenancyListView" />
+, <include refid="brokerListView" />
+, <include refid="facOptListView" />
+SELECT L.*
+       ,TL.*
+       ,BL.*
+       ,FL.*
+  FROM LISTING L
+  LEFT OUTER JOIN TENANCY_LIST TL ON(L.RENTAL_PTY_ID = TL.RENTAL_PTY_ID_T)
+  LEFT OUTER JOIN BROKER_LIST BL ON(L.MBR_CD = BL.MBR_CD_B)
+  LEFT OUTER JOIN FAC_OPT_LIST FL ON(L.LSTG_ID = FL.LSTG_ID_OPT)
+ WHERE L.MBR_CD = #{mbrCd}
+ ORDER BY L.LSTG_ID ASC
+</select>
+
+<select id="selectLstgDetails" parameterType="Map" resultMap="ListingPackMap">
+WITH <include refid="brokerListView" />
+, <include refid="facOptListView" />
+SELECT L.*
+       ,BL.*
+       ,FL.*
+  FROM LISTING L
+  LEFT OUTER JOIN BROKER_LIST BL ON(L.MBR_CD = BL.MBR_CD_B)
+  LEFT OUTER JOIN FAC_OPT_LIST FL ON(L.LSTG_ID = FL.LSTG_ID_OPT)
+ WHERE BL.MBR_CD_B = #{mbrCd}
+   AND L.LSTG_ID = #{lstgId}
+</select>
+
+</mapper>

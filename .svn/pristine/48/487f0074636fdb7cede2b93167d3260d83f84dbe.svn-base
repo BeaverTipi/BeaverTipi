@@ -1,0 +1,22 @@
+package kr.or.ddit.vo;
+
+import java.io.Serializable;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(of= {"contId"})
+public class ContractVO implements Serializable{
+	private String contTypeGroupCd;
+	private String contId;
+	private String mbrCd;
+	private String mbrCdBrok;
+	private String lstgId;
+	private String contTypeCode;
+	private Integer contDeposit;
+	private Integer contTaxAmount;
+	private Integer contAmount;
+	private String contStatCd;
+	private String contDtm;
+}

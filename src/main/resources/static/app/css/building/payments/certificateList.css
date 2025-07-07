@@ -1,0 +1,74 @@
+@charset "UTF-8";
+ body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+
+    .btn {
+      padding: 6px 12px;
+      font-size: 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      border: none;
+      display: inline-block;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .btn-blue {
+      background-color: #00aaff;
+      color: white;
+    }
+
+    .btn-red {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .register-btn-wrapper {
+      float: right;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    thead {
+      background-color: #f2f2f2;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .status-approved {
+      color: green;
+      font-weight: bold;
+    }
+
+    .status-pending {
+      color: orange;
+      font-weight: bold;
+    }
+
+    .status-rejected {
+      color: red;
+      font-weight: bold;
+    }
+
+    .empty-message {
+      text-align: center;
+      padding: 30px;
+      color: #888;
+    }
