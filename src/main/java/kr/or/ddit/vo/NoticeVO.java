@@ -15,4 +15,5 @@ public class NoticeVO implements Serializable{
 	private String noticeTop;
 	private LocalDate noticeEndDtm;
 	private String noticeDelYn;
+	
 }

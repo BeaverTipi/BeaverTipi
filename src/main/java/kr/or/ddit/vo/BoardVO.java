@@ -54,7 +54,7 @@ public class BoardVO implements Serializable{
     private LocalDateTime brdPblsDtmFrom; // 게시글 게시일시 (신고일자로 사용) 시작
     private LocalDateTime brdPblsDtmTo;   // 게시글 게시일시 (신고일자로 사용) 종료
     
-    
+    private MemberVO member;
     // ReportUserList를 위한 메서드
     public String getFormattedBrdPblsDtm() {
         if (this.brdPblsDtm == null) {
