@@ -1,5 +1,6 @@
 package kr.or.ddit.resident.board.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,50 +28,63 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/resident")
 public class RsdBoardController {
 
-	@Autowired
-	private ResidentBoardService boardService;
-	
-	@Autowired
-	private UnitResidentService unitResidentService;
+    @Autowired
+    private ResidentBoardService boardService;
 
-	@GetMapping("/board")
-	public String readResidentBoard(
-	        Model model,
-	        @RequestParam(required = false, defaultValue = "1") int page,
-	        @RequestParam(required = false) String bldgIdParam,
-	        @ModelAttribute("search") SimpleSearch simpleSearch,
-	        @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
+    @Autowired
+    private UnitResidentService unitResidentService;
 
-	    MemberVO member = principal.getRealUser();
-	    List<UnitResidentVO> units = unitResidentService.getUnitsByMember(member.getMbrCd());
+    @GetMapping("/board")
+    public String readResidentBoard(
+            Model model,
+            @RequestParam(required = false, defaultValue = "1") int page,
+            @RequestParam(required = false) String bldgIdParam,
+            @ModelAttribute("search") SimpleSearch simpleSearch,
+            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
 
-	    if (units == null || units.isEmpty()) {
-	        return "redirect:/member/register";
-	    }
+        // 1) 입주민의 유닛 정보 확인
+        MemberVO member = principal.getRealUser();
+        List<UnitResidentVO> units = unitResidentService.getUnitsByMember(member.getMbrCd());
+        if (units == null || units.isEmpty()) {
+            return "redirect:/member/register";
+        }
 
-	    // 🔄 건물 선택 처리
-	    String selectedBldgId = (bldgIdParam != null) ? bldgIdParam : units.get(0).getBldgId();
-	    simpleSearch.setBldgId(selectedBldgId);
+        log.info("📌 bldgIdParam: {}", bldgIdParam);
+        log.info("📌 simpleSearch.bldgId (before): {}", simpleSearch.getBldgId());
 
-	    // 페이징 처리
-	    PaginationInfo<ResidentBoardVO> paging = new PaginationInfo<>();
-	    paging.setCurrentPageNo(page);
-	    paging.setSimpleSearch(simpleSearch);
+        // 2) 건물 선택이 안 됐으면 빈 리스트 리턴
+        if (bldgIdParam == null || bldgIdParam.isBlank()) {
+            model.addAttribute("unitList", units);
+            model.addAttribute("selectedBldgId", bldgIdParam);
+            model.addAttribute("boardList", Collections.emptyList());
+            model.addAttribute("pagingHTML", "");
+            model.addAttribute("pagingInfo", new PaginationInfo<ResidentBoardVO>());
+            return "resident/Board/ResidentBoard";
+        }
 
-	    int totalRecord = boardService.getTotalRecord(paging);
-	    paging.setTotalRecordCount(totalRecord);
-	    List<ResidentBoardVO> boardList = boardService.getBoardList(paging);
+        // 3) 선택된 건물이 있으면 VO에 세팅
+        simpleSearch.setBldgId(bldgIdParam);
+        log.info("📌 simpleSearch.bldgId (after): {}", simpleSearch.getBldgId());
 
-	    String pagingHTML = new DefaultPaginationRenderer().renderPagination(paging, "fnPaging");
+        // 4) 페이징 및 검색 수행
+        PaginationInfo<ResidentBoardVO> paging = new PaginationInfo<>();
+        paging.setCurrentPageNo(page);
+        paging.setSimpleSearch(simpleSearch);
 
-	    model.addAttribute("unitList", units);
-	    model.addAttribute("selectedBldgId", selectedBldgId);
-	    model.addAttribute("boardList", boardList);
-	    model.addAttribute("pagingHTML", pagingHTML);
-	    model.addAttribute("pagingInfo", paging);
+        int totalRecord = boardService.getTotalRecord(paging);
+        paging.setTotalRecordCount(totalRecord);
 
-	    return "resident/Board/ResidentBoard";
-	}
+        List<ResidentBoardVO> boardList = boardService.getBoardList(paging);
+        String pagingHTML = new DefaultPaginationRenderer()
+                                 .renderPagination(paging, "fnPaging");
 
+        // 5) 모델에 데이터 바인딩
+        model.addAttribute("unitList", units);
+        model.addAttribute("selectedBldgId", bldgIdParam);
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("pagingHTML", pagingHTML);
+        model.addAttribute("pagingInfo", paging);
 
+        return "resident/Board/ResidentBoard";
+    }
 }

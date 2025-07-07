@@ -15,5 +15,7 @@ public class UnitResidentVO implements Serializable {
 	private String moveInDt;
 	private String mbrCd;
 	
+	
+	
 	private BuildingVO building;
 }

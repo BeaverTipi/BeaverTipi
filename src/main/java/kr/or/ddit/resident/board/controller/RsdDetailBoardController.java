@@ -21,43 +21,46 @@ import kr.or.ddit.vo.UnitResidentVO;
 @RequestMapping("/resident")
 public class RsdDetailBoardController {
 
-	@Autowired
-	private ResidentBoardService service;
-	
-	@Autowired
-	private UnitResidentService unitResidentService;
-	
-	@GetMapping("/board/detail")
-	public String showBoardDetail(@AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
-	                              @RequestParam("rsdBrdId") String rsdBrdId,
-	                              Model model) {
+    @Autowired
+    private ResidentBoardService service;
 
-	    MemberVO member = principal.getRealUser();
-	    List<UnitResidentVO> units = unitResidentService.getUnitsByMember(member.getMbrCd());
+    @Autowired
+    private UnitResidentService unitResidentService;
 
-	    if (units == null || units.isEmpty()) {
-	        return "redirect:/"; // 건물 정보 없음
-	    }
+    @GetMapping("/board/detail")
+    public String showBoardDetail(
+        @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
+        @RequestParam("rsdBrdId") String rsdBrdId,
+        @RequestParam(value="bldgIdParam", required=false) String bldgIdParam,
+        Model model
+    ) {
+        MemberVO member = principal.getRealUser();
+        List<UnitResidentVO> units = unitResidentService.getUnitsByMember(member.getMbrCd());
+        if(units == null || units.isEmpty()) {
+            return "redirect:/";
+        }
 
-	    String bldgId = units.get(0).getBldgId();
+        // 파라미터가 있으면 그것을, 없으면 첫 유닛의 bldgId
+        String bldgId = (bldgIdParam != null && !bldgIdParam.isBlank())
+                        ? bldgIdParam
+                        : units.get(0).getBldgId();
 
-	    ResidentBoardVO param = new ResidentBoardVO();
-	    param.setRsdBrdId(rsdBrdId);
-	    param.setBldgId(bldgId);
+        ResidentBoardVO param = new ResidentBoardVO();
+        param.setRsdBrdId(rsdBrdId);
+        param.setBldgId(bldgId);
 
-	    // 조회수 증가
-	    service.viewCount(param);
+        service.viewCount(param);
+        ResidentBoardVO board = service.getBoard(param);
+        if(board == null) {
+            // 글이 없을 땐 동일 파라미터를 붙여서 목록으로
+            return "redirect:/resident/board?bldgIdParam=" + bldgId;
+        }
 
-	    // 게시글 조회
-	    ResidentBoardVO board = service.getBoard(param);
+        // ▶ 이 줄을 꼭, bldgIdParam 이 아니라 bldgId 문자열로 넘겨야 합니다
+        model.addAttribute("selectedBldgId", bldgId);
+        model.addAttribute("board", board);
 
-	    if (board == null) {
-	        // 게시글이 없거나 다른 건물의 글일 경우
-	        return "redirect:/resident/board";
-	    }
-
-	    model.addAttribute("board", board);
-	    return "resident/Board/BoardDetail";
-	}
-	
+        return "resident/Board/BoardDetail";
+    }
 }
+

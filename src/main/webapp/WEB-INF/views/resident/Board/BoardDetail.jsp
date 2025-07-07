@@ -91,9 +91,16 @@
     </div>
 
     <div class="btn-group">
- 		 <a href="${pageContext.request.contextPath}/resident/board">목록으로</a>
+ 		 <a href="<c:url value='/resident/board'>
+           <c:param name='bldgIdParam' value='${selectedBldgId}'/>
+         		</c:url>">
+					목록으로
+		 </a>
   		<!-- 수정 버튼: 여기서만 form 엔드포인트 호출 -->
-  		<a href="${pageContext.request.contextPath}/resident/board/form?rsdBrdId=${board.rsdBrdId}">
+  		  <a href="<c:url value='/resident/board/form'>
+              <c:param name='rsdBrdId'   value='${board.rsdBrdId}'/>
+              <c:param name='bldgIdParam' value='${selectedBldgId}'/>
+            </c:url>">
     수정
   </a>
 </div>

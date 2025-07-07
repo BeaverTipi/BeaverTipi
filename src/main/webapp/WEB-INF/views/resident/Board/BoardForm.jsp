@@ -20,17 +20,52 @@
 </head>
 <body>
 
-  <h1>${mode == 'edit' ? '게시글 수정' : '게시글 등록'}</h1>
+  <h1>
+  <c:choose>
+    <c:when test="${mode == 'edit'}">게시글 수정</c:when>
+    <c:otherwise>${buildingName} 게시판에 글쓰기</c:otherwise>
+  </c:choose>
+</h1>
 
-  <form:form modelAttribute="board"
-             action="${pageContext.request.contextPath}/resident/board"
-             method="post">
-    <form:hidden path="rsdBrdId"/>
-    <form:hidden path="bldgId"/>
-    <form:hidden path="mbrCd"/>
-    <form:hidden path="brdCode" value="R0001"/>
 
-    <table>
+<form:form modelAttribute="board"
+           action="${pageContext.request.contextPath}/resident/board"
+           method="post">
+  <form:hidden path="rsdBrdId"/>
+  <form:hidden path="mbrCd"/>
+  <form:hidden path="brdCode" value="R0001"/>
+
+  <!-- ① bldgIdParam 히든 필드 추가 -->
+<%--   <form:hidden path="bldgIdParam" value="${selectedBldgId}"/> --%>
+<input type="hidden"
+       name="bldgIdParam"
+       value="${selectedBldgId}" />
+
+  <table>
+    <c:choose>
+      <c:when test="${mode == 'edit'}">
+        <!-- 수정 모드 땐 bldgIdParam 으로 건물을 고정 -->
+        <form:hidden path="bldgId"/>
+        <tr>
+          <th>건물</th>
+          <td>${buildingName}</td>
+        </tr>
+      </c:when>
+      <c:otherwise>
+        <tr>
+          <th>건물 선택</th>
+          <td>
+            <form:select path="bldgId">
+              <form:option value="">건물 선택</form:option>
+              <c:forEach var="unit" items="${unitList}">
+                <form:option value="${unit.bldgId}">
+                  ${unit.building.bldgNm}
+                </form:option>
+              </c:forEach>
+            </form:select>
+          </td>
+        </c:otherwise>
+    </c:choose>
       <tr>
         <th>제목</th>
         <td><form:input path="rsdBrdTitl" cssClass="input-text"/></td>
@@ -48,10 +83,16 @@
     </table>
 
     <div class="btn-group">
-      <button type="submit">저장</button>
-      <a href="${pageContext.request.contextPath}/resident/board">취소</a>
-    </div>
-  </form:form>
+	    <button type="submit">저장</button>
+	    <!-- ② 취소 링크에도 bldgIdParam 붙이기 -->
+		    <a href="<c:url value='/resident/board'>
+		               <c:param name='bldgIdParam' value='${selectedBldgId}'/>
+		             </c:url>">
+		      	취소
+	    	</a>
+  	</div>
+</form:form>
+
 
 </body>
 </html>

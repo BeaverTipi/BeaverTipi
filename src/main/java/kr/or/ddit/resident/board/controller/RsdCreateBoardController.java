@@ -33,27 +33,32 @@ public class RsdCreateBoardController {
 	@Autowired
 	private UnitResidentService unitResidentService;
 	
-	 @ModelAttribute("board")
-	    public ResidentBoardVO prepareBoard(
-	            @RequestParam(value="rsdBrdId", required=false) String rsdBrdId,
-	            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
-	        log.info("[prepareBoard] rsdBrdId={}", rsdBrdId);
-	        if (rsdBrdId != null && !rsdBrdId.isEmpty()) {
-	            MemberVO member = principal.getRealUser();
-	            List<UnitResidentVO> units = unitResidentService.getUnitsByMember(member.getMbrCd());
-	            if (units != null && !units.isEmpty()) {
-	                String bldgId = units.get(0).getBldgId();
-	                ResidentBoardVO param = new ResidentBoardVO();
-	                param.setRsdBrdId(rsdBrdId);
-	                param.setBldgId(bldgId);
-	                ResidentBoardVO vo = boardService.getBoard(param);
-	                log.info("[prepareBoard] service.getBoard() → vo={}", vo);
-	                if (vo != null) return vo;
-	            }
-	        }
-	        // 새 글 폼용 빈 VO
-	        return new ResidentBoardVO();
-	    }
+	 // 📌 게시글 객체 준비
+    @ModelAttribute("board")
+    public ResidentBoardVO prepareBoard(
+            @RequestParam(value = "rsdBrdId", required = false) String rsdBrdId,
+            @RequestParam(value = "bldgIdParam", required = false) String bldgIdParam,
+            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
+
+        log.info("[prepareBoard] rsdBrdId={}, bldgIdParam={}", rsdBrdId, bldgIdParam);
+
+        if(rsdBrdId != null && !rsdBrdId.isBlank()) {
+            // rbId + bldgId 까지 채워주는 param VO
+            ResidentBoardVO param = new ResidentBoardVO();
+            param.setRsdBrdId(rsdBrdId);
+            param.setBldgId(bldgIdParam);
+            ResidentBoardVO vo = boardService.getBoard(param);
+            log.info("[prepareBoard] 수정용 게시글 조회 결과: {}", vo);
+            return vo != null ? vo : new ResidentBoardVO();
+          }
+
+        ResidentBoardVO newBoard = new ResidentBoardVO();
+        if (bldgIdParam != null && !bldgIdParam.isBlank()) {
+            newBoard.setBldgId(bldgIdParam);
+        }
+        return newBoard;
+    }
+
 
 
 
@@ -64,11 +69,28 @@ public class RsdCreateBoardController {
 	     * @param model mode 전달용
 	     */
 	    @GetMapping("/board/form")
-	    public String showCreateForm(@RequestParam(value = "rsdBrdId", required = false) String rsdBrdId,
-	                                 @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
-	                                 Model model) {
+	    public String showCreateForm(
+	    		@RequestParam(value = "rsdBrdId", required = false) String rsdBrdId,
+	    		@RequestParam(value = "bldgIdParam", required = false) String bldgIdParam,
+	    		@AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
+	            Model model) {
 	        String mode = (rsdBrdId != null && !rsdBrdId.isEmpty()) ? "edit" : "new";
 	        model.addAttribute("mode", mode);
+	        
+	        MemberVO member = principal.getRealUser();
+	        List<UnitResidentVO> units = unitResidentService.getUnitsByMember(member.getMbrCd());
+	        model.addAttribute("unitList", units);
+	        
+	        ResidentBoardVO board = (ResidentBoardVO) model.asMap().get("board");
+	        if(board!=null && board.getBldgId()!= null) {
+	        	for(UnitResidentVO unit : units) {
+	        		if(unit.getBldgId().equals(board.getBldgId())) {
+	        			model.addAttribute("buildingName",unit.getBuilding().getBldgNm());
+	        			break;
+	        		}
+	        	}
+	        }
+	        model.addAttribute("selectedBldgId", bldgIdParam);
 	        return "resident/Board/BoardForm";
 	    }
 
@@ -80,6 +102,7 @@ public class RsdCreateBoardController {
 	     */
 	    @PostMapping("/board")
 	    public String saveBoard(@ModelAttribute("board") ResidentBoardVO board,
+	    						@RequestParam(value = "bldgIdParam",required = false) String bldgIdParam,
 	                            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
 	                            Model model) {
 
@@ -92,17 +115,20 @@ public class RsdCreateBoardController {
 	            model.addAttribute("mode", mode);
 	            return "resident/Board/BoardForm";
 	        }
-
-	        board.setBldgId(units.get(0).getBldgId());
+	        if (board.getBldgId() == null || board.getBldgId().isBlank()) {
+	            model.addAttribute("mode", "new");
+	            model.addAttribute("unitList", units);
+	            model.addAttribute("error", "건물을 선택해주세요.");
+	            return "resident/Board/BoardForm";
+	        }
 	        board.setMbrCd(member.getMbrCd());
 	        board.setBrdCode("R0001"); // 자유게시판 고정
-
+	        
 	        if (board.getRsdBrdId() == null || board.getRsdBrdId().isEmpty()) {
 	            boardService.insertBoard(board);
 	        } else {
 	            boardService.updateBoard(board);
 	        }
-
-	        return "redirect:/resident/board";
+	        return "redirect:/resident/board?bldgIdParam=" + bldgIdParam;
 	    }
 	}
