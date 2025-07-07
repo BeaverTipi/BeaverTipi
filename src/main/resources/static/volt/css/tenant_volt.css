@@ -23061,6 +23061,30 @@ label {
     margin-bottom: 0.5rem;
 }
 
+/* 메인 wrapper: header와 footer 사이를 flex로 */
+.main-content {
+  display: flex;
+  flex: 1;
+  min-height: calc(100vh - 70px - 50px);  /* 헤더 70, 푸터 50 (수정 가능) */
+  overflow: hidden;
+}
+
+/* 사이드바 */
+.sidebar {
+  width: 300px;
+  background: #fff;
+  border-right: 1px solid #ccc;
+  overflow-y: auto;
+}
+
+/* 지도 */
+.map-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+
 /**
  * = Accordions
 */

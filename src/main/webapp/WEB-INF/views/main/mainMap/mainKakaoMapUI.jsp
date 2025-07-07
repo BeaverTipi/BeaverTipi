@@ -1,0 +1,60 @@
+<!-- 
+ * == 개정이력(Modification Information) ==
+ *   
+ *   수정일      			수정자           수정내용
+ *  ============   	============== =======================
+ *  2025. 7. 7.     		 윤현식            생성
+ *
+-->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>지도</title>
+<!-- services와 clusterer, drawing 라이브러리 불러오기 -->
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f6ac04f1e14d24a9da646848581a9a89&libraries=services,clusterer,drawing"></script>
+<script src="${pageContext.request.contextPath }/app/js/main/mainMap/mainKakaoMap.js" ></script>
+</head>
+<body style="margin: 0;">
+	<div style="display: flex; min-height: 100vh;">
+		<div id="sidebar-wrapper" style="width: 150px; background: #ffffff;">
+			<%@ include file="/WEB-INF/fragments/mainPageMapSidebar.jsp" %>
+		</div>
+		 <div id="map-wrapper" style="flex: 1;">
+			<div id="map" style="width:750px;height:650px;"></div>
+		</div>
+		
+		<div class="map_wrap">
+		    <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
+		    <ul id="category">
+		        <li id="BK9" data-order="0"> 
+		            <span class="category_bg bank"></span>
+		            은행
+		        </li>       
+		        <li id="MT1" data-order="1"> 
+		            <span class="category_bg mart"></span>
+		            마트
+		        </li>  
+		        <li id="PM9" data-order="2"> 
+		            <span class="category_bg pharmacy"></span>
+		            약국
+		        </li>  
+		        <li id="OL7" data-order="3"> 
+		            <span class="category_bg oil"></span>
+		            주유소
+		        </li>  
+		        <li id="CE7" data-order="4"> 
+		            <span class="category_bg cafe"></span>
+		            카페
+		        </li>  
+		        <li id="CS2" data-order="5"> 
+		            <span class="category_bg store"></span>
+		            편의점
+		        </li>      
+    		</ul>
+</div>
+	</div>
+</body>
+</html>

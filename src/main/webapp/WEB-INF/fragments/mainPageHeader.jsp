@@ -17,7 +17,7 @@
       </li>
           
       </security:authorize>
-      <li class="nav-item"><a class="nav-link" href="#">지도</a></li>
+      <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/main/map">지도</a></li>
       <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/member/product/add">상품등록</a></li>
 
       <security:authorize access="isAuthenticated()">
