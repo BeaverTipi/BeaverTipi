@@ -2,20 +2,39 @@ package kr.or.ddit.resident.chating.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.resident.mapper.RsdChatMapper;
+import kr.or.ddit.vo.BuildingVO;
+import kr.or.ddit.vo.ChatRoomInVO;
 import kr.or.ddit.vo.ResidentChatRoomVO;
 
+@Service
 public class RsdChatServiceImpl implements RsdChatServcie {
 
-	@Override
-	public List<ResidentChatRoomVO> getChatList() {
-		
-		return null;
-	}
+	@Autowired
+	RsdChatMapper mapper;
+	
 
 	@Override
 	public int createChatRoom(ResidentChatRoomVO rsdChatRoomVO) {
 		
-		return 0;
+		return mapper.insertChatRoom(rsdChatRoomVO);
+	}
+
+
+	@Override
+	public List<ChatRoomInVO> getBuildingChatList(String mbrCd, String bldgId) {
+
+		return mapper.selectBuildingChatList(mbrCd, bldgId);
+	}
+
+
+	@Override
+	public List<BuildingVO> getResidentBuildingList(String mbrCd) {
+
+		return mapper.selectResidentBuildingList(mbrCd);
 	}
 
 }

@@ -9,25 +9,32 @@
 	RESIDENT_CHAT_ROOM_ID
 	, BLDG_ID
 	, MBR_CD
-	, RESIDENT_CHAT_ROOM_DATE
 	, RESIDENT_CHAT_ROOM_TITLE
-	, RESIDENT_CHAT_ROOM_IS_PUBLIC
+	, RESIDENT_CHAT_ROOM_IS_PUBLIC	<!-- if 문 넣어서 수정해야함 -->
 	) VALUES(
-	#{RESIDENT_CHAT_ROOM_ID}
-	, #{BLDG_ID}
-	, #{MBR_CD}
-	, trunc(sysdate)
-	, #{RESIDENT_CHAT_ROOM_TITLE}
-	, #{RESIDENT_CHAT_ROOM_IS_PUBLIC}
+	#{residentChatRoomId}
+	, #{bldgID}
+	, #{mbrCD}
+	, #{residentChatRoomTitle}
+	, #{residentChatRoomIsPublic}
 	)
 	
 </insert>
 
-	<select id="selectChatList" resultType="ResidentChatRoomVO">
-	SELECT CHAT_ROOM_TITLE
-	FROM RESIDENT_CHAT_ROOM
-	WHERE BLDG_ID = #{BLDG_ID}
-	ORDER BY RESIDENT_CHAT_ROOM_ID DESC
+	<select id="selectBuildingChatList" resultType="ResidentChatRoomVO">
+	SELECT DISTINCT A.RESIDENT_CHAT_ROOM_TITLE, A.RESIDENT_CHAT_ROOM_ID
+	FROM RESIDENT_CHAT_ROOM A
+	INNER JOIN CHAT_ROOM_IN B ON(A.RESIDENT_CHAT_ROOM_ID = B.RESIDENT_CHAT_ROOM_ID)
+	WHERE B.MBR_CD = #{mbrCd}
+	AND A.BLDG_ID = #{bldgId}
+	</select> 
+
+	<select id = "selectResidentBuildingList" resultType="BuildingVO">
+	SELECT DISTINCT A.BLDG_ID, A.BLDG_NM 
+	FROM BUILDING A
+	INNER JOIN UNIT_RESIDENT B ON (A.BLDG_ID = B.BLDG_ID)
+	WHERE B.MBR_CD= #{mbrCd}
 	</select>
+
 
 </mapper>

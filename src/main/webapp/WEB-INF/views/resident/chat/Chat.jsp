@@ -1,6 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,11 +13,18 @@
       box-sizing: border-box;
     }
 
-    .chat-popup-header {
-      display: flex;
-      justify-content: space-between;
+    .chat-popup-header-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 0.5rem 1rem;
+      margin-bottom: 1rem;
       align-items: center;
-      margin-bottom: 0.5rem;
+    }
+
+    .chat-logo {
+      grid-column: 1 / 2;
+      grid-row: 1 / 2;
     }
 
     .chat-logo img {
@@ -27,13 +32,27 @@
     }
 
     .chat-header-actions {
-      display: flex;
-      gap: 0.5rem;
+      grid-column: 2 / 3;
+      grid-row: 1 / 2;
+      justify-self: end;
+    }
+
+    .building-select-area {
+      grid-column: 1 / 2;
+      grid-row: 2 / 3;
+    }
+
+    .building-select-area select {
+      padding: 0.4rem 0.6rem;
+      font-size: 0.9rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
 
     .chat-toggle-section {
-      margin-bottom: 1rem;
-      text-align: right;
+      grid-column: 2 / 3;
+      grid-row: 2 / 3;
+      justify-self: end;
     }
 
     .chat-room-list {
@@ -74,7 +93,6 @@
       margin-top: 0.25rem;
     }
 
-    /* ✅ 공통 버튼 스타일 */
     .chat-btn {
       width: 160px;
       padding: 0.5rem 1rem;
@@ -94,80 +112,42 @@
 </head>
 <body>
   <div class="chat-popup-wrapper">
-    <!-- 상단: 로고 + 채팅방 개설 버튼 -->
-    <div class="chat-popup-header">
+
+    <!-- ✅ 상단: 2x2 그리드 구조 -->
+    <div class="chat-popup-header-grid">
+
+      <!-- 좌상단: 로고 -->
       <div class="chat-logo">
-        <img src="/static/img/logo.png" alt="로고" />
+        <img src="/volt/assets/img/brand/dark.png" alt="채팅방 로고"/>
       </div>
+
+      <!-- 우상단: 채팅방 개설 버튼 -->
       <div class="chat-header-actions">
         <button id="createChatBtn" class="chat-btn">➕ 채팅방 개설</button>
       </div>
+
+      <!-- 좌하단: 건물 선택 드롭다운 (JS로 렌더링) -->
+      <div class="building-select-area">
+        <label for="buildingSelect" class="visually-hidden">건물 선택</label>
+        <select id="buildingSelect" name="selectedBldgId">
+          <!-- JS가 option을 동적으로 채움 -->
+        </select>
+      </div>
+
+      <!-- 우하단: 공개 채팅방 보기 버튼 -->
+      <div class="chat-toggle-section">
+        <button id="togglePublicBtn" class="chat-btn">🌐 공개 채팅방 보기</button>
+      </div>
     </div>
 
-    <!-- 공개 채팅방 보기 버튼 -->
-    <div class="chat-toggle-section">
-      <button id="togglePublicBtn" class="chat-btn">🌐 공개 채팅방 보기</button>
-    </div>
-
-    <!-- 채팅방 목록 -->
+    <!-- ✅ 채팅방 목록 (JS로 채움) -->
     <div class="chat-room-list" id="chatRoomList">
-      <c:choose>
-        <c:when test="${empty chatRoomList}">
-          <div class="chat-empty-message">
-            참여 중인 채팅이 없습니다.<br />
-            멤버와 채팅을 시작해보세요.
-          </div>
-        </c:when>
-        <c:otherwise>
-          <c:forEach var="room" items="${chatRoomList}">
-            <div class="chat-room-item" data-room-id="${room.id}">
-              <div class="chat-room-name">${room.name}</div>
-              <div class="chat-room-last-message">${room.lastMessage}</div>
-            </div>
-          </c:forEach>
-        </c:otherwise>
-      </c:choose>
+      <div class="chat-empty-message">
+        채팅방 목록을 불러오는 중입니다...
+      </div>
     </div>
   </div>
 
-  <script>
-    let showingPublic = false;
-
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("createChatBtn").addEventListener("click", () => {
-        alert("채팅방 개설 기능은 아직 구현 중입니다.");
-      });
-
-      document.getElementById("togglePublicBtn").addEventListener("click", () => {
-        showingPublic = !showingPublic;
-
-        if (showingPublic) {
-          document.getElementById("togglePublicBtn").innerText = "👥 참여 중인 채팅방 보기";
-          loadPublicChatRooms();
-        } else {
-          document.getElementById("togglePublicBtn").innerText = "🌐 공개 채팅방 보기";
-          loadMyChatRooms();
-        }
-      });
-
-      document.querySelectorAll(".chat-room-item").forEach(item => {
-        item.addEventListener("click", () => {
-          const roomId = item.dataset.roomId;
-          alert(`채팅방 ${roomId} 열기`);
-          // TODO: 채팅방 메시지창 열기
-        });
-      });
-    });
-
-    function loadPublicChatRooms() {
-      // TODO: AJAX로 공개 채팅방 목록 불러오기
-      alert("공개 채팅방 목록 로딩");
-    }
-
-    function loadMyChatRooms() {
-      // TODO: AJAX로 참여 중인 채팅방 목록 불러오기
-      alert("참여 중인 채팅방 목록 로딩");
-    }
-  </script>
+  <script src="${pageContext.request.contextPath}/app/js/resident/ChatList.js"></script>
 </body>
 </html>
