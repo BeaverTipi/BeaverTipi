@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="kr.or.ddit.main.mapper.SubscribeSubscriptionMapper">
+<select id="selectSolutionList">
+SELECT SOL_ID
+		, SOL_NAME
+		, SOL_DESC
+		, SOL_TRIAL_DUR
+		, SOL_PRICE
+		, SOL_CYCLE
+		, SOL_IS_ACTIVE
+		, SOL_ACTIVE_GRP_CD
+FROM SOLUTION
+WHERE SOL_ACTIVE_GRP_CD='YNFG' AND SOL_IS_ACTIVE='Y'
+</select>
+<select id="selectSolution">
+SELECT SOL_ID
+		, SOL_NAME
+		, SOL_DESC
+		, SOL_TRIAL_DUR
+		, SOL_PRICE
+		, SOL_CYCLE
+		, SOL_IS_ACTIVE
+		, SOL_ACTIVE_GRP_CD
+FROM SOLUTION
+WHERE SOL_ID=#{solId} 
+AND SOL_ACTIVE_GRP_CD='YNFG'
+AND SOL_IS_ACTIVE='Y'
+</select>
+<select id="selectSolutionSubscription">
+SELECT  SUBS_ID
+		, SUBS_AUTO_RENEW_GRP_CD
+		, SUBS_STATUS_GRP_CD
+		, SUBS_REVOKED_AT
+		, SUBS_AUTO_RENEW_YN
+		, SUBS_STATUS
+		, SUBS_EXPIRATION_DATE
+		, SUBS_UPDATED_DATE
+		, SUBS_STARTED_AT
+		, SOL_ID
+		, MBR_CD
+FROM SOLUTION_SUBSCRIPTION
+WHERE MBR_CD=#{username} AND SUBS_STATUS='001' AND SUBS_STATUS_GRP_CD = 'SBSTA'
+</select>
+</mapper>

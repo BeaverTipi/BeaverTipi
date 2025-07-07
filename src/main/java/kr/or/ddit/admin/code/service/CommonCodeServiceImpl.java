@@ -12,8 +12,8 @@ import lombok.RequiredArgsConstructor;
 public class CommonCodeServiceImpl implements CommonCodeService {
 	private final CommonCodeMapper mapper;
 	@Override
-	public List<CommonCodeVO> readCommonCodeList() {
-		return mapper.selectCommonCodeList();
+	public List<CommonCodeVO> readCommonCodeList(String codeGroup) {
+		return mapper.selectCommonCodeList(codeGroup);
 	}
 
 }

@@ -30,7 +30,7 @@
             <li><a class="dropdown-item d-flex align-items-center" href="${pageContext.request.contextPath}/building/myhouse">마이하우스(임대인)</a></li>
             <li><a class="dropdown-item d-flex align-items-center" href="http://localhost:81/broker/myoffice">마이오피스(중개인)</a></li>
             <li><a class="dropdown-item d-flex align-items-center" href="${pageContext.request.contextPath}/admin">시스템 관리자</a></li>
-            <li><a class="dropdown-item d-flex align-items-center" href="#">구독/승인</a></li>
+            <li><a class="dropdown-item d-flex align-items-center" href="${pageContext.request.contextPath}/subscribe/subscription">구독/승인</a></li>
 
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item d-flex align-items-center text-danger" id="logout" href="/account/logout">로그아웃</a></li>

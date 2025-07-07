@@ -1,3 +1,4 @@
+
 package kr.or.ddit.building.managed.controller;
 
 import java.util.List;
@@ -33,3 +34,4 @@ public class ManagedListController {
         return "building/managed/managedList";
     }
 }
+

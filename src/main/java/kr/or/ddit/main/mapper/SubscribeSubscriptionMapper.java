@@ -1,0 +1,15 @@
+package kr.or.ddit.main.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.vo.SolutionSubscriptionVO;
+import kr.or.ddit.vo.SolutionVO;
+
+@Mapper
+public interface SubscribeSubscriptionMapper {
+	public List<SolutionVO> selectSolutionList();
+	public SolutionVO selectSolution(String solId);
+	public SolutionSubscriptionVO selectSolutionSubscription(String username);
+}

@@ -24,6 +24,4 @@ public class BuildingVO implements Serializable{
 	private String bldgImgPath;// 기본 세대 정보
     private String delYn;
     private TenancyVO tenancyInfo;
-    
-    
 }

@@ -1,0 +1,12 @@
+package kr.or.ddit.main.subscribe.service;
+
+import java.util.List;
+
+import kr.or.ddit.vo.SolutionSubscriptionVO;
+import kr.or.ddit.vo.SolutionVO;
+
+public interface SubscribeSubsriptionService {
+	public SolutionSubscriptionVO readSolutionSubscription(String username);
+	public List<SolutionVO>	 readSolutionList();
+	public SolutionVO	 readSolution(String solId);
+}

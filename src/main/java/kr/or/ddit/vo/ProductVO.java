@@ -12,25 +12,43 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(of = {"mbrCd", "lstgId"})
 public class ProductVO implements Serializable{
 
-	private String lstgTrdTypeGroupCd;
-	private String lstgTypeGroupCd;
 	private String lstgId;
-	private String mbrCd;
-	private String rentalPtyId;
-	private String lstgTypeCode;
-	private Integer lstgRoom;
-	private Integer lstgCmar;
-	private Integer lstgXuar;
-	private String lstgTrdTypeCode;
-	private Integer lstgDepositAmount;
-	private Integer lstgMontMngFee;
-	private String lstgStatCode;
-	private String lstgDtlDesc;
-	private String lstgImgId;
-	private Integer lstgVwCnt;
-	private String lstgPblsYn;
-	private String lstgNm;
-	private String lstgSellProd;
-	private Integer lstgPrice;
+    private String mbrCd;
+    private String lstgTypeCode;
+    private Integer lstgRoom;
+    private Integer lstgDepositAmount;
+    private Integer lstgMontMngFee;
+    private String lstgDtlDesc;
+    private String lstgNm;
+    private Integer lstgPrice;
+    private String lstgTrdTypeCode; // 거래유형 코드 (전세, 월세 등)
+    private String lstgStatCode;    // 매물 상태 코드 (등록, 검토중 등)
+    
+    private String addrRoad;         // 도로명
+    private String addrDetail;       // 상세 주소
+    private String addrPostcode;     // 우편번호
+    private String addrBuilding;     // 건물 번호
+    private String addrUnitNumber;   // 호수
+    
+    private Integer lstgCmar;        // 전용 면적 (㎡)
+    private Integer lstgXuar;        // 공급 면적 (평)
+
+    private Integer floor;           // 현재 층
+    private Integer floorAll;        // 전체 층
+
+    private String parkingYn;        // 주차 가능 여부 (Y/N)
+    private Integer parkingCount;    // 주차 가능 대수
+
+    private String[] roomFeature;    // 방 특징 (신축, 리모델링)
+    private String roomType;         // 오픈형, 분리형
+
+    private String heating;          // 난방 방식
+
+    private List<String> coolingFacility;   // 냉방 시설
+    private List<String> lifeFacility;      // 생활 시설
+    private List<String> securityFacility;  // 보안 시설
+    private List<String> etcFacility;       // 기타 시설
+
+    private MultipartFile[] imageUpload;
     
 }

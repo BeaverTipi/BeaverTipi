@@ -8,5 +8,5 @@ import kr.or.ddit.vo.CommonCodeVO;
 
 @Mapper
 public interface CommonCodeMapper {
-	public List<CommonCodeVO> selectCommonCodeList();
+	public List<CommonCodeVO> selectCommonCodeList(String codeGroup);
 }

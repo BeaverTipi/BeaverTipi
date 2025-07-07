@@ -32,13 +32,18 @@ document.addEventListener("DOMContentLoaded", function() {
 		const json = axios.formToJSON(e.target);
 		customAxios.post("/account/login", json)
 			.then(resp => {
+				Swal.fire({
+					icon: 'success',
+					title: '로그인 성공',
+					text: '잠시 후 이동합니다.',
+					showConfirmButton: false,
+					timer: 1000
+				})
+			})
+			.then(() => {
 				const params = new URLSearchParams(location.search);
-      			const redirect = params.get("redirect");
-				if(redirect){
-					location.href = redirect;
-				}else{
-					history.back();
-				}
+				const redirect = params.get("redirect");
+				location.href = redirect || "/";
 			})
 			.catch(err => {
 				if (err.response && err.response.status === 401) {
@@ -71,9 +76,9 @@ document.addEventListener("DOMContentLoaded", function() {
 					text: '로그아웃 되었습니다.',
 					confirmButtonText: '확인'
 				})
-				.then(()=>{
-				location.href = baseURL;
-				})
+					.then(() => {
+						location.href = baseURL;
+					})
 			})
 			.catch(err => {
 				Swal.fire({

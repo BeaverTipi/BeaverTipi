@@ -10,7 +10,16 @@
 	href="${pageContext.request.contextPath}/app/css/main/member/member.css">
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/app/css/main/member/memberPage.css">
-
+<c:if test="${param.success eq 'true'}">
+<script>
+Swal.fire({
+	icon: 'success',
+	title: '결제가 완료되었습니다',
+	text: '요금제가 성공적으로 적용되었습니다.',
+	confirmButtonText: '확인'
+})
+</script>
+</c:if>
 </head>
 <body>
 	<div class="register-wrapper">
@@ -91,7 +100,7 @@
 					class="btn-primary"
 					style="text-decoration: none; display: inline-block; text-align: center;">수정하기</a>
 			</div>
-			<c:if test="${member.broker ne null}">
+			<c:if test="${not empty member.broker}">
 	<hr />
 	<h3 class="signup-title">공인중개사 정보</h3>
 
@@ -128,7 +137,7 @@
 		<div class="form-control">${member.broker.brokAddr2}</div>
 	</div>
 </c:if>
-<c:if test="${member.tenancy ne null}">
+<c:if test="${not empty member.tenancy}">
 	<hr />
 	<h3 class="signup-title">임대인 정보</h3>
 

@@ -47,3 +47,7 @@
 <script src="${pageContext.request.contextPath}/volt/assets/js/customAxios.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/main/mainPage.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/resident/ChatPopup.js" defer></script>
+
+<!-- tosspayments -->
+<script src="https://js.tosspayments.com/v1/payment"></script>
+<script src="${pageContext.request.contextPath}/app/js/main/payments.js"></script>
