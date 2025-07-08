@@ -22,9 +22,9 @@
 		<div id="sidebar-wrapper" style="width: 150px; background: #ffffff;">
 			<%@ include file="/WEB-INF/fragments/mainPageMapSidebar.jsp" %>
 		</div>
-		 <div id="map-wrapper" style="flex: 1;">
+		<!--  <div id="map-wrapper" style="flex: 1;">
 			<div id="map" style="width:750px;height:650px;"></div>
-		</div>
+		</div> -->
 		
 		<div class="map_wrap">
 		    <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>

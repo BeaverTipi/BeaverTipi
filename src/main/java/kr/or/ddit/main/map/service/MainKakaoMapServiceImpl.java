@@ -1,0 +1,30 @@
+package kr.or.ddit.main.map.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.main.mapper.KakaoMapDataMapper;
+import kr.or.ddit.vo.BuildingVO;
+import kr.or.ddit.vo.ListingVO;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class MainKakaoMapServiceImpl implements MainKakaoMapService {
+	
+	private final KakaoMapDataMapper kakaoMapDataMapper;
+
+	@Override
+	public List<ListingVO> selectNotLatLngList() {
+		return kakaoMapDataMapper.selectNotLatLngList();
+	}
+
+	@Override
+	public int updateLatLng(ListingVO vo) {
+		return kakaoMapDataMapper.updateLatLng(vo);
+	}
+
+
+
+}
