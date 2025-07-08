@@ -23,7 +23,7 @@
             <div class="info-box">
               <table class="info-table">
                 <tr><td><strong>건물 이름</strong></td><td>${prod.lstgNm}</td></tr>
-                <tr><td><strong>등록일</strong></td><td>${prod.regDate}</td></tr>
+                
               </table>
 
               <div class="button-box">

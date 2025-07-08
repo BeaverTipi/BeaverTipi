@@ -7,32 +7,54 @@
   <title>매물 등록</title>
   <link rel="stylesheet" href="/app/css/building/managed/managedList.css">
 </head>
+
+<body>
 <script>
+  // 거래유형 필드 토글 함수
   function toggleTradeFields() {
     const tradeType = document.querySelector("select[name='lstgTrdTypeCode']").value;
-    const deposit = document.getElementById("depositField").closest(".col-md-4");
-    const price = document.getElementById("priceField").closest(".col-md-4");
-    const mngFee = document.getElementById("mngFeeField").closest(".col-md-4");
-    deposit.style.display = "block";
-    price.style.display = "block";
-    mngFee.style.display = "block";
-    if (tradeType === "RENT") {
+    const deposit = document.getElementById("depositField")?.closest(".col-md-4");
+    const price = document.getElementById("priceField")?.closest(".col-md-4");
+    const mngFee = document.getElementById("mngFeeField")?.closest(".col-md-4");
+
+    if (deposit && price && mngFee) {
       deposit.style.display = "block";
       price.style.display = "block";
       mngFee.style.display = "block";
-    } else if (tradeType === "LEASE") {
-      deposit.style.display = "block";
-      price.style.display = "none";
-      mngFee.style.display = "block";
-    } else if (tradeType === "SALE") {
-      deposit.style.display = "none";
-      price.style.display = "block";
-      mngFee.style.display = "none";
+
+      if (tradeType === "RENT") {
+        deposit.style.display = "block";
+        price.style.display = "block";
+        mngFee.style.display = "block";
+      } else if (tradeType === "LEASE") {
+        deposit.style.display = "block";
+        price.style.display = "none";
+        mngFee.style.display = "block";
+      } else if (tradeType === "SALE") {
+        deposit.style.display = "none";
+        price.style.display = "block";
+        mngFee.style.display = "none";
+      }
     }
   }
-  window.addEventListener('DOMContentLoaded', toggleTradeFields);
+
+  // 전체선택 토글 함수 (HTML onclick용)
+  function toggleAll(groupName) {
+    const masterCheckbox = document.getElementById(groupName.toLowerCase() + 'All');
+    const checkboxes = document.querySelectorAll(`input[type="checkbox"][data-group="${groupName}"]`);
+    checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+  }
+
+  // DOM 로드 후 실행
+  window.addEventListener("DOMContentLoaded", function () {
+    // 거래유형 select 이벤트 바인딩
+    toggleTradeFields();
+    const tradeSelect = document.querySelector("select[name='lstgTrdTypeCode']");
+    if (tradeSelect) {
+      tradeSelect.addEventListener("change", toggleTradeFields);
+    }
+  });
 </script>
-<body>
 <div class="container">
   <h1 class="text-center">매물등록</h1>
   <form action="${pageContext.request.contextPath}/building/product/add" method="post" enctype="multipart/form-data">
@@ -42,21 +64,49 @@
       <legend>매물 정보</legend>
 
       <!-- 대분류 -->
-      <div class="mb-3">
-        <label class="form-label">매물유형 *</label><br>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="lstgTypeGroupCd" value="VILLA" checked>
-          <label class="form-check-label">주택/빌라</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="lstgTypeGroupCd" value="OFFICETEL">
-          <label class="form-check-label">오피스텔</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="lstgTypeGroupCd" value="APT">
-          <label class="form-check-label">아파트</label>
-        </div>
-      </div>
+		<div class="mb-3">
+		  <label class="form-label">매물유형 *</label><br>
+		
+		  <div class="form-check form-check-inline">
+		    <input class="form-check-input" type="radio" name="lstgTypeGroupCd" value="001" checked>
+		    <label class="form-check-label">아파트</label>
+		  </div>
+		
+		  <div class="form-check form-check-inline">
+		    <input class="form-check-input" type="radio" name="lstgTypeGroupCd" value="002">
+		    <label class="form-check-label">빌라</label>
+		  </div>
+		
+		  <div class="form-check form-check-inline">
+		    <input class="form-check-input" type="radio" name="lstgTypeGroupCd" value="003">
+		    <label class="form-check-label">오피스텔</label>
+		  </div>
+		
+		  <div class="form-check form-check-inline">
+		    <input class="form-check-input" type="radio" name="lstgTypeGroupCd" value="004">
+		    <label class="form-check-label">단독주택</label>
+		  </div>
+		
+		  <div class="form-check form-check-inline">
+		    <input class="form-check-input" type="radio" name="lstgTypeGroupCd" value="005">
+		    <label class="form-check-label">상가/상가주택</label>
+		  </div>
+		
+		  <div class="form-check form-check-inline">
+		    <input class="form-check-input" type="radio" name="lstgTypeGroupCd" value="006">
+		    <label class="form-check-label">상가</label>
+		  </div>
+		
+		  <div class="form-check form-check-inline">
+		    <input class="form-check-input" type="radio" name="lstgTypeGroupCd" value="007">
+		    <label class="form-check-label">오피스빌딩/사무실</label>
+		  </div>
+		
+		  <div class="form-check form-check-inline">
+		    <input class="form-check-input" type="radio" name="lstgTypeGroupCd" value="008">
+		    <label class="form-check-label">기타건물</label>
+		  </div>
+		</div>
             <!-- 소분류 -->
       <div class="mb-3">
         <label class="form-label">소분류</label><br>
@@ -89,12 +139,12 @@
         </div>
       </div>
 
-      <div class="row mb-3">
-        <label class="form-label col-sm-2">상세 주소</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" id="detailAddress" name="addrDetail" placeholder="상세 주소 입력">
-        </div>
-      </div>
+		 <div class="row mb-3">
+		  <label class="form-label col-sm-2">상세 주소</label>
+		  <div class="col-sm-10">
+		    <input type="text" class="form-control" id="addrDetail" name="addrDetail" placeholder="상세 주소 입력">
+		  </div>
+		</div>
       <input type="hidden" id="postcode" name="addrPostcode">
 
       <div class="row mb-3">
@@ -249,58 +299,98 @@
     <textarea class="form-control" name="lstgDtlDesc" id="description" rows="6" maxlength="1000"></textarea>
   </div>
 </fieldset>
+ 
+ 
     <!-- 시설 정보 -->
 <fieldset>
   <legend>시설 정보</legend>
 
+  <!-- 난방 시설: radio (개별난방, 중앙난방, 지역난방) -->
   <label class="form-label d-block">난방 시설</label>
-  <c:forEach var="heat" items="${facilityMap['HEATING']}">
-    <div class="form-check form-check-inline">
-      <input class="form-check-input" type="radio" name="heating" value="${heat.facOptId}">
-      <label class="form-check-label">${heat.facOptNm}</label>
-    </div>
-  </c:forEach>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="heating" value="INDIVIDUAL">
+    <label class="form-check-label">개별난방</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="heating" value="CENTRAL">
+    <label class="form-check-label">중앙난방</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="heating" value="DISTRICT">
+    <label class="form-check-label">지역난방</label>
+  </div>
 
+  <!-- 냉방 시설: checkbox (벽걸이형, 스탠드형, 천장형) -->
   <label class="form-label d-block mt-3">냉방 시설</label>
-  <c:forEach var="cool" items="${facilityMap['COOL']}" varStatus="status">
-    <div class="form-check form-check-inline">
-      <input class="form-check-input" type="checkbox"
-             name="facOptions[${status.index}].facOptId"
-             value="${cool.facOptId}">
-      <label class="form-check-label">${cool.facOptNm}</label>
-    </div>
-  </c:forEach>
-
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="checkbox" name="cooling" value="WALL">
+    <label class="form-check-label">벽걸이형</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="checkbox" name="cooling" value="STAND">
+    <label class="form-check-label">스탠드형</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="checkbox" name="cooling" value="CEILING">
+    <label class="form-check-label">천장형</label>
+  </div>
+<!-- 생활 시설 -->
+<div id="life-section">
   <label class="form-label d-block mt-3">생활 시설</label>
-  <c:forEach var="life" items="${facilityMap['LIFE']}" varStatus="status">
+  <div class="form-check form-check-inline">
+    <input class="form-check-input select-all" type="checkbox">
+    <label class="form-check-label">전체선택</label>
+  </div>
+  <c:forEach var="life" items="${facilityMap['1']}" varStatus="status">
     <div class="form-check form-check-inline">
-      <input class="form-check-input" type="checkbox"
-             name="facOptions[${status.index + facilityMap['COOL'].size()}].facOptId"
+      <input class="form-check-input option" type="checkbox"
+             name="facOptions[${status.index}].facOptId"
              value="${life.facOptId}">
       <label class="form-check-label">${life.facOptNm}</label>
     </div>
   </c:forEach>
+</div>
 
+
+<!-- 보안 시설 -->
+<div id="security-section">
   <label class="form-label d-block mt-3">보안 시설</label>
-  <c:forEach var="security" items="${facilityMap['SECURITY']}" varStatus="status">
+  <div class="form-check form-check-inline">
+    <input class="form-check-input select-all" type="checkbox">
+    <label class="form-check-label">전체선택</label>
+  </div>
+  <c:forEach var="security" items="${facilityMap['2']}" varStatus="status">
     <div class="form-check form-check-inline">
-      <input class="form-check-input" type="checkbox"
-             name="facOptions[${status.index + facilityMap['COOL'].size() + facilityMap['LIFE'].size()}].facOptId"
+      <input class="form-check-input option" type="checkbox"
+             name="facOptions[${status.index + facilityMap['1'].size()}].facOptId"
              value="${security.facOptId}">
       <label class="form-check-label">${security.facOptNm}</label>
     </div>
   </c:forEach>
+</div>
 
+<!-- 기타 시설 -->
+<div id="etc-section">
   <label class="form-label d-block mt-3">기타 시설</label>
-  <c:forEach var="etc" items="${facilityMap['ETC']}" varStatus="status">
+  <div class="form-check form-check-inline">
+    <input class="form-check-input select-all" type="checkbox">
+    <label class="form-check-label">전체선택</label>
+  </div>
+  <c:forEach var="etc" items="${facilityMap['3']}" varStatus="status">
     <div class="form-check form-check-inline">
-      <input class="form-check-input" type="checkbox"
-             name="facOptions[${status.index + facilityMap['COOL'].size() + facilityMap['LIFE'].size() + facilityMap['SECURITY'].size()}].facOptId"
+      <input class="form-check-input option" type="checkbox"
+             name="facOptions[${status.index + facilityMap['1'].size() + facilityMap['2'].size()}].facOptId"
              value="${etc.facOptId}">
       <label class="form-check-label">${etc.facOptNm}</label>
     </div>
   </c:forEach>
+</div>
+
+
 </fieldset>
+
+
+
 
 <!-- 제출 버튼 -->
 <div class="text-center mb-5">
@@ -312,16 +402,54 @@
 
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
-  function execDaumPostcode() {
-    new daum.Postcode({
-      oncomplete: function(data) {
-        document.querySelector("#postcode").value = data.zonecode;
-        document.querySelector("#address").value = data.address;
-        document.querySelector("#detailAddress").focus();
-      }
-    }).open();
-  }
+function execDaumPostcode() {
+	  new daum.Postcode({
+	    oncomplete: function(data) {
+	      // 기본 주소 (도로명 or 지번)
+	      var roadAddr = data.roadAddress; 
+	      var jibunAddr = data.jibunAddress;
+
+	      document.getElementById("address").value = roadAddr;     // 도로명주소 input
+	      document.getElementById("postcode").value = data.zonecode; // 우편번호 hidden
+	      document.getElementById("addrDetail").value = "";         // 상세주소 초기화
+	      document.getElementById("addrDetail").focus();            // 커서 이동
+	    }
+	  }).open();
+	}
 </script>
+<script>
+ 
+  // 전체선택 기능
+  function bindSelectAll(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+
+    const selectAll = section.querySelector(".select-all");
+    const checkboxes = section.querySelectorAll(".form-check-input.option");
+
+    if (!selectAll) return;
+
+    selectAll.addEventListener("change", function () {
+      const checked = this.checked;
+      checkboxes.forEach(cb => cb.checked = checked);
+    });
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    toggleTradeFields();
+
+    const tradeSelect = document.querySelector("select[name='lstgTrdTypeCode']");
+    if (tradeSelect) {
+      tradeSelect.addEventListener("change", toggleTradeFields);
+    }
+
+    // 전체선택 바인딩
+    bindSelectAll("life-section");
+    bindSelectAll("security-section");
+    bindSelectAll("etc-section");
+  });
+</script>
+
 </body>
 </html>
     
