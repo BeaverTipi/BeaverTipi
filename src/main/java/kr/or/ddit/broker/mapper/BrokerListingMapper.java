@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.ListingPackVO;
 
 /**
@@ -20,7 +21,7 @@ public interface BrokerListingMapper {
 	 * @return List<ListingVO> lstgList;
 	 */
 	public List<ListingPackVO> selectLstgListByMbrCd(String mbrCd);
-	
-	
 	public ListingPackVO selectLstgDetails(Map<String, String> lstgDetailParams);
+	public List<CommonCodeVO> selectLstgTypeCode();
+	
 }

@@ -190,4 +190,10 @@ SELECT L.*
    AND L.LSTG_ID = #{lstgId}
 </select>
 
+<select id="selectLstgTypeCode" resultType="CommonCodeVO">
+	SELECT *
+	  FROM COMMON_CODE
+	 WHERE CODE_GROUP = 'LSTG'
+</select>
+
 </mapper>

@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,19 +42,21 @@ public class RestBrokerLstgController {
 		return lstgList;
 	}
 	
-	@GetMapping("/listing-details/{lstgId}")
+	@GetMapping("/listing-details")
 	public ListingPackVO lstgDetails(
 			Principal principal,
-			@PathVariable String lstgId
+			@RequestBody String lstgId
 	) {
 		
 		String username = principal.getName();
 		log.error("Handler::lstgDetails() -> username: {}", username);
 		String mbrCd = authUnpack.getMbrCd(username);
 		
-		Map<String, String> lstgDetailsParams = Map.of("mbrCd", mbrCd, "lstgId", lstgId);
-		ListingPackVO lstgDetails = service.readLstgDetails(lstgDetailsParams);
-		log.error("{}", lstgDetails);
-		return lstgDetails;
+//		Map<String, String> lstgDetailsParams = Map.of("mbrCd", mbrCd, "lstgId", lstgId);
+//		ListingPackVO lstgDetails = service.readLstgDetails(lstgDetailsParams);
+		
+		
+		log.error("{}", lstgId);
+		return null;
 	}
 }

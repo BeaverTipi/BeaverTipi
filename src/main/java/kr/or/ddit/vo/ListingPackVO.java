@@ -60,7 +60,7 @@ public class ListingPackVO implements Serializable {
 		private String lstgTypeGroupCd;
 	@Size(max = 5)
 		private String lstgTrdTypeGroupCd;
-	
+		private String lstgTypeCodeName;//<---0708
 	/** 매물 한 건에 대한 임대인의 정보; 있을수도 없을수도 있음. **/
 	private transient TenancyVO tenancyInfo;
 	private transient BrokerVO brokerInfo;
