@@ -1,76 +1,67 @@
 package kr.or.ddit.resident.notice.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import kr.or.ddit.resident.mapper.ResidentBoardMapper;
+import kr.or.ddit.resident.mapper.NoticeResidentMapper;
 import kr.or.ddit.util.page.PaginationInfo;
-import kr.or.ddit.vo.ResidentBoardVO;
+import kr.or.ddit.vo.NoticeVO;
 
 @Service
 public class NoticeServiceImpl implements NoticeService {
 
 	@Autowired
-	private ResidentBoardMapper mapper;
-
+	private NoticeResidentMapper mapper;
 	
 	@Override
-	public void insertBoard(ResidentBoardVO boardVO) {
-		String id = UUID.randomUUID().toString().substring(0,8);
-		boardVO.setRsdBrdId(id);
-		boardVO.setRsdBrdPblsDtm(LocalDateTime.now());
-		boardVO.setRsdBrdDelYn("N");
-		boardVO.setRsdBrdCnt(0);
-		
-		mapper.insertBoard(boardVO);
-		
-	}
-
-	@Override
-	public int updateBoard(ResidentBoardVO boardVO) {
-		return mapper.updateBoard(boardVO);
-	}
-
-	
-	
-
-	@Override
-	public List<ResidentBoardVO> getBoardList(PaginationInfo paging) {
+	public NoticeVO getNotice(NoticeVO notice) {
 		// TODO Auto-generated method stub
-		return mapper.selectBoardList(paging);
+		return mapper.selectNoticeById(notice.getNoticeNo());
 	}
 
 	@Override
-	public int getTotalRecord(PaginationInfo paging) {
+	public int softDeleteNotice(String noticeNo) {
+		return mapper.softDeleteNotice(noticeNo);
+	}
+
+	@Override
+	public NoticeVO getNoticeById(String noticeNo) {
 		// TODO Auto-generated method stub
-		return mapper.selectTotalCount(paging);
+		return mapper.selectNoticeById(noticeNo);
 	}
 
 	@Override
-	public ResidentBoardVO getBoard(ResidentBoardVO board) {
-		return mapper.selectBoardById(board);
+	public void insertNotice(NoticeVO noticeVO) {
+		mapper.insertNotice(noticeVO);
 	}
 
 	@Override
-	public ResidentBoardVO getBoardById(String resBrdId) {
-		ResidentBoardVO board = new ResidentBoardVO();
-		board.setRsdBrdId(resBrdId);
-		return mapper.selectBoardById(board);
+	public int updateNotice(NoticeVO boardVO) {
+		// TODO Auto-generated method stub
+		return mapper.updateNotice(boardVO);
 	}
+
+	@Override
+	public List<NoticeVO> getNoticeList(PaginationInfo paging) {
+		// TODO Auto-generated method stub
+		return mapper.selectNoticeList(paging);
+	}
+
+	@Override
+	public int getTotalNoticeCount(PaginationInfo paging) {
+		// TODO Auto-generated method stub
+		return mapper.selectNoticeTotalCount(paging);
+	}
+	
+	
 	
 //	@Override
 //	public void viewCount(ResidentBoardVO board) {
 //		mapper.updateBoardViewCount(board);
 //	}
 //	
-//	@Override
-//	public int softDeleteBoard(String rsdBrdId) {
-//		return mapper.softDeleteBoard(rsdBrdId);
-//	}
 //
 //	@Override
 //	public List<ResidentBoardVO> getDeletedBoardList(PaginationInfo paging) {
@@ -95,6 +86,8 @@ public class NoticeServiceImpl implements NoticeService {
 //		// TODO Auto-generated method stub
 //		return mapper.permanentDeleteBoard(rsdBrdId);
 //	}
+
+	
 
 	
 	

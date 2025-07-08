@@ -67,7 +67,12 @@ public class RsdBoardController {
         // 3) 선택된 건물이 있으면 VO에 세팅
         simpleSearch.setBldgId(selectedBldgId);
         log.info("📌 simpleSearch.bldgId (after): {}", simpleSearch.getBldgId());
-
+        log.info("▶ Search: bldgId={}, brdCode={}, noticeType={}, keyword={}",
+        		  simpleSearch.getBldgId(),
+        		  simpleSearch.getBrdCode(),
+        		  simpleSearch.getNoticeType(),
+        		  simpleSearch.getSearchWord()
+        		);
         // 4) 페이징 및 검색 수행
         PaginationInfo<ResidentBoardVO> paging = new PaginationInfo<>();
         paging.setCurrentPageNo(page);

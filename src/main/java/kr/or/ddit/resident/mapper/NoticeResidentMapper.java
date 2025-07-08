@@ -5,30 +5,38 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import kr.or.ddit.util.page.PaginationInfo;
+import kr.or.ddit.vo.NoticeVO;
 import kr.or.ddit.vo.ResidentBoardVO;
 
 @Mapper
 public interface NoticeResidentMapper {
 
-	public List<ResidentBoardVO> selectBoardList(PaginationInfo paging);
+	 /** 공지사항 목록 조회 */
+    public List<NoticeVO> selectNoticeList(PaginationInfo<NoticeVO> paging);
 
-	public int selectTotalCount(PaginationInfo paging);
+    /** 전체 공지사항 수 조회 */
+    public int selectNoticeTotalCount(PaginationInfo<NoticeVO> paging);
 
-	public ResidentBoardVO selectBoardById(ResidentBoardVO board);
+    /** 공지사항 단건 조회 */
+    public NoticeVO selectNoticeById(String noticeNo);
 
-	public int updateBoard(ResidentBoardVO boardVO);
+    /** 공지사항 등록 */
+    public int insertNotice(NoticeVO noticeVO);
 
-	public int insertBoard(ResidentBoardVO boardVO);
+    /** 공지사항 수정 */
+    public int updateNotice(NoticeVO noticeVO);
 
-	public int softDeleteBoard(String rsdBrdId);
+    /** 공지사항 조회수 증가 */
+    public int updateNoticeViewCount(NoticeVO noticeVO);
 
-	public int updateBoardViewCount(ResidentBoardVO board);
+    /** 공지사항 소프트 삭제 */
+    public int softDeleteNotice(String noticeNo);
 	
-	public List<ResidentBoardVO> selectDeletedBoardList(PaginationInfo paging);
+//	public List<ResidentBoardVO> selectDeletedNoticeList(PaginationInfo paging);
 
-	public int selectDeletedTotalCount(PaginationInfo paging);
-	
-	public int restoreBoard(String rsdBrdId);
-	
-	public int permanentDeleteBoard(String rsdBrdId);
+//	public int selectDeletedTotalCount(PaginationInfo paging);
+//	
+//	public int restoreNotice(String rsdBrdId);
+//	
+//	public int permanentDeleteNotice(String rsdBrdId);
 }

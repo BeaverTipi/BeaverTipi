@@ -1,5 +1,6 @@
 package kr.or.ddit.resident.notice.controller;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -15,13 +16,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import kr.or.ddit.admin.code.service.CommonCodeService;
 import kr.or.ddit.resident.board.service.ResidentBoardService;
+import kr.or.ddit.resident.notice.service.NoticeService;
 import kr.or.ddit.resident.unitResident.service.UnitResidentService;
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.util.page.SimpleSearch;
 import kr.or.ddit.util.renderer.DefaultPaginationRenderer;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.NoticeVO;
 import kr.or.ddit.vo.ResidentBoardVO;
 import kr.or.ddit.vo.UnitResidentVO;
 import lombok.extern.slf4j.Slf4j;
@@ -32,13 +37,16 @@ import lombok.extern.slf4j.Slf4j;
 public class NoticeController {
 
     @Autowired
-    private ResidentBoardService boardService;
+    private NoticeService noticeService;
 
     @Autowired
     private UnitResidentService unitResidentService;
 
+    @Autowired
+    private CommonCodeService commonCodeService;
+    
     @GetMapping("/notice")
-    public String readResidentBoard(
+    public String readNoticeList(
             Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) String bldgIdParam,
@@ -48,6 +56,8 @@ public class NoticeController {
         // 1) 입주민의 유닛 정보 확인
         MemberVO member = principal.getRealUser();
         List<UnitResidentVO> units = unitResidentService.getUnitsByMember(member.getMbrCd());
+        log.info("▶ units 반환 개수 = {}", units == null ? "null" : units.size());
+        
         if (units == null || units.isEmpty()) {
             return "redirect:/member/register";
         }
@@ -68,16 +78,19 @@ public class NoticeController {
         simpleSearch.setBldgId(selectedBldgId);
         simpleSearch.setBrdCode("N0001");
         log.info("📌 simpleSearch.bldgId (after): {}", simpleSearch.getBldgId());
-
+        
+        List<CommonCodeVO> noticeTypeList = commonCodeService.readCommonCodeList("NOTPE");
+        model.addAttribute("noticeTypeList", noticeTypeList);
+        
         // 4) 페이징 및 검색 수행
-        PaginationInfo<ResidentBoardVO> paging = new PaginationInfo<>();
+        PaginationInfo<NoticeVO> paging = new PaginationInfo<>();
         paging.setCurrentPageNo(page);
         paging.setSimpleSearch(simpleSearch);
 
-        int totalRecord = boardService.getTotalRecord(paging);
+        int totalRecord = noticeService.getTotalNoticeCount(paging);
         paging.setTotalRecordCount(totalRecord);
 
-        List<ResidentBoardVO> boardList = boardService.getBoardList(paging);
+        List<NoticeVO> boardList = noticeService.getNoticeList(paging);
         String pagingHTML = new DefaultPaginationRenderer()
                                  .renderPagination(paging, "fnPaging");
         
@@ -88,7 +101,7 @@ public class NoticeController {
         model.addAttribute("pagingHTML", pagingHTML);
         model.addAttribute("pagingInfo", paging);
 
-        return "resident/Board/";
+        return "resident/notice/Notice";
     }
     
 //    @GetMapping("/board/trash")

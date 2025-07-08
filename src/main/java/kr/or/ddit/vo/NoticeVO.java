@@ -2,18 +2,26 @@ package kr.or.ddit.vo;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(of="noticeNo")
-public class NoticeVO implements Serializable{
+public class NoticeVO extends BoardVO implements Serializable{
 	private String noticeNo;
-	private String faq;
 	private String noticeType;
 	private String noticeTop;
 	private LocalDate noticeEndDtm;
 	private String noticeDelYn;
 	
+	private CommonCodeVO noticeTypeCode;
+	
+	private MemberVO member;
+	
+	public String getFormattedBrdPblsDtm() {
+	    if (getBrdPblsDtm() == null) return "";
+	    return getBrdPblsDtm().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+	}
 }

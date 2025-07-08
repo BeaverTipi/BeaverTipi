@@ -19,6 +19,7 @@ import lombok.Data;
  *  2025. 6. 25.     	SEM	          최초 생성
  *  2025. 7. 04.		권성운		  private String bldgId 작성
  *  2025. 7. 07.		권성운		  private String brdCode 작성
+ *  2025. 7. 08.		권성운		  private String noticeType 작성
  * </pre>
  */
 @Data
@@ -28,5 +29,5 @@ public class SimpleSearch {
 	
 	private String bldgId;
 	private String brdCode;
-
+	private String noticeType;
 }
