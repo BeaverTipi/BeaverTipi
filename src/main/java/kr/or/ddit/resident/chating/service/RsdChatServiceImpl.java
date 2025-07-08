@@ -9,6 +9,7 @@ import kr.or.ddit.resident.mapper.RsdChatMapper;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.ChatRoomInVO;
 import kr.or.ddit.vo.ResidentChatRoomVO;
+import kr.or.ddit.vo.UnitResidentVO;
 
 @Service
 public class RsdChatServiceImpl implements RsdChatServcie {
@@ -19,22 +20,22 @@ public class RsdChatServiceImpl implements RsdChatServcie {
 
 	@Override
 	public int createChatRoom(ResidentChatRoomVO rsdChatRoomVO) {
-		
 		return mapper.insertChatRoom(rsdChatRoomVO);
 	}
 
-
 	@Override
 	public List<ChatRoomInVO> getBuildingChatList(String mbrCd, String bldgId) {
-
 		return mapper.selectBuildingChatList(mbrCd, bldgId);
 	}
 
-
 	@Override
 	public List<BuildingVO> getResidentBuildingList(String mbrCd) {
-
 		return mapper.selectResidentBuildingList(mbrCd);
+	}
+
+	@Override
+	public List<UnitResidentVO> getResidentList(String bldgId) {
+		return mapper.selectResidentList(bldgId);
 	}
 
 }

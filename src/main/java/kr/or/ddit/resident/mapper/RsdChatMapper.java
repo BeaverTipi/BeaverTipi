@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.ChatRoomInVO;
 import kr.or.ddit.vo.ResidentChatRoomVO;
+import kr.or.ddit.vo.UnitResidentVO;
 
 
 @Mapper
@@ -22,7 +23,7 @@ public interface RsdChatMapper {
 	
 	int insertChatRoom(ResidentChatRoomVO rsdChatRoomVO);
 	
-	
+	List<UnitResidentVO> selectResidentList(String bldgId); 
 	
 	
 }

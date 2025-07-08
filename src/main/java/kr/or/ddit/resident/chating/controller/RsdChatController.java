@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.ChatRoomInVO;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.UnitResidentVO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -25,14 +27,14 @@ public class RsdChatController {
 
 	@Autowired
 	RsdChatServiceImpl service;
-
+//  채팅 팝업
 	@GetMapping("/chat")
 	public String residentChat() {
 
 	    return "resident/chat/Chat";
 	}
 	
-//	채팅방 생성
+//	채팅방 생성 관련
 	@GetMapping("/chat/createRoom")
 	public String formChatRoom() {
 		return "resident/chat/CreateChatRoom";
@@ -43,7 +45,25 @@ public class RsdChatController {
 		
 		return 0;
 	}
+	
+	@GetMapping("/chat/residentList")
+	public String residentList(
+		@RequestParam("bldgId") String bldgId
+		) {
 
+		return "resident/chat/ResidentList";
+	}
+	
+	@GetMapping("/chat/getResidentList")
+	@ResponseBody
+	public List<UnitResidentVO> getResidentList(
+		@RequestParam("bldgId") String bldgId			
+		) {
+		return service.getResidentList(bldgId);
+	}
+	
+	
+//	참여중인 건물별 채팅 목록 조회
 	@GetMapping("/chat/list")
 	@ResponseBody
 	public List<ChatRoomInVO> getChatRoomList(
@@ -54,6 +74,7 @@ public class RsdChatController {
 	    return service.getBuildingChatList(mbrCd, bldgId);
 	}
 	
+//	입주중인 건물 목록
 	@GetMapping("/chat/residentBuilding")
 	@ResponseBody
 	public List<BuildingVO> getResidentBuildingList(

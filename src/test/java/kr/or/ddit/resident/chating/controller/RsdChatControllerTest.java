@@ -1,0 +1,35 @@
+package kr.or.ddit.resident.chating.controller;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import kr.or.ddit.resident.mapper.RsdChatMapper;
+import kr.or.ddit.vo.ChatRoomInVO;
+import kr.or.ddit.vo.UnitResidentVO;
+import lombok.extern.slf4j.Slf4j;
+
+@SpringBootTest
+@Slf4j
+class RsdChatControllerTest {
+
+	@Autowired
+	RsdChatMapper mapper;
+	
+	@Test
+	void testGetResidentList() {
+		String bldgId="B2507010459";
+		List<UnitResidentVO> residentList = mapper.selectResidentList(bldgId);
+		residentList.forEach(r -> 
+	    log.info("입주민: {}, 닉네임: {}, 호실: {}", 
+	        r.getMbrCd(), 
+	        r.getMember().getMbrNnm(),
+	        r.getUnit() != null ? r.getUnit().getUnitRoom() : "-")
+	);
+	}
+
+}

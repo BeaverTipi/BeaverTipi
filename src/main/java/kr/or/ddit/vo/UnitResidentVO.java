@@ -18,5 +18,7 @@ public class UnitResidentVO implements Serializable {
 	
 	
 	private BuildingVO building;
+	private MemberVO member;
+	private UnitVO unit;
 }
 
