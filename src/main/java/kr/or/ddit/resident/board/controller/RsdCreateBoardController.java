@@ -132,4 +132,6 @@ public class RsdCreateBoardController {
 	        }
 	        return "redirect:/resident/board?bldgIdParam=" + bldgIdParam;
 	    }
+	    
+	    
 	}

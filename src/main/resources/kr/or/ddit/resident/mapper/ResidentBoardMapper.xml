@@ -88,9 +88,11 @@
 	</update>
 
 	<!-- 삭제 -->
-	<delete id="deleteBoard" parameterType="String">
-		DELETE FROM resident_board
-		WHERE rsd_brd_id = #{rsdBrdId}
+	<delete id="softDeleteBoard" parameterType="String">
+		 UPDATE resident_board
+	     SET rsd_brd_del_yn  = 'Y'
+	     	  , rsd_brd_mod_dtm = SYSDATE
+	   	 WHERE rsd_brd_id     = #{rsdBrdId}
 	</delete>
 
 	<update id="updateBoardViewCount" parameterType="ResidentBoardVO">
@@ -101,16 +103,58 @@
 		#{rsdBrdId}
 	</update>
 
-
-
-
-
-
-
-
-
-
-
+	<select id="selectDeletedBoardList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultMap="residentBoardMap">
+		 SELECT * FROM (
+	      SELECT ROWNUM rn, innerQ.* FROM (
+	        SELECT rb.*, m.mbr_nnm
+	          FROM resident_board rb
+	          JOIN member m ON rb.mbr_cd = m.mbr_cd
+	         WHERE rb.rsd_brd_del_yn = 'Y'
+	           AND rb.bldg_id = #{simpleSearch.bldgId}
+	         ORDER BY rb.rsd_brd_mod_dtm DESC
+	      ) innerQ
+	    ) outerQ
+	    WHERE outerQ.rn BETWEEN #{firstRecordIndex} AND #{lastRecordIndex}
+	</select>
+	
+	<select id="selectDeletedTotalCount"
+	        parameterType="kr.or.ddit.util.page.PaginationInfo"
+	        resultType="int">
+	  SELECT COUNT(*)
+	    FROM resident_board rb
+	    JOIN member m ON rb.mbr_cd = m.mbr_cd
+	   WHERE rb.rsd_brd_del_yn = 'Y'
+	     AND rb.bldg_id = #{simpleSearch.bldgId}
+	     <if test="simpleSearch.searchWord != null and simpleSearch.searchWord != ''">
+	       <choose>
+	         <when test="simpleSearch.searchType == 'title'">
+	           AND INSTR(rb.rsd_brd_titl, #{simpleSearch.searchWord}) > 0
+	         </when>
+	         <when test="simpleSearch.searchType == 'writer'">
+	           AND INSTR(m.mbr_nnm, #{simpleSearch.searchWord}) > 0
+	         </when>
+	         <otherwise>
+	           AND (
+	             INSTR(rb.rsd_brd_titl, #{simpleSearch.searchWord}) > 0
+	             OR INSTR(m.mbr_nnm, #{simpleSearch.searchWord}) > 0
+	           )
+	         </otherwise>
+	       </choose>
+	     </if>
+	</select>
+	
+	<update id="restoreBoard" parameterType="String">
+	  UPDATE resident_board
+	     SET rsd_brd_del_yn = 'N',
+	         rsd_brd_mod_dtm = SYSDATE
+	   WHERE rsd_brd_id = #{rsdBrdId}
+	</update>
+	
+	<delete id="permanentDeleteBoard" parameterType="String">
+	  DELETE FROM resident_board
+	   WHERE rsd_brd_id = #{rsdBrdId}
+	</delete>
+		
 
 
 

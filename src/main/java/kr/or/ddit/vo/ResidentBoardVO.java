@@ -27,5 +27,10 @@ public class ResidentBoardVO {
 		if(rsdBrdPblsDtm ==null) return null;
 		return Date.from(rsdBrdPblsDtm.atZone(ZoneId.systemDefault()).toInstant());
 	}
+	public Date getRsdBrdModDate() {
+		if (rsdBrdModDtm == null) return null;
+		return Date.from(rsdBrdModDtm.atZone(ZoneId.systemDefault()).toInstant());
+	}
+
 	
 }

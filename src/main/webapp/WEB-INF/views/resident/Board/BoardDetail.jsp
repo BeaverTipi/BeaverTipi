@@ -57,7 +57,21 @@
       overflow-wrap: break-word;
       margin: 0;
     }
-    
+    .delete-btn {
+	  padding: 8px 16px;
+	  background-color: #e74c3c;
+	  color: white;
+	  border: none;
+	  border-radius: 4px;
+	  font-weight: bold;
+	  cursor: pointer;
+	  transition: background-color 0.2s ease;
+	}
+	
+	.delete-btn:hover {
+	  background-color: #c0392b;
+	}
+	    
     
     
   </style>
@@ -103,6 +117,14 @@
             </c:url>">
     수정
   </a>
+	 <form action="${pageContext.request.contextPath}/resident/board/delete"
+	      method="post"
+	      onsubmit="return confirm('정말 삭제하시겠습니까?');"
+	      style="display:inline;">
+	  <input type="hidden" name="rsdBrdId" value="${board.rsdBrdId}" />
+	  <input type="hidden" name="bldgIdParam" value="${selectedBldgId}" />
+	  <button type="submit" class="delete-btn">삭제</button>
+	</form>
 </div>
 
 

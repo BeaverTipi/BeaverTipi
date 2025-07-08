@@ -191,6 +191,12 @@
          class="btn-write">
         글쓰기
       </a>
+      <!-- 🗑️ 휴지통 버튼 (입주민도 사용 가능) -->
+	  <a href="${pageContext.request.contextPath}/resident/board/trash?bldgIdParam=${selectedBldgId}"
+	     class="btn-write"
+	     style="background-color: #6c757d; margin-left: 10px;">
+	    휴지통
+	  </a>
     </div>
   </c:if>
 

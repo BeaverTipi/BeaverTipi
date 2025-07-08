@@ -10,18 +10,26 @@ import kr.or.ddit.vo.ResidentBoardVO;
 @Mapper
 public interface ResidentBoardMapper {
 
-	List<ResidentBoardVO> selectBoardList(PaginationInfo paging);
+	public List<ResidentBoardVO> selectBoardList(PaginationInfo paging);
 
-	int selectTotalCount(PaginationInfo paging);
+	public int selectTotalCount(PaginationInfo paging);
 
-	ResidentBoardVO selectBoardById(ResidentBoardVO board);
+	public ResidentBoardVO selectBoardById(ResidentBoardVO board);
 
-	int updateBoard(ResidentBoardVO boardVO);
+	public int updateBoard(ResidentBoardVO boardVO);
 
-	int insertBoard(ResidentBoardVO boardVO);
+	public int insertBoard(ResidentBoardVO boardVO);
 
-	int deleteBoard(String rsdBrdId);
+	public int softDeleteBoard(String rsdBrdId);
 
-	int updateBoardViewCount(ResidentBoardVO board);
+	public int updateBoardViewCount(ResidentBoardVO board);
+	
+	public List<ResidentBoardVO> selectDeletedBoardList(PaginationInfo paging);
+
+	public int selectDeletedTotalCount(PaginationInfo paging);
+	
+	public int restoreBoard(String rsdBrdId);
+	
+	public int permanentDeleteBoard(String rsdBrdId);
 
 }

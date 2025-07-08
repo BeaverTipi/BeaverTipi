@@ -1,11 +1,11 @@
-package kr.or.ddit.resident.board.service;
+package kr.or.ddit.resident.notice.service;
 
 import java.util.List;
 
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.vo.ResidentBoardVO;
 
-public interface ResidentBoardService {
+public interface NoticeService {
 
 	public List<ResidentBoardVO> getBoardList(PaginationInfo paging);
 	
@@ -21,17 +21,17 @@ public interface ResidentBoardService {
 	/**
 	 * 게시글을 소프트 삭제합니다. (rsd_brd_del_yn = 'Y')
 	 */
-	public int softDeleteBoard(String rsdBrdId);
-	
-	public void viewCount(ResidentBoardVO board);
-	
-	public List<ResidentBoardVO> getDeletedBoardList(PaginationInfo paging);
-	
-	public int getDeletedTotalCount(PaginationInfo paging);
-	
-	public int restoreBoard(String rsdBrdId);
-	
-	public int permanentDeleteBoard(String rsdBrdId);
+//	public int softDeleteBoard(String rsdBrdId);
+//	
+//	public void viewCount(ResidentBoardVO board);
+//	
+//	public List<ResidentBoardVO> getDeletedBoardList(PaginationInfo paging);
+//	
+//	public int getDeletedTotalCount(PaginationInfo paging);
+//	
+//	public int restoreBoard(String rsdBrdId);
+//	
+//	public int permanentDeleteBoard(String rsdBrdId);
 	
 	
 	

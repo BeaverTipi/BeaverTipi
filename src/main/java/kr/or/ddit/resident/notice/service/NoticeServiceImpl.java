@@ -1,4 +1,4 @@
-package kr.or.ddit.resident.board.service;
+package kr.or.ddit.resident.notice.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,7 +12,7 @@ import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.vo.ResidentBoardVO;
 
 @Service
-public class ResidentBoardServiceImpl implements ResidentBoardService {
+public class NoticeServiceImpl implements NoticeService {
 
 	@Autowired
 	private ResidentBoardMapper mapper;
@@ -35,11 +35,7 @@ public class ResidentBoardServiceImpl implements ResidentBoardService {
 		return mapper.updateBoard(boardVO);
 	}
 
-	@Override
-	public int softDeleteBoard(String rsdBrdId) {
-		return mapper.softDeleteBoard(rsdBrdId);
-	}
-
+	
 	
 
 	@Override
@@ -60,40 +56,45 @@ public class ResidentBoardServiceImpl implements ResidentBoardService {
 	}
 
 	@Override
-	public void viewCount(ResidentBoardVO board) {
-		mapper.updateBoardViewCount(board);
-	}
-
-	@Override
 	public ResidentBoardVO getBoardById(String resBrdId) {
 		ResidentBoardVO board = new ResidentBoardVO();
 		board.setRsdBrdId(resBrdId);
 		return mapper.selectBoardById(board);
 	}
-
-	@Override
-	public List<ResidentBoardVO> getDeletedBoardList(PaginationInfo paging) {
-		// TODO Auto-generated method stub
-		return mapper.selectDeletedBoardList(paging);
-	}
-
-	@Override
-	public int getDeletedTotalCount(PaginationInfo paging) {
-		// TODO Auto-generated method stub
-		return mapper.selectDeletedTotalCount(paging);
-	}
-
-	@Override
-	public int restoreBoard(String rsdBrdId) {
-		// TODO Auto-generated method stub
-		return mapper.restoreBoard(rsdBrdId);
-	}
-
-	@Override
-	public int permanentDeleteBoard(String rsdBrdId) {
-		// TODO Auto-generated method stub
-		return mapper.permanentDeleteBoard(rsdBrdId);
-	}
+	
+//	@Override
+//	public void viewCount(ResidentBoardVO board) {
+//		mapper.updateBoardViewCount(board);
+//	}
+//	
+//	@Override
+//	public int softDeleteBoard(String rsdBrdId) {
+//		return mapper.softDeleteBoard(rsdBrdId);
+//	}
+//
+//	@Override
+//	public List<ResidentBoardVO> getDeletedBoardList(PaginationInfo paging) {
+//		// TODO Auto-generated method stub
+//		return mapper.selectDeletedBoardList(paging);
+//	}
+//
+//	@Override
+//	public int getDeletedTotalCount(PaginationInfo paging) {
+//		// TODO Auto-generated method stub
+//		return mapper.selectDeletedTotalCount(paging);
+//	}
+//
+//	@Override
+//	public int restoreBoard(String rsdBrdId) {
+//		// TODO Auto-generated method stub
+//		return mapper.restoreBoard(rsdBrdId);
+//	}
+//
+//	@Override
+//	public int permanentDeleteBoard(String rsdBrdId) {
+//		// TODO Auto-generated method stub
+//		return mapper.permanentDeleteBoard(rsdBrdId);
+//	}
 
 	
 	
