@@ -95,7 +95,6 @@ public class MemberRegisterController {
 			, BindingResult errors
 			, RedirectAttributes redirectAttributes
 			) {
-		log.info("🔍 formProcess 진입: member={}", member);
 		String lvn = null;
 		if(errors.hasErrors()) {
 			String errorName = BindingResult.MODEL_KEY_PREFIX+MODELNAME;

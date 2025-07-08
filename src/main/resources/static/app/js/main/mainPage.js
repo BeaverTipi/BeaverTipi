@@ -8,7 +8,25 @@ document.addEventListener("DOMContentLoaded", function() {
 	const logout = document.querySelector("#logout");
 	const baseURL = "http://localhost";
 
+	 const roleRadios = document.querySelectorAll('input[name="loginRole"]');
 
+      const presetAccounts = {
+        landlord: { id: "manual_user_08", pw: "qwer" },
+        broker: { id: "mylittlesodapop", pw: "qwer" },
+        admin: { id: "manual_user_13", pw: "qwer" },
+        resident: { id: "qwer", pw: "qwer" },
+        member: { id: "", pw: "" }
+      };
+
+      roleRadios.forEach(radio => {
+        radio.addEventListener("change", () => {
+          const selected = presetAccounts[radio.value];
+          if (selected) {
+            username.value = selected.id;
+            password.value = selected.pw;
+          }
+        });
+      });
 	loginForm.addEventListener("submit", (e) => {
 		e.preventDefault();
 		if (!username.value.trim()) {
@@ -91,4 +109,5 @@ document.addEventListener("DOMContentLoaded", function() {
 			})
 
 	});
+
 })

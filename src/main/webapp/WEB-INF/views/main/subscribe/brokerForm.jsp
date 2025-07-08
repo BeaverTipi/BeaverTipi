@@ -1,0 +1,92 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>공인중개사 신청</title>
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/app/css/main/member/member.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/app/css/main/member/memberPage.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/app/css/main/subscribe/form.css">
+
+
+</head>
+<body class="bg-light">
+<div class="register-wrapper">
+  <div class="signup-container">
+    <h2 class="signup-title">공인중개사 신청</h2>
+
+    <form:form modelAttribute="broker" method="post" enctype="multipart/form-data" action="/apply/broker">
+      <div class="form-grid">
+        <div class="left-column">
+          <div class="form-group">
+            <label for="brokNm">사무소명</label>
+            <form:input path="brokNm" cssClass="form-control" id="brokNm" />
+          </div>
+
+          <div class="form-group">
+            <label for="reprNm">대표자명</label>
+            <form:input path="reprNm" cssClass="form-control" id="reprNm" />
+          </div>
+
+          <div class="form-group">
+            <label for="brokRegNo">중개사무소 등록번호</label>
+            <form:input path="brokRegNo" cssClass="form-control" id="brokRegNo" />
+          </div>
+
+          <div class="form-group">
+            <label for="brokerPdf">자격증 / 사업자 등록증 업로드</label>
+            <input type="file" id="uploadFile" name="brokerPdf" class="form-control" accept="application/pdf,image/*" />
+            <small id="fileNamePreview" class="text-muted"></small>
+          </div>
+
+          <div class="form-group">
+            <label for="crtfNo">자격증 번호</label>
+            <form:input path="crtfNo" cssClass="form-control" id="crtfNo" />
+          </div>
+
+          <div class="form-group">
+            <label for="reprTelNo">대표 전화번호</label>
+            <form:input path="reprTelNo" cssClass="form-control" id="reprTelNo" />
+          </div>
+
+          <div class="form-group">
+            <label for="postcode">우편 번호</label>
+            <div style="display: flex; gap: 8px;">
+              <form:input path="brokAddr1" cssClass="form-control" id="postcode" readonly="true" />
+              <button type="button" class="btn btn-outline-secondary btn-address-search" onclick="execDaumPostcode()">주소 찾기</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="address">주소</label>
+            <input type="text" class="form-control" id="address" readonly="true" />
+          </div>
+
+          <div class="form-group">
+            <label for="brokAddr2">상세 주소</label>
+            <form:input path="brokAddr2" cssClass="form-control" id="detailAddress" />
+          </div>
+        </div>
+
+        <div class="right-column">
+          <div id="pdfViewer" style="width: 500px; min-height: 650px; border-radius: 8px; border: 1px solid #ccc; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+            <div id="emptyMessage" class="text-muted small">첨부된 파일이 없습니다</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group text-end mt-4">
+        <button type="submit" class="btn btn-dark px-4">신청하기</button>
+      </div>
+    </form:form>
+  </div>
+</div>
+
+<script src="/app/js/main/subscribe/brokerForm.js"></script>
+
+</body>
+</html>

@@ -34,7 +34,7 @@
 
 .signup-container {
   width: 100%;
-  max-width: 720px;
+  max-width: 1200px;
   background: var(--background-white);
   border-radius: 12px;
   box-shadow: var(--shadow-card);
@@ -149,3 +149,13 @@ label {
 .profile-image-preview.default-image {
   border-style: dashed;
 }
+
+.form-group-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+.form-group {
+  flex: 1 1 calc(50% - 12px); /* 2개씩 나란히, 여백 포함 */
+}
+

@@ -1,0 +1,66 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>임대인 신청</title>
+  <!-- 
+   * == 개정이력(Modification Information) ==
+   *   
+   *   수정일               수정자           수정내용
+   *  ============      ============== =======================
+   *  2025. 7. 8.           김아린           최초 생성
+   *
+  -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/main/member/member.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/main/member/memberPage.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/main/subscribe/form.css">
+</head>
+<body class="bg-light">
+<div class="register-wrapper">
+  <div class="signup-container">
+    <h2 class="signup-title">임대인 신청</h2>
+
+    <form:form modelAttribute="tenancy" method="post" enctype="multipart/form-data" action="/apply/landlord">
+      <div class="form-grid">
+        <div class="left-column">
+          <div class="form-group">
+            <label for="uploadFile">사업자등록증 파일</label>
+            <form:input path="rentalPtyFile" type="file" cssClass="form-control" id="uploadFile" accept="application/pdf,image/*" />
+            <small id="fileNamePreview" class="text-muted"></small>
+          </div>
+          <div class="form-group">
+            <label for="rentalPtyBizRegNo">사업자등록번호</label>
+            <form:input path="rentalPtyBizRegNo" cssClass="form-control" id="rentalPtyBizRegNo" readonly/>
+          </div>
+
+          <div class="form-group">
+            <label for="rentalPtyAcctNo">계좌번호</label>
+            <form:input path="rentalPtyAcctNo" cssClass="form-control" id="rentalPtyAcctNo" />
+          </div>
+
+          <div class="form-group">
+            <label for="rentalPtyBankNm">은행명</label>
+            <form:input path="rentalPtyBankNm" cssClass="form-control" id="rentalPtyBankNm" />
+          </div>
+
+        </div>
+
+        <div class="right-column">
+          <div id="pdfViewer" style="width: 500px; min-height: 650px; border-radius: 8px; border: 1px solid #ccc; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+            <div id="emptyMessage" class="text-muted small">첨부된 파일이 없습니다</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group text-end mt-4">
+        <button type="submit" class="btn btn-dark px-4">신청하기</button>
+      </div>
+    </form:form>
+  </div>
+</div>
+
+<script src="/app/js/main/subscribe/tenancyForm.js"></script>
+</body>
+</html>

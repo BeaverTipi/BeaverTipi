@@ -180,16 +180,6 @@ function toggleOptionalInfo() {
 	section.style.display = isVisible ? "none" : "block";
 }
 
-function execDaumPostcode() {
-	new daum.Postcode({
-		oncomplete: function(data) {
-			document.querySelector("#postcode").value = data.zonecode;
-			document.querySelector("#address").value = data.address;
-			document.querySelector("#detailAddress").focus();
-		}
-	}).open();
-}
-
 function updateFileName(input) {
 	const fileName = input.files.length > 0 ? input.files[0].name : '선택된 파일 없음';
 	document.querySelector('#file-name').textContent = fileName;

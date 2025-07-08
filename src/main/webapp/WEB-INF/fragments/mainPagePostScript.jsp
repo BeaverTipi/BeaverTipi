@@ -40,7 +40,11 @@
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <!-- axios -->
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<!-- Daum 우편번호 서비스 -->
 <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/main/daumPostCode.js"></script>
+
 <!-- custom JS -->
 <script src="${pageContext.request.contextPath}/volt/assets/js/volt.js"></script>
 <!-- Custom axios -->
@@ -50,4 +54,8 @@
 
 <!-- tosspayments -->
 <script src="https://js.tosspayments.com/v1/payment"></script>
+<script src="${pageContext.request.contextPath}/app/js/main/payments.js"></script>
+
+<!-- pdf -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/main/payments.js"></script>

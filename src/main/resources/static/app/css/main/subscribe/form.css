@@ -1,0 +1,57 @@
+@charset "UTF-8";
+
+.register-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+/* 양쪽 컬럼 높이 맞추기 */
+.form-grid {
+  display: flex;
+  gap: 40px;
+  align-items: stretch; /* 핵심: 양쪽 컬럼 높이 맞춤 */
+}
+
+/* 왼쪽 컬럼 */
+.left-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 오른쪽 컬럼 */
+.right-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* PDF 뷰어 영역 */
+#pdfViewer {
+  flex: 1;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%; /* 높이를 왼쪽과 맞춤 */
+}
+
+/* 주소찾기 버튼 - input 높이에 맞춤 */
+.btn-address-search {
+  height: 48px; /* form-control 기본 높이 */
+  padding: 0 16px;
+  font-size: 16px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* form-group 내부 간격 */
+.form-group {
+  margin-bottom: 16px;
+}
