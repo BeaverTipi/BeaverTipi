@@ -1,35 +1,32 @@
 package kr.or.ddit.vo;
+
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.List; // java.util.List 임포트
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import jakarta.validation.constraints.NotBlank;
-import kr.or.ddit.util.validate.UpdateGroup;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 @Data
-@EqualsAndHashCode(of = "mbrCd")
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberSearchVO implements Serializable {
-    @NotBlank(groups = UpdateGroup.class)
-    private String mbrCd;
 
-    // userRoleId를 List<String>으로 변경 (여러 역할을 받을 수 있도록)
-    private List<String> userRoleId;
-    private int userRoleCount;
-    
-    private String mbrId;
+    private String mbrCd; // 특정 회원 코드로 검색하는 경우를 대비하여 유지
+
+    private List<String> userRoleId; // 여러 역할을 받을 수 있도록 List<String>
+    private int userRoleCount; // 선택된 역할 ID의 개수
+
+    private String mbrId; // 회원 아이디 검색
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate mbrFrstRegDtFrom;
+    private LocalDate mbrFrstRegDtFrom; // 가입일 시작일
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate mbrFrstRegDtTo;
-    private String mbrStatusCode;
-    private String mbrEmlAddr;
+    private LocalDate mbrFrstRegDtTo; // 가입일 종료일
+    private String mbrStatusCode; // 회원 상태 코드
+    private String mbrEmlAddr; // 이메일 주소 검색
+
 
 }

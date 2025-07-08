@@ -13,7 +13,7 @@
         <result property="brdModDtm" column="BRD_MOD_DTM"/>
         <result property="brdDelYn" column="BRD_DEL_YN"/>
         
-        <result property="reportId" column="REPORT_ID"/>
+        <result property="reportId" column="RPT_ID"/>
         <result property="rptCode" column="RPT_CODE"/>
         <result property="rptTargetId" column="RPT_TARGET_ID"/>
         <result property="rptStatusCode" column="RPT_STATUS_CODE"/>
@@ -32,10 +32,10 @@
                 AND R.RPT_STATUS_CODE = #{detailSearch.searchRptStatusCode}
             </if>
             <if test="detailSearch.brdPblsDtmFrom != null">
-                AND B.BRD_PBLS_DTM >= #{detailSearch.brdPblsDtmFrom}
+                AND TRUNC(B.BRD_PBLS_DTM) >= #{detailSearch.brdPblsDtmFrom, jdbcType=TIMESTAMP}
             </if>
             <if test="detailSearch.brdPblsDtmTo != null">
-                AND B.BRD_PBLS_DTM &lt;= #{detailSearch.brdPblsDtmTo}
+                AND TRUNC(B.BRD_PBLS_DTM) &lt;= #{detailSearch.brdPblsDtmTo, jdbcType=TIMESTAMP}
             </if>
         </if>
         <if test="simpleSearch != null">
@@ -68,13 +68,11 @@
                 BOARD B
             JOIN
                 REPORT R ON B.BRD_NO = R.BRD_NO
-                
             WHERE
                 1=1
                 AND R.RPT_DEL_YN = 'N'
                 AND B.BRD_DEL_YN = 'N'
-                AND R.RPT_CODE = '0' 
-            <include refid="searchConditions" />
+                AND R.RPT_CODE = 'MEMB' <include refid="searchConditions" />
         ) A
         WHERE RNUM BETWEEN #{firstRecordIndex} AND #{lastRecordIndex}
     </select>
@@ -90,16 +88,15 @@
             1=1
             AND R.RPT_DEL_YN = 'N'
             AND B.BRD_DEL_YN = 'N'
-            AND R.RPT_CODE = '0' 
-        <include refid="searchConditions" />
+            AND R.RPT_CODE = 'MEMB' <include refid="searchConditions" />
     </select>
 
-    <update id="updateReportStatus" parameterType="BoardVO">
+    <update id="updateReportStatus" parameterType="kr.or.ddit.vo.BoardVO">
         UPDATE REPORT
         SET
             RPT_STATUS_CODE = #{rptStatusCode}
         WHERE
-            REPORT_ID = #{reportId}
+            RPT_ID = #{reportId}
     </update>
 
-</mapper> 
+</mapper>

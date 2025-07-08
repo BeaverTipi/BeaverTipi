@@ -43,7 +43,7 @@
 						<li><a class="dropdown-item d-flex align-items-center"
 							href="http://localhost:81/broker/myoffice">마이오피스(중개인)</a></li>
 						<li><a class="dropdown-item d-flex align-items-center"
-							href="${pageContext.request.contextPath}/admin">시스템 관리자</a></li>
+							href="${pageContext.request.contextPath}/admin/main">시스템 관리자</a></li>
 						<li><a class="dropdown-item d-flex align-items-center"
 							href="${pageContext.request.contextPath}/subscribe/subscription">구독/승인</a></li>
 

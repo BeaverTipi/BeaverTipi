@@ -4,10 +4,15 @@ import lombok.Getter;
 import lombok.Setter; // ⭐ @Setter 어노테이션 포함 ⭐
 
 import kr.or.ddit.vo.BoardVO; // ⭐ BoardVO import 포함 ⭐
+import kr.or.ddit.vo.MemberSearchVO;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime; // ⭐ LocalDateTime import 포함 ⭐
 
 @Getter
-@Setter // ⭐ @Setter 어노테이션 포함 ⭐
+@Setter
 public class PaginationInfo<T> {
 	private T detailSearch;
 	public void setDetailSearch(T detailSearch) {
@@ -49,49 +54,89 @@ public class PaginationInfo<T> {
 		}
 	}
 
-	// currentPageNo에 대한 setter. (Lombok @Setter가 있어도 명시적으로 있으면 유지)
-	public void setCurrentPageNo(int currentPageNo) {
-		this.currentPageNo = currentPageNo;
-	}
-	
-    // ⭐ 쿼리 스트링 생성 메서드 포함 ⭐
-    public String getQueryString() {
-        StringBuilder sb = new StringBuilder();
-
-        // detailSearch (BoardVO) 필드 처리
-        if (this.detailSearch instanceof BoardVO) {
-            BoardVO boardVO = (BoardVO) this.detailSearch;
-            if (boardVO.getSearchTitle() != null && !boardVO.getSearchTitle().isEmpty()) {
-                sb.append("&detailSearch.searchTitle=").append(boardVO.getSearchTitle());
-            }
-            if (boardVO.getSearchWriter() != null && !boardVO.getSearchWriter().isEmpty()) {
-                sb.append("&detailSearch.searchWriter=").append(boardVO.getSearchWriter());
-            }
-            if (boardVO.getSearchRptStatusCode() != null && !boardVO.getSearchRptStatusCode().isEmpty()) {
-                sb.append("&detailSearch.searchRptStatusCode=").append(boardVO.getSearchRptStatusCode());
-            }
-            // 날짜 필드는 특수문자 처리 또는 URL 인코딩 필요
-            if (boardVO.getBrdPblsDtmFrom() != null) {
-                sb.append("&detailSearch.brdPblsDtmFrom=").append(boardVO.getBrdPblsDtmFrom().toLocalDate());
-            }
-            if (boardVO.getBrdPblsDtmTo() != null) {
-                sb.append("&detailSearch.brdPblsDtmTo=").append(boardVO.getBrdPblsDtmTo().toLocalDate());
-            }
-        }
-        
-        // simpleSearch 필드 처리
-        if (this.simpleSearch != null) {
-            if (this.simpleSearch.getSearchType() != null && !this.simpleSearch.getSearchType().isEmpty()) {
-                sb.append("&simpleSearch.searchType=").append(this.simpleSearch.getSearchType());
-            }
-            if (this.simpleSearch.getSearchWord() != null && !this.simpleSearch.getSearchWord().isEmpty()) {
-                sb.append("&simpleSearch.searchWord=").append(this.simpleSearch.getSearchWord());
-            }
-            if (this.simpleSearch.getBldgId() != null && !this.simpleSearch.getBldgId().isEmpty()) {
-                sb.append("&simpleSearch.bldgId=").append(this.simpleSearch.getBldgId());
-            }
-        }
-
-        return sb.toString();
+    public PaginationInfo() {
+        this.currentPageNo = 1;
+        this.recordCountPerPage = 10;
+        this.pageSize = 5;
     }
+
+	// 쿼리 스트링 생성 메서드
+	public String getQueryString() {
+		StringBuilder sb = new StringBuilder();
+
+		// detailSearch 필드 처리
+		if (this.detailSearch != null) {
+			// detailSearch가 MemberSearchVO인 경우 처리
+			if (this.detailSearch instanceof MemberSearchVO) {
+				MemberSearchVO memberSearchVO = (MemberSearchVO) this.detailSearch;
+				try {
+					if (memberSearchVO.getMbrId() != null && !memberSearchVO.getMbrId().isEmpty()) {
+						sb.append("&detailSearch.mbrId=").append(URLEncoder.encode(memberSearchVO.getMbrId(), StandardCharsets.UTF_8.toString()));
+					}
+					if (memberSearchVO.getMbrFrstRegDtFrom() != null) {
+						sb.append("&detailSearch.mbrFrstRegDtFrom=").append(URLEncoder.encode(memberSearchVO.getMbrFrstRegDtFrom().toString(), StandardCharsets.UTF_8.toString()));
+					}
+					if (memberSearchVO.getMbrFrstRegDtTo() != null) {
+						sb.append("&detailSearch.mbrFrstRegDtTo=").append(URLEncoder.encode(memberSearchVO.getMbrFrstRegDtTo().toString(), StandardCharsets.UTF_8.toString()));
+					}
+					if (memberSearchVO.getMbrStatusCode() != null && !memberSearchVO.getMbrStatusCode().isEmpty()) {
+						sb.append("&detailSearch.mbrStatusCode=").append(URLEncoder.encode(memberSearchVO.getMbrStatusCode(), StandardCharsets.UTF_8.toString()));
+					}
+					if (memberSearchVO.getMbrEmlAddr() != null && !memberSearchVO.getMbrEmlAddr().isEmpty()) {
+						sb.append("&detailSearch.mbrEmlAddr=").append(URLEncoder.encode(memberSearchVO.getMbrEmlAddr(), StandardCharsets.UTF_8.toString()));
+					}
+					// userRoleId (List<String>) 처리
+					if (memberSearchVO.getUserRoleId() != null && !memberSearchVO.getUserRoleId().isEmpty()) {
+						for (String roleId : memberSearchVO.getUserRoleId()) {
+							sb.append("&detailSearch.userRoleId=").append(URLEncoder.encode(roleId, StandardCharsets.UTF_8.toString()));
+						}
+					}
+				} catch (UnsupportedEncodingException e) {
+					System.err.println("URL Encoding failed for MemberSearchVO: " + e.getMessage());
+				}
+			}
+			// 기존 BoardVO 처리 로직 유지
+			else if (this.detailSearch instanceof BoardVO) {
+				BoardVO boardVO = (BoardVO) this.detailSearch;
+				try {
+					if (boardVO.getSearchTitle() != null && !boardVO.getSearchTitle().isEmpty()) {
+						sb.append("&detailSearch.searchTitle=").append(URLEncoder.encode(boardVO.getSearchTitle(), StandardCharsets.UTF_8.toString()));
+					}
+					if (boardVO.getSearchWriter() != null && !boardVO.getSearchWriter().isEmpty()) {
+						sb.append("&detailSearch.searchWriter=").append(URLEncoder.encode(boardVO.getSearchWriter(), StandardCharsets.UTF_8.toString()));
+					}
+					if (boardVO.getSearchRptStatusCode() != null && !boardVO.getSearchRptStatusCode().isEmpty()) {
+						sb.append("&detailSearch.searchRptStatusCode=").append(URLEncoder.encode(boardVO.getSearchRptStatusCode(), StandardCharsets.UTF_8.toString()));
+					}
+					if (boardVO.getBrdPblsDtmFrom() != null) {
+						sb.append("&detailSearch.brdPblsDtmFrom=").append(URLEncoder.encode(boardVO.getBrdPblsDtmFrom().toLocalDate().toString(), StandardCharsets.UTF_8.toString()));
+					}
+					if (boardVO.getBrdPblsDtmTo() != null) {
+						sb.append("&detailSearch.brdPblsDtmTo=").append(URLEncoder.encode(boardVO.getBrdPblsDtmTo().toLocalDate().toString(), StandardCharsets.UTF_8.toString()));
+					}
+				} catch (UnsupportedEncodingException e) {
+					System.err.println("URL Encoding failed for BoardVO: " + e.getMessage());
+				}
+			}
+		}
+
+		// simpleSearch 필드 처리 (URL 인코딩 추가)
+		if (this.simpleSearch != null) {
+			try {
+				if (this.simpleSearch.getSearchType() != null && !this.simpleSearch.getSearchType().isEmpty()) {
+					sb.append("&simpleSearch.searchType=").append(URLEncoder.encode(this.simpleSearch.getSearchType(), StandardCharsets.UTF_8.toString()));
+				}
+				if (this.simpleSearch.getSearchWord() != null && !this.simpleSearch.getSearchWord().isEmpty()) {
+					sb.append("&simpleSearch.searchWord=").append(URLEncoder.encode(this.simpleSearch.getSearchWord(), StandardCharsets.UTF_8.toString()));
+				}
+				if (this.simpleSearch.getBldgId() != null && !this.simpleSearch.getBldgId().isEmpty()) {
+					sb.append("&simpleSearch.bldgId=").append(URLEncoder.encode(this.simpleSearch.getBldgId(), StandardCharsets.UTF_8.toString()));
+				}
+			} catch (UnsupportedEncodingException e) {
+				System.err.println("URL Encoding failed for SimpleSearch: " + e.getMessage());
+			}
+		}
+
+		return sb.toString();
+	}
 }

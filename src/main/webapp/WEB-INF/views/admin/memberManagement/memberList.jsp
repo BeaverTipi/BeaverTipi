@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>    
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
@@ -8,14 +7,16 @@
 	<title>회원 목록</title>
 	<link rel="stylesheet" href="/app/css/admin/common_admin.css">
 	<link rel="stylesheet" href="/app/css/admin/memberManagement/memberList.css">
-	<script src="/app/js/admin/memberManagement/memberList.js"></script> 
-</head>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+	</head>
 <body>
 
-<h2>회원 상태 조회&관리</h2>
+<h2>회원 상태 관리</h2>
 
 <div class="container">
-    <form:form modelAttribute="searchCondition" action="/admin/member/list" method="get" id="searchForm"> 
+    <form:form modelAttribute="search" action="/admin/member/list" method="get" id="searchForm"> 
+        <input type="hidden" name="page" value="${pagingInfo.currentPageNo}" id="currentPageNoInput">
+
         <div class="search-area">
             <div class="search-row top-row">
                 <div class="search-item">
@@ -100,11 +101,20 @@
                 </c:if>
                 <c:if test="${empty memberList }">
                     <tr>
-                        <td colspan="5" class="no-data-center">회원 없음</td>
+                        <td colspan="5" class="no-data-center">조회된 회원이 없습니다.</td>
                     </tr>
                 </c:if>
             </tbody>
         </table>
     </div>
+
+    <div class="pagination-container" aria-label="Page navigation">
+        ${pagingHTML}
+    </div>
+
+</div>
+
+<script src="/app/js/admin/memberManagement/memberList.js"></script> 
+
 </body>
 </html>
