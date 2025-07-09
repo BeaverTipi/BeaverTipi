@@ -27,19 +27,6 @@
   flex-direction: column;
 }
 
-/* PDF 뷰어 영역 */
-#pdfViewer {
-  flex: 1;
-  width: 100%;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  background-color: #f8f9fa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100%; /* 높이를 왼쪽과 맞춤 */
-}
-
 /* 주소찾기 버튼 - input 높이에 맞춤 */
 .btn-address-search {
   height: 48px; /* form-control 기본 높이 */

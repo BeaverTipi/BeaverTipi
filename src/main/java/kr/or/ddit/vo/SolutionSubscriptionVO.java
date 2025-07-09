@@ -8,13 +8,16 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(of= {"solId"})
 public class SolutionSubscriptionVO implements Serializable{
-	private String solId;
-	private String solName;
-	private String solDesc;
-	private Integer solTrialDur;
-	private Integer solPrice;
-	private Integer solCycle;
-	private String solIsActive;
-	private String solActiveGrpCd;
+	private String subsStatusGrpCd;
+	private String subsAutoRenewGrpCd;
 	private String subsApprovalYn;
+	private String subsId;
+	private String mbrCd;
+	private String solId;
+	private String subsStartedAt;
+	private String subsUpdatedDate;
+	private String subsExpirationDate;
+	private String subsStatus;
+	private String subsAutoRenewYn;
+	private String subsRevokedAt;
 }

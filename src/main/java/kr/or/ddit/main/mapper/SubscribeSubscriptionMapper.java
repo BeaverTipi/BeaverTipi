@@ -14,7 +14,7 @@ public interface SubscribeSubscriptionMapper {
 	public List<SolutionVO> selectSolutionList();
 	public SolutionVO selectSolution(String solId);
 	public SolutionSubscriptionVO selectSolutionSubscription(String username);
-	public List<SolutionVO> selectCommonCodeSolutionList(Integer sol);
+	public List<SolutionVO> selectCommonCodeSolutionList(String sol);
 	public int insertSolutionSubscription(SolutionSubscriptionVO solSubVO);
 	public int insertBroker(BrokerVO broker);
 	public int insertTenancy(TenancyVO tenancy);

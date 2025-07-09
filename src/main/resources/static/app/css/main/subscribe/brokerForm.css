@@ -1,0 +1,14 @@
+@charset "UTF-8";
+
+/* PDF 뷰어 영역 */
+#pdfViewer {
+  flex: 1;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80%; /* 높이를 왼쪽과 맞춤 */
+}

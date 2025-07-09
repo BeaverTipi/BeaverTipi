@@ -36,4 +36,5 @@ public class SolutionVO implements Serializable{
     private String subsApprovalYn = "N";
     @Size(max = 5)
     private String solGrpCd;
+    private String solCcCd;
 }

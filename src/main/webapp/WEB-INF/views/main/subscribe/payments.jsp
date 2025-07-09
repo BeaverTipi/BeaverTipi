@@ -117,16 +117,15 @@
 
 					<div class="form-check form-check-inline">
 						<input class="form-check-input" type="radio" name="paymentMethod"
-							id="card" value="" checked/> <label
-							class="form-check-label" for="card">선택</label>
+							id="card" value="" checked /> <label class="form-check-label"
+							for="card">선택</label>
 					</div>
 					<c:forEach items="${commonCodeList }" var="commoncode">
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio"
-								name="paymentMethod"
+							<input class="form-check-input" type="radio" name="paymentMethod"
 								id="${commoncode.codeGroup }${commoncode.codeValue}"
 								value="${commoncode.codeName}"
-								data-group="${commoncode.codeGroup }"/> <label
+								data-group="${commoncode.codeGroup }" /> <label
 								class="form-check-label" for="card">${commoncode.codeName}</label>
 						</div>
 					</c:forEach>

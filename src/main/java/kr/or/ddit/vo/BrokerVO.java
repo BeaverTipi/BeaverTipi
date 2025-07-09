@@ -3,6 +3,8 @@ package kr.or.ddit.vo;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -31,8 +33,11 @@ public class BrokerVO extends MemberVO implements Serializable {
     	private LocalDateTime regDtm;
     @Size(max = 400)
     	private String brokAddr2;
+    private String brokZip;
     @Size(max = 255)
     	private String brokAddr1;
     @Pattern(regexp = "^[YN]$", message = "권한 승인 여부는 'Y' 또는 'N'만 가능합니다.")
     	private String authApprYn = "N";
+    
+    private MultipartFile brokFile;
 }
