@@ -30,8 +30,13 @@ public class MainKakaoMapServiceImpl implements MainKakaoMapService {
 	}
 	
 	@Override
-	public List<ListingVO> selectCategoryByListingList() {
-		return kakaoMapDataMapper.selectCategoryByListingList();
+	public List<ListingVO> selectCategory() {
+		return kakaoMapDataMapper.selectCategory();
+	}
+
+	@Override
+	public List<ListingVO> selectListingDetailList(String lstgId) {
+		return kakaoMapDataMapper.selectListingDetailList(lstgId);
 	}
 
 

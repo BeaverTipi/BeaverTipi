@@ -1,5 +1,6 @@
 package kr.or.ddit.main.map.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -29,19 +30,25 @@ public class MainKakaoMapRestController {
 	) {
 		List<ListingVO> result = service.selectLatLngMarkList(swLat, swLng, neLat, neLng, category);
 		
-		if (result == null || result.isEmpty()) {
-			return ResponseEntity.notFound().build();
-		}
-		
-		return ResponseEntity.ok(result);
+		return ResponseEntity.ok(result == null ? Collections.emptyList() : result);
 	}
 	
 	@GetMapping("/category")
-	public ResponseEntity<List<ListingVO>> getCategoryList() {
-		List<ListingVO> categoryList = service.selectCategoryByListingList();
+	public ResponseEntity<List<ListingVO>> getListingByCategory() {
+		List<ListingVO> categoryList = service.selectCategory();
 		
 		return categoryList == null || categoryList.isEmpty()
 			? ResponseEntity.noContent().build()
 			: ResponseEntity.ok(categoryList);
 	}
+	
+	@GetMapping("/list")
+	public ResponseEntity<List<ListingVO>> getListingDetalList(String lstgId){
+		List<ListingVO> ListingList = service.selectListingDetailList(lstgId);
+		
+		return ListingList == null || ListingList.isEmpty()
+			? ResponseEntity.noContent().build()
+			: ResponseEntity.ok(ListingList);
+	}
+	
 }

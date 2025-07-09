@@ -34,10 +34,15 @@
 		<%@ include file="/WEB-INF/fragments/mainPageMapSidebar.jsp" %>
 	</nav>
 	
-	
+	<div style="width: 350px; padding: 10px; overflow-y: auto;">
+		<div id="listing-list" class="listing-list"></div>
+		<div id="pagination" class="pagination-container"></div>
+	</div>
+	 
 	<div class="map_wrap" style="flex : 1; height: 500px;">
 		<div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
 	</div>
+	
 	
 	
 </div>
@@ -45,5 +50,4 @@
 
 
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=${jsApiKey}&libraries=services,clusterer,drawing"></script>
-<!-- <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=83437aacc12e4951bd2a5acb4a512ff0&libraries=services"></script> -->
 <script src="${pageContext.request.contextPath }/app/js/main/mainMap/mainKakaoMap.js"></script>

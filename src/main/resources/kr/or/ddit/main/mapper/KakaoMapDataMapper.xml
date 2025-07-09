@@ -30,45 +30,63 @@
  		LSTG_EX_AREA,
  		LSTG_LEASE,
  		LSTG_LEASE_M,
- 		LSTG_TYPE_CODE2
+ 		LSTG_TYPE_CODE1,
+ 		LSTG_POSTAL
  	FROM 
  		LISTING
  	WHERE
  		LSTG_LAT BETWEEN #{swLat} AND #{neLat}
  		AND LSTG_LNG BETWEEN #{swLng} AND #{neLng}
 	 	<if test="category != null">
-	  		AND lstg_type_code2 = #{category}
+	  		AND lstg_type_code1 = #{category}
 		</if>
 </select>
 
 
-<select id="selectCategoryByListingList" resultType="kr.or.ddit.vo.ListingVO">
-	select 
-		lstg_id
-		, mbr_cd
-		, lstg_type_code2
-		, lstg_add, lstg_add2
-		, lstg_ex_area
-		, lstg_gr_area
-		, lstg_room_cnt
-		, lstg_room_num
-		, lstg_dst
-		, lstg_type_sale
-		, lstg_lease
-		, lstg_lease_m
-		, lstg_lease_amt
-		, lstg_floor
-		, lstg_park_yn
-		, lstg_lat
-		, lstg_lng
-		, lstg_del
-		, lstg_reg_date
-		, lstg_prod_stat
-		, lstg_nm
-		, lstg_type_code1
-		, rental_pty_id
-	from listing 
-	where lstg_type_code1 = #{lstgTypeCode1}
+<select id="selectCategory" resultType="kr.or.ddit.vo.ListingVO">
+	SELECT
+		LSTG_ID,
+		MBR_CD,
+		LSTG_TYPE_CODE2,
+		LSTG_ADD,
+		LSTG_ADD2,
+		LSTG_NM,
+		LSTG_TYPE_CODE1,
+		RENTAL_PTY_ID
+	FROM
+		LISTING
+	WHERE
+		LSTG_TYPE_CODE1 = #{lstgTypeCode1}
+</select>
+
+<select id="selectListingDetailList" resultType="kr.or.ddit.vo.ListingVO">
+	SELECT
+		LSTG_ID, 
+		MBR_CD, 
+		LSTG_TYPE_CODE2, 
+		LSTG_ADD, 
+		LSTG_ADD2, 
+		LSTG_EX_AREA, 
+		LSTG_GR_AREA, 
+		LSTG_ROOM_CNT, 
+		LSTG_ROOM_NUM, 
+		LSTG_DST, 
+		LSTG_TYPE_SALE, 
+		LSTG_LEASE, 
+		LSTG_LEASE_M, 
+		LSTG_LEASE_AMT, 
+		LSTG_FLOOR, 
+		LSTG_PARK_YN, 
+		LSTG_REG_DATE, 
+		LSTG_NM, 
+		LSTG_TYPE_CODE1, 
+		RENTAL_PTY_ID, 
+		LSTG_POSTAL
+	FROM
+		LISTING
+	WHERE
+		LSTG_ID = #{lstgId}
+		AND LSTG_DEL ='1'
 </select>
 
 

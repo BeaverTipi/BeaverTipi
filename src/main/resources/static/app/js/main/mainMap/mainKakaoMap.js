@@ -30,6 +30,9 @@ document.addEventListener("DOMContentLoaded", () => {
 		// 카테고리
 		let currentCategory = null;
 
+		// 페이징
+		let currentListData = [];
+
 		// 지도 컨트롤 추가
 		const mapTypeControl = new kakao.maps.MapTypeControl();
 		map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
@@ -48,6 +51,13 @@ document.addEventListener("DOMContentLoaded", () => {
 			markers.forEach(m => m.setMap(null));
 			markers.length = 0;
 
+			// 목록 초기화
+			const listContainer = document.getElementById('listing-list');
+			listContainer.innerHTML = "";
+
+			currentListData = data;
+			renderListPage(1);
+
 			data.forEach((item, index) => {
 				const lat = parseFloat(item.lstgLat);
 				const lng = parseFloat(item.lstgLng);
@@ -61,8 +71,10 @@ document.addEventListener("DOMContentLoaded", () => {
 					const marker = new kakao.maps.Marker({
 						map: map,
 						position: position,
-						title: item.lstgNm || item.bldgNm
+						title: item.lstgNm || item.bldgNm,
+						postal: item.lstgPostal
 					});
+
 					markers.push(marker);
 
 					const content = document.createElement('div');
@@ -75,13 +87,14 @@ document.addEventListener("DOMContentLoaded", () => {
 						</div>
 						<div class="body">
 							<div class="desc">
-								<div>${item.lstgAdd || item.bldgAddr}</div>
+								<div>도로명 : ${item.lstgAdd || item.bldgAddr}</div>
+								<div>우편주소 : ${item.lstgPostal}</div>
 								<div>면적: ${item.lstgExArea || '-'} ㎡</div>
 								<div>보증금: ${item.lstgLease || 0} / 월세: ${item.lstgLeaseM || 0}</div>
 							</div>
 						</div>
 					</div>
-				`;
+					`;
 
 					const overlay = new kakao.maps.CustomOverlay({
 						content: content,
@@ -99,12 +112,79 @@ document.addEventListener("DOMContentLoaded", () => {
 						overlay.setMap(map);
 						currentOverlay = overlay;
 					});
+
 				} else {
 					console.warn(`잘못된 좌표값 : ID=${item.id}, lat: ${lat}, lng: ${lng}`);
-
 				}
-			});
-		}
+			}); /* data.foreach 끝 */
+		} /* renderMarkers 끝 */
+
+		const ITEMS_PER_PAGE = 5;
+
+		function renderListPage(page) {
+			const listContainer = document.getElementById('listing-list');
+			const paginationContainer = document.getElementById('pagination');
+			listContainer.innerHTML = '';
+			if (paginationContainer) paginationContainer.innerHTML = '';
+
+			const start = (page - 1) * ITEMS_PER_PAGE;
+			const end = start + ITEMS_PER_PAGE;
+
+			const sliced = currentListData.slice(start, end);
+
+			sliced.forEach(item => {
+				const lat = parseFloat(item.lstgLat);
+				const lng = parseFloat(item.lstgLng);
+				const position = new kakao.maps.LatLng(lat, lng);
+
+				const listItem = document.createElement('div');
+				listItem.className = 'list-item';
+				listItem.innerHTML = `
+						<div class="info">
+							<div class="title">
+								${item.lstgNm || item.bldgNm}
+							</div>
+							<div class="body">
+								<div class="desc">
+									<div>도로명 : ${item.lstgAdd || item.bldgAddr}</div>
+									<div>우편주소 : ${item.lstgPostal}</div>
+									<div>면적: ${item.lstgExArea || '-'} ㎡</div>
+									<div>보증금: ${item.lstgLease || 0} / 월세: ${item.lstgLeaseM || 0}</div>
+								</div>
+							</div>
+						</div>
+						`;
+
+				listItem.style.cursor = 'pointer';
+
+				// 목록 항목 클릭 시 지도 이동
+				listItem.addEventListener('click', () => {
+					map.panTo(position);
+				});
+
+				listContainer.appendChild(listItem);
+
+			}); /* slice.forEach 끝 */
+
+			// 페이지네이션 생성
+			if (paginationContainer) {
+				const totalPages = Math.ceil(currentListData.length / ITEMS_PER_PAGE);
+				for (let i = 1; i <= totalPages; i++) {
+					const pageBtn = document.createElement('a');
+					pageBtn.href = '#';
+					pageBtn.innerText = i;
+					pageBtn.style.margin = '0 5px';
+					if (i === page) pageBtn.classList.add('on'); // 현재 페이지 스타일 지정
+
+					pageBtn.addEventListener('click', (e) => {
+						e.preventDefault();
+						renderListPage(i);
+					});
+
+					paginationContainer.appendChild(pageBtn);
+				}
+			}
+		} /* renderListPage 끝 */
 
 		// idle 이벤트는 단 한 번 등록
 		kakao.maps.event.addListener(map, 'idle', () => {
@@ -143,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				const bounds = map.getBounds();
 				const sw = bounds.getSouthWest();
 				const ne = bounds.getNorthEast();
-				
+
 				// category 여부에 따라 URL 분기
 				let url = `/map/api/mark?swLat=${sw.getLat()}&swLng=${sw.getLng()}&neLat=${ne.getLat()}&neLng=${ne.getLng()}`;
 				if (currentCategory) {
