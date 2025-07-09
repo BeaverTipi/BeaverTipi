@@ -31,7 +31,11 @@ public interface NoticeResidentMapper {
 
     /** 공지사항 소프트 삭제 */
     public int softDeleteNotice(String noticeNo);
+    /** 공지사항 추가 시 필요한 보드 추가 */
+    public int insertBoard(NoticeVO noticeVO);
 	
+    public String selectLastNoticeNo();
+    
 //	public List<ResidentBoardVO> selectDeletedNoticeList(PaginationInfo paging);
 
 //	public int selectDeletedTotalCount(PaginationInfo paging);

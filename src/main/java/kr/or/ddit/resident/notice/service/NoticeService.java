@@ -22,8 +22,14 @@ public interface NoticeService {
 	 * 게시글을 소프트 삭제합니다. (rsd_brd_del_yn = 'Y')
 	 */
 	public int softDeleteNotice(String rsdBrdId);
-//	
-//	public void viewCount(ResidentBoardVO board);
+	
+	public void viewCount(NoticeVO board);
+	
+	public void insertBoard(NoticeVO boardVO);
+	
+	public void registerNotice(NoticeVO notice);
+
+	
 //	
 //	public List<ResidentBoardVO> getDeletedBoardList(PaginationInfo paging);
 //	

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.or.ddit.resident.mapper.NoticeResidentMapper;
 import kr.or.ddit.util.page.PaginationInfo;
@@ -14,7 +15,7 @@ public class NoticeServiceImpl implements NoticeService {
 
 	@Autowired
 	private NoticeResidentMapper mapper;
-	
+
 	@Override
 	public NoticeVO getNotice(NoticeVO notice) {
 		// TODO Auto-generated method stub
@@ -33,6 +34,7 @@ public class NoticeServiceImpl implements NoticeService {
 	}
 
 	@Override
+	@Transactional
 	public void insertNotice(NoticeVO noticeVO) {
 		mapper.insertNotice(noticeVO);
 	}
@@ -54,13 +56,18 @@ public class NoticeServiceImpl implements NoticeService {
 		// TODO Auto-generated method stub
 		return mapper.selectNoticeTotalCount(paging);
 	}
-	
-	
-	
-//	@Override
-//	public void viewCount(ResidentBoardVO board) {
-//		mapper.updateBoardViewCount(board);
-//	}
+
+	@Override
+	public void viewCount(NoticeVO board) {
+		mapper.updateNoticeViewCount(board);
+	}
+	@Override
+	@Transactional
+    public void registerNotice(NoticeVO notice) {
+        mapper.insertBoard(notice);
+        mapper.insertNotice(notice);
+    }
+
 //	
 //
 //	@Override
@@ -87,9 +94,10 @@ public class NoticeServiceImpl implements NoticeService {
 //		return mapper.permanentDeleteBoard(rsdBrdId);
 //	}
 
-	
+	@Override
+	public void insertBoard(NoticeVO boardVO) {
 
-	
-	
+		mapper.insertBoard(boardVO);
+	}
 
 }
