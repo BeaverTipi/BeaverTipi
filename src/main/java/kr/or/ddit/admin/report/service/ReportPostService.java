@@ -7,9 +7,11 @@ import kr.or.ddit.vo.BoardVO;
 
 public interface ReportPostService {
 
-    public List<BoardVO> retrieveReportedPostList(PaginationInfo<BoardVO> pagingVO);
+    public List<BoardVO> selectReportedPostList(PaginationInfo<BoardVO> pagingVO);
 
-    public int retrieveReportedPostCount(PaginationInfo<BoardVO> pagingVO);
+    public int updateReportStatus(BoardVO boardVO);
+    
+    public int selectReportedPostCount(PaginationInfo<BoardVO> pagingVO);
 
     public int processReport(BoardVO reportVO);
 }

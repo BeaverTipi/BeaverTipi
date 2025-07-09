@@ -24,7 +24,7 @@
 					AND MBR.MBR_FRST_REG_DT <![CDATA[ >= ]]> #{detailSearch.mbrFrstRegDtFrom}
 				</if>
 				<if test="detailSearch.mbrFrstRegDtTo != null">
-					AND MBR.MBR_FRST_REG_DT <![CDATA[ <= ]]> #{detailSearch.mbrFrstRegDtTo}
+					AND MBR.MBR_FRST_REG_DT <![CDATA[ <= ]]> #{detailSearch.mbrFrstRegDtToPlusOne}  /////////PlusOne (하루 더하기) 수정한거 백에도 적용해야함) 
                 </if>
 				<if test="detailSearch.mbrStatusCode != null and detailSearch.mbrStatusCode != ''">
 					AND MBR.MBR_STATUS_CODE = #{detailSearch.mbrStatusCode}

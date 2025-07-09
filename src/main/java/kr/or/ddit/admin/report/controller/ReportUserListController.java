@@ -1,8 +1,6 @@
 package kr.or.ddit.admin.report.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,69 +14,65 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.inject.Inject;
 import kr.or.ddit.admin.report.service.ReportPostService;
+// ⭐ 아래 임포트 경로를 수정합니다. ⭐
+import kr.or.ddit.util.renderer.DefaultPaginationRenderer; // DefaultPaginationRenderer 임포트 경로 수정
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.util.page.SimpleSearch;
-import kr.or.ddit.util.renderer.DefaultPaginationRenderer;
-import kr.or.ddit.vo.BoardVO; 
+import kr.or.ddit.vo.BoardVO;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/admin/report")
 public class ReportUserListController {
 
     @Inject
     private ReportPostService reportPostService;
 
-    // DefaultPaginationRenderer를 주입
-    @Inject
-    private DefaultPaginationRenderer renderer; 
-
-    @GetMapping("/report/userList")
-    public String reportUserList(
-            @RequestParam(name = "page", required = false, defaultValue = "1") int currentPageNo,
-            @ModelAttribute("detailSearch") BoardVO detailSearch,
-            @ModelAttribute("simpleSearch") SimpleSearch simpleSearch,
-            Model model
+    @GetMapping("userList")
+    public String selectReportedPostList(
+        @RequestParam(name="page", required = false, defaultValue = "1") int currentPage,
+        @ModelAttribute("detailSearch") BoardVO detailSearch,
+        @ModelAttribute("simpleSearch") SimpleSearch simpleSearch,
+        Model model
     ) {
-        PaginationInfo<BoardVO> pagingVO = new PaginationInfo<BoardVO>();
-        
-        pagingVO.setDetailSearch(detailSearch); 
+        log.info("detailSearch: {}", detailSearch);
+        log.info("simpleSearch: {}", simpleSearch);
+
+        PaginationInfo<BoardVO> pagingVO = new PaginationInfo<>();
+        pagingVO.setCurrentPageNo(currentPage);
+
+        pagingVO.setDetailSearch(detailSearch);
         pagingVO.setSimpleSearch(simpleSearch);
+
+        List<BoardVO> reportedUserList = reportPostService.selectReportedPostList(pagingVO);
         
-        pagingVO.setCurrentPageNo(currentPageNo);
-
-        List<BoardVO> reportedUserList = reportPostService.retrieveReportedPostList(pagingVO);
-
         model.addAttribute("reportedUserList", reportedUserList);
         model.addAttribute("pagingVO", pagingVO);
-        model.addAttribute("detailSearch", detailSearch); 
-        model.addAttribute("simpleSearch", simpleSearch);
-
-        // 페이징 HTML 렌더링 및 Model에 추가
+        
+        // 페이징 HTML 생성 및 모델에 추가
+        DefaultPaginationRenderer renderer = new DefaultPaginationRenderer();
         String pagingHTML = renderer.renderPagination(pagingVO, "fn_paging");
         model.addAttribute("pagingHTML", pagingHTML);
 
-
-        return "admin/report/userList"; 
+        return "admin/report/userList";
     }
 
-    @PostMapping("/updateStatus")
+    @PostMapping("updateStatuses") 
     @ResponseBody
-    public Map<String, String> updateReportStatus(@RequestBody BoardVO reportVO) {
-        Map<String, String> resultMap = new HashMap<>();
+    public String updateReportStatuses(@RequestBody List<BoardVO> rptStatusUpdates) {
         try {
-            int res = reportPostService.processReport(reportVO);
-            if (res > 0) {
-                resultMap.put("status", "success");
-                resultMap.put("message", "신고 상태가 성공적으로 변경되었습니다.");
-            } else {
-                resultMap.put("status", "fail");
-                resultMap.put("message", "신고 상태 변경에 실패했습니다.");
+            log.info("Received update requests for statuses: {}", rptStatusUpdates);
+            int updatedCount = 0;
+            for (BoardVO report : rptStatusUpdates) {
+                reportPostService.updateReportStatus(report);
+                updatedCount++;
             }
+            
+            return "{\"status\": \"success\", \"message\": \"" + updatedCount + "건의 신고 상태가 성공적으로 저장되었습니다.\"}";
         } catch (Exception e) {
-            resultMap.put("status", "error");
-            resultMap.put("message", "서버 오류: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Error updating report statuses: ", e);
+            return "{\"status\": \"error\", \"message\": \"신고 상태 저장 중 오류가 발생했습니다.\"}";
         }
-        return resultMap;
     }
 }

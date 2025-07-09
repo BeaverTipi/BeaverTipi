@@ -26,8 +26,8 @@ import kr.or.ddit.util.page.PaginationInfo;
 @Component
 public class DefaultPaginationRenderer implements PaginationRenderer {
 	
-	private final String A_PATTERN = "<a href='javascript:void(0);' onclick='%s(%s)'>[%s]</a>";
-	private final String CURRENT = "<span class='bg-primary'>[%s]</span>";
+	private final String A_PATTERN = "<a href='javascript:void(0);' onclick='%s(%s)'>%s</a>";
+	private final String CURRENT = "<span class='bg-primary'>%s</span>";
 	
 
 	@Override

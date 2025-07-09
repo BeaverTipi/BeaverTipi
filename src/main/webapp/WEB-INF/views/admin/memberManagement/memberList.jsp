@@ -83,11 +83,18 @@
                   <c:forEach items="${memberList}" var="member">
                     <tr data-mbr-cd="${member.mbrCd}"> 
                       <td>
-                      <c:if test="${not empty member.memRoleList}">
-                      	<c:forEach items="${member.memRoleList}" var="role" varStatus="status">
-                              ${role.userRoleId}<c:if test="${!status.last}">, </c:if>
-                        </c:forEach>
-                      </c:if>
+	                      <c:if test="${not empty member.memRoleList}">
+	                      	<c:forEach items="${member.memRoleList}" var="role" varStatus="status">
+	                        	<c:choose>
+	                				<c:when test="${role.userRoleId eq 'USER'}">일반회원</c:when>
+	                				<c:when test="${role.userRoleId eq 'TENANCY'}">임차인</c:when>
+	               					<c:when test="${role.userRoleId eq 'BROKER'}">중개인</c:when>
+	               					<c:when test="${role.userRoleId eq 'ADMIN'}">관리자</c:when>
+	                				<c:otherwise>${role.userRoleId}</c:otherwise> <%-- 매칭되지 않는 경우 원본 출력 --%>
+	            				</c:choose>
+	           					<c:if test="${!status.last}">, </c:if>
+	                      	</c:forEach>
+	                      </c:if>
 					  </td>
                       <td>${member.mbrId}</td>
                       <td>${member.mbrFrstRegDt}</td>

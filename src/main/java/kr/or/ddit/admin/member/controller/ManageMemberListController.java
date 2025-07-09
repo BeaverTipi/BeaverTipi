@@ -54,11 +54,6 @@ public class ManageMemberListController {
         paging.setCurrentPageNo(page);
         paging.setDetailSearch(search);
 
-        // MemberSearchVO의 userRoleId가 이제 String이므로 userRoleCount 설정 로직은 제거됩니다.
-        // Mybatis Mapper에서 userRoleId가 null이거나 빈 문자열이 아닌 경우에만 검색 조건에 포함시키면 됩니다.
-        // search.setUserRoleCount(0); 등의 로직도 필요 없습니다.
-        // MemberSearchVO에서 userRoleCount 필드 자체를 제거하는 것을 권장합니다.
-
         // 2. 전체 회원 수 조회
         int totalRecord = service.getTotalRecord(paging);
         paging.setTotalRecordCount(totalRecord);
