@@ -11,36 +11,54 @@
             LSTG_ID,
             MBR_CD,
             RENTAL_PTY_ID,
-            LSTG_TYPE_CODE,
-            LSTG_ROOM,
-            LSTG_CMAR,
-            LSTG_XUAR,
-            LSTG_TRD_TYPE_CODE,
-            LSTG_DEPOSIT_AMOUNT,
-            LSTG_MONT_MNG_FEE,
-            LSTG_STAT_CODE,
-            LSTG_DTL_DESC,
+            LSTG_TYPE_CODE1,
+            LSTG_TYPE_CODE2,
+            LSTG_ADD,
+            LSTG_ADD2,
+            LSTG_EX_AREA,
+            LSTG_GR_AREA,
+            LSTG_ROOM_CNT,
+            LSTG_ROOM_NUM,
             LSTG_NM,
-            LSTG_PRICE,
-            LSTG_TYPE_GROUP_CD,
-            LSTG_TRD_TYPE_GROUP_CD
+            LSTG_DST,
+            LSTG_TYPE_SALE,
+            LSTG_LEASE,
+            LSTG_LEASE_M,
+            LSTG_LEASE_AMT,
+            LSTG_FLOOR,
+            LSTG_PARK_YN,
+            LSTG_LAT,
+            LSTG_LNG,
+            LSTG_DEL,
+            LSTG_REG_DATE,
+            LSTG_PROD_STAT,
+            LSTG_POSTAL
         ) VALUES (
             'L' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(SEQ_LSTG_ID.NEXTVAL, 5, '0'),
             #{mbrCd},
             #{rentalPtyId},
-            #{lstgTypeCode},
-            #{lstgRoom},
-            #{lstgCmar},
-            #{lstgXuar},
-            #{lstgTrdTypeCode},
-            #{lstgDepositAmount},
-            #{lstgMontMngFee},
-            #{lstgStatCode},
-            #{lstgDtlDesc},
+            #{lstgTypeCode1},
+            #{lstgTypeCode2},
+            #{lstgAdd},
+            #{lstgAdd2},
+            #{lstgExArea},
+            #{lstgGrArea},
+            #{lstgRoomCnt},
+            #{lstgRoomNum},
             #{lstgNm},
-            #{lstgPrice},
-            #{lstgTypeGroupCd},
-            #{lstgTrdTypeGroupCd}
+            #{lstgDst},
+            #{lstgTypeSale},
+            #{lstgLease},
+            #{lstgLeaseM},
+            #{lstgLeaseAmt},
+            #{lstgFloor},
+            #{lstgParkYn},
+            #{lstgLat},
+            #{lstgLng},
+            #{lstgDel},
+            SYSDATE,
+            #{lstgProdStat},
+            #{lstgPostal}
         )
     </insert>
 
@@ -50,8 +68,8 @@
             L.LSTG_ID,
             L.MBR_CD,
             L.LSTG_NM,
-            L.LSTG_DTL_DESC,
-            L.LSTG_STAT_CODE,
+            L.LSTG_DST,
+            L.LSTG_PROD_STAT,
             (
                 SELECT LI.LSTG_IMG_URL
                 FROM LISTING_IMAGE LI
@@ -69,19 +87,27 @@
             LSTG_ID,
             MBR_CD,
             RENTAL_PTY_ID,
-            LSTG_TYPE_CODE,
-            LSTG_ROOM,
-            LSTG_CMAR,
-            LSTG_XUAR,
-            LSTG_TRD_TYPE_CODE,
-            LSTG_DEPOSIT_AMOUNT,
-            LSTG_MONT_MNG_FEE,
-            LSTG_STAT_CODE,
-            LSTG_DTL_DESC,
+            LSTG_TYPE_CODE1,
+            LSTG_TYPE_CODE2,
+            LSTG_ADD,
+            LSTG_ADD2,
+            LSTG_EX_AREA,
+            LSTG_GR_AREA,
+            LSTG_ROOM_CNT,
+            LSTG_ROOM_NUM,
             LSTG_NM,
-            LSTG_PRICE,
-            LSTG_TYPE_GROUP_CD,
-            LSTG_TRD_TYPE_GROUP_CD
+            LSTG_DST,
+            LSTG_TYPE_SALE,
+            LSTG_LEASE,
+            LSTG_LEASE_M,
+            LSTG_LEASE_AMT,
+            LSTG_FLOOR,
+            LSTG_PARK_YN,
+            LSTG_LAT,
+            LSTG_LNG,
+            LSTG_DEL,
+            LSTG_REG_DATE,
+            LSTG_PROD_STAT
         FROM LISTING
         WHERE LSTG_ID = #{lstgId}
     </select>
@@ -90,19 +116,26 @@
     <update id="updateProduct" parameterType="ListingVO">
         UPDATE LISTING
         SET
-            LSTG_TYPE_CODE          = #{lstgTypeCode},
-            LSTG_ROOM               = #{lstgRoom},
-            LSTG_CMAR               = #{lstgCmar},
-            LSTG_XUAR               = #{lstgXuar},
-            LSTG_TRD_TYPE_CODE      = #{lstgTrdTypeCode},
-            LSTG_DEPOSIT_AMOUNT     = #{lstgDepositAmount},
-            LSTG_MONT_MNG_FEE       = #{lstgMontMngFee},
-            LSTG_STAT_CODE          = #{lstgStatCode},
-            LSTG_DTL_DESC           = #{lstgDtlDesc},
-            LSTG_NM                 = #{lstgNm},
-            LSTG_PRICE              = #{lstgPrice},
-            LSTG_TYPE_GROUP_CD      = #{lstgTypeGroupCd},
-            LSTG_TRD_TYPE_GROUP_CD  = #{lstgTrdTypeGroupCd}
+            LSTG_TYPE_CODE1   = #{lstgTypeCode1},
+            LSTG_TYPE_CODE2   = #{lstgTypeCode2},
+            LSTG_ADD          = #{lstgAdd},
+            LSTG_ADD2         = #{lstgAdd2},
+            LSTG_EX_AREA      = #{lstgExArea},
+            LSTG_GR_AREA      = #{lstgGrArea},
+            LSTG_ROOM_CNT     = #{lstgRoomCnt},
+            LSTG_ROOM_NUM     = #{lstgRoomNum},
+            LSTG_NM           = #{lstgNm},
+            LSTG_DST          = #{lstgDst},
+            LSTG_TYPE_SALE    = #{lstgTypeSale},
+            LSTG_LEASE        = #{lstgLease},
+            LSTG_LEASE_M      = #{lstgLeaseM},
+            LSTG_LEASE_AMT    = #{lstgLeaseAmt},
+            LSTG_FLOOR        = #{lstgFloor},
+            LSTG_PARK_YN         = #{lstgParkYn},
+            LSTG_LAT          = #{lstgLat},
+            LSTG_LNG          = #{lstgLng},
+            LSTG_DEL          = #{lstgDel},
+            LSTG_PROD_STAT    = #{lstgProdStat}
         WHERE LSTG_ID = #{lstgId}
     </update>
 
@@ -111,7 +144,6 @@
         DELETE FROM LISTING
         WHERE LSTG_ID = #{lstgId}
     </delete>
-
 
     <!-- 시설 옵션 전체 조회 -->
     <select id="selectAllFacilityOptions" resultType="kr.or.ddit.vo.FacilityOptionVO">
@@ -124,6 +156,5 @@
         FROM FACILITY_OPTION
         ORDER BY FAC_TYPE_GROUP_CD, FAC_OPT_NM
     </select>
-
 
 </mapper>

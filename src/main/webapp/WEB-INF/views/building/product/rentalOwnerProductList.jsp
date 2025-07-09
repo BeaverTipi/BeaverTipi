@@ -23,7 +23,38 @@
             <div class="info-box">
               <table class="info-table">
                 <tr><td><strong>건물 이름</strong></td><td>${prod.lstgNm}</td></tr>
-                
+                 <tr>
+				    <td><strong>매물명</strong></td>
+				    <td>${prod.lstgNm}</td>
+				  </tr>
+				  <tr>
+				    <td><strong>매물 상태</strong></td>
+				    <td>
+				      <c:choose>
+				        <c:when test="${prod.lstgProdStat == 1}">활성</c:when>
+				        <c:when test="${prod.lstgProdStat == 2}">비활성</c:when>
+				        <c:when test="${prod.lstgProdStat == 3}">숨김</c:when>
+				        <c:otherwise>미정</c:otherwise>
+				      </c:choose>
+				    </td>
+				  </tr>
+				  <tr>
+				    <td><strong>거래유형</strong></td>
+				    <td>
+				      <c:choose>
+				        <c:when test="${prod.lstgTypeSale == 1}">전세</c:when>
+				        <c:when test="${prod.lstgTypeSale == 2}">월세</c:when>
+				        <c:when test="${prod.lstgTypeSale == 3}">매매</c:when>
+				        <c:otherwise>기타</c:otherwise>
+				      </c:choose>
+				    </td>
+				  </tr>
+				  <tr>
+				    <td><strong>설명 요약</strong></td>
+				    <td>
+				      <c:out value="${fn:length(prod.lstgDst) > 100 ? fn:substring(prod.lstgDst, 0, 100) + '...' : prod.lstgDst}" />
+				    </td>
+				  </tr>
               </table>
 
               <div class="button-box">

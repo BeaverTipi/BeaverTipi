@@ -76,7 +76,7 @@ public class ListingVO implements Serializable {
     private Integer lstgFloor;
 
     @Pattern(regexp = "[YN]")
-    private String lstgPark;
+    private String lstgParkYn;
 
     @DecimalMin("0.0")
     private Double lstgLat;
@@ -90,6 +90,10 @@ public class ListingVO implements Serializable {
     private LocalDateTime lstgRegDate;
 
     private Integer lstgProdStat = 1;
+    
+    @NotNull
+    @Size(max = 10)
+    private String lstgPostal;
 
     // 시설 옵션
     private List<FacilityOptionVO> facOptions;

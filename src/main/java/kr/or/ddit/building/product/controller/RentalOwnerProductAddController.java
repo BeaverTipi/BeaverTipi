@@ -29,10 +29,10 @@ public class RentalOwnerProductAddController {
     private RentalOwnerProductService service;
 
     /**
-     * 매물 등록 폼 진입
-     * - 로그인된 사용자에서 mbrCd만 꺼냄
-     * - 시설 옵션 데이터를 그룹화하여 모델에 담아 전달
-     * - mbrCd가 null이면 회원가입 페이지로 리다이렉트
+     * [GET] 매물 등록 폼 진입
+     * - 로그인된 사용자 정보에서 mbrCd 추출
+     * - 시설 옵션 목록 조회 후 그룹핑하여 모델 전달
+     * - 로그인 안 되어있으면 회원가입 페이지로 리다이렉트
      */
     @GetMapping("/add")
     public String addForm(Model model,
@@ -40,49 +40,41 @@ public class RentalOwnerProductAddController {
 
         log.info("[GET] /building/product/add 진입");
 
-        // 1. 로그인된 사용자 정보 꺼냄
-        MemberVO sessionMember = principal.getRealUser();
-        log.info("로그인 사용자: {}", sessionMember);
-
-        if (sessionMember == null || sessionMember.getMbrCd() == null) {
-            log.warn("로그인 안 됐거나 mbrCd 없음 → /member/register 리다이렉트");
+        // 1. 로그인 정보 확인
+        MemberVO member = principal.getRealUser();
+        if (member == null || member.getMbrCd() == null) {
+            log.warn("로그인 정보 없음 → /member/register 리다이렉트");
             return "redirect:/member/register";
         }
 
-        String mbrCd = sessionMember.getMbrCd();
+        String mbrCd = member.getMbrCd();
         log.info("로그인된 사용자 mbrCd: {}", mbrCd);
 
         // 2. 시설 옵션 전체 조회
         List<FacilityOptionVO> optionList = service.selectAllFacilityOptions();
-        log.info("옵션 개수: {}", (optionList != null ? optionList.size() : "null"));
 
-        if (optionList == null || optionList.isEmpty()) {
-            log.warn("시설 옵션 데이터 없음");
-        }
-
-        // 3. 그룹핑
+        // 3. 그룹핑 (FAC_TYPE_GROUP_CD 기준)
         Map<String, List<FacilityOptionVO>> facilityMap = optionList.stream()
             .collect(Collectors.groupingBy(FacilityOptionVO::getFacTypeGroupCd));
-        log.info("facilityMap.keySet(): {}", facilityMap.keySet());
 
-        // 4. 모델 전달
+        // 4. 모델에 추가
         model.addAttribute("facilityMap", facilityMap);
 
         return "building/product/rentalOwnerProductAdd";
     }
 
+   
     @PostMapping("/add")
     public String processAdd(@ModelAttribute("listingVO") ListingVO listingVO,
                              @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
-        
+
         MemberVO member = principal.getRealUser();
 
-        // 로그인 확인
         if (member == null || member.getMbrCd() == null) {
             return "redirect:/member/register";
         }
 
-        // 필수 정보 셋팅
+
         listingVO.setMbrCd(member.getMbrCd());
 
         if (member.getTenancy() != null) {
@@ -91,10 +83,10 @@ public class RentalOwnerProductAddController {
 
         log.info("등록 요청 데이터: {}", listingVO);
 
-        // 등록 서비스 호출
+
         service.insertProduct(listingVO);
 
-        // 등록 완료 후 목록으로 이동
+
         return "redirect:/building/product/list";
     }
 }
