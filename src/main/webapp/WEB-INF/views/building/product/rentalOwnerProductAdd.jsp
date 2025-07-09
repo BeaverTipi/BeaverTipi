@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <%@taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -61,227 +62,267 @@
 
     <!-- 매물 정보 -->
     <fieldset>
-      <legend>매물 정보</legend>
+  <legend>매물 정보</legend>
 
-      <!-- 대분류 -->
-		<div class="mb-3">
-		  <label class="form-label">매물유형 *</label><br>
+  <!-- 거래정보 기본 활성화 -->
+  <input type="hidden" name="lstgStatCode" value="1">
+
+		  <!-- 대분류 -->
+		  <div class="mb-3">
+		    <label class="form-label">매물유형 *</label><br>
 		
-		  <div class="form-check form-check-inline">
-		    <input class="form-check-input" type="radio" name="lstgTypeCode1" value="001" checked>
-		    <label class="form-check-label">아파트</label>
+		    <div class="form-check form-check-inline">
+		      <input class="form-check-input" type="radio" name="lstgTypeCode1" value="001"
+		             <c:if test="${listingVO.lstgTypeCode1 == 1}">checked</c:if>>
+		      <label class="form-check-label">아파트</label>
+		    </div>
+		
+		    <div class="form-check form-check-inline">
+		      <input class="form-check-input" type="radio" name="lstgTypeCode1" value="002"
+		             <c:if test="${listingVO.lstgTypeCode1 == 2}">checked</c:if>>
+		      <label class="form-check-label">빌라</label>
+		    </div>
+		
+		    <div class="form-check form-check-inline">
+		      <input class="form-check-input" type="radio" name="lstgTypeCode1" value="003"
+		             <c:if test="${listingVO.lstgTypeCode1 == 3}">checked</c:if>>
+		      <label class="form-check-label">오피스텔</label>
+		    </div>
+		
+		    <div class="form-check form-check-inline">
+		      <input class="form-check-input" type="radio" name="lstgTypeCode1" value="004"
+		             <c:if test="${listingVO.lstgTypeCode1 == 4}">checked</c:if>>
+		      <label class="form-check-label">단독주택</label>
+		    </div>
+		
+		    <div class="form-check form-check-inline">
+		      <input class="form-check-input" type="radio" name="lstgTypeCode1" value="005"
+		             <c:if test="${listingVO.lstgTypeCode1 == 5}">checked</c:if>>
+		      <label class="form-check-label">상가/상가주택</label>
+		    </div>
+		
+		    <div class="form-check form-check-inline">
+		      <input class="form-check-input" type="radio" name="lstgTypeCode1" value="006"
+		             <c:if test="${listingVO.lstgTypeCode1 == 6}">checked</c:if>>
+		      <label class="form-check-label">상가</label>
+		    </div>
+		
+		    <div class="form-check form-check-inline">
+		      <input class="form-check-input" type="radio" name="lstgTypeCode1" value="007"
+		             <c:if test="${listingVO.lstgTypeCode1 == 7}">checked</c:if>>
+		      <label class="form-check-label">오피스빌딩/사무실</label>
+		    </div>
+		
+		    <div class="form-check form-check-inline">
+		      <input class="form-check-input" type="radio" name="lstgTypeCode1" value="008"
+		             <c:if test="${listingVO.lstgTypeCode1 == 8}">checked</c:if>>
+		      <label class="form-check-label">기타건물</label>
+		    </div>
 		  </div>
-		
+
+
+            <!-- 소분류 -->
+		      <div class="mb-3">
+		  <label class="form-label">소분류</label><br>
 		  <div class="form-check form-check-inline">
-		    <input class="form-check-input" type="radio" name="lstgTypeCode1" value="002">
-		    <label class="form-check-label">빌라</label>
+		    <input class="form-check-input" type="radio" name="lstgTypeCode2" value="01"
+		           <c:if test="${listingVO.lstgTypeCode2 == 1}">checked</c:if>>
+		    <label class="form-check-label">원룸/투룸/다세대</label>
 		  </div>
-		
 		  <div class="form-check form-check-inline">
-		    <input class="form-check-input" type="radio" name="lstgTypeCode1" value="003">
-		    <label class="form-check-label">오피스텔</label>
-		  </div>
-		
-		  <div class="form-check form-check-inline">
-		    <input class="form-check-input" type="radio" name="lstgTypeCode1" value="004">
+		    <input class="form-check-input" type="radio" name="lstgTypeCode2" value="02"
+		           <c:if test="${listingVO.lstgTypeCode2 == 2}">checked</c:if>>
 		    <label class="form-check-label">단독주택</label>
 		  </div>
-		
 		  <div class="form-check form-check-inline">
-		    <input class="form-check-input" type="radio" name="lstgTypeCode1" value="005">
-		    <label class="form-check-label">상가/상가주택</label>
+		    <input class="form-check-input" type="radio" name="lstgTypeCode2" value="03"
+		           <c:if test="${listingVO.lstgTypeCode2 == 3}">checked</c:if>>
+		    <label class="form-check-label">다가구주택</label>
 		  </div>
-		
 		  <div class="form-check form-check-inline">
-		    <input class="form-check-input" type="radio" name="lstgTypeCode1" value="006">
-		    <label class="form-check-label">상가</label>
-		  </div>
-		
-		  <div class="form-check form-check-inline">
-		    <input class="form-check-input" type="radio" name="lstgTypeCode1" value="007">
-		    <label class="form-check-label">오피스빌딩/사무실</label>
-		  </div>
-		
-		  <div class="form-check form-check-inline">
-		    <input class="form-check-input" type="radio" name="lstgTypeCode1" value="008">
-		    <label class="form-check-label">기타건물</label>
+		    <input class="form-check-input" type="radio" name="lstgTypeCode2" value="04"
+		           <c:if test="${listingVO.lstgTypeCode2 == 4}">checked</c:if>>
+		    <label class="form-check-label">상가주택</label>
 		  </div>
 		</div>
-            <!-- 소분류 -->
-      <div class="mb-3">
-        <label class="form-label">소분류</label><br>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="lstgTypeCode2" value="01" checked>
-          <label class="form-check-label">원룸/투룸/다세대</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="lstgTypeCode2" value="02">
-          <label class="form-check-label">단독주택</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="lstgTypeCode2" value="03">
-          <label class="form-check-label">다가구주택</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="lstgTypeCode2" value="04">
-          <label class="form-check-label">상가주택</label>
-        </div>
-      </div>
-
-<!-- 주소 검색 -->
-<div class="row mb-3">
-  <label class="form-label col-sm-2">주소 검색</label>
-  <div class="col-sm-8">
-    <input type="text" class="form-control" name="lstgAdd" id="address" placeholder="예) 번동 10-1, 강북구 번동" readonly>
-  </div>
-  <div class="col-sm-2">
-    <button type="button" class="btn btn-dark w-100" onclick="execDaumPostcode()">검색</button>
-  </div>
-</div>
-<div class="row mb-3">
-  <label class="form-label col-sm-2">우편번호</label>
-  <div class="col-sm-10">
-    <input type="text" class="form-control" id="postcode" name="lstgPostal" placeholder="우편번호" readonly>
-  </div>
-</div>
-
-<div class="row mb-3">
-  <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-  <label class="form-label col-sm-2">상세 주소</label>
-  <div class="col-sm-10">
-    <input type="text" class="form-control" id="detailAddress" name="lstgAdd2" placeholder="상세 주소 입력">
-  </div>
-</div>
-
-
-
-      
-      <!-- 면적 -->
-      <div class="row mb-3">
-        <label class="form-label col-sm-2">매물 크기</label>
-        <div class="col-sm-3"><input type="text" class="form-control" name="lstgGrarea" placeholder="공급면적(평)"></div>
-        <div class="col-sm-3"><input type="text" class="form-control" name="lstgExArea" placeholder="전용면적(m²)"></div>
-      </div>
-
-      <!-- 방 -->
-      <div class="mb-3">
-        <label class="form-label">방 정보</label>
-        <div class="d-flex align-items-center flex-wrap gap-4">
-          <div class="form-check d-flex align-items-center mb-0">
-            <span class="me-2">방 수</span>
-            <input type="number" class="form-control" name="lstgRoomCnt" style="width: 80px;">
-          </div>
-          <div class="form-check d-flex align-items-center mb-0">
-            <input class="form-check-input" type="checkbox" name="roomFeature" value="신축">
-            <label class="form-check-label ms-1 mb-0">신축</label>
-          </div>
-          <div class="form-check d-flex align-items-center mb-0">
-            <input class="form-check-input" type="checkbox" name="roomFeature" value="리모델링">
-            <label class="form-check-label ms-1 mb-0">리모델링</label>
-          </div>
-          <div class="form-check d-flex align-items-center mb-0">
-            <input class="form-check-input" type="radio" name="roomType" value="오픈형">
-            <label class="form-check-label ms-1 mb-0">오픈형</label>
-          </div>
-          <div class="form-check d-flex align-items-center mb-0">
-            <input class="form-check-input" type="radio" name="roomType" value="분리형">
-            <label class="form-check-label ms-1 mb-0">분리형</label>
-          </div>
-        </div>
-      </div>
+		
+		<!-- 주소 검색 -->
+		<div class="row mb-3">
+		  <label class="form-label col-sm-2">주소 검색</label>
+		  <div class="col-sm-3">
+		    <input type="text" class="form-control" id="postcode" name="lstgPostal"
+		           placeholder="우편번호" value="${listingVO.lstgPostal}" readonly>
+		  </div>
+		  <div class="col-sm-5">
+		    <input type="text" class="form-control" name="lstgAdd" id="address"
+		           placeholder="예) 번동 10-1, 강북구 번동" value="${listingVO.lstgAdd}" readonly>
+		  </div>
+		  <div class="col-sm-2">
+		    <button type="button" class="btn btn-dark w-100" onclick="execDaumPostcode()">검색</button>
+		  </div>
+		</div>  
+		
+		<div class="row mb-3">
+		  <label class="form-label col-sm-2">상세 주소</label>
+		  <div class="col-sm-4">
+		    <input type="text" class="form-control" id="detailAddress" name="lstgAdd2"
+		           placeholder="상세 주소 입력" value="${listingVO.lstgAdd2}">
+		  </div>
+		  <div class="col-sm-4">
+		    <input type="text" class="form-control" id="detailAddress2" name="lstgRoomNum"
+		           placeholder="층, 호 , 실 *" value="${listingVO.lstgRoomNum}">
+		  </div>
+		</div>
     </fieldset>
-    <!-- 거래 정보 -->
+    <hr>
+    
+<!-- 거래 정보 -->
 <fieldset>
+
+
   <legend>거래 정보</legend>
-  <div class="row g-3">
-    <div class="col-md-4">
-      <label class="form-label">매물 상태</label>
-      <select class="form-select" name="lstgStatCode">
-        <option value="ACTIVE">활성</option>
-        <option value="CONTRACTED">계약완료</option>
-        <option value="CLOSED">비활성</option>
-      </select>
-    </div>
 
-    <div class="col-md-4">
-      <label class="form-label">상품 구분</label>
-      <select class="form-select" name="lstgTrdTypeCode" onchange="toggleTradeFields()">
-        <option value="RENT">월세</option>
-        <option value="LEASE">전세</option>
-        <option value="SALE">매매</option>
-      </select>
-    </div>
+		<div class="col-md-4">
+  <label class="form-label">거래 유형</label>
+  <select class="form-select" name="lstgTypeSale" id="lstgTypeSale" onchange="toggleLeaseFields()">
+    <option value="">선택</option>
+    <option value="01" <c:if test="${listingVO.lstgTypeSale == 1}">selected</c:if>>전세</option>
+    <option value="02" <c:if test="${listingVO.lstgTypeSale == 2}">selected</c:if>>월세</option>
+    <option value="03" <c:if test="${listingVO.lstgTypeSale == 3}">selected</c:if>>매매</option>
+  </select>
+</div>
 
-    <div class="col-md-4">
-      <label class="form-label">거래 유형</label>
-      <select class="form-select" name="lstgTypeSale">
-        <option value="01">전세</option>
-        <option value="02">월세</option>
-        <option value="03">매매</option>
-      </select>
-    </div>
-
-    <div class="col-md-4">
-    <div class="col-md-4">
-      <label class="form-label">전세가</label>
-      <input type="number" class="form-control" name="lstgLease" min="0" placeholder="전세가">
-    </div>
-    <div class="col-md-4">
-      <label class="form-label">월세</label>
-      <input type="number" class="form-control" name="lstgLeaseM" min="0" placeholder="월세">
-    </div>
-  </div>
-      <label class="form-label">보증금</label>
-      <input type="number" class="form-control" name="lstgLeaseAmt" min="0" placeholder="보증금">
-    </div>
-
-
-
+<!-- 전세 전용 -->
+		<div class="col-md-4" id="jeonseField" style="display:none;">
+		  <label class="form-label">전세가</label>
+		  <input type="number" class="form-control" name="lstgLease" min="0" placeholder="전세가"
+		         value="${listingVO.lstgLease}">
+		</div>
+		
+		<!-- 월세 전용 -->
+		<div class="col-md-8" id="wolseField" style="display:none;">
+		  <div class="row">
+		    <div class="col-md-3">
+		      <label class="form-label">월세</label>
+		      <input type="number" class="form-control" name="lstgLeaseM" min="0" placeholder="월세"
+		             value="${listingVO.lstgLeaseM}">
+		    </div>
+		    <div class="col-md-3">
+		      <label class="form-label">보증금</label>
+		      <input type="number" class="form-control" name="lstgLeaseAmt" min="0" placeholder="보증금"
+		             value="${listingVO.lstgLeaseAmt}">
+		    </div>
+		  </div>
+		</div>
+		<br>
+		
+		<!-- 면적 -->
+		<div class="row mb-3">
+		  <label class="form-label">매물 크기</label>
+		  <div class="col-sm-3">
+		    <input type="text" class="form-control" name="lstgGrArea" placeholder="공급면적(평)"
+		           value="${listingVO.lstgGrArea}">
+		  </div>
+		  <div class="col-sm-3">
+		    <input type="text" class="form-control" name="lstgExArea" placeholder="전용면적(m²)"
+		           value="${listingVO.lstgExArea}">
+		  </div>
+		</div>
+		
 
 </fieldset>
-
+<hr>
 <!-- 추가 정보 -->
 <fieldset>
   <legend>추가 정보</legend>
-  <div class="row g-3">
-    <div class="col-md-6">
+  		
+  		<div class="col-md-8" id="roomField">
+  <div class="row">
+    <div class="col-md-3">
       <label class="form-label">총 층 수</label>
-      <input class="form-control" type="number" name="lstgFloor">
+      <input class="form-control" type="number" name="lstgFloor"
+             value="${listingVO.lstgFloor}">
     </div>
-    <div class="col-md-6">
+    <div class="col-md-3">
       <label class="form-label">해당 층 수</label>
-      <input class="form-control" type="number" name="floor">
+      <input class="form-control" type="number" name="floor" 
+             >
     </div>
-    <div class="col-md-6">
+    <div class="col-md-3">
       <label class="form-label">욕실 수 *</label>
-      <input class="form-control" type="number" name="lstgBath">
-    </div>
-    <div class="col-md-6">
-      <label class="form-label">주차 가능 여부 *</label>
-      <div class="parking-wrap">
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="lstgParkYn" value="Y">
-          <label class="form-check-label">가능</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="lstgParkYn" value="N">
-          <label class="form-check-label">불가능</label>
-        </div>
-        <input type="number" class="form-control" name="parkingCount" placeholder="주차 대 수" style="max-width: 200px;">
-      </div>
+      <input class="form-control" type="number" name="lstgBath"
+             >
     </div>
   </div>
+</div>
+<br>
+
+<!-- 방 -->
+		<div class="col-md-12 mb-3" id="roomcount">
+		  <div class="row align-items-end">
+		
+		    <!-- 방 수 -->
+		    <div class="col-md-3">
+		      <label class="form-label">방 수</label>
+		      <input type="number" class="form-control" name="lstgRoomCnt" placeholder="방 갯수"
+		             value="${listingVO.lstgRoomCnt}">
+		    </div>
+		
+		    <!-- 신축 -->
+		    <div class="col-md-2 d-flex align-items-center">
+		      <input class="form-check-input me-1" type="checkbox" name="roomFeature" value="신축" id="newRoom"
+		             
+		      <label class="form-check-label mb-0" for="newRoom">신축</label>
+		    </div>
+		
+		    <!-- 리모델링 -->
+		    <div class="col-md-2 d-flex align-items-center">
+		      <input class="form-check-input me-1" type="checkbox" name="roomFeature" value="리모델링" id="remodel"
+		             
+		      <label class="form-check-label mb-0" for="remodel">리모델링</label>
+		    </div>
+		
+		    <!-- 오픈형 -->
+		    <div class="col-md-2 d-flex align-items-center">
+		      <input class="form-check-input me-1" type="radio" name="roomType" value="오픈형" id="openType"
+		             
+		      <label class="form-check-label mb-0" for="openType">오픈형</label>
+		    </div>
+		
+		    <!-- 분리형 -->
+		    <div class="col-md-2 d-flex align-items-center">
+		      <input class="form-check-input me-1" type="radio" name="roomType" value="분리형" id="separateType"
+		             
+		      <label class="form-check-label mb-0" for="separateType">분리형</label>
+		    </div>
+		
+		  </div>
+		</div>
+		 <div class="col-md-6">
+		  <label class="form-label">주차 가능 여부 *</label>
+		  <div class="parking-wrap">
+		
+		    <div class="form-check form-check-inline">
+		      <input class="form-check-input" type="radio" name="lstgParkYn" value="Y"
+		             <c:if test="${listingVO.lstgParkYn == 'Y'}">checked</c:if>>
+		      <label class="form-check-label">가능</label>
+		    </div>
+		
+		    <div class="form-check form-check-inline">
+		      <input class="form-check-input" type="radio" name="lstgParkYn" value="N"
+		             <c:if test="${listingVO.lstgParkYn == 'N'}">checked</c:if>>
+		      <label class="form-check-label">불가능</label>
+		    </div>
+		
+		    <input type="number" class="form-control" name="parkingCount" placeholder="주차 대 수"
+		           style="max-width: 200px;">
+		  </div>
+		</div>
+
+  
 </fieldset>
 
-<!-- 사진 등록 -->
-<fieldset class="mb-4">
-  <legend>사진 등록</legend>
-  <div class="mb-3 d-flex align-items-center gap-3">
-    <label class="form-label mb-0">일반 사진 *</label>
-    <input type="file" class="form-control w-auto" name="imageUpload" accept="image/*" multiple>
-    <button type="button" class="btn btn-outline-primary btn-sm">+ 사진 추가</button>
-  </div>
-</fieldset>
+<hr>
  
     <!-- 시설 정보 -->
 <fieldset>
@@ -370,21 +411,32 @@
 
 
 </fieldset>
+<hr>
+		<!-- 상세 설명 -->
+		<fieldset class="mb-4">
+		  <legend>상세 설명</legend>
+		 <div class="mb-3">
+		  <label for="title" class="form-label">제목 *</label>
+		  <input type="text" class="form-control" name="lstgNm" id="title" maxlength="40"
+		         value="${listingVO.lstgNm}">
+		</div>
+		
+		<div class="mb-3">
+		  <label for="description" class="form-label">상세설명</label>
+		  <textarea class="form-control" name="lstgDtlDesc" id="lstgDst" rows="6" maxlength="1000">${listingVO.lstgDst}</textarea>
+		</div>
+		</fieldset>
 
-<!-- 상세 설명 -->
+
+<!-- 사진 등록 -->
 <fieldset class="mb-4">
-  <legend>상세 설명</legend>
-  <div class="mb-3">
-    <label for="title" class="form-label">제목 *</label>
-    <input type="text" class="form-control" name="lstgNm" id="title" maxlength="40">
-  </div>
-  <div class="mb-3">
-    <label for="description" class="form-label">상세설명</label>
-    <textarea class="form-control" name="lstgDtlDesc" id="lstgDst" rows="6" maxlength="1000"></textarea>
+  <legend>사진 등록</legend>
+  <div class="mb-3 d-flex align-items-center gap-3">
+    <label class="form-label mb-0">일반 사진 *</label>
+    <input type="file" class="form-control w-auto" name="imageUpload" accept="image/*" multiple>
+    <button type="button" class="btn btn-outline-primary btn-sm">+ 사진 추가</button>
   </div>
 </fieldset>
-
-
 <!-- 제출 버튼 -->
 <div class="text-center mb-5">
   <button type="submit" class="btn btn-primary btn-lg">매물 등록</button>
@@ -392,7 +444,7 @@
 
 </form>
 </div>
-
+</div>
 
 <script>
 function execDaumPostcode() {
@@ -436,8 +488,24 @@ function execDaumPostcode() {
     bindSelectAll("security-section");
     bindSelectAll("etc-section");
   });
-</script>
 
+  
+</script>
+<script>
+function toggleLeaseFields() {
+	  const type = document.getElementById('lstgTypeSale').value;
+	  const jeonse = document.getElementById('jeonseField');
+	  const wolse = document.getElementById('wolseField');
+
+	  jeonse.style.display = 'none';
+	  wolse.style.display = 'none';
+
+	  if (type === '01') {
+	    jeonse.style.display = 'block';
+	  } else if (type === '02') {
+	    wolse.style.display = 'block';
+	  }
+	}</script>
 </body>
 </html>
     

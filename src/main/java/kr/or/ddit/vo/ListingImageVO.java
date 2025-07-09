@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(of= {"lstgImgId"})
+@SuppressWarnings("serial")
 public class ListingImageVO implements Serializable{
 	private String lstgImgId;
 	private String lstgId;

@@ -47,7 +47,7 @@ public class RentalOwnerProductListController {
         log.info("조회된 매물 수: {}", (listingList != null ? listingList.size() : 0));
 
         // 모델에 담기
-        model.addAttribute("productList", listingList);
+        model.addAttribute("listingProductList", listingList);
 
         return "building/product/rentalOwnerProductList";
     }

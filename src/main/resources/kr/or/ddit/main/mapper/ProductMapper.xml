@@ -5,6 +5,15 @@
 
 <mapper namespace="kr.or.ddit.building.mapper.RentalOwnerProductMapper">
 
+<resultMap id="listingResultMap" type="ListingVO">
+    <id property="lstgId" column="LSTG_ID"/>
+    <result property="mbrCd" column="MBR_CD"/>
+    <result property="lstgNm" column="LSTG_NM"/>
+    <result property="lstgDst" column="LSTG_DST"/>
+    <result property="lstgTypeSale" column="LSTG_TYPE_SALE"/>
+    <result property="lstgProdStat" column="LSTG_PROD_STAT"/>
+</resultMap>
+
     <!-- 매물 등록 -->
     <insert id="insertProduct" parameterType="ListingVO">
         INSERT INTO LISTING (
@@ -34,7 +43,7 @@
             LSTG_PROD_STAT,
             LSTG_POSTAL
         ) VALUES (
-            'L' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(SEQ_LSTG_ID.NEXTVAL, 5, '0'),
+            'L' || TO_CHAR(SYSDATE, 'YYMM')|| LPAD(seq_LSTG_ID.NEXTVAL, 6, '0'),
             #{mbrCd},
             #{rentalPtyId},
             #{lstgTypeCode1},
@@ -63,23 +72,19 @@
     </insert>
 
     <!-- 매물 목록 조회 -->
-    <select id="selectProductList" parameterType="string" resultType="ListingVO">
-        SELECT 
-            L.LSTG_ID,
-            L.MBR_CD,
-            L.LSTG_NM,
-            L.LSTG_DST,
-            L.LSTG_PROD_STAT,
-            (
-                SELECT LI.LSTG_IMG_URL
-                FROM LISTING_IMAGE LI
-                WHERE LI.LSTG_ID = L.LSTG_ID
-                AND ROWNUM = 1
-            ) AS lstgImgUrl
-        FROM LISTING L
-        WHERE L.MBR_CD = #{mbrCd}
-        ORDER BY L.LSTG_ID DESC
-    </select>
+   <select id="selectProductList" parameterType="string" resultMap="listingResultMap">
+    SELECT 
+        L.LSTG_ID,
+        L.MBR_CD,
+        L.LSTG_NM,
+        L.LSTG_DST,
+        L.LSTG_TYPE_SALE,
+        L.LSTG_PROD_STAT
+    FROM LISTING L
+    WHERE L.MBR_CD = #{mbrCd}
+      AND L.LSTG_DEL = 'N'
+    ORDER BY L.LSTG_ID DESC
+</select>
 
     <!-- 매물 상세 조회 -->
     <select id="selectProductById" parameterType="string" resultType="ListingVO">
@@ -107,7 +112,8 @@
             LSTG_LNG,
             LSTG_DEL,
             LSTG_REG_DATE,
-            LSTG_PROD_STAT
+            LSTG_PROD_STAT,
+            LSTG_POSTAL
         FROM LISTING
         WHERE LSTG_ID = #{lstgId}
     </select>
@@ -140,10 +146,11 @@
     </update>
 
     <!-- 매물 삭제 -->
-    <delete id="deleteProduct" parameterType="string">
-        DELETE FROM LISTING
-        WHERE LSTG_ID = #{lstgId}
-    </delete>
+	<update id="deleteProduct" parameterType="string">
+	  UPDATE LISTING
+	  SET LSTG_DEL = 'Y'
+	  WHERE LSTG_ID = #{lstgId}
+	</update>
 
     <!-- 시설 옵션 전체 조회 -->
     <select id="selectAllFacilityOptions" resultType="kr.or.ddit.vo.FacilityOptionVO">
