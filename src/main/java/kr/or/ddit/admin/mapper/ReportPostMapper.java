@@ -15,4 +15,8 @@ public interface ReportPostMapper {
     int selectReportedPostCount(PaginationInfo<BoardVO> pagingVO);
 
     int updateReportStatus(BoardVO reportVO);
+
+	BoardVO selectReportDetailByReportId(String reportId);
+
+	void updateMemberStatus(String mbrCd, String mbrStatus);
 }

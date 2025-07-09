@@ -18,6 +18,8 @@
         <result property="rptTargetId" column="RPT_TARGET_ID"/>
         <result property="rptStatusCode" column="RPT_STATUS_CODE"/>
         <result property="rptDelYn" column="RPT_DEL_YN"/>
+        
+        <result property="rptTargetMbrStatus" column="RPT_TARGET_MBR_STATUS"/>
     </resultMap>
 
     <sql id="searchConditions">
@@ -99,6 +101,18 @@
             RPT_STATUS_CODE = #{rptStatusCode}
         WHERE
             RPT_ID = #{reportId}
+    </update>
+    
+    <select id="selectReportDetailByReportId" parameterType="string" resultMap="boardReportMap">
+        SELECT
+            R.RPT_ID,           B.BRD_NO,           B.BRD_TITL_NM,      B.BRD_CONT,         B.MBR_CD,           B.BRD_PBLS_DTM,     R.RPT_TARGET_ID,    M.MBR_STATUS_CODE AS RPT_TARGET_MBR_STATUS, R.RPT_STATUS_CODE   FROM REPORT R
+        JOIN BOARD B ON R.BRD_NO = B.BRD_NO  LEFT JOIN MEMBER M ON R.RPT_TARGET_ID = M.MBR_CD WHERE R.RPT_ID = #{reportId}
+    </select>
+
+    <update id="updateMemberStatus">
+        UPDATE MEMBER
+        SET MBR_STATUS_CODE = #{mbrStatus}
+        WHERE MBR_CD = #{mbrCd}
     </update>
 
 </mapper>

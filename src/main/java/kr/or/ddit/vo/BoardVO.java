@@ -41,8 +41,9 @@ public class BoardVO implements Serializable{
 	private List<FAQVO> faq;
 	private List<QnAVO> qna;
 	
-	// BoardVO는 확인을 좀 해야할듯
+	private List<FileVO> attachFiles;	// 첨부파일 목록 필드
 	
+	private String rptTargetMbrStatus;	// 신고 대상 회원의 현재 상태를 담을 필드
 	
 	// REPORT 테이블 관련 필드
 	private String reportId;        // REPORT_ID (신고 번호)
@@ -59,6 +60,7 @@ public class BoardVO implements Serializable{
     private LocalDateTime brdPblsDtmTo;   // 게시글 게시일시 (신고일자로 사용) 종료
     
     private MemberVO member;
+    
     // ReportUserList를 위한 메서드
     public String getFormattedBrdPblsDtm() {
         if (this.brdPblsDtm == null) {

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,6 +74,39 @@ public class ReportUserListController {
         } catch (Exception e) {
             log.error("Error updating report statuses: ", e);
             return "{\"status\": \"error\", \"message\": \"신고 상태 저장 중 오류가 발생했습니다.\"}";
+        }
+    }
+    
+    // 신고 상세 정보 조회
+    @GetMapping("/detail/{reportId}")
+    @ResponseBody // JSON 응답을 위해 추가
+    public BoardVO getReportDetail(@PathVariable String reportId) {
+        log.info("getReportDetail called with reportId: " + reportId);
+        BoardVO reportDetail = reportPostService.selectReportDetail(reportId);
+        if (reportDetail != null) {
+            log.info("Report Detail fetched: {}", reportDetail);
+            if (reportDetail.getAttachFiles() != null) {
+                log.info("Attached Files Count: {}", reportDetail.getAttachFiles().size());
+                // 각 파일의 URL을 로그에 출력하여 디버깅에 도움을 줍니다.
+                reportDetail.getAttachFiles().forEach(file -> log.info("  File: {} (URL: {})", file.getFileOriginalname(), file.getFilePathUrl()));
+            }
+        } else {
+            log.warn("No report detail found for reportId: {}", reportId);
+        }
+        return reportDetail;
+    }
+
+    // 신고된 회원 상태 변경
+    @PostMapping("/updateMemberStatus")
+    @ResponseBody // JSON 응답을 위해 추가
+    public String updateMemberStatus(@RequestParam String mbrCd, @RequestParam String mbrStatus) {
+        log.info("updateMemberStatus called. mbrCd: {}, mbrStatus: {}", mbrCd, mbrStatus);
+        try {
+            reportPostService.updateReportedMemberStatus(mbrCd, mbrStatus);
+            return "SUCCESS"; // 성공 시 "SUCCESS" 문자열 반환
+        } catch (Exception e) {
+            log.error("회원 상태 변경 실패", e);
+            return "FAIL"; // 실패 시 "FAIL" 문자열 반환
         }
     }
 }

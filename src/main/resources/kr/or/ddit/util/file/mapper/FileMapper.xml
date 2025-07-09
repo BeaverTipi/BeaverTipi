@@ -61,7 +61,7 @@ AND FILE_SOURCE_ID = #{fileSourceId}
 		    , REG_DTM
 		    , FILE_SOURCE_ID
 		    , FILE_DIR
-    FROM FILE
+    FROM FILES
     <![CDATA[
     WHERE REG_DTM <= ADD_MONTHS(SYSDATE, -60)
     ]]>
