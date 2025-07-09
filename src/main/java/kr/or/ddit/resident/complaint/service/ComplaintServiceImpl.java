@@ -83,6 +83,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 	@Override
 	@Transactional
 	public void deleteComplaint(String rsdBrdId) {
+		mapper.softDeleteResidentBoard(rsdBrdId);
 		mapper.softDeleteComplaint(rsdBrdId);
 	}
 

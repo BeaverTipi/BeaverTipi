@@ -20,13 +20,26 @@ public class NoticeDetailController {
     @GetMapping("/resident/notice/detail")
     public String detail(
             @RequestParam String noticeNo,
+            @RequestParam String bldgIdParam,
+            @RequestParam(defaultValue = "") String noticeType,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "") String searchType,
+            @RequestParam(defaultValue = "") String searchWord,
             Model model
     ) {
-        // 조회수 증가
-//        noticeService.viewCount(new NoticeVO(noticeNo));
+    	NoticeVO voForCount = new NoticeVO();
+    	voForCount.setNoticeNo(noticeNo);
+    	noticeService.viewCount(voForCount);
+    	
+    	NoticeVO detail = noticeService.getNoticeById(noticeNo);
+    	
+    	 model.addAttribute("notice",      detail);
+         model.addAttribute("bldgIdParam", bldgIdParam);
+         model.addAttribute("noticeType",  noticeType);
+         model.addAttribute("page",        page);
+         model.addAttribute("searchType",  searchType);
+         model.addAttribute("searchWord",  searchWord);
 
-        NoticeVO detail = noticeService.getNoticeById(noticeNo);
-        model.addAttribute("notice", detail);
         return "resident/notice/NoticeDetail";
     }
 }

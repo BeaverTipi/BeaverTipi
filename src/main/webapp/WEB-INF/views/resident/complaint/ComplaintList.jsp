@@ -12,9 +12,12 @@
       document.getElementById('searchForm').submit();
     }
   </script>
+  <link rel="stylesheet" href="<c:url value='/css/style.css'/>" />
+  <link rel="stylesheet" href="<c:url value='/css/theme.css'/>" />
 </head>
 <body>
-  <h2>민원 목록</h2>
+<div class="container">
+  <h2 class="page-title">민원 목록</h2>
 
   <!-- 검색 & 필터 폼 -->
   <form id="searchForm" action="${pageContext.request.contextPath}/resident/complaint" method="get">
@@ -22,7 +25,7 @@
 	<input type="hidden" name="search.brdCode" value="M0001"/>
     <!-- 건물 선택 -->
     <label>건물
-      <select name="bldgIdParam">
+      <select name="search.bldgId">
         <c:forEach var="unit" items="${unitList}">
 		  <option value="${unit.bldgId}"
 		    ${unit.bldgId == selectedBldgId ? 'selected' : ''}>
@@ -68,14 +71,17 @@
       <input type="text" name="search.searchWord" value="${search.searchWord}" />
     </label>
 
-    <button type="submit">검색</button>
-    <a href="${pageContext.request.contextPath}/resident/complaint/form">등록</a>
+    <button class="btn btn-primary" type="submit">검색</button>
+    <div class="btn-group">
+	    <a class="btn btn-primary" href="${pageContext.request.contextPath}/resident/complaint/form?bldgIdParam=${selectedBldgId}">
+			  등록
+		</a>
+	</div>
   </form>
-
   <hr/>
 
   <!-- 민원 목록 테이블 -->
-  <table border="1" cellpadding="5" cellspacing="0">
+  <table class="table table-striped">
     <thead>
       <tr>
         <th>작성자</th>
@@ -90,14 +96,15 @@
         <tr>
           <td>${vo.mbrNnm}</td>
           <td>
-            <a href="${pageContext.request.contextPath}/resident/complaint/view/${vo.rsdBrdId}">
-              ${vo.rsdBrdTitl}
-            </a>
+          <a href="${pageContext.request.contextPath}/resident/complaint/view?rsdBrdId=${vo.rsdBrdId}&bldgIdParam=${selectedBldgId}">
+			  <c:out value="${vo.rsdBrdTitl}"/>
+			</a>
           </td>
           <td>${vo.openYn}</td>
           <td>${vo.reqStatus}</td>
           <td>
-            <fmt:formatDate value="${vo.rsdBrdPblsDtm}" pattern="yyyy-MM-dd HH:mm"/>
+            <fmt:formatDate value="${vo.rsdBrdPblsDate}"
+                pattern="yyyy-MM-dd"/>
           </td>
         </tr>
       </c:forEach>

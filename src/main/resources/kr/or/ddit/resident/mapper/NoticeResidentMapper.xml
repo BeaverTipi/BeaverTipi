@@ -137,14 +137,20 @@
   </select>
 
   <!-- ✅ 단건 조회 -->
-  <select id="selectNoticeById" resultType="kr.or.ddit.vo.NoticeVO">
-    SELECT
-      N.NOTICE_NO, N.NOTICE_TYPE, N.NOTICE_TOP, N.NOTICE_END_DTM, N.NOTICE_DEL_YN,
-      B.BRD_NO, B.BRD_CODE, B.MBR_CD, B.BRD_TITL_NM, B.BRD_CONT,
-      B.BRD_PBLS_DTM, B.BRD_VW_CNT, B.BRD_MOD_DTM, B.BRD_DEL_YN
+  <select id="selectNoticeById" parameterType="String" resultMap="noticeMap">
+      SELECT
+      N.NOTICE_NO,
+      B.BRD_NO,
+      B.BRD_TITL_NM,
+      B.BRD_CONT,
+      B.BRD_PBLS_DTM,
+      B.BRD_VW_CNT,
+      M.MBR_NNM AS MBR_NNM
     FROM NOTICE N
     JOIN BOARD B ON N.NOTICE_NO = B.BRD_NO
+    JOIN MEMBER M ON B.MBR_CD = M.MBR_CD
     WHERE N.NOTICE_NO = #{noticeNo}
+
   </select>
 
   <!-- ✅ 등록 -->
@@ -183,6 +189,13 @@
     UPDATE NOTICE
     SET NOTICE_DEL_YN = 'Y'
     WHERE NOTICE_NO = #{noticeNo}
+  </update>
+  
+   <!-- 조회수 증가용 매핑 -->
+  <update id="updateNoticeViewCount" parameterType="NoticeVO">
+    UPDATE board
+       SET brd_vw_cnt = brd_vw_cnt + 1
+     WHERE brd_no = #{noticeNo}
   </update>
 
 </mapper>

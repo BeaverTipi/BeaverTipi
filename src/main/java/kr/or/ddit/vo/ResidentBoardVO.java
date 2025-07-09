@@ -25,7 +25,8 @@ public class ResidentBoardVO {
 	private String bldgId;
 	private String mbrNnm;
 	
-	
+	private String brdDelYn;
+
 	
 	public Date getRsdBrdPblsDate() {
 		if(rsdBrdPblsDtm ==null) return null;

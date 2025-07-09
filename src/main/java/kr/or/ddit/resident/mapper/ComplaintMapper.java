@@ -41,4 +41,5 @@ public interface ComplaintMapper {
     /** 소프트 삭제 (BOARD 전용 삭제여부만 ‘Y’ 처리) */
     public void softDeleteComplaint(@Param("rsdBrdId") String rsdBrdId);
 
+    public void softDeleteResidentBoard(@Param("rsdBrdId") String rsdBrdId);
 }

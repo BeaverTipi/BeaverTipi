@@ -1,31 +1,40 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <title>공지사항 상세</title>
+  <link rel="stylesheet" href="<c:url value='/css/style.css'/>"/>
+  <link rel="stylesheet" href="<c:url value='/css/theme.css'/>"/>
+</head>
+<body>
+  <div class="container">
+    <!-- 제목, 작성자, 조회수 -->
+    <h2><c:out value="${notice.brdTitlNm}"/></h2>
+    <div class="meta">
+      작성자: <c:out value="${notice.member.mbrNnm}"/> |
+      조회수: <c:out value="${notice.brdVwCnt}"/> |
+      작성일: <c:out value="${notice.brdPblsDtm}"/>
+    </div>
+    <hr/>
 
-<div class="card border-0 shadow mb-4">
-  <div class="card-body">
-    <h2 class="h4 mb-3 fw-bold text-dark">${notice.brdTitlNm}</h2>
-
-    <div class="d-flex flex-wrap justify-content-between text-muted small mb-3">
-      <div>
-        📌 <span class="me-3">${notice.noticeTypeCode.codeName}</span>
-        ✍️ <span class="me-3">${notice.member.mbrNnm}</span>
-      </div>
-      <div>
-        🗓️ ${notice.formattedBrdPblsDtm} |
-        👁️ ${notice.brdVwCnt}회 조회
-      </div>
+    <!-- 내용 -->
+    <div class="content">
+      <pre><c:out value="${notice.brdCont}"/></pre>
     </div>
 
-    <hr>
-
-    <div class="mt-4" style="white-space: pre-wrap; line-height: 1.7;">
-      ${notice.brdCont}
-    </div>
-
-    <div class="mt-4 text-end">
-      <a href="/resident/notice?bldgIdParam=${selectedBldgId}" class="btn btn-sm btn-primary">
-        ← 목록으로
-      </a>
-    </div>
+    <!-- 목록으로 -->
+    <c:url var="listUrl" value="/resident/notice">
+	  <c:param name="bldgIdParam" value="${bldgIdParam}"/>
+	  <c:param name="noticeType"  value="${noticeType}"/>
+	  <c:param name="page"        value="${page}"/>
+	  <c:param name="searchType"  value="${searchType}"/>
+	  <c:param name="searchWord"  value="${searchWord}"/>
+	</c:url>
+      <a href="${listUrl}" class="btn btn-default">목록으로</a>
   </div>
-</div>
+</body>
+</html>
+

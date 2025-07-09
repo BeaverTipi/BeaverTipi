@@ -6,10 +6,23 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>민원 ${complaint.rsdBrdId == null ? '등록' : '수정'}</title>
+  <title>
+    민원
+    <c:choose>
+      <c:when test="${empty complaint.rsdBrdId}">등록</c:when>
+      <c:otherwise>수정</c:otherwise>
+    </c:choose>
+  </title>
+  <link rel="stylesheet" href="<c:url value='/css/style.css'/>" />
+  <link rel="stylesheet" href="<c:url value='/css/theme.css'/>" />
 </head>
 <body>
-  <h2>민원 ${complaint.rsdBrdId == null ? '등록' : '수정'}</h2>
+  <h2> 
+  	<c:choose>
+      <c:when test="${empty complaint.rsdBrdId}">등록</c:when>
+      <c:otherwise>수정</c:otherwise>
+    </c:choose>
+  </h2>
 
   <form action="${pageContext.request.contextPath}/resident/complaint/save"
         method="post">
@@ -18,7 +31,7 @@
     <input type="hidden" name="bldgId"          value="${complaint.bldgId}" />
     <input type="hidden" name="bldgIdParam"     value="${selectedBldgId}" />
 
-    <table>
+    <table class="table table-striped">
       <tr>
         <th>제목</th>
         <td>
@@ -61,11 +74,12 @@
         </td>
       </tr>
     </table>
-
-    <button type="submit">저장</button>
-    <a href="${pageContext.request.contextPath}/resident/complaint?bldgIdParam=${selectedBldgId}">
-      취소
-    </a>
+	<div class="btn-group">
+	    <button class="btn btn-success" type="submit">저장</button>
+	    <a class="btn btn-primary" href="${pageContext.request.contextPath}/resident/complaint?bldgIdParam=${selectedBldgId}">
+	      취소
+	    </a>
+    </div>
   </form>
 </body>
 </html>

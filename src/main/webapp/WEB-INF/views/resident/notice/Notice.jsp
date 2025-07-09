@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
@@ -94,17 +94,26 @@
       </td>
       <td><c:out value="${notice.noticeTypeCode.codeName}"/></td>
       <td>
-        <a href="/resident/notice/detail?noticeNo=${notice.noticeNo}">
-          <c:choose>
-            <c:when test="${fn:length(notice.brdTitlNm) > 30}">
-              <c:out value="${fn:substring(notice.brdTitlNm, 0, 30)}"/>...
-            </c:when>
-            <c:otherwise>
-              <c:out value="${notice.brdTitlNm}"/>
-            </c:otherwise>
-          </c:choose>
-        </a>
-      </td>
+      <c:url var="detailUrl" value="/resident/notice/detail">
+        <c:param name="noticeNo"    value="${notice.noticeNo}" />
+        <c:param name="bldgIdParam"  value="${selectedBldgId}" />
+        <c:param name="noticeType"   value="${simpleSearch.noticeType}" />
+        <c:param name="page"         value="${pagingInfo.currentPageNo}" />
+        <c:param name="searchType"   value="${simpleSearch.searchType}" />
+        <c:param name="searchWord"   value="${simpleSearch.searchWord}" />
+      </c:url>
+      <a href="${detailUrl}">
+        <c:choose>
+          <c:when test="${fn:length(notice.brdTitlNm) > 30}">
+            <c:out value="${fn:substring(notice.brdTitlNm, 0, 30)}"/>...
+          </c:when>
+          <c:otherwise>
+            <c:out value="${notice.brdTitlNm}"/>
+          </c:otherwise>
+        </c:choose>
+      </a>
+    </td>
+
       <td><c:out value="${notice.member.mbrNnm}"/></td>
       <td>${notice.formattedBrdPblsDtm}</td>
       <td><c:out value="${notice.brdVwCnt}"/></td>
