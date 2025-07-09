@@ -5,8 +5,10 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import kr.or.ddit.resident.chating.dto.ChatMessageDTO;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.ChatRoomInVO;
+import kr.or.ddit.vo.ResidentChatMessageVO;
 import kr.or.ddit.vo.ResidentChatRoomVO;
 import kr.or.ddit.vo.UnitResidentVO;
 
@@ -26,4 +28,8 @@ public interface RsdChatMapper {
 	List<UnitResidentVO> selectResidentList(String bldgId); 
 	
 	int insertChatRoomIn(ChatRoomInVO criVO);
+	
+	List<ChatMessageDTO> selectMessages(String residentChatRoomId);
+	
+	int insertChatMessage(ResidentChatMessageVO rcmVO);
 }

@@ -48,6 +48,44 @@
 	</insert>
 
 	
+	<select id="selectMessages" resultType="kr.or.ddit.resident.chating.dto.ChatMessageDTO">
+		SELECT  
+		  a.mbr_cd,
+		  a.rcm_cont,
+		  a.rcm_time,
+		  COALESCE(d.mbr_nnm, d.mbr_nm) AS mbrNnm,
+		  c.unit_room
+		FROM resident_chat_message a
+		INNER JOIN unit_resident b ON a.mbr_cd = b.mbr_cd
+		INNER JOIN unit c ON b.unit_id = c.unit_id
+		INNER JOIN member d ON b.mbr_cd = d.mbr_cd
+		WHERE a.resident_chat_room_id = #{residentChatRoomId}
+		  AND b.bldg_id = (
+		    SELECT bldg_id
+		    FROM resident_chat_room
+		    WHERE resident_chat_room_id = #{residentChatRoomId}
+		  )
+		ORDER BY a.rcm_time 
+	</select>
+
+	<insert id="insertChatMessage" parameterType="ResidentChatMessageVO">
+		<selectKey keyProperty="rcmId" resultType="string" order="BEFORE">
+		  SELECT LPAD(SEQ_RESIDENT_CHAT_ROOM_ID.NEXTVAL, 10, '0') FROM DUAL
+		</selectKey>
+		INSERT INTO RESIDENT_CHAT_MESSAGE(
+		RCM_ID
+		,RCM_CONT
+		,RCM_IMG 
+		,RESIDENT_CHAT_ROOM_ID 
+		,MBR_CD
+		)VALUES(
+		#{rcmId}
+		,#{rcmCont}
+		,#{rcmImg}
+		,#{residentChatRoomId}
+		,#{mbrCd}
+		)
+	</insert>
 
 
 

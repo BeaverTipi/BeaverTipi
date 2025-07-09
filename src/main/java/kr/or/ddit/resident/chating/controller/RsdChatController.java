@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.or.ddit.resident.chating.dto.ChatMessageDTO;
 import kr.or.ddit.resident.chating.service.RsdChatServiceImpl;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.util.validate.InsertGroup;
@@ -84,14 +85,28 @@ public class RsdChatController {
 		) {
 		return service.getResidentList(bldgId);
 	}
+	
+	
+	
+//	채팅방 관련
 	@GetMapping("/chat/room")
 	public String chatRoom(
-		@RequestParam("residentChatRoomId") String residentChatRoomId,
-		Model model
-		) {
-		model.addAttribute("residentChatRoomId", residentChatRoomId);
-		return "resident/chat/ChatRoom";
+	    @RequestParam("residentChatRoomId") String residentChatRoomId,
+	    Model model,
+	    @AuthenticationPrincipal RealUserWrapper<MemberVO> principal	
+	) {
+		String mbrCd = principal.getRealUser().getMbrCd();
+		
+	    List<ChatMessageDTO> messages = service.getMessages(residentChatRoomId);
+	    model.addAttribute("messages", messages);
+	    model.addAttribute("residentChatRoomId", residentChatRoomId);
+	    model.addAttribute("mbrCd", mbrCd);
+	    return "resident/chat/ChatRoom";
 	}
+	
+	
+	
+	
 	
 	
 //	참여중인 건물별 채팅 목록 조회

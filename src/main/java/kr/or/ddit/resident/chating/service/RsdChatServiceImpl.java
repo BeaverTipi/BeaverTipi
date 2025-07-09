@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import kr.or.ddit.resident.chating.dto.ChatMessageDTO;
 import kr.or.ddit.resident.mapper.RsdChatMapper;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.ChatRoomInVO;
+import kr.or.ddit.vo.ResidentChatMessageVO;
 import kr.or.ddit.vo.ResidentChatRoomVO;
 import kr.or.ddit.vo.UnitResidentVO;
 
@@ -51,6 +53,17 @@ public class RsdChatServiceImpl implements RsdChatServcie {
 	@Override
 	public List<UnitResidentVO> getResidentList(String bldgId) {
 		return mapper.selectResidentList(bldgId);
+	}
+
+	@Override
+	public List<ChatMessageDTO> getMessages(String residentChatRoomId) {
+		return mapper.selectMessages(residentChatRoomId);
+	}
+
+	@Override
+	public void createMessage(ResidentChatMessageVO rcmVO) {
+		mapper.insertChatMessage(rcmVO);
+		
 	}
 
 

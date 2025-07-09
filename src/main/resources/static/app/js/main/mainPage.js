@@ -6,13 +6,13 @@ document.addEventListener("DOMContentLoaded", function() {
 	const username = document.querySelector("#username");
 	const password = document.querySelector("#password");
 	const logout = document.querySelector("#logout");
-	const baseURL = "http://localhost";
+	const baseURL = location.origin;
 
 	 const roleRadios = document.querySelectorAll('input[name="loginRole"]');
 
-      const presetAccounts = {
+  	 const presetAccounts = {
         landlord: { id: "manual_user_08", pw: "qwer" },
-        broker: { id: "mylittlesodapop", pw: "qwer" },
+        broker: { id: "openthatsodapop", pw: "qwer" },
         admin: { id: "manual_user_13", pw: "qwer" },
         resident: { id: "qwer", pw: "qwer" },
         member: { id: "", pw: "" }

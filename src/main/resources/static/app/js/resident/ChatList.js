@@ -128,7 +128,7 @@ function createChatRoomItem(room) {
   item.addEventListener("dblclick", () => {
   const roomId = item.dataset.roomId;
   const popupUrl = `/resident/chat/room?residentChatRoomId=${roomId}&popup=true`;
-  window.open(popupUrl, "chatRoomPopup", "width=600,height=700,scrollbars=yes");
+  window.open(popupUrl, "chatRoomPopup", "width=450,height=600,scrollbars=yes");
 });
   return item;
 }
