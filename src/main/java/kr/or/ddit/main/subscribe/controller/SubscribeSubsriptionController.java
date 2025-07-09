@@ -2,7 +2,6 @@ package kr.or.ddit.main.subscribe.controller;
 
 import java.util.List;
 
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +18,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import kr.or.ddit.admin.code.service.CommonCodeService;
 import kr.or.ddit.main.subscribe.service.SubscribeSubsriptionService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.util.validate.BrokerInsertGroup;
 import kr.or.ddit.util.validate.InsertGroup;
+import kr.or.ddit.util.validate.TenancyInsertGroup;
 import kr.or.ddit.util.validate.exception.FileIOException;
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.CommonCodeVO;
@@ -74,7 +75,7 @@ public class SubscribeSubsriptionController {
 	@PostMapping("/apply/broker")
 	public String brokerFormProcess(@AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
 	                                @RequestParam(name = "solution", required = false) String solutionId,
-	                                @Validated @ModelAttribute("broker") BrokerVO broker,
+	                                @Validated(BrokerInsertGroup.class) @ModelAttribute("broker") BrokerVO broker,
 	                                BindingResult errors,
 	                                RedirectAttributes redirectAttributes) {
 	    String lvn = "redirect:/apply/broker";
@@ -84,16 +85,17 @@ public class SubscribeSubsriptionController {
 	            log.info("▶▶ 로그인 사용자: {}", principal);
 	            log.info("▶▶ 사용자 코드: {}", principal.getRealUser().getMbrCd());
 	            log.info("▶▶ 선택한 솔루션 ID: {}", solutionId);
-
+	            String mbrCd = principal.getRealUser().getMbrCd();
 	            SolutionSubscriptionVO sol = new SolutionSubscriptionVO();
 	            sol.setSolId(solutionId);
-	            sol.setMbrCd(principal.getRealUser().getMbrCd());
+	            sol.setMbrCd(mbrCd);
 
 	            log.info("▶▶ 솔루션 구독 insert 시도");
 	            service.createSolutionSubscription(sol);
 	            log.info("▶▶ 솔루션 구독 insert 완료");
 
 	            log.info("▶▶ 브로커 등록 시도: {}", broker);
+	            broker.setMbrCd(mbrCd);
 	            service.createBroker(broker);
 	            log.info("▶▶ 브로커 등록 완료");
 
@@ -127,16 +129,18 @@ public class SubscribeSubsriptionController {
 	@PostMapping("/apply/tenancy")
 	public String tenancyFormProcess(@AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
 			@RequestParam(name = "solution", required = false) String solutionId,
-			@Validated(InsertGroup.class) @ModelAttribute(TENANCY) TenancyVO tenancy, BindingResult errors,
+			@Validated(TenancyInsertGroup.class) @ModelAttribute(TENANCY) TenancyVO tenancy, BindingResult errors,
 			RedirectAttributes redirectAttributes) {
 		String lvn = "redirect:/apply/tenancy";
 		// 검증 통과
 		if (!errors.hasErrors()) {
 			try {
+				String mbrCd=principal.getRealUser().getMbrCd();
 				SolutionSubscriptionVO sol = new SolutionSubscriptionVO();
 				sol.setSolId(solutionId);
-				sol.setMbrCd(principal.getRealUser().getMbrCd());
+				sol.setMbrCd(mbrCd);
 				service.createSolutionSubscription(sol);
+				tenancy.setMbrCd(mbrCd);
 				service.createTenancy(tenancy);
 				// 수정 성공 후? 새 mypage로 이동
 				lvn = "redirect:/account/read";

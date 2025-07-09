@@ -16,6 +16,7 @@ public class FileVO implements Serializable{
 	private String fileOriginalname;
 	private String fileSavedname;
 	private String fileMime;
+	private String fileDir;
 	private Integer fileSize;
 	private String docTypeCd;
 	private String filePathUrl;

@@ -6,9 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.amazonaws.services.s3.model.S3Object;
 
 import kr.or.ddit.util.file.mapper.FileMapper;
 import kr.or.ddit.util.validate.exception.FileIOException;
@@ -23,10 +30,10 @@ public class FileServiceImpl implements FileService {
 	private final S3Uploader s3Uploader;
 	@Override
 	public FileVO uploadAndSave(MultipartFile file, String dir, String sourceRef, String sourceId, String docTypeCd) {
-	    String changedName = dir +"/"+ changedFileName(file.getOriginalFilename());
+	    String changedName = changedFileName(file.getOriginalFilename());
 	    String fileUrl;
 		try {
-			fileUrl = s3Uploader.upload(file, changedName);
+			fileUrl = s3Uploader.upload(file, dir +"/"+ changedName);
 		} catch (IOException e) {
 			throw new FileIOException();
 		}
@@ -43,6 +50,7 @@ public class FileServiceImpl implements FileService {
 	    vo.setDocTypeCd(docTypeCd);
 	    vo.setFilePathUrl(fileUrl);
 	    vo.setRegDtm(LocalDate.now());
+	    vo.setFileDir(dir);
 
 	    mapper.insertFile(vo);
 	    return vo;
@@ -58,10 +66,10 @@ public class FileServiceImpl implements FileService {
 		List<FileVO> fileList = new ArrayList<>();
 	    for (MultipartFile file : files) {
 	        FileVO fileVO = new FileVO();
-	        String changeFileName = dir +"/"+ changedFileName(file.getOriginalFilename());
+	        String changeFileName = changedFileName(file.getOriginalFilename());
 	        String fileUrl;
 			try {
-				fileUrl = s3Uploader.upload(file, changeFileName);
+				fileUrl = s3Uploader.upload(file, dir +"/"+ changeFileName);
 			} catch (IOException e) {
 				throw new FileIOException("파일 업로드 오류 발생", e);
 			}
@@ -77,6 +85,7 @@ public class FileServiceImpl implements FileService {
 	        fileVO.setDocTypeCd(docTypeCd);
 	        fileVO.setFilePathUrl(fileUrl);
 	        fileVO.setRegDtm(LocalDate.now());
+	        fileVO.setFileDir(dir);
 
 	        mapper.insertFile(fileVO);
 	        fileList.add(fileVO);
@@ -105,7 +114,7 @@ public class FileServiceImpl implements FileService {
 	public void deleteFile(String fileId) {
 		FileVO file = mapper.selectFile(fileId);
 		 try {
-	            s3Uploader.fileDelete(file.getFileSavedname()); // savedName에 dir 포함되어 있어야 함
+	            s3Uploader.fileDelete(file.getFileDir() +"/"+file.getFileSavedname()); // savedName에 dir 포함되어 있어야 함
 	            mapper.deleteFileById(file.getFileId());
 	            log.info("파일 삭제 완료: {}", file.getFileId());
 	        } catch (Exception e) {
@@ -123,13 +132,13 @@ public class FileServiceImpl implements FileService {
 	    }
 
 	    // 1. 기존 S3 파일 삭제
-	    s3Uploader.fileDelete(oldFile.getFileSavedname());
+	    s3Uploader.fileDelete(oldFile.getFileDir() +"/"+ oldFile.getFileSavedname());
 
 	    // 2. 새 파일 업로드
-	    String newSavedName = oldFile.getFileSourceRef().toLowerCase() + "/" + changedFileName(newFile.getOriginalFilename());
+	    String newSavedName = changedFileName(newFile.getOriginalFilename());
 	    String fileUrl;
 	    try {
-	        fileUrl = s3Uploader.upload(newFile, newSavedName);
+	        fileUrl = s3Uploader.upload(newFile, oldFile.getFileDir() +"/" +newSavedName);
 	    } catch (IOException e) {
 	        throw new FileIOException("파일 업로드중 오류 발생",e);
 	    }
@@ -145,6 +154,32 @@ public class FileServiceImpl implements FileService {
 	    mapper.updateFile(oldFile);
 		
 	}
+	
+	@Override
+	public ResponseEntity<Resource> downloadFile(String fileId) {
+	    FileVO file = mapper.selectFile(fileId);
+	    if (file == null) throw new FileIOException("파일이 존재하지 않습니다");
+
+	    S3Object s3Object = s3Uploader.getObject(file.getFileDir() + "/" +file.getFileSavedname());
+	    InputStreamResource resource = new InputStreamResource(s3Object.getObjectContent());
+
+	    return ResponseEntity.ok()
+	        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+	        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileOriginalname() + "\"")
+	        .body(resource);
+	}
+	
+	@Override
+	public String generatePresignedDownloadUrl(String fileId, int expireMinutes) {
+	    FileVO file = mapper.selectFile(fileId);
+	    if (file == null) {
+	        throw new FileIOException("파일이 존재하지 않습니다.");
+	    }
+
+	    String s3Key = file.getFileDir() + "/" + file.getFileSavedname();
+	    return s3Uploader.generatePresignedUrl(s3Key, expireMinutes);
+	}
+
 	public int getNextAttachSeq(FileVO file) {
 	    Integer maxSeq = mapper.selectMaxAttachSeq(file);
 	    return (maxSeq != null) ? maxSeq + 1 : 1;

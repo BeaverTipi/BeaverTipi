@@ -5,7 +5,8 @@ import org.springframework.security.core.userdetails.User;
 
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.RoleAchievedVO;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 public class MemberVOWrapper extends User implements RealUserWrapper<MemberVO> {
 	private final MemberVO realUser;
 	
@@ -24,6 +25,7 @@ public class MemberVOWrapper extends User implements RealUserWrapper<MemberVO> {
 					    									.toArray(String[]::new))
 				);
 		this.realUser = realUser;
+		log.info("▶▶ MemberVOWrapper 생성됨. realUser.mbrCd = {}", realUser.getMbrCd());
 	}
 	
 	@Override

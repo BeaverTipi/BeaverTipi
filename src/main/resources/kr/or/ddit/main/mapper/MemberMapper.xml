@@ -50,7 +50,7 @@
 		resultMap="memberMap">
 
 		SELECT 
-		M.MBR_CD
+		M.MBR_CD MBR_CD
 		, M.MBR_ID
 		, M.MBR_PW
 		, M.MBR_NM
@@ -110,7 +110,7 @@
 	<select id="selectMemberByMail" parameterType="String"
 		resultMap="memberMap">
 				SELECT 
-		M.MBR_CD
+		M.MBR_CD MBR_CD
 		, M.MBR_ID
 		, M.MBR_PW
 		, M.MBR_NM

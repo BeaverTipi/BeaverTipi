@@ -8,25 +8,25 @@ document.addEventListener("DOMContentLoaded", function() {
 	const logout = document.querySelector("#logout");
 	const baseURL = location.origin;
 
-	 const roleRadios = document.querySelectorAll('input[name="loginRole"]');
+	const roleRadios = document.querySelectorAll('input[name="loginRole"]');
 
-  	 const presetAccounts = {
-        landlord: { id: "manual_user_08", pw: "qwer" },
-        broker: { id: "openthatsodapop", pw: "qwer" },
-        admin: { id: "manual_user_13", pw: "qwer" },
-        resident: { id: "qwer", pw: "qwer" },
-        member: { id: "", pw: "" }
-      };
+	const presetAccounts = {
+		landlord: { id: "manual_user_08", pw: "qwer" },
+		broker: { id: "openthatsodapop", pw: "qwer" },
+		admin: { id: "manual_user_13", pw: "qwer" },
+		resident: { id: "qwer", pw: "qwer" },
+		member: { id: "", pw: "" }
+	};
 
-      roleRadios.forEach(radio => {
-        radio.addEventListener("change", () => {
-          const selected = presetAccounts[radio.value];
-          if (selected) {
-            username.value = selected.id;
-            password.value = selected.pw;
-          }
-        });
-      });
+	roleRadios.forEach(radio => {
+		radio.addEventListener("change", () => {
+			const selected = presetAccounts[radio.value];
+			if (selected) {
+				username.value = selected.id;
+				password.value = selected.pw;
+			}
+		});
+	});
 	loginForm.addEventListener("submit", (e) => {
 		e.preventDefault();
 		if (!username.value.trim()) {
@@ -82,32 +82,34 @@ document.addEventListener("DOMContentLoaded", function() {
 			});
 
 	})
-	logout.addEventListener("click", (e) => {
-		e.preventDefault();
-		e.stopPropagation();
-		e.stopImmediatePropagation();
-		customAxios.post("/account/logout", {})
-			.then(resp => {
-				Swal.fire({
-					icon: 'success',
-					title: '알림',
-					text: '로그아웃 되었습니다.',
-					confirmButtonText: '확인'
-				})
-					.then(() => {
-						location.href = baseURL;
+	if (logout) {
+		logout.addEventListener("click", (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			e.stopImmediatePropagation();
+			customAxios.post("/account/logout", {})
+				.then(resp => {
+					Swal.fire({
+						icon: 'success',
+						title: '알림',
+						text: '로그아웃 되었습니다.',
+						confirmButtonText: '확인'
 					})
-			})
-			.catch(err => {
-				Swal.fire({
-					icon: "error",
-					title: "오류",
-					text: "예기치 않은 오류가 발생했습니다.",
-					confirmButtonText: '확인'
-				});
+						.then(() => {
+							location.href = baseURL;
+						})
+				})
+				.catch(err => {
+					Swal.fire({
+						icon: "error",
+						title: "오류",
+						text: "예기치 않은 오류가 발생했습니다.",
+						confirmButtonText: '확인'
+					});
 
-			})
+				})
 
-	});
+		});
+	}
 
 })
