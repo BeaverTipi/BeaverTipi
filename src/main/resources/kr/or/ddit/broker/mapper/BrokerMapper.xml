@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="kr.or.ddit.broker.mapper.BrokerListingMapper">
+<mapper namespace="kr.or.ddit.broker.mapper.BrokerMapper">
 <!-- 
 	@author developer_KCY
-	/broker/myoffice 에서 사용할 REST 요청 SQL QUERY
 	
-	- selectLstgListByMbrCd
-		한 명의 중개인이 담당하고 있는 매물 리스트.
-		매물 한 건에 대한 레코드(ListingVO)를 List에 담아 반환.
-		ListingVO 안의 tenancyInfo, brokerInfo를 통해
-		해당 매물의 임대인회원(TenancyVO), 중개인회원(BrokerVO)의 정보도 함께 저장.
 	
-	- 2025-07-08
-	VIEW 만들어서 보다 직관적으로 연결함. 어차피 조회 용도로 쓰니까 ^0^
+	- 2025-07-09 최초작성
  -->
 
 <!-- Facility Option 정보 매핑 -->
@@ -96,45 +89,18 @@
 	</collection>
 </resultMap>
 
-<select id="selectLstgListByMbrCd" parameterType="String" resultMap="ListingMap">
-SELECT '[[LISTING]]'
-       , L.*
-       , '[[TENANCY_INFO]]'
+<select id="selectLstgListForContract" parameterType="String" resultMap="ListingMap">
+SELECT L.*
        ,TI.*
-       , '[[BROKER_INFO]]'
        ,BI.*
-       , '[[LISTING_FACILITY]]'
        ,LF.*
   FROM LISTING L
   LEFT OUTER JOIN V_TENANCY_INFO TI ON(L.RENTAL_PTY_ID = TI.RENTAL_PTY_ID_T)
   LEFT OUTER JOIN V_BROKER_INFO BI ON(L.MBR_CD = BI.MBR_CD_B)
   LEFT OUTER JOIN V_LISTING_FACILITY LF ON(L.LSTG_ID = LF.LSTG_ID_LF)
  WHERE L.MBR_CD = #{mbrCd}
+   AND L.LSTG_PROD_STAT = '1'
+   AND L.LSTG_DEL = 'N'
  ORDER BY L.LSTG_ID ASC
 </select>
-
-<select id="selectLstgDetails" parameterType="Map" resultMap="ListingMap">
-SELECT '[[LISTING]]'
-       , L.*
-       , '[[TENANCY_INFO]]'
-       ,TI.*
-       , '[[BROKER_INFO]]'
-       ,BI.*
-       , '[[LISTING_FACILITY]]'
-       ,LF.*
-  FROM LISTING L
-  LEFT OUTER JOIN V_TENANCY_INFO TI ON(L.RENTAL_PTY_ID = TI.RENTAL_PTY_ID)
-  LEFT OUTER JOIN V_BROKER_INFO BI ON(L.MBR_CD = BI.MBR_CD_B)
-  LEFT OUTER JOIN V_LISTING_FACILITY LF ON(L.LSTG_ID = LF.LSTG_ID)
- WHERE L.MBR_CD = #{mbrCd}
- ORDER BY L.LSTG_ID ASC
-   AND L.LSTG_ID = #{lstgId}
-</select>
-
-<select id="selectLstgTypeCode" resultType="CommonCodeVO">
-	SELECT *
-	  FROM COMMON_CODE
-	 WHERE CODE_GROUP = 'LSTG'
-</select>
-
 </mapper>

@@ -7,10 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
+
 import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j
+@EnableEncryptableProperties
 @SpringBootTest
 public class AES256UtilTest {
 	
@@ -61,4 +64,5 @@ public class AES256UtilTest {
 		log.warn("encrypted -> decrypted: {} -> {}", encrypted, decrypted);
 		assertThat(decrypted).isEqualTo(original);
 	}
+
 }

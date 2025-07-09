@@ -1,5 +1,7 @@
 package kr.or.ddit.broker;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -21,5 +23,9 @@ public class BrokerAuthUnpackingUtility implements HandlerInterceptor {
 	
 	public BrokerVO getBroker(String username) {
 		return mapper.selectBrokerByUsername(username);
+	}
+	
+	public BrokerVO getRealUser(Principal principal) {
+		return mapper.selectBrokerByUsername(principal.getName());
 	}
 }
