@@ -6,6 +6,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * 
+ * @author developer_KAR 
+ * 
+ */
 @SuppressWarnings("serial")
 @Data
 @EqualsAndHashCode(of = "facOptId")

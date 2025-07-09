@@ -2,18 +2,16 @@ package kr.or.ddit.broker.lstg.controller;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.or.ddit.broker.BrokerAuthUnpackingUtility;
 import kr.or.ddit.broker.lstg.service.BrokerLstgService;
-import kr.or.ddit.vo.ListingPackVO;
+import kr.or.ddit.vo.ListingVO;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -31,19 +29,21 @@ public class RestBrokerLstgController {
 	BrokerAuthUnpackingUtility authUnpack;
 	
 	@GetMapping("/list")
-	public List<ListingPackVO> lstgList(
+	public List<ListingVO> lstgList(
 			Principal principal
 	) {
 		String username = principal.getName();
 		log.error("{}", username);
 		String mbrCd = authUnpack.getMbrCd(username);
-		List<ListingPackVO> lstgList= service.readLstgListByMbrCd(mbrCd);
+		
+		
+		List<ListingVO> lstgList= service.readLstgListByMbrCd(mbrCd);
 		log.error("{}", lstgList);
 		return lstgList;
 	}
 	
 	@GetMapping("/listing-details")
-	public ListingPackVO lstgDetails(
+	public ListingVO lstgDetails(
 			Principal principal,
 			@RequestBody String lstgId
 	) {

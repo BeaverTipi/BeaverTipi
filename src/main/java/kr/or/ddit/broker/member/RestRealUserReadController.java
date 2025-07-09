@@ -3,13 +3,11 @@ package kr.or.ddit.broker.member;
 import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.or.ddit.broker.BrokerAuthUnpackingUtility;
-import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.MemberVO;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +28,6 @@ public class RestRealUserReadController {
 		
 //		MemberVO broker  = principal.getRealUser();
 		String username = principal.getName();
-		String mbrCd = authUnpack.getMbrCd(username);
 		BrokerVO broker = authUnpack.getBroker(username);
 		log.info("회원정보 toString(): {} ", broker);
 		return broker;
