@@ -81,7 +81,7 @@
                                 <td>${report.brdTitlNm}</td>
                                 <td>${report.brdCont}</td>
                                 <td>${report.mbrCd}</td>
-                                <td>${report.formattedBrdPblsDtm}</td> 
+                                <td>${report.formattedBrdPblsDtm}</td>
                                 <td>
                                     <select class="report-status-select" name="rptStatusCode" data-report-id="${report.reportId}" data-original-status="${report.rptStatusCode}">
                                         <option value="REG" ${report.rptStatusCode eq 'REG' ? 'selected' : ''}>등록</option>

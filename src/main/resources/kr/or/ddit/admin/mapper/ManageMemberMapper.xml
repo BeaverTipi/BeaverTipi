@@ -25,27 +25,21 @@
 				</if>
 				<if test="detailSearch.mbrFrstRegDtTo != null">
 					AND MBR.MBR_FRST_REG_DT <![CDATA[ <= ]]> #{detailSearch.mbrFrstRegDtTo}
-                    </if>
+                </if>
 				<if test="detailSearch.mbrStatusCode != null and detailSearch.mbrStatusCode != ''">
 					AND MBR.MBR_STATUS_CODE = #{detailSearch.mbrStatusCode}
 				</if>
 				<if test="detailSearch.mbrEmlAddr != null and detailSearch.mbrEmlAddr != ''">
 					AND MBR.MBR_EML_ADDR LIKE '%' || #{detailSearch.mbrEmlAddr} || '%'
 				</if>
-				<if test="detailSearch.userRoleId != null and detailSearch.userRoleId.size() > 0">
+				<if test="detailSearch.userRoleId != null and detailSearch.userRoleId != ''">
 					AND MBR.MBR_CD IN (
 						SELECT RA_SUB.MBR_CD
 						FROM ROLE_ACHIEVED RA_SUB
-						WHERE RA_SUB.USER_ROLE_ID IN
-						<foreach item="roleId" collection="detailSearch.userRoleId" open="(" separator="," close=")">
-							#{roleId}
-						</foreach>
-						GROUP BY RA_SUB.MBR_CD
-						HAVING COUNT(DISTINCT RA_SUB.USER_ROLE_ID) = #{detailSearch.userRoleCount}
-					)
+						WHERE RA_SUB.USER_ROLE_ID = #{detailSearch.userRoleId}
+						)
 				</if>
 			</if>
-
 			</where>
 	</sql>
 

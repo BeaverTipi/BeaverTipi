@@ -21,7 +21,8 @@
             <div class="search-row top-row">
                 <div class="search-item">
                     <label for="memberTypeSelect">회원구분</label>
-                    <form:select path="userRoleId" id="memberTypeSelect" class="select-field" multiple="multiple">
+                    <form:select path="userRoleId" id="memberTypeSelect" class="select-field">
+                        <form:option value="">--선택--</form:option>
                         <form:option value="USER" label="일반회원"/>
                         <form:option value="TENANCY" label="임차인"/>
                         <form:option value="BROKER" label="중개인"/>
@@ -80,10 +81,13 @@
             <tbody>
                 <c:if test="${not empty memberList}">
                   <c:forEach items="${memberList}" var="member">
-                    <tr data-mbr-cd="${member.mbrCd}"> <td>
+                    <tr data-mbr-cd="${member.mbrCd}"> 
+                      <td>
+                      <c:if test="${not empty member.memRoleList}">
                       	<c:forEach items="${member.memRoleList}" var="role" varStatus="status">
                               ${role.userRoleId}<c:if test="${!status.last}">, </c:if>
                         </c:forEach>
+                      </c:if>
 					  </td>
                       <td>${member.mbrId}</td>
                       <td>${member.mbrFrstRegDt}</td>

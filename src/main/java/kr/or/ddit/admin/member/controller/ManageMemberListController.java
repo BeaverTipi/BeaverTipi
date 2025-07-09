@@ -1,9 +1,9 @@
-package kr.or.ddit.admin.member.controller; // 패키지명 확인
+package kr.or.ddit.admin.member.controller;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize; // 권한 관리를 위해 추가
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.or.ddit.admin.member.service.ManageMemberService;
 import kr.or.ddit.util.page.PaginationInfo;
-import kr.or.ddit.util.page.SimpleSearch;          // SimpleSearch 임포트 (통합 검색이 필요하면 사용)
-import kr.or.ddit.util.renderer.DefaultPaginationRenderer; // 페이징 HTML 렌더러 임포트 추가
+// import kr.or.ddit.util.page.SimpleSearch; // 사용하지 않으면 제거해도 됩니다.
+import kr.or.ddit.util.renderer.DefaultPaginationRenderer;
 import kr.or.ddit.vo.MemberVO;
-import kr.or.ddit.vo.MemberSearchVO;               // MemberSearchVO 임포트 (상세 검색을 위해 사용)
+import kr.or.ddit.vo.MemberSearchVO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -42,45 +42,37 @@ public class ManageMemberListController {
      * @return 뷰 경로
      */
     @GetMapping("/member/list")
-    @PreAuthorize("hasRole('ADMIN')") // 관리자만 접근 가능하도록 설정
+    @PreAuthorize("hasRole('ADMIN')")
     public String listHandler(
             Model model,
-            @RequestParam(required = false, defaultValue = "1") int page, // 페이지 번호 파라미터
-            @ModelAttribute("search") MemberSearchVO search // 상세 검색 조건 파라미터
+            @RequestParam(required = false, defaultValue = "1") int page,
+            @ModelAttribute("search") MemberSearchVO search
     ) {
         log.info("회원 목록 조회 요청. 현재 페이지: {}, 검색 조건: {}", page, search);
 
-        // 1. PaginationInfo 객체 생성 및 초기화
-        // ⭐ 이 부분의 제네릭 타입을 MemberSearchVO로 변경합니다.
         PaginationInfo<MemberSearchVO> paging = new PaginationInfo<>();
         paging.setCurrentPageNo(page);
-
-        // MemberSearchVO를 detailSearch 필드에 설정
         paging.setDetailSearch(search);
 
-        // MemberSearchVO의 userRoleId 리스트가 비어있지 않으면 count 설정 (XML 조건에서 필요)
-        if (search.getUserRoleId() != null && !search.getUserRoleId().isEmpty()) {
-            search.setUserRoleCount(search.getUserRoleId().size());
-        } else {
-            search.setUserRoleCount(0); // 선택된 역할이 없으면 0으로 설정
-        }
+        // MemberSearchVO의 userRoleId가 이제 String이므로 userRoleCount 설정 로직은 제거됩니다.
+        // Mybatis Mapper에서 userRoleId가 null이거나 빈 문자열이 아닌 경우에만 검색 조건에 포함시키면 됩니다.
+        // search.setUserRoleCount(0); 등의 로직도 필요 없습니다.
+        // MemberSearchVO에서 userRoleCount 필드 자체를 제거하는 것을 권장합니다.
 
         // 2. 전체 회원 수 조회
-        int totalRecord = service.getTotalRecord(paging); // 서비스의 getTotalRecord 호출
-        paging.setTotalRecordCount(totalRecord);       // 전체 레코드 수를 설정하면 페이징 관련 모든 계산 완료
+        int totalRecord = service.getTotalRecord(paging);
+        paging.setTotalRecordCount(totalRecord);
 
         // 3. 현재 페이지에 해당하는 회원 목록 조회
-        List<MemberVO> memberList = service.getMemberList(paging); // 서비스의 getMemberList 호출
+        List<MemberVO> memberList = service.getMemberList(paging);
 
         // 4. 페이징 HTML 생성
-        // renderPagination 메서드의 두 번째 인자는 JavaScript에서 페이지 이동을 처리할 함수 이름입니다.
         String pagingHTML = new DefaultPaginationRenderer().renderPagination(paging, "fnPaging");
 
         // 5. 모델에 데이터 바인딩
         model.addAttribute("memberList", memberList);
         model.addAttribute("pagingHTML", pagingHTML);
-        model.addAttribute("pagingInfo", paging); // 페이징 정보 객체도 함께 전달 (JS에서 활용 가능)
-        // @ModelAttribute("search")로 이미 MemberSearchVO가 model에 추가되었음
+        model.addAttribute("pagingInfo", paging);
 
         log.info("총 회원 수: {}", totalRecord);
 
@@ -93,8 +85,8 @@ public class ManageMemberListController {
      * @return 성공/실패 메시지
      */
     @PostMapping("/member/updateStatus")
-    @PreAuthorize("hasRole('ADMIN')") // 관리자만 접근 가능하도록 설정
-    @ResponseBody // 이 메서드의 반환 값이 HTTP 응답 본문에 직접 쓰여질 것임을 나타냅니다.
+    @PreAuthorize("hasRole('ADMIN')")
+    @ResponseBody
     public String updateMemberStatus(@RequestBody List<MemberVO> membersToUpdate) {
         log.info("회원 상태 업데이트 요청 수신. 업데이트 대상 회원 수: {}", membersToUpdate.size());
         try {

@@ -30,11 +30,11 @@ document.addEventListener('DOMContentLoaded', function() {
             mbrFrstRegDtTo.value = '';
             memberEmailInput.value = '';
 
-            // memberTypeSelect (다중 선택) 옵션 초기화
-            // jQuery를 사용하고 있다면 $('#memberTypeSelect').val(''); 또는 .val(null);
-            for (let i = 0; i < memberTypeSelect.options.length; i++) {
-                memberTypeSelect.options[i].selected = false;
-            }
+            // ⭐ memberTypeSelect (단일 선택) 옵션 초기화 ⭐
+            // 단일 선택 드롭다운은 value를 '' (첫 번째 "--선택--" 옵션의 값)으로 설정하면 됩니다.
+            // jQuery를 사용하고 있다면 $('#memberTypeSelect').val('');
+            memberTypeSelect.value = ''; // 또는 기본값이 있다면 그 값으로 설정 (예: 'USER')
+
             // memberStatusSelect (단일 선택) 초기화 (첫 번째 빈 옵션 선택)
             memberStatusSelect.value = '';
 
@@ -52,9 +52,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 	// 검색 폼 자체에 submit 이벤트 리스너를 추가하여 페이지 번호를 초기화합니다.
+    // 주의: 이 로직은 "검색" 버튼을 눌렀을 때만 페이지 번호를 1로 초기화합니다.
+    // 리셋 버튼은 위에서 따로 처리하고 있으므로, 겹치지 않도록 주의합니다.
+    // 현재 `resetButton` 클릭 시에도 `searchForm.submit()`을 호출하고 있으므로,
+    // 이 `searchForm`의 `submit` 이벤트 리스너도 동작할 것입니다.
+    // 따라서 `resetButton` 로직에서 페이지를 1로 설정하는 것이 중복될 수 있습니다.
+    // 어느 한 곳에서만 페이지 초기화를 하거나, 명확히 구분해야 합니다.
+    // 현재는 `resetButton`에서 1로 설정하고, `searchForm` submit시에도 1로 설정하므로
+    // "검색" 버튼을 누르거나 (페이지 이동은 아님), 리셋 버튼을 누르면 무조건 1페이지로 갑니다.
     if (searchForm) {
         searchForm.addEventListener('submit', function(event) {
             // 폼이 제출되기 전에 페이지 번호를 1로 설정
+            // (이미 resetButton에서 1로 설정된 경우 중복이지만, 안전하게 유지)
+            // 만약 '검색' 버튼만 눌렀을 때도 1페이지로 가길 원한다면 이 로직이 필요합니다.
             if (currentPageNoInput) {
                 currentPageNoInput.value = 1;
             }

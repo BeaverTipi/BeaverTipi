@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.validation.constraints.NotBlank;
 import kr.or.ddit.util.validate.DeleteGroup;
 import kr.or.ddit.util.validate.InsertGroup;
@@ -26,8 +28,10 @@ public class BoardVO implements Serializable{
 	private String brdTitlNm;
 	@NotBlank
 	private String brdCont;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDateTime brdPblsDtm;
 	private Integer brdVwCnt;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDateTime brdModDtm;
 	@NotBlank(groups = {InsertGroup.class, DeleteGroup.class})
 	private String brdDelYn;

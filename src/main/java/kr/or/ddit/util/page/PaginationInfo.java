@@ -87,9 +87,7 @@ public class PaginationInfo<T> {
 					}
 					// userRoleId (List<String>) 처리
 					if (memberSearchVO.getUserRoleId() != null && !memberSearchVO.getUserRoleId().isEmpty()) {
-						for (String roleId : memberSearchVO.getUserRoleId()) {
-							sb.append("&detailSearch.userRoleId=").append(URLEncoder.encode(roleId, StandardCharsets.UTF_8.toString()));
-						}
+						sb.append("&detailSearch.userRoleId=").append(URLEncoder.encode(memberSearchVO.getUserRoleId(), StandardCharsets.UTF_8.toString()));
 					}
 				} catch (UnsupportedEncodingException e) {
 					System.err.println("URL Encoding failed for MemberSearchVO: " + e.getMessage());

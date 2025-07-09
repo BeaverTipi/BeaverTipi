@@ -70,10 +70,10 @@ h2 {
     vertical-align: middle;
 }
 
-/* multi-select 태그에 대한 스타일 */
-.search-item select[multiple] {
-    height: 100px;
-    min-width: 150px;
+/* 회원구분 select 박스에 대한 스타일 재정의 (단일 선택용) */
+#memberTypeSelect {
+    height: auto !important; /* 높이를 콘텐츠에 맞게 자동 조절하도록 강제 */
+    min-height: unset !important; /* 최소 높이 설정 해제 */
 }
 
 .date-range-group {

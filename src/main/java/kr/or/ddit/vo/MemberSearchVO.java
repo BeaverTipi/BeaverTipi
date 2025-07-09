@@ -17,8 +17,7 @@ public class MemberSearchVO implements Serializable {
 
     private String mbrCd; // 특정 회원 코드로 검색하는 경우를 대비하여 유지
 
-    private List<String> userRoleId; // 여러 역할을 받을 수 있도록 List<String>
-    private int userRoleCount; // 선택된 역할 ID의 개수
+    private String userRoleId; // 단일 선택으로 변경했음
 
     private String mbrId; // 회원 아이디 검색
     @DateTimeFormat(pattern = "yyyy-MM-dd")

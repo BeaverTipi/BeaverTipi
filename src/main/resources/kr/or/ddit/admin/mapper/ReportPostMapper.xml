@@ -32,12 +32,12 @@
                 AND R.RPT_STATUS_CODE = #{detailSearch.searchRptStatusCode}
             </if>
             <if test="detailSearch.brdPblsDtmFrom != null">
-                AND TRUNC(B.BRD_PBLS_DTM) >= #{detailSearch.brdPblsDtmFrom, jdbcType=TIMESTAMP}
+                AND B.BRD_PBLS_DTM <![CDATA[ >= ]]> #{detailSearch.brdPblsDtmFrom, jdbcType=TIMESTAMP}
             </if>
             <if test="detailSearch.brdPblsDtmTo != null">
-                AND TRUNC(B.BRD_PBLS_DTM) &lt;= #{detailSearch.brdPblsDtmTo, jdbcType=TIMESTAMP}
+                AND B.BRD_PBLS_DTM <![CDATA[ < ]]> #{detailSearch.brdPblsDtmTo.plusDays(1), jdbcType=TIMESTAMP}
             </if>
-        </if>
+            </if>
         <if test="simpleSearch != null">
              <if test="simpleSearch.searchWord != null and simpleSearch.searchWord != ''">
                  AND (
@@ -72,7 +72,8 @@
                 1=1
                 AND R.RPT_DEL_YN = 'N'
                 AND B.BRD_DEL_YN = 'N'
-                AND R.RPT_CODE = 'MEMB' <include refid="searchConditions" />
+                AND R.RPT_CODE = 'MEMB'
+            <include refid="searchConditions" />
         ) A
         WHERE RNUM BETWEEN #{firstRecordIndex} AND #{lastRecordIndex}
     </select>
@@ -88,7 +89,8 @@
             1=1
             AND R.RPT_DEL_YN = 'N'
             AND B.BRD_DEL_YN = 'N'
-            AND R.RPT_CODE = 'MEMB' <include refid="searchConditions" />
+            AND R.RPT_CODE = 'MEMB'
+        <include refid="searchConditions" />
     </select>
 
     <update id="updateReportStatus" parameterType="kr.or.ddit.vo.BoardVO">
