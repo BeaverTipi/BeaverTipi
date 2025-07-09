@@ -8,4 +8,7 @@ import kr.or.ddit.vo.ListingVO;
 public interface MainKakaoMapService {
 	public List<ListingVO> selectNotLatLngList();
 	public int updateLatLng(ListingVO vo);
+	public List<ListingVO> selectLatLngMarkList();
+	
+	public List<ListingVO> selectCategoryByListingList();
 }

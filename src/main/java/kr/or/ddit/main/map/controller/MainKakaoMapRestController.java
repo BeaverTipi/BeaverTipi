@@ -1,0 +1,46 @@
+package kr.or.ddit.main.map.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import kr.or.ddit.main.map.service.MainKakaoGeocodeing;
+import kr.or.ddit.main.map.service.MainKakaoMapService;
+import kr.or.ddit.vo.ListingVO;
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/map/api")
+public class MainKakaoMapRestController {
+	
+	private final MainKakaoGeocodeing geocodeing;
+	
+	private final MainKakaoMapService service;
+	
+	@GetMapping("/mark")
+	public ResponseEntity<List<ListingVO>> getAllMarkerData() {
+		List<ListingVO> result = service.selectLatLngMarkList();
+		
+		if (result == null || result.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		return ResponseEntity.ok(result);
+	}
+	
+	@PostMapping("/geocode")
+	public ResponseEntity<String> runGeocoding() {
+		geocodeing.getCoordinatesFromDB();
+		return ResponseEntity.ok("지오코딩 완료");
+	}
+	
+	
+}

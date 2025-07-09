@@ -13,4 +13,7 @@ public interface KakaoMapDataMapper {
 //	public ListingVO selectHomeDataById(String lstgId);
 	public List<ListingVO> selectNotLatLngList();
 	public int updateLatLng(ListingVO vo);
+	public List<ListingVO> selectLatLngMarkList();
+	
+	public List<ListingVO> selectCategoryByListingList();
 }

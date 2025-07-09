@@ -25,6 +25,17 @@ public class MainKakaoMapServiceImpl implements MainKakaoMapService {
 		return kakaoMapDataMapper.updateLatLng(vo);
 	}
 
+	@Override
+	public List<ListingVO> selectLatLngMarkList() {
+		return kakaoMapDataMapper.selectLatLngMarkList();
+	}
+	
+	@Override
+	public List<ListingVO> selectCategoryByListingList() {
+		return kakaoMapDataMapper.selectCategoryByListingList();
+	}
+
+
 
 
 }

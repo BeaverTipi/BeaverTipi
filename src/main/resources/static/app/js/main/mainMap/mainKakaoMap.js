@@ -9,7 +9,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
 	kakao.maps.load(() => {
-
+		
 		let currCategory = '';
 
 		let map = new kakao.maps.Map(document.getElementById("map"), {
@@ -29,72 +29,67 @@ document.addEventListener("DOMContentLoaded", () => {
 		map.addControl(new kakao.maps.MapTypeControl(), kakao.maps.ControlPosition.TOPRIGHT);
 		map.addControl(new kakao.maps.ZoomControl(), kakao.maps.ControlPosition.RIGHT);
 
-		// 테스트할 주소 (직접 입력)
-		const testAddress = "서울특별시 종로구 세종대로 209";  // 예: 정부서울청사
+		fetch("/main/map/search")
+			.then(res => {
+				if (!res.ok) throw new Error("지오코딩 요청 실패");
+				return res.json();
+			})
+			.then(data => {
+				console.log("✅ DB 주소 기반 마커 데이터:", data);
+				data.forEach(({ lat, lng, address }) => {
+					const latLng = new kakao.maps.LatLng(lat, lng);
+					const marker = new kakao.maps.Marker({
+						map: map,
+						position: latLng,
+					});
 
-		geocoder.addressSearch(testAddress, function(result, status) {
-			if (status === kakao.maps.services.Status.OK && result.length > 0) {
-				console.log("✅ 주소 변환 성공:", result[0]);
+					const infowindow = new kakao.maps.InfoWindow({
+						content: `<div style="padding:5px; font-size:12px;">${address}</div>`,
+					});
 
-				const latLng = new kakao.maps.LatLng(result[0].y, result[0].x);
+					kakao.maps.event.addListener(marker, 'click', () => {
+						infowindow.open(map, marker);
+					});
 
-				const marker = new kakao.maps.Marker({
-					position: latLng,
-					map: map,
+					dbMarkers.push(marker);
 				});
+			})
+			.catch(err => console.error("❌ 지오코딩 데이터 로드 실패:", err));
 
-				const infowindow = new kakao.maps.InfoWindow({
-					content: `
-						<div style="padding:8px; font-size:13px;">
-							<strong>건물 주소</strong><br /> ${testAddress}
-						</div>
-					`,
+
+		// 카테고리 장소 검색
+		const ps = new kakao.maps.services.Places(map);
+
+		kakao.maps.event.addListener(map, 'idle', () => {
+			if (currCategory) searchCategoryPlaces();
+		});
+
+		function searchCategoryPlaces() {
+			placeOverlay.setMap(null);
+			clearPlaceMarkers();
+			ps.categorySearch(currCategory, categorySearchCallback, { useMapBounds: true });
+		}
+
+		function categorySearchCallback(data, status) {
+			if (status !== kakao.maps.services.Status.OK) return;
+
+			data.forEach(place => {
+				const position = new kakao.maps.LatLng(place.y, place.x);
+				const marker = new kakao.maps.Marker({
+					position,
+					map,
 				});
 
 				kakao.maps.event.addListener(marker, 'click', () => {
-					infowindow.open(map, marker);
+					displayPlaceOverlay(place);
 				});
 
-				map.setCenter(latLng); // 중심 이동
-			} else {
-				console.warn("❌ 주소 변환 실패:", testAddress);
-			}
-		});
+				placeMarkers.push(marker);
+			});
+		}
 
-
-// 카테고리 장소 검색
-const ps = new kakao.maps.services.Places(map);
-
-kakao.maps.event.addListener(map, 'idle', () => {
-	if (currCategory) searchCategoryPlaces();
-});
-
-function searchCategoryPlaces() {
-	placeOverlay.setMap(null);
-	clearPlaceMarkers();
-	ps.categorySearch(currCategory, categorySearchCallback, { useMapBounds: true });
-}
-
-function categorySearchCallback(data, status) {
-	if (status !== kakao.maps.services.Status.OK) return;
-
-	data.forEach(place => {
-		const position = new kakao.maps.LatLng(place.y, place.x);
-		const marker = new kakao.maps.Marker({
-			position,
-			map,
-		});
-
-		kakao.maps.event.addListener(marker, 'click', () => {
-			displayPlaceOverlay(place);
-		});
-
-		placeMarkers.push(marker);
-	});
-}
-
-function displayPlaceOverlay(place) {
-	let content = `
+		function displayPlaceOverlay(place) {
+			let content = `
         <div class="placeinfo">
           <a class="title" href="${place.place_url}" target="_blank">${place.place_name}</a>
           <span>${place.road_address_name || place.address_name}</span>
@@ -102,35 +97,35 @@ function displayPlaceOverlay(place) {
         </div>
         <div class="after"></div>`;
 
-	contentNode.innerHTML = content;
-	placeOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
-	placeOverlay.setMap(map);
-}
-
-function clearPlaceMarkers() {
-	placeMarkers.forEach(marker => marker.setMap(null));
-	placeMarkers = [];
-}
-
-// 카테고리 버튼 이벤트
-document.querySelectorAll('#category > li').forEach(el => {
-	el.addEventListener('click', function() {
-		const id = this.id;
-		const selected = this.classList.contains('on');
-
-		document.querySelectorAll('#category > li').forEach(li => li.classList.remove('on'));
-		placeOverlay.setMap(null);
-		clearPlaceMarkers();
-
-		if (selected) {
-			currCategory = '';
-		} else {
-			this.classList.add('on');
-			currCategory = id;
-			searchCategoryPlaces();
+			contentNode.innerHTML = content;
+			placeOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
+			placeOverlay.setMap(map);
 		}
-	});
-});
+
+		function clearPlaceMarkers() {
+			placeMarkers.forEach(marker => marker.setMap(null));
+			placeMarkers = [];
+		}
+
+		// 카테고리 버튼 이벤트
+		document.querySelectorAll('#category > li').forEach(el => {
+			el.addEventListener('click', function() {
+				const id = this.id;
+				const selected = this.classList.contains('on');
+
+				document.querySelectorAll('#category > li').forEach(li => li.classList.remove('on'));
+				placeOverlay.setMap(null);
+				clearPlaceMarkers();
+
+				if (selected) {
+					currCategory = '';
+				} else {
+					this.classList.add('on');
+					currCategory = id;
+					searchCategoryPlaces();
+				}
+			});
+		});
 
 	});
 

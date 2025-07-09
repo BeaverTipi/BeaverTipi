@@ -20,25 +20,43 @@
     	LSTG_ID = #{lstgId}
 </update>
 
-<select id="selectBdAddr" resultType="kr.or.ddit.vo.BuildingVO">
-	SELECT 
-		BLDG_ID,
-		BLDG_ZIP_NO,
-		BLDG_ADDR,
-		BLDG_DTL_ADDR
-	FROM
-		BUILDING
+<select id="selectLatLngMarkList" resultType="kr.or.ddit.vo.ListingVO">
+ 	SELECT
+ 		LSTG_ADD
+ 		, LSTG_LAT
+ 		, LSTG_LNG
+ 	FROM 
+ 		LISTING
 </select>
-<select id="selectHomeDataById" resultType="kr.or.ddit.vo.BuildingVO">
- 	SELECT 
-		BD.BLDG_ZIP_NO,
-		BD.BLDG_ADDR
-	FROM
-		BUILDING BD
-		JOIN TENANCY TN ON TN.RENTAL_PTY_ID = BD.RENTAL_PTY_ID
-		JOIN MEMBER MB ON MB.MBR_CD = TN.MBR_CD
-		JOIN LISTING LI ON MB.MBR_CD = LI.MBR_CD
-	WHERE
-		LI.LSTG_ID = #{lstgId}
+
+
+<select id="selectCategoryByListingList" resultType="kr.or.ddit.vo.ListingVO">
+	select 
+		lstg_id
+		, mbr_cd
+		, lstg_type_code2
+		, lstg_add, lstg_add2
+		, lstg_ex_area
+		, lstg_gr_area
+		, lstg_room_cnt
+		, lstg_room_num
+		, lstg_dst
+		, lstg_type_sale
+		, lstg_lease
+		, lstg_lease_m
+		, lstg_lease_amt
+		, lstg_floor
+		, lstg_park_yn
+		, lstg_lat
+		, lstg_lng
+		, lstg_del
+		, lstg_reg_date
+		, lstg_prod_stat
+		, lstg_nm
+		, lstg_type_code1
+		, rental_pty_id
+	from listing 
 </select>
+
+
 </mapper>
