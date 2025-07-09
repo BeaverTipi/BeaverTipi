@@ -8,11 +8,8 @@ import kr.or.ddit.vo.ListingVO;
 
 @Mapper
 public interface KakaoMapDataMapper {
-//	public List<BuildingVO> selectBdAddr();
-//	public ListingVO selectHomeDataById(String lstgId);
 	public List<ListingVO> selectNotLatLngList();
 	public int updateLatLng(ListingVO vo);
-	public List<ListingVO> selectLatLngMarkList();
-	
+	public List<ListingVO> selectLatLngMarkList(double swLat, double swLng, double neLat, double neLng, Integer category);
 	public List<ListingVO> selectCategoryByListingList();
 }

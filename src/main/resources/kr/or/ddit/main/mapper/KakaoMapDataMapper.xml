@@ -3,7 +3,7 @@
 <mapper namespace="kr.or.ddit.main.mapper.KakaoMapDataMapper">
 <select id="selectNotLatLngList" resultType="kr.or.ddit.vo.ListingVO">
  	SELECT
- 		LSTG_ID
+ 		LSTG_ID,
  		LSTG_ADD
  	FROM
  		LISTING
@@ -22,11 +22,23 @@
 
 <select id="selectLatLngMarkList" resultType="kr.or.ddit.vo.ListingVO">
  	SELECT
- 		LSTG_ADD
- 		, LSTG_LAT
- 		, LSTG_LNG
+ 		LSTG_ID,
+ 		LSTG_ADD,
+ 		LSTG_LAT,
+ 		LSTG_LNG,
+ 		LSTG_NM,
+ 		LSTG_EX_AREA,
+ 		LSTG_LEASE,
+ 		LSTG_LEASE_M,
+ 		LSTG_TYPE_CODE2
  	FROM 
  		LISTING
+ 	WHERE
+ 		LSTG_LAT BETWEEN #{swLat} AND #{neLat}
+ 		AND LSTG_LNG BETWEEN #{swLng} AND #{neLng}
+	 	<if test="category != null">
+	  		AND lstg_type_code2 = #{category}
+		</if>
 </select>
 
 
@@ -56,6 +68,7 @@
 		, lstg_type_code1
 		, rental_pty_id
 	from listing 
+	where lstg_type_code1 = #{lstgTypeCode1}
 </select>
 
 

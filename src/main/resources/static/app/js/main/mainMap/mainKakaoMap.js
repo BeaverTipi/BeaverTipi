@@ -9,124 +9,155 @@
 document.addEventListener("DOMContentLoaded", () => {
 
 	kakao.maps.load(() => {
-		
-		let currCategory = '';
 
-		let map = new kakao.maps.Map(document.getElementById("map"), {
-			center: new kakao.maps.LatLng(37.566826, 126.9786567),
-			level: 7,
-		});
+		// 지도 표시할 div 선택
+		const mapContainer = document.getElementById('map');
+		// 지도 옵션 설정
+		const mapOption = {
+			center: new kakao.maps.LatLng(36.324994522, 127.408980639),
+			level: 3
+		}
 
-		const geocoder = new kakao.maps.services.Geocoder();
-		let dbMarkers = [];
-		let placeMarkers = []
-		let placeOverlay = new kakao.maps.CustomOverlay({ zIndex: 1 });
-		let contentNode = document.createElement('div');
-		contentNode.className = 'placeinfo_wrap';
-		placeOverlay.setContent(contentNode);
+		// 지도 객체 생성
+		const map = new kakao.maps.Map(mapContainer, mapOption);
 
-		// 지도 컨트롤
-		map.addControl(new kakao.maps.MapTypeControl(), kakao.maps.ControlPosition.TOPRIGHT);
-		map.addControl(new kakao.maps.ZoomControl(), kakao.maps.ControlPosition.RIGHT);
+		// 마커 배열 저장(숨김/보이기 용)
+		const markers = [];
 
-		fetch("/main/map/search")
-			.then(res => {
-				if (!res.ok) throw new Error("지오코딩 요청 실패");
-				return res.json();
-			})
-			.then(data => {
-				console.log("✅ DB 주소 기반 마커 데이터:", data);
-				data.forEach(({ lat, lng, address }) => {
-					const latLng = new kakao.maps.LatLng(lat, lng);
+		// 현재 열린 오버레이 저장용
+		let currentOverlay = null;
+
+		// 카테고리
+		let currentCategory = null;
+
+		// 지도 컨트롤 추가
+		const mapTypeControl = new kakao.maps.MapTypeControl();
+		map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+
+		const zoomControl = new kakao.maps.ZoomControl();
+		map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+
+		// renderMarkers 함수 정의
+		function renderMarkers(data) {
+			// 기존 오버레이 제거
+			if (currentOverlay) {
+				currentOverlay.setMap(null);
+				currentOverlay = null;
+			}
+			// 기존 마커 제거
+			markers.forEach(m => m.setMap(null));
+			markers.length = 0;
+
+			data.forEach((item, index) => {
+				const lat = parseFloat(item.lstgLat);
+				const lng = parseFloat(item.lstgLng);
+
+				if (!isNaN(lat) && !isNaN(lng) &&
+					lat >= -90 && lat <= 90 &&
+					lng >= -180 && lng <= 180
+				) {
+
+					const position = new kakao.maps.LatLng(lat, lng);
 					const marker = new kakao.maps.Marker({
 						map: map,
-						position: latLng,
+						position: position,
+						title: item.lstgNm || item.bldgNm
+					});
+					markers.push(marker);
+
+					const content = document.createElement('div');
+					content.className = 'wrap';
+					content.innerHTML = `
+					<div class="info">
+						<div class="title">
+							${item.lstgNm || item.bldgNm}
+							<div class="close" title="닫기" style="cursor:pointer;"></div>
+						</div>
+						<div class="body">
+							<div class="desc">
+								<div>${item.lstgAdd || item.bldgAddr}</div>
+								<div>면적: ${item.lstgExArea || '-'} ㎡</div>
+								<div>보증금: ${item.lstgLease || 0} / 월세: ${item.lstgLeaseM || 0}</div>
+							</div>
+						</div>
+					</div>
+				`;
+
+					const overlay = new kakao.maps.CustomOverlay({
+						content: content,
+						position: position,
+						yAnchor: 1
 					});
 
-					const infowindow = new kakao.maps.InfoWindow({
-						content: `<div style="padding:5px; font-size:12px;">${address}</div>`,
+					content.querySelector('.close').addEventListener('click', () => {
+						overlay.setMap(null);
+						currentOverlay = null;
 					});
 
 					kakao.maps.event.addListener(marker, 'click', () => {
-						infowindow.open(map, marker);
+						if (currentOverlay) currentOverlay.setMap(null);
+						overlay.setMap(map);
+						currentOverlay = overlay;
 					});
-
-					dbMarkers.push(marker);
-				});
-			})
-			.catch(err => console.error("❌ 지오코딩 데이터 로드 실패:", err));
-
-
-		// 카테고리 장소 검색
-		const ps = new kakao.maps.services.Places(map);
-
-		kakao.maps.event.addListener(map, 'idle', () => {
-			if (currCategory) searchCategoryPlaces();
-		});
-
-		function searchCategoryPlaces() {
-			placeOverlay.setMap(null);
-			clearPlaceMarkers();
-			ps.categorySearch(currCategory, categorySearchCallback, { useMapBounds: true });
-		}
-
-		function categorySearchCallback(data, status) {
-			if (status !== kakao.maps.services.Status.OK) return;
-
-			data.forEach(place => {
-				const position = new kakao.maps.LatLng(place.y, place.x);
-				const marker = new kakao.maps.Marker({
-					position,
-					map,
-				});
-
-				kakao.maps.event.addListener(marker, 'click', () => {
-					displayPlaceOverlay(place);
-				});
-
-				placeMarkers.push(marker);
-			});
-		}
-
-		function displayPlaceOverlay(place) {
-			let content = `
-        <div class="placeinfo">
-          <a class="title" href="${place.place_url}" target="_blank">${place.place_name}</a>
-          <span>${place.road_address_name || place.address_name}</span>
-          <span class="tel">${place.phone || ''}</span>
-        </div>
-        <div class="after"></div>`;
-
-			contentNode.innerHTML = content;
-			placeOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
-			placeOverlay.setMap(map);
-		}
-
-		function clearPlaceMarkers() {
-			placeMarkers.forEach(marker => marker.setMap(null));
-			placeMarkers = [];
-		}
-
-		// 카테고리 버튼 이벤트
-		document.querySelectorAll('#category > li').forEach(el => {
-			el.addEventListener('click', function() {
-				const id = this.id;
-				const selected = this.classList.contains('on');
-
-				document.querySelectorAll('#category > li').forEach(li => li.classList.remove('on'));
-				placeOverlay.setMap(null);
-				clearPlaceMarkers();
-
-				if (selected) {
-					currCategory = '';
 				} else {
-					this.classList.add('on');
-					currCategory = id;
-					searchCategoryPlaces();
+					console.warn(`잘못된 좌표값 : ID=${item.id}, lat: ${lat}, lng: ${lng}`);
+
 				}
 			});
+		}
+
+		// idle 이벤트는 단 한 번 등록
+		kakao.maps.event.addListener(map, 'idle', () => {
+			const bounds = map.getBounds();
+			const sw = bounds.getSouthWest();
+			const ne = bounds.getNorthEast();
+
+			// URL에 currentCategory가 있을 경우 파라미터로 추가
+			let url = `/map/api/mark?swLat=${sw.getLat()}&swLng=${sw.getLng()}&neLat=${ne.getLat()}&neLng=${ne.getLng()}`;
+			if (currentCategory) {
+				url += `&category=${currentCategory}`;
+			}
+
+			fetch(url)
+				.then(res => res.json())
+				.then(data => renderMarkers(data))
+				.catch(err => console.error("범위 마커 불러오기 실패:", err));
 		});
 
-	});
 
+		document.querySelectorAll('.category-btn').forEach(btn => {
+			btn.addEventListener('click', (e) => {
+				e.preventDefault();
+
+				// 같은 카테고리를 다시 클릭하면 전체 보기로 되돌림
+				if (currentCategory === btn.dataset.category) {
+					currentCategory = null;
+					document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+				} else {
+					currentCategory = btn.dataset.category;
+					document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+					btn.classList.add('active');
+				}
+
+				// 현재 지도 범위 가져오기
+				const bounds = map.getBounds();
+				const sw = bounds.getSouthWest();
+				const ne = bounds.getNorthEast();
+				
+				// category 여부에 따라 URL 분기
+				let url = `/map/api/mark?swLat=${sw.getLat()}&swLng=${sw.getLng()}&neLat=${ne.getLat()}&neLng=${ne.getLng()}`;
+				if (currentCategory) {
+					url += `&category=${currentCategory}`;
+				}
+
+				// 마커 가져오기
+				fetch(url)
+					.then(res => res.json())
+					.then(data => renderMarkers(data))
+					.catch(err => console.error("마커 불러오기 실패:", err));
+			});
+		});
+
+
+	});
 });

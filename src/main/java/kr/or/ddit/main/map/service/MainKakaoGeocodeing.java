@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.main.map.controller.KakaoApiKeyProvider;
@@ -31,6 +32,11 @@ public class MainKakaoGeocodeing {
     private final KakaoApiKeyProvider apiKeyProvider;
 	private final MainKakaoMapService service;
 	
+	@Scheduled(cron = "0 */30 * * * *")
+	public void scheduledGeocodeingJob() {
+		getCoordinatesFromDB();
+	}
+	
 	public List<Map<String, String>> getCoordinatesFromDB() {
 		String restApiKey = apiKeyProvider.getRestApiKey();
 	    List<Map<String, String>> result = new ArrayList<>();
@@ -42,8 +48,13 @@ public class MainKakaoGeocodeing {
 	        for (ListingVO listing : listingList) {
 	            String addr = listing.getLstgAdd();
 	            if (addr == null || addr.isBlank() || !processed.add(addr)) continue;
+	            
+	            if (listing.getLstgLat() != null && listing.getLstgLng() != null) {
+					log.debug("이미 좌표가 있는 매물: {}", addr);
+					continue;
+				}
 
-	            String encoded = URLEncoder.encode(addr, StandardCharsets.UTF_8);
+	            String encoded = URLEncoder.encode("대한민국 " + addr, StandardCharsets.UTF_8);
 	            String apiUrl = "https://dapi.kakao.com/v2/local/search/address.json?query=" + encoded;
 	            
 	            boolean success = false;
@@ -60,13 +71,16 @@ public class MainKakaoGeocodeing {
 	            		int responseCode = conn.getResponseCode();
 	            		
 	            		if (responseCode == 429) {
-	            			log.warn("429 Too Many Requests : 잠시 후 재시도 ({} 회차)", retry + 1);
-	            			Thread.sleep(3000);  // 3초 대기 후 재시도
-	            			continue;
-	            		} else if (responseCode != 200) {
-	            			log.error("지오코딩 실패! - 응답코드: {}", responseCode);
-	            			break;
-	            		}
+							log.warn("429 Too Many Requests - 재시도 {}회차 대기", retry + 1);
+							Thread.sleep(3000);
+							continue;
+						} else if (responseCode == 400 || responseCode == 401 || responseCode == 403 || responseCode == 404) {
+							log.error("지오코딩 실패 - 요청 오류 코드: {}", responseCode);
+							break;
+						} else if (responseCode != 200) {
+							log.error("지오코딩 실패 - 응답코드: {}", responseCode);
+							break;
+						}
 	            		
 	            		try(BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))){
 	            			StringBuilder responseBuilder = new StringBuilder();
@@ -84,21 +98,26 @@ public class MainKakaoGeocodeing {
 	            			}
 	            			
 	            			JSONObject doc = documents.getJSONObject(0);  // 첫 번째 결과
+	            			String lat = doc.optString("y", null);
+	            			String lng = doc.optString("x", null);
 	            			
-	            			if(!doc.has("x") || !doc.has("y")) {
-	            				log.warn("응답에 좌표 정보가 없습니다. : {}",addr);
-	            				continue;
+	            			if (lat == null || lng == null) {
+	            			    log.warn("[지오코딩 실패] {} → 좌표 없음 (lat/lng == null)", addr);
+	            			    continue;
 	            			}
 	            			
-	            			String lat = doc.getString("y");
-	            			String lng = doc.getString("x");
+	            			JSONObject roadAddr = doc.optJSONObject("road_address");
+	            			JSONObject addrInfo = doc.optJSONObject("address");
 	            			
+	            			String fullAddress = roadAddr != null
+	            				    ? roadAddr.optString("address_name", "도로명 주소 없음")
+	            				    : (addrInfo != null ? addrInfo.optString("address_name", "지번 주소 없음") : "주소 없음");
 	            			
 	            			listing.setLstgLat(Double.parseDouble(lat));
 	            			listing.setLstgLng(Double.parseDouble(lng));
-	            			
 	            			service.updateLatLng(listing);
 	            			
+	            			log.info("[지오코딩 성공] {} → {}, {} ({})", addr, lat, lng, fullAddress);
 	            			
 	            			result.add(Map.of(
 	            					"address", addr,
