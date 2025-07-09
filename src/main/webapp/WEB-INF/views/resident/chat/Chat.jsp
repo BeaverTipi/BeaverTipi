@@ -113,34 +113,34 @@
 <body>
   <div class="chat-popup-wrapper">
 
-    <!-- ✅ 상단: 2x2 그리드 구조 -->
+
     <div class="chat-popup-header-grid">
 
-      <!-- 좌상단: 로고 -->
+
       <div class="chat-logo">
         <img src="/volt/assets/img/brand/dark.png" alt="채팅방 로고"/>
       </div>
 
-      <!-- 우상단: 채팅방 개설 버튼 -->
+
       <div class="chat-header-actions">
         <button id="createChatBtn" class="chat-btn">➕ 채팅방 개설</button>
       </div>
 
-      <!-- 좌하단: 건물 선택 드롭다운 (JS로 렌더링) -->
+
       <div class="building-select-area">
         <label for="buildingSelect" class="visually-hidden">건물 선택</label>
         <select id="buildingSelect" name="selectedBldgId">
-          <!-- JS가 option을 동적으로 채움 -->
+
         </select>
       </div>
 
-      <!-- 우하단: 공개 채팅방 보기 버튼 -->
+
       <div class="chat-toggle-section">
         <button id="togglePublicBtn" class="chat-btn">🌐 공개 채팅방 보기</button>
       </div>
     </div>
 
-    <!-- ✅ 채팅방 목록 (JS로 채움) -->
+
     <div class="chat-room-list" id="chatRoomList">
       <div class="chat-empty-message">
         채팅방 목록을 불러오는 중입니다...

@@ -25,5 +25,5 @@ public interface RsdChatMapper {
 	
 	List<UnitResidentVO> selectResidentList(String bldgId); 
 	
-	
+	int insertChatRoomIn(ChatRoomInVO criVO);
 }

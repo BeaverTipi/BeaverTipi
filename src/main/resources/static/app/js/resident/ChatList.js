@@ -5,6 +5,8 @@
  *   수정일      		수정자           수정내용
  *  -----------   	-------------    ---------------------------
  * 2025. 7. 5.     	김재윤				최초 작성
+ * 2025. 7. 8.      김재윤               채팅방 개설 과정 구현
+ * 
  * </pre>
  */
 
@@ -123,6 +125,11 @@ function createChatRoomItem(room) {
       ${room.lastMessage || "최근 메시지가 없습니다."}
     </div>
   `;
+  item.addEventListener("dblclick", () => {
+  const roomId = item.dataset.roomId;
+  const popupUrl = `/resident/chat/room?residentChatRoomId=${roomId}&popup=true`;
+  window.open(popupUrl, "chatRoomPopup", "width=600,height=700,scrollbars=yes");
+});
   return item;
 }
 
@@ -131,5 +138,5 @@ function renderEmptyMessage(message) {
   const chatRoomList = document.querySelector("#chatRoomList");
   chatRoomList.innerHTML = `
     <div class="chat-empty-message">${message}</div>
-  `;
+  `;  
 }

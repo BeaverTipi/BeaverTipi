@@ -11,9 +11,14 @@ public interface RsdChatServcie {
 	
 	public List<ChatRoomInVO> getBuildingChatList(String mbrCd, String bldgId);
 
-	public int createChatRoom(ResidentChatRoomVO rsdChatRoomVO);
+	public void createChatRoom(		
+			ResidentChatRoomVO crVO,
+			ChatRoomInVO criVO,
+			List<ChatRoomInVO> residentList);
 
 	public List<BuildingVO> getResidentBuildingList(String mbrCd);
 
 	public List<UnitResidentVO> getResidentList(String bldgId);
+	
+
 }

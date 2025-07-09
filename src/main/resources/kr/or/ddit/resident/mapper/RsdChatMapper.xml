@@ -14,25 +14,42 @@
 	</resultMap>
 	
 	
-	<insert id="insertChatRoom" parameterType="ResidentChatRoomVO">		
-	  <selectKey keyProperty="RESIDENT_CHAT_ROOM_ID" resultType="string" order="BEFORE">
-	    SELECT LPAD(SEQ_CHAT_ROOM_ID.NEXTVAL, 10, '0') FROM DUAL
-	  </selectKey>
-		INSERT INTO RESIDENT_CHAT_ROOM(
-		RESIDENT_CHAT_ROOM_ID
-		, BLDG_ID
-		, MBR_CD
-		, RESIDENT_CHAT_ROOM_TITLE
-		, RESIDENT_CHAT_ROOM_IS_PUBLIC	<!-- if 문 넣어서 수정해야함 -->
-		) VALUES(
-		#{residentChatRoomId}
-		, #{bldgID}
-		, #{mbrCD}
-		, #{residentChatRoomTitle}
-		, #{residentChatRoomIsPublic}
+	<insert id="insertChatRoom" parameterType="ResidentChatRoomVO">
+		<selectKey keyProperty="residentChatRoomId" resultType="string" order="BEFORE">
+		  SELECT LPAD(SEQ_CHAT_ROOM_ID.NEXTVAL, 10, '0') FROM DUAL
+		</selectKey>
+		INSERT INTO RESIDENT_CHAT_ROOM (
+		  RESIDENT_CHAT_ROOM_ID,
+		  BLDG_ID,
+		  MBR_CD,
+		  RESIDENT_CHAT_ROOM_TITLE
+		  <if test="residentChatRoomIsPublic != null">
+		    , RESIDENT_CHAT_ROOM_IS_PUBLIC
+		  </if>
+		) VALUES (
+		  #{residentChatRoomId},
+		  #{bldgId},
+		  #{mbrCd},
+		  #{residentChatRoomTitle}
+		  <if test="residentChatRoomIsPublic != null">
+		    , #{residentChatRoomIsPublic}
+		  </if>
 		)
-		
 	</insert>
+	
+	<insert id="insertChatRoomIn">
+		INSERT INTO CHAT_ROOM_IN (
+		RESIDENT_CHAT_ROOM_ID,
+		MBR_CD
+		) VALUES (
+		#{residentChatRoomId},
+		#{mbrCd}
+		)
+	</insert>
+
+	
+
+
 
 	<select id="selectBuildingChatList" resultType="ResidentChatRoomVO">
 	SELECT DISTINCT A.RESIDENT_CHAT_ROOM_TITLE, A.RESIDENT_CHAT_ROOM_ID

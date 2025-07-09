@@ -6,17 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import jakarta.servlet.http.HttpSession;
 import kr.or.ddit.resident.chating.service.RsdChatServiceImpl;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.util.validate.InsertGroup;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.ChatRoomInVO;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.ResidentChatRoomVO;
 import kr.or.ddit.vo.UnitResidentVO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,16 +46,35 @@ public class RsdChatController {
 	}
 	
 	@PostMapping("/chat/createRoom")
-	public int createChatRoom() {
-		
-		return 0;
+	public String createChatRoom(
+		@Validated(InsertGroup.class)
+	    @ModelAttribute ResidentChatRoomVO crVO,
+	    @RequestParam("selectedMembers[]") List<String> selectedMbrCds,
+	    @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
+	) {
+	    String creatorMbrCd = principal.getRealUser().getMbrCd();
+	    crVO.setMbrCd(creatorMbrCd);
+
+	    ChatRoomInVO criVO = new ChatRoomInVO();
+	    criVO.setMbrCd(creatorMbrCd);
+
+	    List<ChatRoomInVO> residentList = selectedMbrCds.stream()
+	        .map(mbrCd -> {
+	            ChatRoomInVO vo = new ChatRoomInVO();
+	            vo.setMbrCd(mbrCd);
+	            return vo;
+	        })
+	        .toList();
+
+	    service.createChatRoom(crVO, criVO, residentList);
+
+	    return "redirect:/resident/chat?popup=true";
 	}
 	
 	@GetMapping("/chat/residentList")
 	public String residentList(
 		@RequestParam("bldgId") String bldgId
 		) {
-
 		return "resident/chat/ResidentList";
 	}
 	
@@ -60,6 +84,14 @@ public class RsdChatController {
 		@RequestParam("bldgId") String bldgId			
 		) {
 		return service.getResidentList(bldgId);
+	}
+	@GetMapping("/chat/room")
+	public String chatRoom(
+		@RequestParam("residentChatRoomId") String residentChatRoomId,
+		Model model
+		) {
+		model.addAttribute("residentChatRoomId", residentChatRoomId);
+		return "resident/chat/ChatRoom";
 	}
 	
 	

@@ -1,0 +1,21 @@
+<!-- 
+ * == 개정이력(Modification Information) ==
+ *   
+ *   수정일      			수정자           수정내용
+ *  ============   	============== =======================
+ *  2025. 7. 9.     		김재윤           최초 생성
+ *
+-->
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>채팅방</title>
+</head>
+<body>
+<h1>채팅방</h1>
+</body>
+</html>
