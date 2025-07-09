@@ -112,6 +112,15 @@
 	WHERE A.BLDG_ID = #{bldgId}
 	</select>
 	
-
+    <select id="selectWhoIsSender" resultType="kr.or.ddit.resident.chating.dto.ChatMessageDTO">
+    	SELECT a.unit_room, COALESCE(c.mbr_nnm, c.mbr_nm) AS mbr_nnm
+		FROM unit a
+		INNER JOIN unit_resident b ON (a.unit_id = b.unit_id 
+		                                AND a.bldg_id = b.bldg_id)
+		INNER JOIN member c ON (b.mbr_cd = c.mbr_cd)
+		INNER JOIN resident_chat_room d ON (a.bldg_id = d.bldg_id)
+		WHERE d.resident_chat_room_id = #{residentChatRoomId}
+		  AND c.mbr_cd = #{mbrCd}
+    </select>
 
 </mapper>

@@ -25,4 +25,6 @@ public interface RsdChatServcie {
 	public List<ChatMessageDTO> getMessages(String residentChatRoomId);
 	
 	public void createMessage(ResidentChatMessageVO rcmVO);
+	
+	public ChatMessageDTO getWhoIsSender(String mbrCd, String residentChatRoomId);
 }

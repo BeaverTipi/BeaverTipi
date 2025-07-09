@@ -66,5 +66,11 @@ public class RsdChatServiceImpl implements RsdChatServcie {
 		
 	}
 
+	@Override
+	public ChatMessageDTO getWhoIsSender(String mbrCd, String residentChatRoomId) {
+		// TODO Auto-generated method stub
+		return mapper.selectWhoIsSender(mbrCd, residentChatRoomId);
+	}
+
 
 }

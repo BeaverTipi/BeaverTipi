@@ -96,7 +96,6 @@ public class RsdChatController {
 	    @AuthenticationPrincipal RealUserWrapper<MemberVO> principal	
 	) {
 		String mbrCd = principal.getRealUser().getMbrCd();
-		
 	    List<ChatMessageDTO> messages = service.getMessages(residentChatRoomId);
 	    model.addAttribute("messages", messages);
 	    model.addAttribute("residentChatRoomId", residentChatRoomId);

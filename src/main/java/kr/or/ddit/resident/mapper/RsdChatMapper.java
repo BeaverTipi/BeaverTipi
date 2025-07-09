@@ -32,4 +32,10 @@ public interface RsdChatMapper {
 	List<ChatMessageDTO> selectMessages(String residentChatRoomId);
 	
 	int insertChatMessage(ResidentChatMessageVO rcmVO);
+	
+	ChatMessageDTO selectWhoIsSender(
+			@Param("mbrCd") String mbrCd,
+			@Param("residentChatRoomId") String residentChatRoomId
+			); 	
+	
 }
