@@ -23,7 +23,7 @@ public class NoticeDetailController {
             Model model
     ) {
         // 조회수 증가
-//        noticeService.updateNoticeViewCount(new NoticeVO(noticeNo));
+//        noticeService.viewCount(new NoticeVO(noticeNo));
 
         NoticeVO detail = noticeService.getNoticeById(noticeNo);
         model.addAttribute("notice", detail);

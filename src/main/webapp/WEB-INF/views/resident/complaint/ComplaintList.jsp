@@ -1,0 +1,119 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+<html>
+<head>
+  <title>민원 목록</title>
+  <script>
+    function fnPaging(pageNo){
+      document.getElementById('searchForm').page.value = pageNo;
+      document.getElementById('searchForm').submit();
+    }
+  </script>
+</head>
+<body>
+  <h2>민원 목록</h2>
+
+  <!-- 검색 & 필터 폼 -->
+  <form id="searchForm" action="${pageContext.request.contextPath}/resident/complaint" method="get">
+    <input type="hidden" name="page" value="${pagingInfo.currentPageNo}" />
+	<input type="hidden" name="search.brdCode" value="M0001"/>
+    <!-- 건물 선택 -->
+    <label>건물
+      <select name="bldgIdParam">
+        <c:forEach var="unit" items="${unitList}">
+		  <option value="${unit.bldgId}"
+		    ${unit.bldgId == selectedBldgId ? 'selected' : ''}>
+		    ${unit.building.bldgNm}  
+		  </option>
+		</c:forEach>
+      </select>
+    </label>
+
+    <!-- 공개여부 -->
+    <label>공개여부
+      <select name="search.openYn">
+        <option value="">전체</option>
+        <c:forEach var="code" items="${openYnList}">
+          <option value="${code.code}"
+                  ${code.code == search.openYn ? 'selected' : ''}>
+            ${code.name}
+          </option>
+        </c:forEach>
+      </select>
+    </label>
+
+
+    <!-- 처리상태 -->
+    <label>처리상태:
+      <select name="search.reqStatus">
+        <option value="">전체</option>
+        <c:forEach var="code" items="${reqStatusList}">
+          <option value="${code.code}"
+                  ${code.code == search.reqStatus ? 'selected' : ''}>
+            ${code.name}
+          </option>
+        </c:forEach>
+      </select>
+    </label>
+
+    <!-- 제목/내용 검색 -->
+    <label>검색:
+      <select name="search.searchType">
+        <option value="title"  ${search.searchType=='title'? 'selected':''}>제목</option>
+        <option value="content"${search.searchType=='content'? 'selected':''}>내용</option>
+      </select>
+      <input type="text" name="search.searchWord" value="${search.searchWord}" />
+    </label>
+
+    <button type="submit">검색</button>
+    <a href="${pageContext.request.contextPath}/resident/complaint/form">등록</a>
+  </form>
+
+  <hr/>
+
+  <!-- 민원 목록 테이블 -->
+  <table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+      <tr>
+        <th>작성자</th>
+        <th>제목</th>
+        <th>공개여부</th>
+        <th>처리상태</th>
+        <th>게시일</th>
+      </tr>
+    </thead>
+    <tbody>
+      <c:forEach var="vo" items="${boardList}">
+        <tr>
+          <td>${vo.mbrNnm}</td>
+          <td>
+            <a href="${pageContext.request.contextPath}/resident/complaint/view/${vo.rsdBrdId}">
+              ${vo.rsdBrdTitl}
+            </a>
+          </td>
+          <td>${vo.openYn}</td>
+          <td>${vo.reqStatus}</td>
+          <td>
+            <fmt:formatDate value="${vo.rsdBrdPblsDtm}" pattern="yyyy-MM-dd HH:mm"/>
+          </td>
+        </tr>
+      </c:forEach>
+       <c:if test="${empty boardList}">
+        <tr>
+          <td colspan="5" style="text-align:center;">
+            검색 결과가 없습니다.
+          </td>
+        </tr>
+      </c:if>
+    </tbody>
+  </table>
+
+  <!-- 페이징 -->
+  <div class="pagination">
+    <c:out value="${pagingHtml}" escapeXml="false"/>
+  </div>
+</body>
+</html>

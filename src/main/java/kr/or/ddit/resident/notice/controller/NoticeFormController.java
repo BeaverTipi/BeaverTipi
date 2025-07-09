@@ -58,7 +58,7 @@ public class NoticeFormController {
             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
     ) {
         notice.setMbrCd(principal.getRealUser().getMbrCd());
-        noticeService.insertNotice(notice);
+        noticeService.registerNotice(notice);
         return "redirect:/resident/notice";
     }
 }

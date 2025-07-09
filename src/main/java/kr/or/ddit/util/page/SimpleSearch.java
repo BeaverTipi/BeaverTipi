@@ -20,6 +20,8 @@ import lombok.Data;
  *  2025. 7. 04.		권성운		  private String bldgId 작성
  *  2025. 7. 07.		권성운		  private String brdCode 작성
  *  2025. 7. 08.		권성운		  private String noticeType 작성
+ *  2025. 7. 09.		권성운		  private String openYn 작성
+ *  2025. 7. 09.		권성운		  private String reqStatus 작성
  * </pre>
  */
 @Data
@@ -30,4 +32,7 @@ public class SimpleSearch {
 	private String bldgId;
 	private String brdCode;
 	private String noticeType;
+	
+	private String openYn;
+	private String reqStatus;
 }

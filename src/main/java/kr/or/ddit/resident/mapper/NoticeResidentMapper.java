@@ -35,6 +35,8 @@ public interface NoticeResidentMapper {
 	
     public String selectLastNoticeNo();
     
+    public String getNextNoticeNo();
+    
 //	public List<ResidentBoardVO> selectDeletedNoticeList(PaginationInfo paging);
 
 //	public int selectDeletedTotalCount(PaginationInfo paging);

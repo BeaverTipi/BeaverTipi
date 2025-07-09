@@ -44,8 +44,10 @@ public class NoticeController {
             Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) String bldgIdParam,
-            @ModelAttribute("search") SimpleSearch simpleSearch,
+            SimpleSearch simpleSearch,
             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
+
+    	log.info("🔎 noticeType = {}", simpleSearch.getNoticeType());
 
         // 1) 입주민의 유닛 정보 확인
         MemberVO member = principal.getRealUser();
@@ -95,78 +97,13 @@ public class NoticeController {
         model.addAttribute("pagingHTML", pagingHTML);
         model.addAttribute("pagingInfo", paging);
 
+        log.info("🔎 simpleSearch : noticeType={}, searchType={}, searchWord={}",
+                simpleSearch.getNoticeType(),
+                simpleSearch.getSearchType(),
+                simpleSearch.getSearchWord());
+
+        
         return "resident/notice/Notice";
     }
-    
-//    @GetMapping("/board/trash")
-//    public String readTrash(
-//            Model model,
-//            @RequestParam(value="page", defaultValue="1") int page,
-//            @RequestParam(value="bldgIdParam", required=false) String bldgIdParam,
-//            @ModelAttribute("search") SimpleSearch simpleSearch,
-//            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
-//
-//        // 1) 입주민 정보 & 유닛 조회
-//        MemberVO member = principal.getRealUser();
-//        List<UnitResidentVO> units = unitResidentService.getUnitsByMember(member.getMbrCd());
-//        if(units == null || units.isEmpty()) {
-//            return "redirect:/member/register";
-//        }
-//
-//        // 2) 선택된 건물 결정 (파라미터 우선, 없으면 첫 유닛)
-//        String selectedBldgId = (bldgIdParam != null && !bldgIdParam.isBlank())
-//                                ? bldgIdParam
-//                                : units.get(0).getBldgId();
-//        // 3) 검색 조건에 건물 ID 설정
-//        simpleSearch.setBldgId(selectedBldgId);
-//        simpleSearch.setBrdCode("");
-//
-//        // 4) 페이징 정보 세팅
-//        PaginationInfo<ResidentBoardVO> paging = new PaginationInfo<>();
-//        paging.setCurrentPageNo(page);
-//        paging.setSimpleSearch(simpleSearch);
-//
-//        // 5) 삭제된 게시글 전체 건수 & 목록 조회
-//        int deletedTotal = boardService.getDeletedTotalCount(paging);
-//        paging.setTotalRecordCount(deletedTotal);
-//        List<ResidentBoardVO> deletedList 
-//        = boardService.getDeletedBoardList(paging);
-//
-//
-//        // 6) 페이징 HTML 생성
-//        String pagingHTML = new DefaultPaginationRenderer()
-//                              .renderPagination(paging, "fnPaging");
-//
-//        // 7) 모델 바인딩
-//        model.addAttribute("unitList", units);
-//        model.addAttribute("selectedBldgId", selectedBldgId);
-//        model.addAttribute("boardList", deletedList);
-//        model.addAttribute("pagingHTML", pagingHTML);
-//        model.addAttribute("pagingInfo", paging);
-//
-//        return "resident/Board/BoardTrash";
-//    }
-//
-//    /** 휴지통에서 복구(관리자 전용) */
-//    @PostMapping("/board/restore")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public String restoreBoard(
-//            @RequestParam("rsdBrdId") String rsdBrdId,
-//            @RequestParam("bldgIdParam") String bldgIdParam) {
-//
-//        boardService.restoreBoard(rsdBrdId);
-//        return "redirect:/resident/board/trash?bldgIdParam=" + bldgIdParam;
-//    }
-//
-//    /** 휴지통에서 영구 삭제(관리자 전용) */
-//    @PostMapping("/board/permanent")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public String permanentDelete(
-//            @RequestParam("rsdBrdId") String rsdBrdId,
-//            @RequestParam("bldgIdParam") String bldgIdParam) {
-//
-//        boardService.permanentDeleteBoard(rsdBrdId);
-//        return "redirect:/resident/board/trash?bldgIdParam=" + bldgIdParam;
-//    }
     
 }

@@ -16,9 +16,14 @@ public class NoticeVO extends BoardVO implements Serializable{
 	private LocalDate noticeEndDtm;
 	private String noticeDelYn;
 	
+	private String bldgId;
+	
 	private CommonCodeVO noticeTypeCode;
 	
+	private String noticeTypeGrpCd;
+	
 	private MemberVO member;
+	
 	
 	public String getFormattedBrdPblsDtm() {
 	    if (getBrdPblsDtm() == null) return "";

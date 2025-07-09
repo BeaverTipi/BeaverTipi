@@ -77,6 +77,11 @@
                 <span class="sidebar-text">입주민게시판</span>
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="${pageContext.request.contextPath}/resident/complaint">
+                <span class="sidebar-text">민원</span>
+              </a>
+            </li>
           </ul>
         </div>
       </li>

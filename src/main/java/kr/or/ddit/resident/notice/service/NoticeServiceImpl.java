@@ -64,6 +64,15 @@ public class NoticeServiceImpl implements NoticeService {
 	@Override
 	@Transactional
     public void registerNotice(NoticeVO notice) {
+		String seq = mapper.getNextNoticeNo();
+		notice.setNoticeNo(seq);
+		notice.setBrdNo(seq);
+		
+		notice.setNoticeTypeGrpCd("NOTPE");
+		
+		notice.setBrdCode("N0001");
+		notice.setBrdDelYn("N");
+		notice.setNoticeDelYn("N");
         mapper.insertBoard(notice);
         mapper.insertNotice(notice);
     }
