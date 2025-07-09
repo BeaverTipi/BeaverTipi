@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.main.mapper.KakaoMapDataMapper;
-import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.ListingVO;
 import lombok.RequiredArgsConstructor;
 

@@ -2,18 +2,24 @@ package kr.or.ddit.main.subscribe.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kr.or.ddit.admin.code.service.CommonCodeService;
 import kr.or.ddit.main.subscribe.service.SubscribeSubsriptionService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.util.validate.InsertGroup;
+import kr.or.ddit.util.validate.OAuth2UpdateGroup;
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.MemberVO;
@@ -62,10 +68,62 @@ public class SubscribeSubsriptionController {
 	public String brokerForm() {
 		return "main/subscribe/brokerForm";
 	}
+	@PostMapping("/apply/broker")
+	public String brokerFormProcess(
+			@Validated(InsertGroup.class) @ModelAttribute(BROKER) BrokerVO broker
+			, BindingResult errors
+			, RedirectAttributes redirectAttributes
+			) {
+		String lvn = "redirect:/apply/broker";
+		// 검증 통과
+		if(!errors.hasErrors()) {
+			try {
+				service.createBroker(broker);
+				// 수정 성공 후? 새 mypage로 이동
+				lvn = "redirect:/account/read";
+			}catch (AuthenticationException e) {
+				// 인증 실패? 수정양식으로 redirect, 비번오류 메시지, 기존 입력 데이터
+				redirectAttributes.addFlashAttribute("message", e.getMessage());
+				redirectAttributes.addFlashAttribute(BROKER, broker);
+			}
+		}else {
+			// 검증 실패? 수정양식으로 redirect, 검증 에러 메시지, 기존 입력데이터
+			String errorName = BindingResult.MODEL_KEY_PREFIX + TENANCY;
+			redirectAttributes.addFlashAttribute(BROKER, broker);
+			redirectAttributes.addFlashAttribute(errorName, errors);
+		}
+		return lvn;
+	}
 	
 	@GetMapping("/apply/tenancy")
 	public String tenancyForm() {
 		return "main/subscribe/tenancyForm";
+	}
+	@PostMapping("/apply/tenancy")
+	public String tenancyFormProcess(
+			@Validated(InsertGroup.class) @ModelAttribute(TENANCY) TenancyVO tenancy
+			, BindingResult errors
+			, RedirectAttributes redirectAttributes
+			) {
+		String lvn = "redirect:/apply/tenancy";
+		// 검증 통과
+		if(!errors.hasErrors()) {
+			try {
+				service.createTenancy(tenancy);
+				// 수정 성공 후? 새 mypage로 이동
+				lvn = "redirect:/account/read";
+			}catch (AuthenticationException e) {
+				// 인증 실패? 수정양식으로 redirect, 비번오류 메시지, 기존 입력 데이터
+				redirectAttributes.addFlashAttribute("message", e.getMessage());
+				redirectAttributes.addFlashAttribute(TENANCY, tenancy);
+			}
+		}else {
+			// 검증 실패? 수정양식으로 redirect, 검증 에러 메시지, 기존 입력데이터
+			String errorName = BindingResult.MODEL_KEY_PREFIX + TENANCY;
+			redirectAttributes.addFlashAttribute(TENANCY, tenancy);
+			redirectAttributes.addFlashAttribute(errorName, errors);
+		}
+		return lvn;
 	}
 	
 	@PostMapping("/ajax/payment/ready")

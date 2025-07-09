@@ -1,6 +1,5 @@
 package kr.or.ddit.resident.board.controller;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 

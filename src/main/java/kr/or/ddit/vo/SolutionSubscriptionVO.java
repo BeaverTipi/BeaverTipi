@@ -16,4 +16,5 @@ public class SolutionSubscriptionVO implements Serializable{
 	private Integer solCycle;
 	private String solIsActive;
 	private String solActiveGrpCd;
+	private String subsApprovalYn;
 }

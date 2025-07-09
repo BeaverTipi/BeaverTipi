@@ -5,8 +5,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.main.mapper.SubscribeSubscriptionMapper;
+import kr.or.ddit.vo.BrokerVO;
+import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.SolutionSubscriptionVO;
 import kr.or.ddit.vo.SolutionVO;
+import kr.or.ddit.vo.TenancyVO;
 import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
@@ -26,6 +29,26 @@ public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionServ
 	public SolutionVO readSolution(String solId) {
 		// TODO Auto-generated method stub
 		return mapper.selectSolution(solId);
+	}
+	@Override
+	public List<SolutionVO> readCommonCodeSolutionList(Integer sol) {
+		// TODO Auto-generated method stub
+		return mapper.selectCommonCodeSolutionList(sol);
+	}
+	@Override
+	public void SolutionSubscription(SolutionSubscriptionVO solitionSubVO) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void createBroker(BrokerVO broker) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void createTenancy(TenancyVO tenancy) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

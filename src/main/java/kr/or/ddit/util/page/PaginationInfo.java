@@ -1,15 +1,13 @@
 package kr.or.ddit.util.page;
 
-import lombok.Getter;
-import lombok.Setter; // ⭐ @Setter 어노테이션 포함 ⭐
-
-import kr.or.ddit.vo.BoardVO; // ⭐ BoardVO import 포함 ⭐
-import kr.or.ddit.vo.MemberSearchVO;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime; // ⭐ LocalDateTime import 포함 ⭐
+
+import kr.or.ddit.vo.BoardVO; // ⭐ BoardVO import 포함 ⭐
+import kr.or.ddit.vo.MemberSearchVO;
+import lombok.Getter;
+import lombok.Setter; // ⭐ @Setter 어노테이션 포함 ⭐
 
 @Getter
 @Setter

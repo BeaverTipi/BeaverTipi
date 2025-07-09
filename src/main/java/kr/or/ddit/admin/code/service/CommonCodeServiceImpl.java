@@ -15,5 +15,9 @@ public class CommonCodeServiceImpl implements CommonCodeService {
 	public List<CommonCodeVO> readCommonCodeList(String codeGroup) {
 		return mapper.selectCommonCodeList(codeGroup);
 	}
+	@Override
+	public List<CommonCodeVO> readCommonCodeList(CommonCodeVO code) {
+		return mapper.selectCommonCodeVOList(code);
+	}
 
 }

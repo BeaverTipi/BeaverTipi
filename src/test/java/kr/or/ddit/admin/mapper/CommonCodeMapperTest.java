@@ -1,6 +1,6 @@
 package kr.or.ddit.admin.mapper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 

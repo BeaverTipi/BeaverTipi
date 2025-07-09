@@ -1,9 +1,9 @@
 package kr.or.ddit.admin.report.service;
 
 import java.util.List;
-import kr.or.ddit.vo.BoardVO;
+
 import kr.or.ddit.util.page.PaginationInfo;
-import kr.or.ddit.admin.mapper.ReportPostMapper; 
+import kr.or.ddit.vo.BoardVO; 
 
 public interface ReportPostService {
 

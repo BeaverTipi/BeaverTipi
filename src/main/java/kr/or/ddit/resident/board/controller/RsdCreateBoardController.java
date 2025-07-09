@@ -13,10 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.or.ddit.resident.board.service.ResidentBoardService;
-import kr.or.ddit.resident.boardCartegory.service.BoardCartegoryService;
 import kr.or.ddit.resident.unitResident.service.UnitResidentService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
-import kr.or.ddit.vo.BoardCartegoryVO;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.ResidentBoardVO;
 import kr.or.ddit.vo.UnitResidentVO;

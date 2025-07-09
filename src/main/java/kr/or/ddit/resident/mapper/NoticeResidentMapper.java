@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.vo.NoticeVO;
-import kr.or.ddit.vo.ResidentBoardVO;
 
 @Mapper
 public interface NoticeResidentMapper {

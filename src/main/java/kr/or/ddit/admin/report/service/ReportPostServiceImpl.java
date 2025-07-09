@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.admin.mapper.ReportPostMapper;
-import kr.or.ddit.vo.BoardVO;
 import kr.or.ddit.util.page.PaginationInfo;
+import kr.or.ddit.vo.BoardVO;
 
 @Service
 public class ReportPostServiceImpl implements ReportPostService {

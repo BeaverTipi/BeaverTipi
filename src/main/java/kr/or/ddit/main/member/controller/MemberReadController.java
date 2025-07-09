@@ -1,7 +1,5 @@
 package kr.or.ddit.main.member.controller;
 
-import java.security.Principal;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;

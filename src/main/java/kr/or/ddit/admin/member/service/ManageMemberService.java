@@ -4,7 +4,6 @@ import java.util.List;
 
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.vo.MemberVO;
-import kr.or.ddit.vo.MemberSearchVO;
 
 public interface ManageMemberService {
     /**

@@ -1,7 +1,5 @@
 package kr.or.ddit.resident.chating.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -9,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import kr.or.ddit.resident.mapper.RsdChatMapper;
-import kr.or.ddit.vo.ChatRoomInVO;
 import kr.or.ddit.vo.UnitResidentVO;
 import lombok.extern.slf4j.Slf4j;
 

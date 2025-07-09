@@ -32,7 +32,7 @@
           </div>
           <div class="form-group">
             <label for="rentalPtyBizRegNo">사업자등록번호</label>
-            <form:input path="rentalPtyBizRegNo" cssClass="form-control" id="rentalPtyBizRegNo" readonly/>
+            <form:input path="rentalPtyBizRegNo" cssClass="form-control" id="rentalPtyBizRegNo" readonly />
           </div>
 
           <div class="form-group">
@@ -48,7 +48,7 @@
         </div>
 
         <div class="right-column">
-          <div id="pdfViewer" style="width: 500px; min-height: 650px; border-radius: 8px; border: 1px solid #ccc; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+          <div id="pdfViewer" style="width: 500px; min-height: 650px; border-radius: 8px; border: 1px solid #ccc; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center;" />
             <div id="emptyMessage" class="text-muted small">첨부된 파일이 없습니다</div>
           </div>
         </div>

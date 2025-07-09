@@ -9,7 +9,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import kr.or.ddit.util.security.jwt.CookieBearerTokenResolver;
 import lombok.Data;
 
 @Data

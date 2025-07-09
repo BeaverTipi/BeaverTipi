@@ -1,23 +1,18 @@
 package kr.or.ddit.resident.notice.controller;
 
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.or.ddit.admin.code.service.CommonCodeService;
-import kr.or.ddit.resident.board.service.ResidentBoardService;
 import kr.or.ddit.resident.notice.service.NoticeService;
 import kr.or.ddit.resident.unitResident.service.UnitResidentService;
 import kr.or.ddit.util.page.PaginationInfo;
@@ -27,7 +22,6 @@ import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.NoticeVO;
-import kr.or.ddit.vo.ResidentBoardVO;
 import kr.or.ddit.vo.UnitResidentVO;
 import lombok.extern.slf4j.Slf4j;
 

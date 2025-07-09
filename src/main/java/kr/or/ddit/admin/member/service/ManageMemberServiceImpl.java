@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import kr.or.ddit.admin.mapper.ManageMemberMapper;
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.vo.MemberVO;
-import kr.or.ddit.vo.MemberSearchVO;
 import lombok.RequiredArgsConstructor;
 
 @Service

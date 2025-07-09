@@ -1,6 +1,7 @@
 package kr.or.ddit.admin.mapper;
 
 import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import kr.or.ddit.util.page.PaginationInfo; // PaginationInfo 임포트 추가

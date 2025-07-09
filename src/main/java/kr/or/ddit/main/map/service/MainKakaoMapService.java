@@ -2,7 +2,6 @@ package kr.or.ddit.main.map.service;
 
 import java.util.List;
 
-import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.ListingVO;
 
 public interface MainKakaoMapService {
