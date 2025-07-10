@@ -1,5 +1,7 @@
 package kr.or.ddit.building.managed.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import kr.or.ddit.building.managed.service.BuildingManagedService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.TenancyAccountVO;
 
 @Controller
 @RequestMapping("/building/managed")
@@ -27,15 +30,23 @@ public class ManagedUpdateController {
     public String editForm(@RequestParam("bldgId") String bldgId,
                            Model model,
                            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
+    	
+    	
 
         MemberVO memberVO = principal.getRealUser();
         String rentalPtyId = memberVO.getTenancy().getRentalPtyId();
-
+      
         BuildingVO buildingVO = managedService.selectBuildingById(bldgId);
         buildingVO.setRentalPtyId(rentalPtyId);  // 혹시 몰라 재셋팅
-
-        model.addAttribute("buildingVO", buildingVO);
+    	List<TenancyAccountVO> accList = managedService.selectAccountsByRentalPtyId(rentalPtyId);
+    	buildingVO.setAccList(accList);
+        if (!accList.isEmpty() && buildingVO.getAccNum() == null) {
+            buildingVO.setAccNum(accList.get(0).getAccNum());
+        }
+       
+    	model.addAttribute("buildingVO", buildingVO);
         model.addAttribute("mode", "edit"); // JSP에서 <c:choose>로 등록/수정 버튼 구분
+        
         return "building/managed/managedAdd";
     }
 

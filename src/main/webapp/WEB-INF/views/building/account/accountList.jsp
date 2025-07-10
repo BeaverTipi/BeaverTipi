@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -163,7 +163,7 @@
 	  <div class="modal-content">
 	    <span class="close" onclick="closeModal()">&times;</span>
 	    <h3>수납계좌 등록</h3>
-	    <form id="accountForm" method="post" action="/building/account/add">
+	    <form id="accountForm" method="post" action="${pageContext.request.contextPath }/building/account/add">
 	      <label>계좌번호</label>
 	      <input type="text" name="accNum" required maxlength="20" />
 	
@@ -177,9 +177,8 @@
 			<select name="bldgId" id="buildingSelect" required>
 			  <option value="" disabled selected>건물 선택</option>
 			</select>
-	
-	      <label>임대주체 ID</label>
-	      <input type="text" name="rentalPtyId" required maxlength="10" />
+	      <input type="hidden" name="rentalPtyId" value="${rentalPtyId }" />
+	      
 	
 	      <div class="modal-buttons">
 	        <button type="submit" class="add-button">등록</button>
@@ -190,10 +189,15 @@
 	</div>
 
 <script>
-function openModal() {
-	  document.getElementById("accountModal").style.display = "flex";
-	  loadBuildingList(); // 모달 열릴 때 건물 리스트도 로딩
-	}
+	function openModal() {
+		  document.getElementById("accountModal").style.display = "flex";
+		  loadBuildingList(); // 모달 열릴 때 건물 리스트도 로딩
+		}
+	function closeModal() {
+	    const modal = document.getElementById("accountModal");
+	    modal.style.display = "none";
+	    document.getElementById("accountForm").reset();
+	  }
 
 	function loadBuildingList() {
 	  fetch("/building/account/buildingList")

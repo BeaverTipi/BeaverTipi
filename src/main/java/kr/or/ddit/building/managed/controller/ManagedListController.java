@@ -14,6 +14,7 @@ import kr.or.ddit.building.managed.service.BuildingManagedService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.TenancyAccountVO;
 
 @Controller
 @RequestMapping("/building/managed")
@@ -30,6 +31,12 @@ public class ManagedListController {
         String rentalPtyId = memberVO.getTenancy().getRentalPtyId();
 
         List<BuildingVO> buildingList = managedService.selectBuildingListByRentalPtyId(rentalPtyId);
+        
+        for (BuildingVO building : buildingList) {
+            List<TenancyAccountVO> accList = managedService.selectAccountsByRentalPtyId(building.getRentalPtyId());
+            building.setAccList(accList); // 리스트 바인딩
+        }
+        
         model.addAttribute("buildingList", buildingList);
         return "building/managed/managedList";
     }

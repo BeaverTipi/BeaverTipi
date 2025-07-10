@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import kr.or.ddit.building.mapper.BuildingManagedMapper;
 import kr.or.ddit.vo.BuildingVO;
+import kr.or.ddit.vo.TenancyAccountVO;
 
 @Service
 public class BuildingManagedServiceImpl implements BuildingManagedService {
@@ -38,4 +39,11 @@ public class BuildingManagedServiceImpl implements BuildingManagedService {
 	public int deleteBuilding(String bldgId, String rentalPtyId) {
 	    return buildingManagedMapper.deleteBuilding(bldgId, rentalPtyId);
 	}
+	
+	@Override
+	public List<TenancyAccountVO> selectAccountsByRentalPtyId(String rentalPtyId) {
+	    return buildingManagedMapper.selectAccountsByRentalPtyId(rentalPtyId);
+	}
+	    
+
 }

@@ -1,6 +1,8 @@
 
 package kr.or.ddit.building.managed.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import kr.or.ddit.building.managed.service.BuildingManagedService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.TenancyAccountVO;
 @Controller
 @RequestMapping("/building/managed")
 public class ManagedAddController {
@@ -28,7 +31,13 @@ public class ManagedAddController {
 	        MemberVO memberVO = principal.getRealUser();
 
 	        BuildingVO buildingVO = new BuildingVO();
-	    
+	        
+	        String rentalPtyId = memberVO.getTenancy().getRentalPtyId();
+	        List<TenancyAccountVO> accList = managedService.selectAccountsByRentalPtyId(rentalPtyId);
+	        buildingVO.setAccList(accList);
+	        if (!accList.isEmpty()) {
+	            buildingVO.setAccNum(accList.get(0).getAccNum());
+	        }
 
 	        // Tenancy 정보에서 rentalPtyId 꺼내서 셋팅
 	        if (memberVO != null && memberVO.getTenancy() != null) {
@@ -37,7 +46,7 @@ public class ManagedAddController {
 	        
 	        
 	        model.addAttribute("buildingVO", buildingVO);
-	        return "building/product/rentalOwnerProductAdd";
+	        return "building/managed/managedAdd";
 	  }
 
     // 2. 등록 처리
@@ -45,7 +54,7 @@ public class ManagedAddController {
     public String addUnit(@ModelAttribute("buildingVO") BuildingVO buildingVO) {
         managedService.insertBuilding(buildingVO);
         System.out.println("여기를봐라 멍청이들아" + buildingVO);
-        return "redirect:/building/product/rentalOwnerProductList?bldgId=" + buildingVO.getBldgId();
+        return "redirect:/building/managed/list?bldgId=" + buildingVO.getBldgId();
     }
 	
 }

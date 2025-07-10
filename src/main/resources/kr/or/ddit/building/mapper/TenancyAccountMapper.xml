@@ -22,6 +22,15 @@
         <!-- 필요한 컬럼은 여기에 추가 -->
     </association>
 </resultMap>
+
+
+<!-- Ajax 동작쿼리얌.. 더럽게안되네... -->
+	<select id="selectBuildingListByRentalPtyId" parameterType="string" resultType="BuildingVO">
+	    SELECT BLDG_ID, BLDG_NM
+	    FROM BUILDING
+	    WHERE RENTAL_PTY_ID = #{rentalPtyId}
+	      AND DEL_YN = 'N'
+	</select>
 <!-- 임대인코드를 꺼내야해서 우회하는 쿼리얌.. -->
 	<select id="findRentalPtyIdByMbrCd" parameterType="string" resultType="string">
 	  SELECT RENTAL_PTY_ID

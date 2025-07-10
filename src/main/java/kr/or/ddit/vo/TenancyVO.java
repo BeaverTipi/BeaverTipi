@@ -36,12 +36,6 @@ public class TenancyVO extends MemberVO implements Serializable {
     @Max(value = 999, groups = {TenancyInsertGroup.class, TenancyUpdateGroup.class})
     private Integer rentalPtyRegBldgCnt;
 
-    @NotBlank(message = "계좌번호는 필수입니다.", groups = TenancyInsertGroup.class)
-    @Size(max = 20, groups = {TenancyInsertGroup.class, TenancyUpdateGroup.class})
-    @Pattern(regexp = "^\\d{1,20}$", message = "계좌번호는 숫자만 입력해주세요.",
-             groups = {TenancyInsertGroup.class, TenancyUpdateGroup.class})
-    private String rentalPtyAcctNo;
-
     @NotBlank(message = "사업자등록번호는 필수입니다.", groups = TenancyInsertGroup.class)
     @Size(max = 10, groups = {TenancyInsertGroup.class, TenancyUpdateGroup.class})
     @Pattern(regexp = "^\\d{1,10}$", message = "사업자등록번호는 숫자만 입력해주세요.",
@@ -60,10 +54,6 @@ public class TenancyVO extends MemberVO implements Serializable {
 
     @Size(max = 5, groups = {TenancyInsertGroup.class, TenancyUpdateGroup.class})
     private String lsrTypeGroupCd;
-
-    @NotBlank(message = "은행명은 필수입니다.", groups = TenancyInsertGroup.class)
-    @Size(max = 100, groups = {TenancyInsertGroup.class, TenancyUpdateGroup.class})
-    private String rentalPtyBankNm;
 
     @Pattern(regexp = "^[YN]$", message = "승인 여부는 'Y' 또는 'N'이어야 합니다.",
              groups = {TenancyInsertGroup.class, TenancyUpdateGroup.class})

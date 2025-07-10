@@ -4,6 +4,7 @@ package kr.or.ddit.building.managed.service;
 import java.util.List;
 
 import kr.or.ddit.vo.BuildingVO;
+import kr.or.ddit.vo.TenancyAccountVO;
 
 
 
@@ -25,5 +26,10 @@ public interface BuildingManagedService {
 
     // 건물 세대 삭제
     int deleteBuilding(String bldgId, String rentalPtyId);
+    
+    //계좌정보 연동
+    List<TenancyAccountVO> selectAccountsByRentalPtyId(String rentalPtyId);
+    
+
 }
 

@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import kr.or.ddit.vo.BuildingVO;
+import kr.or.ddit.vo.TenancyAccountVO;
 
 
 @Mapper
@@ -25,6 +26,10 @@ public interface BuildingManagedMapper {
 
     // 건물 세대 삭제
     int deleteBuilding(@Param("bldgId") String bldgId, @Param("rentalPtyId") String rentalPtyId);
+    
+    //계좌연동할거얌 ㅋ
+    
+    List<TenancyAccountVO> selectAccountsByRentalPtyId(String rentalPtyId);
 
 }
 

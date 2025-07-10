@@ -19,4 +19,7 @@ public interface TenancyAccountService {
     List<BuildingVO> retrieveBuildingListByMbrCd(String mbrCd);
 
     String findRentalPtyIdByMbrCd(String mbrCd);
+        
+    List<BuildingVO> retrieveBuildingListByRentalPtyId(String rentalPtyId);
+
 }

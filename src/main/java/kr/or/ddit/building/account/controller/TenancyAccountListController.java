@@ -54,6 +54,9 @@ public class TenancyAccountListController {
         // 2. 연동 건물 리스트 조회
         List<BuildingVO> buildingList = accountService.retrieveBuildingListByMbrCd(mbrCd);
         model.addAttribute("buildingList", buildingList);
+        
+        String rentalPtyId = accountService.findRentalPtyIdByMbrCd(mbrCd);
+        model.addAttribute("rentalPtyId", rentalPtyId);
 
         return "building/account/accountList";
     }

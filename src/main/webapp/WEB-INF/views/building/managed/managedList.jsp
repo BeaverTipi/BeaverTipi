@@ -1,5 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@taglib uri="jakarta.tags.core" prefix="c" %>
+<%@taglib uri="jakarta.tags.functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -78,14 +79,18 @@
                 <tr><td><strong>호실 수</strong></td><td>${building.bldgUnitCnt}</td></tr>
                 <tr><td><strong>연면적</strong></td><td>${building.bldgGrossArea}㎡</td></tr>
                 <tr><td><strong>준공일</strong></td><td>${building.bldgCmpltnDt}</td></tr>
-                <tr><td><strong>임대인 계좌</strong></td>
+                <tr>
+                  <td><strong>임대인 계좌</strong></td>
                   <td>
                     <c:choose>
-                      <c:when test="${not empty building.tenancyInfo}">
-                        ${building.tenancyInfo.rentalPtyBankNm} / ${building.tenancyInfo.rentalPtyAcctNo}
+                      <c:when test="${not empty building.accList}">
+                        <c:forEach var="acc" items="${building.accList}" varStatus="vs">
+                          ${acc.accBank} / ${acc.accNum}
+                          <c:if test="${!vs.last}"><br/></c:if>
+                        </c:forEach>
                       </c:when>
                       <c:otherwise>
-                        정보 없음
+                        등록된 계좌 없음
                       </c:otherwise>
                     </c:choose>
                   </td>

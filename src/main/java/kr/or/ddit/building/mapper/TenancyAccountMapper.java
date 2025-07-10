@@ -21,4 +21,6 @@ public interface TenancyAccountMapper {
     List<BuildingVO> selectBuildingListByMbrCd(String mbrCd);
     //mbrCd로 rentalptyId를 꺼낼거얌
     String findRentalPtyIdByMbrCd(String mbrCd);
+    
+    List<BuildingVO> selectBuildingListByRentalPtyId(String rentalPtyId);
 }

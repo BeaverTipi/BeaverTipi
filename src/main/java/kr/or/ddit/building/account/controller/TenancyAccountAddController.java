@@ -25,6 +25,7 @@ import kr.or.ddit.building.account.service.TenancyAccountService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.TenancyAccountVO;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 
@@ -34,6 +35,7 @@ import kr.or.ddit.vo.TenancyAccountVO;
  *만든이 이학범
  *
  */
+@Slf4j
 @Controller
 @RequestMapping("/building/account")
 public class TenancyAccountAddController {
@@ -47,10 +49,12 @@ public class TenancyAccountAddController {
         @ModelAttribute TenancyAccountVO account,
         @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
     ) {
+    	 
         MemberVO member = principal.getRealUser();
 
         // 로그인한 사용자 정보에서 mbrCd 세팅
         account.setMbrCd(member.getMbrCd());
+        log.info(">>> rentalPtyId를 로그로 찍어볼거여 : {}", account.getRentalPtyId());
 
         // 등록 처리
         accountService.createAccount(account);

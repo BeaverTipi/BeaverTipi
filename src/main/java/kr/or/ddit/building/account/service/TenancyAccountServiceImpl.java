@@ -41,4 +41,9 @@ public class TenancyAccountServiceImpl implements TenancyAccountService {
 	public String findRentalPtyIdByMbrCd(String mbrCd) {
 	    return mapper.findRentalPtyIdByMbrCd(mbrCd);
 	}
+	
+	@Override
+	public List<BuildingVO> retrieveBuildingListByRentalPtyId(String rentalPtyId) {
+	    return mapper.selectBuildingListByRentalPtyId(rentalPtyId);
+	}
 }
