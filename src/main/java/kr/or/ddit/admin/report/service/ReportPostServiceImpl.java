@@ -1,6 +1,8 @@
 package kr.or.ddit.admin.report.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,7 +52,7 @@ public class ReportPostServiceImpl implements ReportPostService {
         // 1. reportId로 신고된 게시글의 상세 정보(BoardVO)를 가져옵니다.
         //    이때 ReportPostMapper.xml에서 BRD_NO (게시글 번호)와 신고 대상 회원의 상태(rptTargetMbrStatus)를 함께 가져오도록 해야 합니다.
         BoardVO reportDetail = reportPostMapper.selectReportDetailByReportId(reportId);
-
+        	log.info("Report Detail fetched: {}", reportDetail);
         if (reportDetail != null && reportDetail.getBrdNo() != null) { // ⭐ 게시글 번호(brdNo)가 있어야 파일을 조회할 수 있습니다. ⭐
             log.debug("Found reportDetail for reportId: {}, brdNo: {}", reportId, reportDetail.getBrdNo());
 
@@ -72,13 +74,22 @@ public class ReportPostServiceImpl implements ReportPostService {
         return reportDetail;
     }
 
-    // ⭐ 새로 구현된 메서드: 신고된 회원의 상태를 변경합니다. ⭐
+    // 신고된 회원의 상태를 변경
     @Override
     public void updateReportedMemberStatus(String mbrCd, String mbrStatus) {
-        // 회원 테이블의 상태를 업데이트하는 매퍼 메서드를 호출합니다.
-        // ReportPostMapper에 updateMemberStatus라는 메서드가 필요합니다.
-        log.info("Attempting to update member status. mbrCd: {}, newStatus: {}", mbrCd, mbrStatus);
-        reportPostMapper.updateMemberStatus(mbrCd, mbrStatus);
-        log.info("Member status updated for mbrCd: {}", mbrCd);
+    	Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("mbrCd", mbrCd);
+        paramMap.put("mbrStatus", mbrStatus);
+        reportPostMapper.updateMemberStatus(paramMap); // Map 객체 전달
+    }
+    
+    // 신고된 매물의 상태(삭제여부)를 변경
+    @Override
+    public void updateListingDeleteStatus(String lstgId, String lstgDel) {
+        log.info("updateListingDeleteStatus 호출. lstgId: {}, lstgDel: {}", lstgId, lstgDel);
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("lstgId", lstgId);
+        paramMap.put("lstgDel", lstgDel);
+        reportPostMapper.updateListingDeleteStatus(paramMap);
     }
 }

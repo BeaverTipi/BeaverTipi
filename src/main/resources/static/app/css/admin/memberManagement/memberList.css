@@ -45,9 +45,9 @@
 
 /* 현재 활성화된 페이지 (bg-primary 클래스 사용) */
 .pagination-container span.bg-primary { /* 활성화된 페이지는 span 태그에 bg-primary 클래스 */
-    background-color: #007bff; /* 주 색상 (bootstrap primary color) */
+    background-color: #0055FF !important; /* 주 색상 (bootstrap primary color) */
     color: white;
-    border: 1px solid #007bff;
+    border: 1px solid #0055FF;
     cursor: default; /* 클릭 불가능하도록 커서 변경 */
 }
 

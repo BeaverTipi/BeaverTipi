@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?> 
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.admin.mapper.ReportPostMapper">
 
@@ -12,18 +12,29 @@
         <result property="brdVwCnt" column="BRD_VW_CNT"/>
         <result property="brdModDtm" column="BRD_MOD_DTM"/>
         <result property="brdDelYn" column="BRD_DEL_YN"/>
-        
+
         <result property="reportId" column="RPT_ID"/>
         <result property="rptCode" column="RPT_CODE"/>
         <result property="rptTargetId" column="RPT_TARGET_ID"/>
         <result property="rptStatusCode" column="RPT_STATUS_CODE"/>
         <result property="rptDelYn" column="RPT_DEL_YN"/>
-        
+
         <result property="rptTargetMbrStatus" column="RPT_TARGET_MBR_STATUS"/>
-    </resultMap>
+        <result property="rptTargetMbrCd" column="RPT_TARGET_MBR_CD"/>
+        
+        <result property="lstgDel" column="LSTG_DEL"/>
+	</resultMap>
 
     <sql id="searchConditions">
         <if test="detailSearch != null">
+            <choose>
+                <when test="detailSearch.searchRptCode != null and detailSearch.searchRptCode != ''">
+                    AND R.RPT_CODE = #{detailSearch.searchRptCode}
+                </when>
+                <otherwise>
+                    AND R.RPT_CODE = 'MEMB'
+                </otherwise>
+            </choose>
             <if test="detailSearch.searchTitle != null and detailSearch.searchTitle != ''">
                 AND B.BRD_TITL_NM LIKE '%' || #{detailSearch.searchTitle} || '%'
             </if>
@@ -39,7 +50,7 @@
             <if test="detailSearch.brdPblsDtmTo != null">
                 AND B.BRD_PBLS_DTM <![CDATA[ < ]]> #{detailSearch.brdPblsDtmTo.plusDays(1), jdbcType=TIMESTAMP}
             </if>
-            </if>
+        </if>
         <if test="simpleSearch != null">
              <if test="simpleSearch.searchWord != null and simpleSearch.searchWord != ''">
                  AND (
@@ -55,17 +66,17 @@
             A.*
         FROM (
             SELECT
-                ROW_NUMBER() OVER (ORDER BY B.BRD_PBLS_DTM DESC) AS RNUM, 
-                B.BRD_NO,
-                B.BRD_TITL_NM,
-                B.BRD_CONT,
-                B.MBR_CD, 
-                B.BRD_PBLS_DTM, 
-                B.BRD_VW_CNT,
-                R.RPT_ID,
-                R.RPT_CODE,
-                R.RPT_TARGET_ID,
-                R.RPT_STATUS_CODE
+                ROW_NUMBER() OVER (ORDER BY B.BRD_PBLS_DTM DESC) AS RNUM,
+                B.BRD_NO
+                ,B.BRD_TITL_NM
+                ,B.BRD_CONT
+                ,B.MBR_CD
+                ,B.BRD_PBLS_DTM
+                ,B.BRD_VW_CNT
+                ,R.RPT_ID
+                ,R.RPT_CODE
+                ,R.RPT_TARGET_ID
+                ,R.RPT_STATUS_CODE
             FROM
                 BOARD B
             JOIN
@@ -74,7 +85,6 @@
                 1=1
                 AND R.RPT_DEL_YN = 'N'
                 AND B.BRD_DEL_YN = 'N'
-                AND R.RPT_CODE = 'MEMB'
             <include refid="searchConditions" />
         ) A
         WHERE RNUM BETWEEN #{firstRecordIndex} AND #{lastRecordIndex}
@@ -91,7 +101,6 @@
             1=1
             AND R.RPT_DEL_YN = 'N'
             AND B.BRD_DEL_YN = 'N'
-            AND R.RPT_CODE = 'MEMB'
         <include refid="searchConditions" />
     </select>
 
@@ -102,17 +111,36 @@
         WHERE
             RPT_ID = #{reportId}
     </update>
-    
+
     <select id="selectReportDetailByReportId" parameterType="string" resultMap="boardReportMap">
         SELECT
-            R.RPT_ID,           B.BRD_NO,           B.BRD_TITL_NM,      B.BRD_CONT,         B.MBR_CD,           B.BRD_PBLS_DTM,     R.RPT_TARGET_ID,    M.MBR_STATUS_CODE AS RPT_TARGET_MBR_STATUS, R.RPT_STATUS_CODE   FROM REPORT R
-        JOIN BOARD B ON R.BRD_NO = B.BRD_NO  LEFT JOIN MEMBER M ON R.RPT_TARGET_ID = M.MBR_CD WHERE R.RPT_ID = #{reportId}
+            R.RPT_ID
+            ,B.BRD_NO
+            ,B.BRD_TITL_NM
+            ,B.BRD_CONT
+            ,B.MBR_CD
+            ,B.BRD_PBLS_DTM
+            ,R.RPT_TARGET_ID
+            ,R.RPT_STATUS_CODE
+            ,M.MBR_STATUS_CODE AS RPT_TARGET_MBR_STATUS
+            ,M.MBR_ID AS RPT_TARGET_MBR_CD
+            ,L.LSTG_DEL AS LSTG_DEL
+        FROM REPORT R
+        JOIN BOARD B ON R.BRD_NO = B.BRD_NO
+        LEFT JOIN MEMBER M ON R.RPT_CODE = 'MEMB' AND R.RPT_TARGET_ID = M.MBR_ID
+        LEFT JOIN LISTING L ON R.RPT_CODE = 'LSTG' AND R.RPT_TARGET_ID = L.LSTG_ID
+        WHERE R.RPT_ID = #{reportId}
     </select>
 
-    <update id="updateMemberStatus">
+    <update id="updateMemberStatus" parameterType="map">
         UPDATE MEMBER
         SET MBR_STATUS_CODE = #{mbrStatus}
         WHERE MBR_CD = #{mbrCd}
+    </update>
+    
+    <update id="updateListingDeleteStatus" parameterType="map">
+        UPDATE LISTING
+        SET LSTG_DEL = #{lstgDel} WHERE LSTG_ID = #{lstgId}
     </update>
 
 </mapper>

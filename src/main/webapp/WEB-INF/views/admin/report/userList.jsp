@@ -54,6 +54,25 @@
             white-space: pre-wrap;
             word-break: break-all; /* 긴 문자열이 있을 때 넘치지 않도록 강제 줄바꿈 */
         }
+
+        /* 탭 스타일 추가 */
+        .nav-tabs .nav-item .nav-link {
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-top-left-radius: .25rem;
+            border-top-right-radius: .25rem;
+            padding: .5rem 1rem;
+            color: #495057;
+        }
+        .nav-tabs .nav-item .nav-link.active {
+            color: #495057;
+            background-color: #fff;
+            border-color: #dee2e6 #dee2e6 #fff;
+        }
+        .nav-tabs {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -63,6 +82,21 @@
 <div class="container">
     <form:form modelAttribute="detailSearch" action="/admin/report/userList" method="get" id="searchForm">
         <input type="hidden" name="page" value="${pagingVO.currentPageNo}" id="currentPageNoInput">
+        <input type="hidden" name="searchRptCode" value="${detailSearch.searchRptCode}" id="searchRptCodeInput">
+        <ul class="nav nav-tabs" id="reportTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link ${detailSearch.searchRptCode eq 'MEMB' ? 'active' : (empty detailSearch.searchRptCode ? 'active' : '')}"
+                   id="memb-tab" data-toggle="tab" href="#memberReports" role="tab"
+                   aria-controls="memberReports" aria-selected="${detailSearch.searchRptCode eq 'MEMB' ? 'true' : (empty detailSearch.searchRptCode ? 'true' : 'false')}"
+                   data-rpt-code="MEMB">회원</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link ${detailSearch.searchRptCode eq 'LSTG' ? 'active' : ''}"
+                   id="prod-tab" data-toggle="tab" href="#productReports" role="tab"
+                   aria-controls="productReports" aria-selected="${detailSearch.searchRptCode eq 'LSTG' ? 'true' : 'false'}"
+                   data-rpt-code="LSTG">매물</a>
+            </li>
+        </ul>
 
         <div class="search-area">
             <div class="search-row top-row">
@@ -116,7 +150,7 @@
                 </thead>
                 <tbody>
                     <c:if test="${not empty reportedUserList}">
-                        <c:forEach items="${reportedUserList}" var="report" varStatus="status"> <%-- varStatus 추가 --%>
+                        <c:forEach items="${reportedUserList}" var="report" varStatus="status">
                             <tr>
                                 <td><a href="#" class="report-title" data-report-id="${report.reportId}">${report.brdTitlNm}</a></td>
                                 <td>${report.rptTargetId}</td>
@@ -162,8 +196,13 @@
                 <p><strong>신고 내용:</strong></p>
                 <div id="modalBrdCont" class="alert alert-secondary"></div>
 
-                <p><strong>신고 대상 회원 ID:</strong> <span id="modalRptTargetId"></span></p>
-                <p><strong>신고 대상 회원 현재 상태:</strong> <span id="modalRptTargetMbrStatus"></span></p>
+                <p><strong id="modalTargetIdLabel">신고 대상 ID:</strong> <span id="modalRptTargetId"></span></p>
+
+                <div id="memberSpecificInfo">
+                    <p><strong id="modalMbrStatusLabel">신고 대상 회원 현재 상태:</strong> <span id="modalRptTargetMbrStatus"></span></p>
+                </div>
+                <div id="listingSpecificInfo" style="display: none;"> <p><strong>신고 대상 매물 현재 상태:</strong> <span id="modalLstgDel"></span></p>
+                </div>
 
                 <div id="attachFilesSection" style="display: none;">
                     <h5>첨부 파일:</h5>
@@ -193,16 +232,44 @@
                 <div class="form-group">
                     <label for="newMbrStatus">새로운 상태:</label>
                     <select class="form-control" id="newMbrStatus">
-                        <option value="NORMAL">정상</option>
+                        <option value="ACTIVE">정상</option>
+                        <option value="INACTIVE">비활성</option>
                         <option value="SUSPENDED">정지</option>
-                        <option value="BANNED">영구 정지</option>
                         <option value="WITHDRAWN">탈퇴</option>
-                        </select>
+                    </select>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
                 <button type="button" class="btn btn-primary" id="btnUpdateMemberStatus">변경</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="listingStatusChangeModal" tabindex="-1" aria-labelledby="listingStatusChangeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="listingStatusChangeModalLabel">매물 삭제 상태 변경</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>선택된 매물 ID: <strong id="selectedLstgId"></strong></p>
+                <p>현재 상태: <strong id="currentLstgDel"></strong></p>
+                <div class="form-group">
+                    <label for="newLtsgDel">새로운 상태:</label>
+                    <select class="form-control" id="newLtsgDel">
+                        <option value="N">미삭제 (활성)</option>
+                        <option value="Y">삭제 (비활성)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" id="btnUpdateListingDeleteStatus">변경</button>
             </div>
         </div>
     </div>

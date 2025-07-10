@@ -1,6 +1,7 @@
 package kr.or.ddit.admin.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -18,5 +19,7 @@ public interface ReportPostMapper {
 
 	BoardVO selectReportDetailByReportId(String reportId);
 
-	void updateMemberStatus(String mbrCd, String mbrStatus);
+	void updateMemberStatus(Map<String, String> paramMap);
+
+	void updateListingDeleteStatus(Map<String, String> paramMap);
 }

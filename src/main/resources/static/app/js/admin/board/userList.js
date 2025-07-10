@@ -2,9 +2,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchForm = document.getElementById('searchForm');
     const resetButton = document.getElementById('resetButton');
     const currentPageNoInput = document.getElementById('currentPageNoInput');
+    const searchRptCodeInput = document.getElementById('searchRptCodeInput');
     const saveButton = document.getElementById('saveButton');
 
-    // --- 페이징 처리 함수 (Global Function) ---
     window.fn_paging = function(pageNo) {
         if (currentPageNoInput) {
             currentPageNoInput.value = pageNo;
@@ -12,17 +12,19 @@ document.addEventListener('DOMContentLoaded', function() {
         searchForm.submit();
     };
 
-    // --- 검색 폼 submit 이벤트 리스너 ---
     if (searchForm) {
         searchForm.addEventListener('submit', function(event) {
-            // 페이지 번호가 1이 아니면 1로 리셋 (새로운 검색 시)
-            if (currentPageNoInput.value !== '1') {
-                 currentPageNoInput.value = 1;
-            }
+            // ⭐ 탭 전환 시에는 페이지 번호를 초기화하는 대신, 검색 시에만 1로 초기화 ⭐
+            // 이 로직은 컨트롤러에서 page=1로 다시 설정해주기 때문에 필요 없을 수 있습니다.
+            // 하지만 명시적으로 초기화하려면 검색 버튼 클릭 시에만 적용되도록 해야 합니다.
+            // 현재 코드에는 검색 버튼에 대한 명시적인 이벤트 리스너가 없으므로,
+            // 검색 버튼이 눌리면 폼이 제출되고 컨트롤러에서 페이지를 처리할 것입니다.
+            // 만약 검색 버튼 클릭 시 항상 1페이지로 가고 싶다면, 검색 버튼에 이벤트 리스너를 추가하여
+            // currentPageNoInput.value = 1; 을 설정한 후 searchForm.submit(); 을 호출해야 합니다.
+            // 현재 상태에서는 탭 클릭 시에만 currentPageNoInput.value = 1; 이 적용됩니다.
         });
     }
 
-    // --- 초기화 버튼 이벤트 리스너 ---
     if (resetButton) {
         resetButton.addEventListener('click', function() {
             document.getElementById('searchTitle').value = '';
@@ -38,13 +40,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- 저장하기 버튼 이벤트 리스너 (신고 처리 상태 일괄 저장) ---
     if (saveButton) {
         saveButton.addEventListener('click', function() {
             const updates = [];
             document.querySelectorAll('#reportedUserTable tbody tr').forEach(function(row) {
                 const selectElement = row.querySelector('.report-status-select');
-                const hiddenReportId = row.querySelector('input[type="hidden"]');
+                const hiddenReportId = row.querySelector('input[type="hidden"][name^="rptStatusUpdates"]');
 
                 if (selectElement && hiddenReportId) {
                     const currentStatus = selectElement.value;
@@ -70,112 +71,141 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => {
                     if (response.data.status === 'success') {
                         alert(response.data.message);
-                        // 성공적으로 업데이트되면 원본 상태를 최신 상태로 갱신
-                        document.querySelectorAll('#reportedUserTable tbody tr').forEach(function(row) {
-                            const selectElement = row.querySelector('.report-status-select');
-                            if (selectElement) {
-                                selectElement.dataset.originalStatus = selectElement.value;
-                            }
-                        });
-                        // 페이지 새로고침 (선택 사항, 상태가 즉시 반영되도록 할 경우 유용)
-                        window.location.reload();
+                        // 원본 상태를 업데이트하여 중복 저장 방지 (필요 시)
+                        // document.querySelectorAll('#reportedUserTable tbody tr').forEach(function(row) {
+                        //     const selectElement = row.querySelector('.report-status-select');
+                        //     if (selectElement) {
+                        //         selectElement.dataset.originalStatus = selectElement.value;
+                        //     }
+                        // });
+                        window.location.reload(); // 성공 시 페이지 새로고침
                     } else {
                         alert('상태 저장 실패: ' + response.data.message);
-                        window.location.reload();
+                        window.location.reload(); // 실패 시에도 새로고침하여 최신 상태 반영
                     }
                 })
                 .catch(error => {
                     console.error('AJAX 오류:', error);
                     alert('상태 저장 중 오류가 발생했습니다.');
-                    window.location.reload();
+                    window.location.reload(); // 오류 시에도 새로고침
                 });
             }
         });
     }
 
-    // ⭐ 신고 상세 모달 열기 및 데이터 로드 ⭐
-    // `$(document).on('click', ...)` 형태로 변경하여 동적으로 생성된 요소에도 이벤트가 작동하도록 합니다.
+    // ⭐ 탭 클릭 이벤트 처리 ⭐
+    $('#reportTabs .nav-link').on('click', function(e) {
+        e.preventDefault();
+        const rptCode = $(this).data('rpt-code');
+        searchRptCodeInput.value = rptCode;
+        currentPageNoInput.value = 1;
+        searchForm.submit();
+    });
+
+    // ⭐ 신고 상세 모달 열기 및 데이터 로드 (LSTG_DEL 반영) ⭐
     $(document).on('click', '.report-title', function(e) {
-        e.preventDefault(); // 링크의 기본 동작 방지 (페이지 이동)
-        const reportId = $(this).data('report-id'); // data-report-id 속성에서 reportId 가져오기
+        e.preventDefault();
+        const reportId = $(this).data('report-id');
         console.log("신고 상세 조회 요청:", reportId);
 
-        // AJAX 호출로 신고 상세 정보 가져오기
-        axios.get(`/admin/report/detail/${reportId}`) // Axios 사용
+        axios.get(`/admin/report/detail/${reportId}`)
             .then(response => {
                 const data = response.data;
                 console.log("신고 상세 데이터 수신:", data);
 
-                // 모달 내용 채우기
-                $('#modalReportId').text(data.reportId);
-                $('#modalBrdTitlNm').text(data.brdTitlNm);
-                // 줄바꿈 문자를 <br> 태그로 변환하여 HTML로 삽입
+                $('#modalReportId').text(data.reportId || 'N/A');
+                $('#modalBrdTitlNm').text(data.brdTitlNm || 'N/A');
                 $('#modalBrdCont').html(data.brdCont ? data.brdCont.replace(/\n/g, '<br>') : '내용 없음');
-                $('#modalRptTargetId').text(data.rptTargetId);
 
-                // ⭐ rptTargetMbrStatus 표시 및 회원 상태 변경 버튼 클릭 이벤트 ⭐
-                const $modalRptTargetMbrStatus = $('#modalRptTargetMbrStatus');
-                $modalRptTargetMbrStatus.html(''); // 기존 내용 비우기
+                // ⭐ RPT_CODE에 따른 문구 및 UI 변경 ⭐
+                const isListingReport = (data.rptCode === 'LSTG'); // data.rptCode 사용
+                $('#modalTargetIdLabel').text(isListingReport ? '신고 대상 매물 ID:' : '신고 대상 회원 ID:');
+                $('#modalRptTargetId').text(data.rptTargetId || 'N/A');
 
-                if (data.rptTargetMbrStatus) {
-                    const statusText = $('<span>').text(data.rptTargetMbrStatus);
-                    $modalRptTargetMbrStatus.append(statusText);
+                if (isListingReport) {
+                    $('#memberSpecificInfo').hide();
+                    $('#listingSpecificInfo').show();
 
-                    // 회원 상태 변경 버튼 추가 (신고 대상 ID가 있으면)
-                    if (data.rptTargetId) {
+                    // ⭐ LSTG_DEL 표시 및 변경 버튼 추가 ⭐
+                    const $modalLstgDel = $('#modalLstgDel'); // ID 변경
+                    $modalLstgDel.empty();
+
+                    if (data.lstgDel) { // ⭐ data.lstgDel 사용 ⭐
+                        const statusText = $('<span>').text(data.lstgDel === 'Y' ? '삭제됨' : '활성');
+                        $modalLstgDel.append(statusText);
+
                         const changeStatusBtn = $('<button>')
-                            .addClass('btn btn-sm btn-info ml-2') // Bootstrap 버튼 스타일
+                            .addClass('btn btn-sm btn-info ml-2')
                             .text('상태 변경')
-                            .data('mbr-cd', data.rptTargetId) // 회원 ID를 데이터 속성으로 저장
-                            .data('current-status', data.rptTargetMbrStatus) // 현재 상태를 데이터 속성으로 저장
+                            .data('lstg-id', data.rptTargetId) // RPT_TARGET_ID가 LSTG_ID임
+                            .data('current-del', data.lstgDel) // ⭐ data-current-del 사용 ⭐
                             .on('click', function() {
-                                // 상태 변경 모달 열기
-                                const mbrCd = $(this).data('mbr-cd');
-                                const currentStatus = $(this).data('current-status');
-                                $('#selectedMbrCd').text(mbrCd);
-                                $('#currentMbrStatus').text(currentStatus);
-                                $('#newMbrStatus').val(currentStatus); // 현재 상태를 기본 선택으로 설정
-                                $('#statusChangeModal').modal('show');
+                                const lstgId = $(this).data('lstg-id');
+                                const currentDel = $(this).data('current-del'); // ⭐ currentDel 사용 ⭐
+                                $('#selectedLstgId').text(lstgId);
+                                $('#currentLstgDel').text(currentDel === 'Y' ? '삭제됨' : '활성'); // ⭐ ID 변경 ⭐
+                                $('#newLtsgDel').val(currentDel); // ⭐ ID 변경 ⭐
+                                $('#listingStatusChangeModal').modal('show'); // 매물 모달 띄우기
                             });
-                        $modalRptTargetMbrStatus.append(changeStatusBtn);
+                        $modalLstgDel.append(changeStatusBtn);
+                    } else {
+                        $modalLstgDel.text('정보 없음');
                     }
-                } else {
-                    $modalRptTargetMbrStatus.text('정보 없음');
+                } else { // 회원 신고 (MEMB)
+                    $('#memberSpecificInfo').show();
+                    $('#listingSpecificInfo').hide();
+                    const $modalRptTargetMbrStatus = $('#modalRptTargetMbrStatus');
+                    $modalRptTargetMbrStatus.empty();
+
+                    if (data.rptTargetMbrStatus) {
+                        const statusText = $('<span>').text(data.rptTargetMbrStatus);
+                        $modalRptTargetMbrStatus.append(statusText);
+
+                        if (data.rptTargetMbrCd) {
+                            const changeStatusBtn = $('<button>')
+                                .addClass('btn btn-sm btn-info ml-2')
+                                .text('상태 변경')
+                                .data('mbr-cd', data.rptTargetMbrCd)
+                                .data('current-status', data.rptTargetMbrStatus)
+                                .on('click', function() {
+                                    const mbrCd = $(this).data('mbr-cd');
+                                    const currentStatus = $(this).data('current-status');
+                                    $('#selectedMbrCd').text(mbrCd);
+                                    $('#currentMbrStatus').text(currentStatus);
+                                    $('#newMbrStatus').val(currentStatus);
+                                    $('#statusChangeModal').modal('show'); // 회원 모달 띄우기
+                                });
+                            $modalRptTargetMbrStatus.append(changeStatusBtn);
+                        }
+                    } else {
+                        $modalRptTargetMbrStatus.text('정보 없음');
+                    }
                 }
 
-
-                // 첨부 파일 목록 초기화
                 const $modalAttachFiles = $('#modalAttachFiles');
-                $modalAttachFiles.empty(); // 기존 파일 목록 비우기
+                $modalAttachFiles.empty();
 
-                // 첨부 파일이 있을 경우
                 if (data.attachFiles && data.attachFiles.length > 0) {
-                    $('#attachFilesSection').show(); // 첨부 파일 섹션 보이기
+                    $('#attachFilesSection').show();
                     $.each(data.attachFiles, function(index, file) {
-                        console.log("처리 중인 파일:", file); // 각 파일 데이터 확인
-
-                        // 파일 MIME 타입이 이미지인지 확인 (image/로 시작하는지)
                         if (file.fileMime && file.fileMime.startsWith('image/')) {
-                            // 이미지일 경우 <img> 태그로 표시
-                            const imgElement = $('<img>').attr('src', file.filePathUrl) // ⭐ S3 URL 직접 사용 ⭐
+                            const imgElement = $('<img>').attr('src', file.filePathUrl)
                                                         .attr('alt', file.fileOriginalname)
-                                                        .addClass('img-fluid'); // Bootstrap 반응형 이미지 클래스
+                                                        .addClass('img-fluid');
                             $modalAttachFiles.append(imgElement);
                         } else {
-                            // 이미지가 아닐 경우 다운로드 링크로 표시
                             const fileLink = $('<a>')
-                                .attr('href', file.filePathUrl) // ⭐ S3 URL 직접 사용 ⭐
-                                .attr('target', '_blank') // 새 탭에서 열기
+                                .attr('href', file.filePathUrl)
+                                .attr('target', '_blank')
                                 .addClass('file-link')
                                 .text(file.fileOriginalname);
                             $modalAttachFiles.append(fileLink);
                         }
                     });
                 } else {
-                    $('#attachFilesSection').hide(); // 첨부 파일이 없으면 섹션 숨기기
+                    $('#attachFilesSection').hide();
                 }
 
-                // 신고 상세 모달 열기
                 $('#reportDetailModal').modal('show');
             })
             .catch(error => {
@@ -195,17 +225,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (confirm(`${mbrCd} 회원의 상태를 "${newStatus}"(으)로 변경하시겠습니까?`)) {
-            axios.post('/admin/report/updateMemberStatus', null, { // POST 요청, 바디 없이 파라미터로 전송
+            axios.post('/admin/report/updateMemberStatus', null, {
                 params: {
                     mbrCd: mbrCd,
                     mbrStatus: newStatus
                 }
             })
             .then(response => {
-                if (response.data === 'SUCCESS') { // 컨트롤러에서 "SUCCESS" 문자열 반환
+                if (response.data === 'SUCCESS') {
                     alert('회원 상태가 성공적으로 변경되었습니다.');
-                    $('#statusChangeModal').modal('hide'); // 모달 닫기
-                    window.location.reload(); // 페이지 새로고침하여 목록 업데이트
+                    $('#statusChangeModal').modal('hide');
+                    window.location.reload();
                 } else {
                     alert('회원 상태 변경에 실패했습니다.');
                 }
@@ -217,9 +247,36 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // select change 이벤트 리스너(일괄 저장으로 바꾸면서 필요 없어짐...)
-    // document.querySelectorAll('.report-status-select').forEach(function(selectElement) {
-    //     selectElement.addEventListener('change', function() {
-    //     });
-    // });
+    // ⭐ 추가: 매물 삭제 상태 변경 모달의 "변경" 버튼 클릭 이벤트 (LSTG_DEL 반영) ⭐
+    $('#btnUpdateListingDeleteStatus').on('click', function() {
+        const lstgId = $('#selectedLstgId').text();
+        const newDel = $('#newLtsgDel').val(); // ⭐ newLtsgDel 사용 ⭐
+
+        if (!lstgId || !newDel) {
+            alert('매물 ID와 새로운 삭제 상태를 선택해주세요.');
+            return;
+        }
+
+        if (confirm(`${lstgId} 매물의 삭제 상태를 "${newDel === 'Y' ? '삭제' : '미삭제'}"(으)로 변경하시겠습니까?`)) {
+            axios.post('/admin/report/updateListingDeleteStatus', null, {
+                params: {
+                    lstgId: lstgId,
+                    lstgDel: newDel // ⭐ lstgDel 사용 ⭐
+                }
+            })
+            .then(response => {
+                if (response.data === 'SUCCESS') {
+                    alert('매물 삭제 상태가 성공적으로 변경되었습니다.');
+                    $('#listingStatusChangeModal').modal('hide');
+                    window.location.reload();
+                } else {
+                    alert('매물 삭제 상태 변경에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('매물 삭제 상태 변경 AJAX 오류:', error);
+                alert('매물 삭제 상태 변경 중 오류가 발생했습니다.');
+            });
+        }
+    });
 });

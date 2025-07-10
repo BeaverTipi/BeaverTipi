@@ -43,23 +43,30 @@ public class BoardVO implements Serializable{
 	
 	private List<FileVO> attachFiles;	// 첨부파일 목록 필드
 	
-	private String rptTargetMbrStatus;	// 신고 대상 회원의 현재 상태를 담을 필드
+	
 	
 	// REPORT 테이블 관련 필드
-	private String reportId;        // REPORT_ID (신고 번호)
-    private String rptCode;         // RPT_CODE (신고 유형: '회원', '관리주택', '매물' 등)
-    private String rptTargetId;     // RPT_TARGET_ID (신고 대상 ID, 예: MBR_CD, BRD_NO)
-    private String rptStatusCode;   // RPT_STATUS_CODE (신고 처리 상태 코드: '등록', '접수처리중', '처리완료' 등)
-    private String rptDelYn;        // RPT_DEL_YN (신고 삭제 여부)
+	private String reportId;       		// 신고 번호
+    private String rptCode;        		// 신고 유형: 'MEMB' - 회원, 'LSTG' - 매물 'BLDG' - '관리주택'
+    private String rptTargetId;     	// 신고 대상 ID, ex) MBR_CD? MBR_ID?, BRD_NO
+    private String rptTargetMbrCd;		// 신고 대상 회원의 실제 고유 코드 근데 ID 쓸거임 (MBR_ID)
+	private String rptTargetMbrStatus;	// 신고 대상 회원의 현재 상태를 담을 필드
+    private String rptStatusCode;  		// 신고 처리 상태 코드: '등록', '접수처리중', '처리완료'
+    private String rptDelYn;        	// 신고 삭제 여부
+    private String lstgDel;				// 매물 삭제 여부 필드
 
     // 검색 조건을 위한 필드
     private String searchTitle;     // 제목 검색
     private String searchWriter;    // 작성자 ID (MBR_CD) 검색
     private String searchRptStatusCode; // 신고 처리 상태 검색
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime brdPblsDtmFrom; // 게시글 게시일시 (신고일자로 사용) 시작
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime brdPblsDtmTo;   // 게시글 게시일시 (신고일자로 사용) 종료
     
     private MemberVO member;
+    
+    private String searchRptCode;
     
     // ReportUserList를 위한 메서드
     public String getFormattedBrdPblsDtm() {
