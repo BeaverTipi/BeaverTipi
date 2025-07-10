@@ -4,11 +4,12 @@
  *   
  *   수정일      			수정자           수정내용
  *  -----------   	-------------    ---------------------------
- * 2025. 7. 9.     			김찬영            최초 생성
+ * 2025. 7.  9.     		김찬영            최초 생성
+ * 2025. 7. 10.     		김찬영            수정.
  *
  * </pre>
  */
-package kr.or.ddit.broker.contract.controller;
+package kr.or.ddit.broker.controller;
 
 import java.security.Principal;
 import java.util.List;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.or.ddit.broker.BrokerAuthUnpackingUtility;
-import kr.or.ddit.broker.contract.service.BrokerContractService;
+import kr.or.ddit.broker.service.BrokerContractService;
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.ListingVO;
 import lombok.extern.slf4j.Slf4j;
@@ -49,4 +50,5 @@ public class RestBrokerContractNewController {
 		List<ListingVO> lstgList = service.readLstgListForContract(broker.getMbrCd());
 		return lstgList;
 	}
+	
 }

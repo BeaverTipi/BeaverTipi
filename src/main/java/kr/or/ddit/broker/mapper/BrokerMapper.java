@@ -13,8 +13,10 @@ package kr.or.ddit.broker.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import kr.or.ddit.vo.BrokerVO;
+import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.TenancyVO;
@@ -38,4 +40,9 @@ public interface BrokerMapper {
 	public MemberVO selectLesseeInfo(String mbrCd);
 	public BrokerVO selectBrokerInfo(String mbrCd);
 	public ListingVO selectLstgInfo(String lstgId);
+	
+	public List<CommonCodeVO> selectBankList();
+	public List<CommonCodeVO> selectLesserTypeList();
+    public List<CommonCodeVO> selectCommonCodeByGroup(@Param("codeGroup") String codeGroup);
+
 }

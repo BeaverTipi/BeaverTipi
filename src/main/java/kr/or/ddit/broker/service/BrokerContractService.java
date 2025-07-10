@@ -8,15 +8,12 @@
  *
  * </pre>
  */
-package kr.or.ddit.broker.contract.service;
+package kr.or.ddit.broker.service;
 
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import kr.or.ddit.broker.mapper.BrokerMapper;
+import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.ListingVO;
 
 /**
@@ -27,30 +24,17 @@ import kr.or.ddit.vo.ListingVO;
  *
  *
  */
-@Service
-public class BrokerContractServiceImpl implements BrokerContractService {
-
-	@Autowired
-	BrokerMapper mapper;
-	
+public interface BrokerContractService {
 	/**
 	 * @param principal 내에서 불러온 Broker의 mbrCd
 	 * @return Broker가 가진 매물(LSTG)의 리스트
 	 */
-	@Override
-	public List<ListingVO> readLstgListForContract(String mbrCd) {
-		List<ListingVO> lstgList = mapper.selectLstgListForContract(mbrCd);
-		return lstgList;
-	}
-
+	public List<ListingVO> readLstgListForContract(String mbrCd);
 	/**
 	 * @param partyInfoParams :Map.of("lstgId",lstgId,"lesseeCd",lesseeCd);
 	 * @return 중개인, 임대인, 임차인 세 명에 대한 정보를 담은 Map
 	 */
-	@Override
-	public Map<String, Object> readContractPartyInfo(Map<String, String> partyInfoParams) {
-		Map<String, Object> contractPartyInfo = null;
-		return contractPartyInfo;
-	}
+	public Map<String, Object> readContractPartyInfo(Map<String, String> partyInfoParams /*lstgId, mbrCd(lessee)*/);
+	
 
 }
