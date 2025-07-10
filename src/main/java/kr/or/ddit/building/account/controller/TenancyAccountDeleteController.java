@@ -1,0 +1,49 @@
+/** 
+ * <pre>
+ * << 개정이력(Modification Information) >>
+ *   
+ *   수정일      			수정자           수정내용
+ *  -----------   	-------------    ---------------------------
+ * 2025. 7. 9.     			윤현식            최초 생성
+ *
+ * </pre>
+ */
+package kr.or.ddit.building.account.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.building.account.service.TenancyAccountService;
+import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.TenancyAccountVO;
+
+/**
+ * 
+ * @author 
+ * @since
+ * @see
+ *만든이 이학범
+ *
+ */
+@Controller
+@RequestMapping("/building/account")
+public class TenancyAccountDeleteController {
+
+    @Autowired
+    private TenancyAccountService accountService;
+
+    @PostMapping("/delete")
+    public String deleteAccount(@ModelAttribute TenancyAccountVO account) {
+        accountService.removeAccount(account);
+        return "redirect:/building/account/list";
+    }
+}

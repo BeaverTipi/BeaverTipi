@@ -138,8 +138,8 @@
           id="submenu-pages" aria-expanded="false">
           <ul class="flex-column nav">
             <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/building/savingAccount">
-                <span class="sidebar-text">수납 계좌</span>
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/account/list">
+                <span class="sidebar-text">수납 계좌 내역</span>
               </a>
             </li>
             <li class="nav-item">
