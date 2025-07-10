@@ -10,7 +10,6 @@
 				column="RENTAL_PTY_BIZ_REG_FILE_PATH" />
 			<result property="rentalPtyRegBldgCnt"
 				column="RENTAL_PTY_REG_BLDG_CNT" />
-			<result property="rentalPtyAcctNo" column="RENTAL_PTY_ACCT_NO" />
 			<result property="rentalPtyBizRegNo"
 				column="RENTAL_PTY_BIZ_REG_NO" />
 			<result property="rentalPtyFile" column="RENTAL_PTY_FILE" />
@@ -86,7 +85,6 @@
 		, B.BROK_ZIP
 		, B.AUTH_APPR_YN B_AUTH_APPR_YN
 		, T.MBR_CD T_MBR_CD
-		, T.RENTAL_PTY_ACCT_NO
 		, T.RENTAL_PTY_REG_BLDG_CNT
 		, T.RENTAL_PTY_BIZ_REG_NO
 		, T.RENTAL_PTY_ID T_RENTAL_PTY_ID
@@ -146,7 +144,6 @@
 		, B.AUTH_APPR_YN B_AUTH_APPR_YN
 		, B.BROK_ZIP
 		, T.MBR_CD T_MBR_CD
-		, T.RENTAL_PTY_ACCT_NO
 		, T.RENTAL_PTY_REG_BLDG_CNT
 		, T.RENTAL_PTY_BIZ_REG_NO
 		, T.RENTAL_PTY_ID T_RENTAL_PTY_ID
