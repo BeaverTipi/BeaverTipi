@@ -1,0 +1,5 @@
+package kr.or.ddit.resident.chargebill.service;
+
+public class PaymentServiceImpl {
+
+}

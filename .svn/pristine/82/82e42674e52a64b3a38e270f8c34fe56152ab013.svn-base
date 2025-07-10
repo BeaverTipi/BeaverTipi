@@ -1,0 +1,48 @@
+<!-- 
+ * == 개정이력(Modification Information) ==
+ *   
+ *   수정일      			수정자           수정내용
+ *  ============   	============== =======================
+ *  2025. 7. 7.     		 윤현식         생성   
+ *
+-->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<meta charset="UTF-8">
+<div id="main-content">
+	<nav class="sidebar-inner">
+		<div class="d-flex flex-column align-items-start p-2">
+		
+			<a href="#" class="d-flex align-items-center mb-3 text-decoration-none text-dark" data-category="1">
+				<img src="${pageContext.request.contextPath}/volt/assets/img/icons/home-layout-svgrepo-com.svg"
+				 alt="One/TwoRoom" style="width: 35px; height: 35px;">
+				<span>원룸/투룸</span>
+			</a>
+		
+			<a href="#" class="d-flex align-items-center mb-3 text-decoration-none text-dark" data-category="2">
+				<img src="${pageContext.request.contextPath}/volt/assets/img/icons/home-2-svgrepo-com.svg"
+				 alt="Home/Villa" style="width: 35px; height: 35px;">
+				<span>주택/빌라</span>
+			</a>
+		
+			<a href="#" class="d-flex align-items-center mb-3 text-decoration-none text-dark" data-category="3">
+				<img src="${pageContext.request.contextPath}/volt/assets/img/icons/building-svgrepo-com.svg"
+				 alt="Officetel" style="width: 35px; height: 35px;">
+				<span>오피스텔</span>
+			</a>
+			
+			<a href="#" class="d-flex align-items-center mb-3 text-decoration-none text-dark" data-category="4">
+				<img src="${pageContext.request.contextPath}/volt/assets/img/icons/apartment-svgrepo-com.svg"
+				 alt="Apartment/New Construction" style="width: 35px; height: 35px;">
+				<span>아파트/신축</span>
+			</a>
+			
+			<a href="#" class="d-flex align-items-center mb-3 text-decoration-none text-dark" data-category="5">
+				<img src="${pageContext.request.contextPath}/volt/assets/img/icons/traffic-cone-svgrepo-com.svg"
+				 alt="NewConstructionSale" style="width: 35px; height: 35px;">
+				<span>신축분양</span>
+			</a>
+		</div>
+	</nav>
+	
+</div>

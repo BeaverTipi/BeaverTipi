@@ -1,0 +1,88 @@
+package kr.or.ddit.main.subscribe.controller;
+
+import java.util.List;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.admin.code.service.CommonCodeService;
+import kr.or.ddit.main.subscribe.service.SubscribeSubsriptionService;
+import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.vo.BrokerVO;
+import kr.or.ddit.vo.CommonCodeVO;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.PaymentTosspamentsRawVO;
+import kr.or.ddit.vo.SolutionSubscriptionVO;
+import kr.or.ddit.vo.SolutionVO;
+import kr.or.ddit.vo.TenancyVO;
+import lombok.RequiredArgsConstructor;
+
+@Controller
+@RequiredArgsConstructor
+public class SubscribeSubsriptionController {
+	private final SubscribeSubsriptionService service;
+	private final CommonCodeService commonService;
+	private final String successURL = "http://localhost/account/read?success=true";
+	private final String TENANCY = "tenancy";
+	private final String BROKER = "broker";
+	@ModelAttribute(TENANCY)
+	public TenancyVO tenancy() {
+		return new TenancyVO();
+	}
+	
+	@ModelAttribute(BROKER)
+	public BrokerVO broker() {
+		return new BrokerVO();
+	}
+	
+	@GetMapping("/subscribe/subscription")
+	public String formUI(
+			Model model
+			,@AuthenticationPrincipal RealUserWrapper<MemberVO> principal
+			) {
+		String username = principal.getRealUser().getMbrCd();
+		SolutionSubscriptionVO solutionSubscription = service.readSolutionSubscription(username);
+		List<SolutionVO> solutionList = service.readSolutionList();
+		List<CommonCodeVO> commonCodeList = commonService.readCommonCodeList("PAY");
+		
+		model.addAttribute("solutionSubscription", solutionSubscription);
+		model.addAttribute("solutionList", solutionList);
+		model.addAttribute("commonCodeList", commonCodeList);
+		return "main/subscribe/subscribe";
+	}
+
+	
+	@GetMapping("/apply/broker")
+	public String brokerForm() {
+		return "main/subscribe/brokerForm";
+	}
+	
+	@GetMapping("/apply/tenancy")
+	public String tenancyForm() {
+		return "main/subscribe/tenancyForm";
+	}
+	
+	@PostMapping("/ajax/payment/ready")
+	@ResponseBody
+	public PaymentTosspamentsRawVO formProcess(
+			@RequestBody SolutionVO solution,
+			@AuthenticationPrincipal RealUserWrapper<MemberVO> principal
+			) {
+		SolutionVO sol = service.readSolution(solution.getSolId());
+		String orderId = "ORD" + System.currentTimeMillis() + principal.getRealUser().getMbrCd();
+		PaymentTosspamentsRawVO toss = new PaymentTosspamentsRawVO();
+		toss.setOrderId(orderId);
+		toss.setAmount(sol.getSolPrice());
+		toss.setOrderName(sol.getSolName());
+		toss.setCustomerName(principal.getRealUser().getMbrNm());
+		toss.setSuccessUrl(successURL);		
+		return toss;
+	}
+}
+ 

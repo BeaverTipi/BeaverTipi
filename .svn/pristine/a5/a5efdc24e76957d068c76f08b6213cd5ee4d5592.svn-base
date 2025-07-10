@@ -1,0 +1,64 @@
+package kr.or.ddit.resident.notice.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import kr.or.ddit.admin.code.service.CommonCodeService;
+import kr.or.ddit.resident.notice.service.NoticeService;
+import kr.or.ddit.resident.unitResident.service.UnitResidentService;
+import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.vo.CommonCodeVO;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.NoticeVO;
+import kr.or.ddit.vo.UnitResidentVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/resident/notice")
+public class NoticeFormController {
+
+    @Autowired
+    private CommonCodeService commonCodeService;
+
+    @Autowired
+    private UnitResidentService unitResidentService;
+
+    @Autowired
+    private NoticeService noticeService;
+
+    // 등록 폼—임대인/관리자 전용
+    @PreAuthorize("hasAnyRole('ADMIN','TENANCY')")
+    @GetMapping("/form")
+    public String showForm(
+            Model model,
+            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
+    ) {
+        String mbrCd = principal.getRealUser().getMbrCd();
+        List<UnitResidentVO> units = unitResidentService.getUnitsByMember(mbrCd);
+
+        model.addAttribute("unitList", units);
+        model.addAttribute("noticeTypeList", 
+            commonCodeService.readCommonCodeList("NOTPE"));
+        model.addAttribute("notice", new NoticeVO());
+        return "resident/notice/NoticeForm";
+    }
+
+    // 등록 처리—임대인/관리자 전용
+    @PreAuthorize("hasAnyRole('ADMIN','TENANCY')")
+    @PostMapping("/form")
+    public String create(
+            @ModelAttribute NoticeVO notice,
+            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
+    ) {
+        notice.setMbrCd(principal.getRealUser().getMbrCd());
+        noticeService.registerNotice(notice);
+        return "redirect:/resident/notice";
+    }
+}

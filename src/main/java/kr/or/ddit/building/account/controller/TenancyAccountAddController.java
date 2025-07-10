@@ -1,0 +1,64 @@
+/** 
+ * <pre>
+ * << 개정이력(Modification Information) >>
+ *   
+ *   수정일      			수정자           수정내용
+ *  -----------   	-------------    ---------------------------
+ * 2025. 7. 9.     			윤현식            최초 생성
+ *
+ * </pre>
+ */
+package kr.or.ddit.building.account.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.building.account.service.TenancyAccountService;
+import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.TenancyAccountVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 
+ * @author 
+ * @since
+ * @see
+ *만든이 이학범
+ *
+ */
+@Slf4j
+@Controller
+@RequestMapping("/building/account")
+public class TenancyAccountAddController {
+
+
+    @Autowired
+    private TenancyAccountService accountService;
+
+    @PostMapping("/add")
+    public String insertAccount(
+        @ModelAttribute TenancyAccountVO account,
+        @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
+    ) {
+    	 
+        MemberVO member = principal.getRealUser();
+
+        // 로그인한 사용자 정보에서 mbrCd 세팅
+        account.setMbrCd(member.getMbrCd());
+        log.info(">>> rentalPtyId를 로그로 찍어볼거여 : {}", account.getRentalPtyId());
+
+        // 등록 처리
+        accountService.createAccount(account);
+
+        return "redirect:/building/account/list";
+    }
+}

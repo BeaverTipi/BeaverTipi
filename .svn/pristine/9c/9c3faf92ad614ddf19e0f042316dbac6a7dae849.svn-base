@@ -1,0 +1,16 @@
+package kr.or.ddit.main.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.vo.BuildingVO;
+import kr.or.ddit.vo.ListingVO;
+
+@Mapper
+public interface KakaoMapDataMapper {
+//	public List<BuildingVO> selectBdAddr();
+//	public ListingVO selectHomeDataById(String lstgId);
+	public List<ListingVO> selectNotLatLngList();
+	public int updateLatLng(ListingVO vo);
+}

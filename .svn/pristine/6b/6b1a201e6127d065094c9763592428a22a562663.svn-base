@@ -1,0 +1,48 @@
+package kr.or.ddit.building.managed.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import kr.or.ddit.building.managed.service.BuildingManagedService;
+import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.vo.BuildingVO;
+import kr.or.ddit.vo.MemberVO;
+
+@Controller
+@RequestMapping("/building/managed")
+public class ManagedUpdateController {
+
+    @Autowired
+    private BuildingManagedService managedService;
+
+    // 수정 폼 진입
+    @GetMapping("/edit")
+    public String editForm(@RequestParam("bldgId") String bldgId,
+                           Model model,
+                           @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
+
+        MemberVO memberVO = principal.getRealUser();
+        String rentalPtyId = memberVO.getTenancy().getRentalPtyId();
+
+        BuildingVO buildingVO = managedService.selectBuildingById(bldgId);
+        buildingVO.setRentalPtyId(rentalPtyId);  // 혹시 몰라 재셋팅
+
+        model.addAttribute("buildingVO", buildingVO);
+        model.addAttribute("mode", "edit"); // JSP에서 <c:choose>로 등록/수정 버튼 구분
+        return "building/managed/managedAdd";
+    }
+
+    // 수정 처리
+    @PostMapping("/edit")
+    public String editUnit(@ModelAttribute("buildingVO") BuildingVO buildingVO) {
+        managedService.updateBuilding(buildingVO);
+        return "redirect:/building/managed/list?bldgId=" + buildingVO.getBldgId();
+    }
+}

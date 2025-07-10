@@ -1,0 +1,280 @@
+@charset "UTF-8";
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .chatimg {
+      width: 160px;
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      margin: 0;
+    }
+
+    #chatbox {
+      height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      background-color: #ffffff;
+      margin: 10px auto;
+      max-width: 600px;
+      border-radius: 8px;
+    }
+
+    .message {
+      margin: 5px 0;
+      max-width: 80%;
+      word-wrap: break-word;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .my-message {
+      align-self: flex-end;
+      background-color: #d1e7dd;
+    }
+
+    .other-message {
+      align-self: flex-start;
+      background-color: #f8d7da;
+    }
+
+    .sender-name {
+      font-weight: bold;
+      font-size: 13px;
+      margin-bottom: 2px;
+      color: #333;
+      align-self: flex-start;
+    }
+
+    .input-container {
+      display: flex;
+      align-items: center;
+      max-width: 600px;
+      margin: 0 auto 20px;
+      padding: 0 10px;
+    }
+
+    #messageInput {
+      flex: 1;
+      padding: 10px;
+      resize: none;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-right: 8px;
+      height: 60px;
+    }
+
+    button {
+      width: 80px;
+      height: 60px;
+      background-color: #3572ef;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #6a93ff;
+    }
+
+    .sidebar-toggle-btn {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background-color: transparent;
+      border: 1px solid #333;
+      color: #333;
+      border-radius: 4px;
+      font-size: 16px;
+      padding: 0;
+      height: 32px;
+      width: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+    }
+
+    /* ✅ 채팅방 나가기 버튼 (사이드바 버튼 스타일과 동일) */
+    .sidebar-toggle-btn-small {
+      position: fixed;
+      top: 16px;
+      right: 60px;
+      background-color: transparent;
+      border: 1px solid #333;
+      color: #333;
+      border-radius: 4px;
+      font-size: 16px;
+      padding: 0;
+      height: 32px;
+      width: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+    }
+
+    #closeSidebarBtn {
+      width: 36px;
+      height: 36px;
+      background-color: transparent;
+      border: 1px solid #333;
+      color: #333;
+      border-radius: 4px;
+      font-size: 16px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .chat-sidebar {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 280px;
+      height: 100%;
+      background-color: #ffffff;
+      border-left: 1px solid #ccc;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+      transition: right 0.3s ease;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .chat-sidebar.visible {
+      right: 0;
+    }
+
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .participant-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 16px 0;
+    }
+
+    .participant-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+
+    .invite-btn {
+      width: 100%;
+      padding: 10px;
+      background-color: #28a745;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .invite-btn:hover {
+      background-color: #45c16c;
+    }
+
+    /* ✅ 추가: 작고 간결한 모달창 */
+	/* ✅ 정리된: 작고 간결한 모달 스타일 */
+	.modal {
+	  position: fixed;
+	  top: 50%;
+	  left: 50%;
+	  transform: translate(-50%, -50%);
+	  width: 280px;                     /* 💡 크기 고정 (가로 280px) */
+	  height : 120px;
+	  background-color: #fff;
+	  border: 1px solid #ccc;
+	  padding: 16px;
+	  border-radius: 8px;
+	  display: none;
+	  z-index: 1500;
+	  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	  font-size: 14px;
+	  text-align: center;
+	}
+	
+	/* ✅ 모달 안 버튼 정렬 + 디자인 일관성 */
+	.modal button {
+	  margin: 6px 4px 0 4px;
+	  padding: 6px 12px;
+	  font-size: 13px;
+	  border: none;
+	  border-radius: 4px;
+	  background-color: #3572ef;
+	  color: white;
+	  cursor: pointer;
+	  transition: background 0.2s ease;
+	}
+	
+	.modal button:hover {
+	  background-color: #6a93ff;
+	}
+	
+	.modal-buttons {
+	  display: flex;
+	  justify-content: center;
+	  gap: 10px;
+	  margin-top: 12px;
+	}
+	
+	.modal-buttons button {
+	  width: 80px;
+	  height: 30px;
+	  font-size: 13px;
+	  border-radius: 6px;
+	  border: none;
+	  cursor: pointer;
+	}
+	
+	/* ✅ 예: 초록 */
+	#confirmLeaveBtn {
+	  background-color: #28a745;
+	  color: white;
+	}
+	
+	#confirmLeaveBtn:hover {
+	  background-color: #45c16c;
+	}
+	
+	/* ❌ 아니오: 빨강 */
+	#cancelLeaveBtn {
+	  background-color: #dc3545;
+	  color: white;
+	}
+	
+	#cancelLeaveBtn:hover {
+	  background-color: #e75d68;
+	}

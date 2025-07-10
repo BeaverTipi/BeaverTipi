@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.resident.mapper.NoticeResidentMapper">
+
+  <!-- ✅ resultMap 정의 -->
+  <resultMap type="NoticeVO" id="noticeMap">
+    <id property="noticeNo" column="NOTICE_NO"/>
+    <result property="noticeType" column="NOTICE_TYPE"/>
+    <result property="noticeTop" column="NOTICE_TOP"/>
+    <result property="noticeEndDtm" column="NOTICE_END_DTM"/>
+    <result property="noticeDelYn" column="NOTICE_DEL_YN"/>
+    <result property="brdNo" column="BRD_NO"/>
+    <result property="brdCode" column="BRD_CODE"/>
+    <result property="mbrCd" column="MBR_CD"/>
+    <result property="brdTitlNm" column="BRD_TITL_NM"/>
+    <result property="brdCont" column="BRD_CONT"/>
+    <result property="brdPblsDtm" column="BRD_PBLS_DTM"/>
+    <result property="brdVwCnt" column="BRD_VW_CNT"/>
+    <result property="brdModDtm" column="BRD_MOD_DTM"/>
+    <result property="brdDelYn" column="BRD_DEL_YN"/>
+    <association property="member" javaType="MemberVO">
+      <result property="mbrCd" column="MBR_CD"/>
+      <result property="mbrNnm" column="MBR_NNM"/>
+    </association>
+    <association property="noticeTypeCode" javaType="kr.or.ddit.vo.CommonCodeVO">
+      <result property="codeGroup" column="CODE_GROUP"/>
+      <result property="codeValue" column="CODE_VALUE"/>
+      <result property="codeName" column="CODE_NAME"/>
+      <result property="description" column="DESCRIPTION"/>
+    </association>
+  </resultMap>
+
+  <!-- ✅ 공지사항 목록 조회 -->
+  <select id="selectNoticeList" resultMap="noticeMap">
+    SELECT * FROM (
+      SELECT ROWNUM AS RNUM, A.* FROM (
+        SELECT
+          N.NOTICE_NO, N.NOTICE_TYPE, N.NOTICE_TOP, N.NOTICE_END_DTM, N.NOTICE_DEL_YN,
+          C.CODE_GROUP, C.CODE_VALUE, C.CODE_NAME, C.DESCRIPTION,
+          B.BRD_NO, B.BRD_CODE, B.BLDG_ID, B.MBR_CD,
+          B.BRD_TITL_NM, B.BRD_CONT, B.BRD_PBLS_DTM, B.BRD_VW_CNT, B.BRD_MOD_DTM, B.BRD_DEL_YN,
+          M.MBR_NNM
+        FROM NOTICE N
+        JOIN BOARD B ON N.NOTICE_NO = B.BRD_NO
+        JOIN MEMBER M ON B.MBR_CD = M.MBR_CD
+        LEFT JOIN COMMON_CODE C
+          ON N.NOTICE_TYPE_GRP_CD = C.CODE_GROUP
+         AND N.NOTICE_TYPE = C.CODE_VALUE
+        <where>
+          N.NOTICE_DEL_YN = 'N'
+          AND (N.NOTICE_END_DTM IS NULL OR N.NOTICE_END_DTM >= SYSDATE)
+          AND B.BLDG_ID = #{simpleSearch.bldgId}
+          AND B.BRD_CODE = #{simpleSearch.brdCode}
+          <if test="simpleSearch.noticeType != null and simpleSearch.noticeType != ''">
+            AND N.NOTICE_TYPE = #{simpleSearch.noticeType}
+          </if>
+          <if test="simpleSearch.searchWord != null and simpleSearch.searchWord != ''">
+            <choose>
+              <when test="simpleSearch.searchType == 'title'">
+                AND B.BRD_TITL_NM LIKE '%' || #{simpleSearch.searchWord} || '%'
+              </when>
+              <when test="simpleSearch.searchType == 'content'">
+                AND B.BRD_CONT LIKE '%' || #{simpleSearch.searchWord} || '%'
+              </when>
+              <otherwise>
+                AND (
+                  B.BRD_TITL_NM LIKE '%' || #{simpleSearch.searchWord} || '%'
+                  OR B.BRD_CONT LIKE '%' || #{simpleSearch.searchWord} || '%'
+                )
+              </otherwise>
+            </choose>
+          </if>
+        </where>
+      ) A
+      WHERE ROWNUM &lt;= #{lastRecordIndex}
+    )
+    WHERE RNUM &gt;= #{firstRecordIndex}
+  </select>
+
+  <!-- ✅ 전체 건수 조회 -->
+  <select id="selectNoticeTotalCount" resultType="int">
+    SELECT COUNT(*)
+    FROM NOTICE N
+    JOIN BOARD B ON N.NOTICE_NO = B.BRD_NO
+    <where>
+      N.NOTICE_DEL_YN = 'N'
+      AND (N.NOTICE_END_DTM IS NULL OR N.NOTICE_END_DTM >= SYSDATE)
+      AND B.BLDG_ID = #{simpleSearch.bldgId}
+      AND B.BRD_CODE = #{simpleSearch.brdCode}
+      <if test="simpleSearch.noticeType != null and simpleSearch.noticeType != ''">
+        AND N.NOTICE_TYPE = #{simpleSearch.noticeType}
+      </if>
+      <if test="simpleSearch.searchWord != null and simpleSearch.searchWord != ''">
+        <choose>
+          <when test="simpleSearch.searchType == 'title'">
+            AND B.BRD_TITL_NM LIKE '%' || #{simpleSearch.searchWord} || '%'
+          </when>
+          <when test="simpleSearch.searchType == 'content'">
+            AND B.BRD_CONT LIKE '%' || #{simpleSearch.searchWord} || '%'
+          </when>
+          <otherwise>
+            AND (
+              B.BRD_TITL_NM LIKE '%' || #{simpleSearch.searchWord} || '%'
+              OR B.BRD_CONT LIKE '%' || #{simpleSearch.searchWord} || '%'
+            )
+          </otherwise>
+        </choose>
+      </if>
+    </where>
+  </select>
+
+  <!-- ✅ 단건 조회 -->
+  <select id="selectNoticeById" resultType="kr.or.ddit.vo.NoticeVO">
+    SELECT
+      N.NOTICE_NO, N.NOTICE_TYPE, N.NOTICE_TOP, N.NOTICE_END_DTM, N.NOTICE_DEL_YN,
+      B.BRD_NO, B.BRD_CODE, B.MBR_CD, B.BRD_TITL_NM, B.BRD_CONT,
+      B.BRD_PBLS_DTM, B.BRD_VW_CNT, B.BRD_MOD_DTM, B.BRD_DEL_YN
+    FROM NOTICE N
+    JOIN BOARD B ON N.NOTICE_NO = B.BRD_NO
+    WHERE N.NOTICE_NO = #{noticeNo}
+  </select>
+
+  <!-- ✅ 등록 -->
+  <insert id="insertNotice" parameterType="kr.or.ddit.vo.NoticeVO">
+    INSERT INTO NOTICE (
+      NOTICE_NO, NOTICE_TYPE, NOTICE_TOP, NOTICE_END_DTM, NOTICE_DEL_YN
+    ) VALUES (
+      #{noticeNo}, #{noticeType}, #{noticeTop}, #{noticeEndDtm}, #{noticeDelYn}
+    )
+  </insert>
+
+  <!-- ✅ 수정 -->
+  <update id="updateNotice" parameterType="kr.or.ddit.vo.NoticeVO">
+    UPDATE NOTICE
+    SET
+      NOTICE_TYPE = #{noticeType},
+      NOTICE_TOP = #{noticeTop},
+      NOTICE_END_DTM = #{noticeEndDtm}
+    WHERE NOTICE_NO = #{noticeNo}
+  </update>
+
+  <!-- ✅ 소프트 삭제 -->
+  <update id="softDeleteNotice" parameterType="String">
+    UPDATE NOTICE
+    SET NOTICE_DEL_YN = 'Y'
+    WHERE NOTICE_NO = #{noticeNo}
+  </update>
+
+</mapper>

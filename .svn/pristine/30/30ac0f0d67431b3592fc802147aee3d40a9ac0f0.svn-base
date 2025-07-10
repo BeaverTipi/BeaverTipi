@@ -1,0 +1,18 @@
+/**
+ * 
+ * <pre>
+ * << 개정이력 (Modifcation 	Information) >>
+ *  수정일 			수정자			수정내용
+ * ----------------  ----------------- -----------------------------
+ * 2025. 7. 7.			윤현식			생성
+ */
+document.addEventListener("DOMContentLoaded",()=>{
+	var container = document.getElementById('map');
+		var options = {
+			center: new kakao.maps.LatLng(33.450701, 126.570667),
+			level: 3
+		};
+
+		var map = new kakao.maps.Map(container, options);
+	
+});

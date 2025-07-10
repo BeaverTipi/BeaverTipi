@@ -1,0 +1,114 @@
+
+spring.application.name=BeaverTipi
+
+# oauth client 등록 정보 registration.registrationId(주소창에 마지막 부분).
+spring.security.oauth2.client.registration.google-login.client-id=ENC(jxtXP8qnj+RatQ/DLSahvIRqHAHuU3K760gfwq1lkL2yLyHb8iisGFmC72CWsVQ11tGsyrHkmmYxCx1+INzyId2GSAzWjv6uViGXLZ+HLD8N2rcaH4VTtb/xdoksJP5J/pRoeFktehkJL/Dua7fwNw==)
+spring.security.oauth2.client.registration.google-login.client-secret=ENC(nxzbX3hQmm8rake/kzzMETFDJAuhbJ5ILWA29SOpXszcG2tDSOKn3v0mIJD3BUa8FAbVFnSbUfnk8R6Eu1FX9lDndC/2y4ZJy677CS5ZnLo=)
+# 아래꺼는 내가 원하는대로 value에 넣는 거임 
+spring.security.oauth2.client.registration.google-login.client-name=HELLOGOOGLE
+spring.security.oauth2.client.registration.google-login.redirect-uri=http://localhost/login/oauth2/code/google-login
+spring.security.oauth2.client.registration.google-login.provider=google
+
+# 리프레시 토큰을 발급받기 위한 access_type 변경(연습용)
+#spring.security.oauth2.client.provider.google.authorization-uri=https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline
+# 카카오 로그인 설정
+spring.security.oauth2.client.registration.kakao.client-id=ENC(YnOzUbSXj0WcDNs1HgbQEDR6Ot1gEtEjBlSIlTgJ6IG2NqiPNpPtGiyZQaPwdtkK6qXCSa0RtjnYRSDheHSSmYhnphpbKqFtdfo2D/mHH5A=)
+spring.security.oauth2.client.registration.kakao.redirect-uri=http://localhost/login/oauth2/code/kakao
+spring.security.oauth2.client.registration.kakao.authorization-grant-type=authorization_code
+spring.security.oauth2.client.registration.kakao.scope=profile_nickname,profile_image,account_email
+spring.security.oauth2.client.provider.kakao.authorization-uri=https://kauth.kakao.com/oauth/authorize
+spring.security.oauth2.client.provider.kakao.token-uri=https://kauth.kakao.com/oauth/token
+spring.security.oauth2.client.provider.kakao.user-info-uri=https://kapi.kakao.com/v2/user/me
+spring.security.oauth2.client.provider.kakao.user-name-attribute=id
+
+
+#kakao api 키 
+custom.kakao.rest-api-key=ENC(Qw/+xgjyAGW/Iyv455BCJPSYD3IEg2CkdR9mDoltw1IZ91SBaM1crFcR14DNJke7Ua8pj8sEXtjVHfKmqtPJhUWvoLN0nsCkv9RpWCrQlW0=)
+custom.kakao.javascript-api-key=ENC(GGcAAdztwhltSkX/wBxe4dzfmVhHz5rOg8k3LY0Fw+cP7rabNojQfs9v7b1FWaGMoJhoYM52RBYcqZRU4ttFMkHKwykD4vws25neCZzKl74=)
+
+# 데이터 베이스 연결 정보
+spring.datasource.driver-class-name=ENC(OHc8p35X6atlE1ONXDREub8LSH9ffRzITi2i3oprHX6HHsYQp7LyF1l4eWwn1K05ziTAOeBDMe1qWTwAK4hRZg==)
+spring.datasource.url=ENC(1HS62cDTDu4kQea1HUaHQJD+bkn+Sc9QPzB5Jk25agQQ6/lTei9OZUZL2/khSbsu+5SnsznQcdekpl2FjtYdGEQhhUPaHB4tdl1mg/ro+6o=)
+spring.datasource.username=ENC(WXU53Q4Qm4hKDSk48xma204q01DK2P0cYxzze+nAaK73XXdMGSg8rMOaMrJDIhtd)
+spring.datasource.password=ENC(bT4ooP7CoSzZdNhWEwzzoDaLY3CQzNmwEwhxnT8nFmL23PoXGpbGeN5h/lkwPWAq)
+#spring.datasource.url=jdbc:oracle:thin:@localhost:1521:xe
+#spring.datasource.username=team3_202501f
+#spring.datasource.password=java
+#spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+
+
+# connection pooling설정 (hikaricp)
+spring.datasource.hikari.auto-commit=true
+spring.datasource.hikari.minimum-idle=3
+spring.datasource.hikari.maximum-pool-size=5
+spring.datasource.hikari.connection-timeout=20000
+
+# Mybatis 연동 설정 (type alias, mapper location, settings, ...)
+# mybatis 연동 설정 중 settings
+mybatis.configuration.map-underscore-to-camel-case=true
+mybatis.configuration.jdbc-type-for-null=varchar
+# mybatis 연동 설정중 type-alias
+mybatis.type-aliases-package=kr.or.ddit.vo
+# mapper.xml의 위치 설정==> mapper scan의 위치
+mybatis.mapper-locations=classpath:kr/or/ddit/**/mapper/**/*.xml
+
+# 로그 설정(level 조정)
+logging.level.root=error
+logging.level.kr.or.ddit=info
+#logging.level.org.springframework=info
+#logging.level.org.springframework.web.servlet.mvc=debug
+# 이건 properties 열어서 보자.
+#logging.level.org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping=trace
+logging.level.p6spy=info
+logging.level.kr.or.ddit.broker=debug
+
+# 내장 서버 설정(port조정,ssl설정,...)
+server.port=80
+server.address=0.0.0.0
+# Character Encoding Filter 설정
+server.servlet.encoding.charset=UTF-8
+server.servlet.encoding.force=true
+
+# Spring mvc 모듈 설정
+spring.mvc.view.prefix=/WEB-INF/views/
+spring.mvc.view.suffix=.jsp
+
+# 파일 업로드 설정(multipart-config)
+# 이제부터 멀티파트 추가할거임. 이건 기본값이 true
+spring.servlet.multipart.enabled=true
+# 기본값 1MB
+spring.servlet.multipart.max-file-size=5MB
+# 기본값 10MB
+spring.servlet.multipart.max-request-size=50MB
+# 무조건 청크를 쪼개서 임시저장소에 저장. 10KB미만은 청크로 쪼개지않고 메모리상에 있게끔..
+spring.servlet.multipart.file-size-threshold=10KB
+
+# 로그인 / 로그아웃 / 가입 url
+myapp.login-url=/account/login
+myapp.logout-url=/account/logout
+myapp.register-url=/member/register
+myapp.oauth2-register-url=/member/oauth2/register
+myapp.delete-value = "WITHDRAWN"
+
+# CORS 헤더
+cors.allowed-origins=http://localhost:6060,http://localhost:81
+cors.allowed-methods=GET,POST,PUT,DELETE,HEAD
+cors.allowed-headers=*
+cors.allowed-credentials=true
+
+# JWT 토큰 생성(JwtProvider : RestLoginController) 및 
+# 파싱(NimbusJwtDecoder : BearerAuthenticationFilter--우리가 만든게 아님 주의.)에 사용할 키.
+jwt.secrete-key=ENC(hx4byN6loe9ahyU2C44x8zWrLPYnerM1sQKNRhEEVUFLoOeIqQ7uQROdVNipxT1QdOzWKjI63EA7DPOEbqQ3uVEkcpQH/WJqo6TWCHzKjP0=)
+# authority의 접두어로 사용되는 "SCOPE_" 없앰. 사실 이건 편법을 사용하고 있는거 역할을 양도하는 건 아님 대신 자원에 대한 접근 범위를 설정해주는 것임. 
+spring.security.oauth2.resourceserver.jwt.authority-prefix=
+
+crypto.secret-key=ENC(w3NY0GCwz9gGeOhT9Kxjf3xmWkclq96GVc6VU7mBueq3ZMMUSgafKNY5pdibVgXZ7nEy7MCjp4DUORi28dRLE6Y5CqbSXUA2di/k4vk6Nbo=)
+crypto.iv=ENC(YN/ynHuskzliLCRIrHbpzb0YllpDdPCVL6/og+xSD89NdmlholjkaP4j6h+2u2p0lSwPGHJe83p7l1UyT9JWBQ==)
+
+
+# Quartz
+sequence.reset.targets=SEQ_TEST_ID,SEQ_AD_CLIENT_ID,SEQ_AD_CLIENT_KEY,SEQ_AUTOMETH_ID,SEQ_BLDG_ID,SEQ_BLDG_ID_NUM,SEQ_BRD_NO,SEQ_BSC_ID,SEQ_CHAT_ROOM_ID,SEQ_CHGBILL_ID,SEQ_FAQ_ID,SEQ_INTG_FEE_ID,SEQ_LSTG_ID,SEQ_MBR_CD,SEQ_NOTICE_NO,SEQ_QNA_ID,SEQ_RENTAL_PTY_ID,SEQ_RSD_BRD_ID,SEQ_SOL_ID,SEQ_SUBS_AUTOMETH_LOG_ID,SEQ_SUBS_ID,SEQ_SUBS_LOG,SEQ_TOFS_CD,SEQ_UNIT_ID,SEQ_UNIT_MNTN_FEE_CD
+spring.quartz.job-store-type=jdbc
+spring.quartz.jdbc.initialize-schema=never
+spring.quartz.properties.org.quartz.scheduler.idleWaitTime=28800000
+

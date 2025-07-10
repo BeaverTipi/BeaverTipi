@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.resident.mapper.RsdChatMapper">
+	<resultMap type="UnitResidentVO" id="unitResidentMap">
+		<id property="mbrCd" column="MBR_CD"/>
+		
+		<association property="member" javaType="MemberVO">
+		<result property="mbrNnm" column="MBR_NNM"/>
+		</association>
+		
+		<association property="unit" javaType="UnitVO">
+		<result property="unitRoom" column="UNIT_ROOM"/>
+		</association>
+	</resultMap>
+	
+	
+	<insert id="insertChatRoom" parameterType="ResidentChatRoomVO">
+		<selectKey keyProperty="residentChatRoomId" resultType="string" order="BEFORE">
+		  SELECT LPAD(SEQ_CHAT_ROOM_ID.NEXTVAL, 10, '0') FROM DUAL
+		</selectKey>
+		INSERT INTO RESIDENT_CHAT_ROOM (
+		  RESIDENT_CHAT_ROOM_ID,
+		  BLDG_ID,
+		  MBR_CD,
+		  RESIDENT_CHAT_ROOM_TITLE
+		  <if test="residentChatRoomIsPublic != null">
+		    , RESIDENT_CHAT_ROOM_IS_PUBLIC
+		  </if>
+		) VALUES (
+		  #{residentChatRoomId},
+		  #{bldgId},
+		  #{mbrCd},
+		  #{residentChatRoomTitle}
+		  <if test="residentChatRoomIsPublic != null">
+		    , #{residentChatRoomIsPublic}
+		  </if>
+		)
+	</insert>
+	
+	<insert id="insertChatRoomIn">
+		INSERT INTO CHAT_ROOM_IN (
+		RESIDENT_CHAT_ROOM_ID,
+		MBR_CD
+		) VALUES (
+		#{residentChatRoomId},
+		#{mbrCd}
+		)
+	</insert>
+
+	
+	<select id="selectMessages" resultType="kr.or.ddit.resident.chating.dto.ChatMessageDTO">
+		SELECT  
+		  a.mbr_cd,
+		  a.rcm_cont,
+		  a.rcm_time,
+		  COALESCE(d.mbr_nnm, d.mbr_nm) AS mbrNnm,
+		  c.unit_room
+		FROM resident_chat_message a
+		INNER JOIN unit_resident b ON a.mbr_cd = b.mbr_cd
+		INNER JOIN unit c ON b.unit_id = c.unit_id
+		INNER JOIN member d ON b.mbr_cd = d.mbr_cd
+		WHERE a.resident_chat_room_id = #{residentChatRoomId}
+		  AND b.bldg_id = (
+		    SELECT bldg_id
+		    FROM resident_chat_room
+		    WHERE resident_chat_room_id = #{residentChatRoomId}
+		  )
+		ORDER BY a.rcm_time 
+	</select>
+
+	<insert id="insertChatMessage" parameterType="ResidentChatMessageVO">
+		<selectKey keyProperty="rcmId" resultType="string" order="BEFORE">
+		  SELECT LPAD(SEQ_RESIDENT_CHAT_ROOM_ID.NEXTVAL, 10, '0') FROM DUAL
+		</selectKey>
+		INSERT INTO RESIDENT_CHAT_MESSAGE(
+		RCM_ID
+		,RCM_CONT
+		,RCM_IMG 
+		,RESIDENT_CHAT_ROOM_ID 
+		,MBR_CD
+		)VALUES(
+		#{rcmId}
+		,#{rcmCont}
+		,#{rcmImg}
+		,#{residentChatRoomId}
+		,#{mbrCd}
+		)
+	</insert>
+
+
+
+	<select id="selectBuildingChatList" resultType="ResidentChatRoomVO">
+	SELECT DISTINCT A.RESIDENT_CHAT_ROOM_TITLE, A.RESIDENT_CHAT_ROOM_ID
+	FROM RESIDENT_CHAT_ROOM A
+	INNER JOIN CHAT_ROOM_IN B ON(A.RESIDENT_CHAT_ROOM_ID = B.RESIDENT_CHAT_ROOM_ID)
+	WHERE B.MBR_CD = #{mbrCd}
+	AND A.BLDG_ID = #{bldgId}
+	</select> 
+
+	<select id = "selectResidentBuildingList" resultType="BuildingVO">
+	SELECT DISTINCT A.BLDG_ID, A.BLDG_NM 
+	FROM BUILDING A
+	INNER JOIN UNIT_RESIDENT B ON (A.BLDG_ID = B.BLDG_ID)
+	WHERE B.MBR_CD= #{mbrCd}
+	</select>
+
+	<select id="selectResidentList" resultMap="unitResidentMap">
+	SELECT A.MBR_CD, COALESCE(B.MBR_NNM,B.MBR_NM) AS MBR_NNM, C.UNIT_ROOM
+	FROM UNIT_RESIDENT A
+	INNER JOIN MEMBER B ON (A.MBR_CD = B.MBR_CD)
+	INNER JOIN UNIT C ON (A.UNIT_ID = C.UNIT_ID)
+	WHERE A.BLDG_ID = #{bldgId}
+	</select>
+	
+    <select id="selectWhoIsSender" resultType="kr.or.ddit.resident.chating.dto.ChatMessageDTO">
+    	SELECT a.unit_room, COALESCE(c.mbr_nnm, c.mbr_nm) AS mbr_nnm
+		FROM unit a
+		INNER JOIN unit_resident b ON (a.unit_id = b.unit_id 
+		                                AND a.bldg_id = b.bldg_id)
+		INNER JOIN member c ON (b.mbr_cd = c.mbr_cd)
+		INNER JOIN resident_chat_room d ON (a.bldg_id = d.bldg_id)
+		WHERE d.resident_chat_room_id = #{residentChatRoomId}
+		  AND c.mbr_cd = #{mbrCd}
+    </select>
+
+</mapper>

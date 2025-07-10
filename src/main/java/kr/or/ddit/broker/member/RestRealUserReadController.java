@@ -1,0 +1,35 @@
+package kr.or.ddit.broker.member;
+
+import java.security.Principal;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
+import kr.or.ddit.vo.BrokerVO;
+import kr.or.ddit.vo.MemberVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RestController
+@RequestMapping("/rest/broker/myoffice/member")
+public class RestRealUserReadController {
+
+	@Autowired
+	BrokerAuthUnpackingService authUnpack;
+	
+	@GetMapping("/read")
+	public MemberVO realUser(
+//		@AuthenticationPrincipal RealUserWrapper<MemberVO> principal
+		Principal principal
+	) {
+		
+//		MemberVO broker  = principal.getRealUser();
+		String username = principal.getName();
+		BrokerVO broker = authUnpack.getBroker(username);
+		log.info("회원정보 toString(): {} ", broker);
+		return broker;
+	}	
+}

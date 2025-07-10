@@ -1,0 +1,26 @@
+package kr.or.ddit.building.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.vo.BuildingVO;
+import kr.or.ddit.vo.TenancyAccountVO;
+@Mapper
+public interface TenancyAccountMapper {
+	
+    // 1. 수납계좌 목록 조회 (건물 정보 포함)
+    List<TenancyAccountVO> selectAccountListByMbrCd(String mbrCd);
+
+    // 2. 수납계좌 등록
+    int insertAccount(TenancyAccountVO account);
+
+    // 3. 수납계좌 삭제 (soft delete)
+    int deleteAccount(TenancyAccountVO account);
+    // 4. 빌딩정보를 드롭다운으로 줄거얌
+    List<BuildingVO> selectBuildingListByMbrCd(String mbrCd);
+    //mbrCd로 rentalptyId를 꺼낼거얌
+    String findRentalPtyIdByMbrCd(String mbrCd);
+    
+    List<BuildingVO> selectBuildingListByRentalPtyId(String rentalPtyId);
+}

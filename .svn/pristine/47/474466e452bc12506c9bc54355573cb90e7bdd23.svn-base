@@ -1,0 +1,25 @@
+package kr.or.ddit.building.account.service;
+
+import java.util.List;
+
+import kr.or.ddit.vo.BuildingVO;
+import kr.or.ddit.vo.TenancyAccountVO;
+
+public interface TenancyAccountService {
+	
+    // 수납계좌 목록 조회
+    List<TenancyAccountVO> retrieveAccountList(String mbrCd);
+
+    // 수납계좌 등록
+    int createAccount(TenancyAccountVO account);
+
+    // 수납계좌 삭제 (soft delete)
+    int removeAccount(TenancyAccountVO account);
+    //건물정보얌
+    List<BuildingVO> retrieveBuildingListByMbrCd(String mbrCd);
+
+    String findRentalPtyIdByMbrCd(String mbrCd);
+        
+    List<BuildingVO> retrieveBuildingListByRentalPtyId(String rentalPtyId);
+
+}

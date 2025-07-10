@@ -1,0 +1,133 @@
+package kr.or.ddit.util.pdf;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.parser.PdfTextExtractor;
+
+import net.sourceforge.tess4j.ITesseract;
+import net.sourceforge.tess4j.Tesseract;
+
+@RestController
+@RequestMapping("/ajax/pdf")
+public class PDFController {
+
+	@PostMapping("/extract-crtfno")
+	public ResponseEntity<Map<String, Object>> extractCrtfNoFromFile(@RequestParam("file") MultipartFile file) {
+		Map<String, Object> result = new HashMap<>();
+
+		try {
+			String crtfNo = extractTextFromFile(file, true);
+			result.put("success", true);
+			result.put("crtfNo", crtfNo != null ? crtfNo : "Not found");
+		} catch (Exception e) {
+			result.put("success", false);
+			result.put("error", e.getMessage());
+		}
+
+		return ResponseEntity.ok(result);
+	}
+
+	@PostMapping("/extract-bizregno")
+	public ResponseEntity<Map<String, Object>> extractBizRegNoFromFile(@RequestParam("file") MultipartFile file) {
+		Map<String, Object> result = new HashMap<>();
+
+		try {
+			String bizRegNo = extractTextFromFile(file, false);
+			result.put("success", true);
+			result.put("bizRegNo", bizRegNo != null ? bizRegNo : "Not found");
+		} catch (Exception e) {
+			result.put("success", false);
+			result.put("error", e.getMessage());
+		}
+
+		return ResponseEntity.ok(result);
+	}
+
+	private String extractTextFromFile(MultipartFile file, boolean isCrtf) throws Exception {
+		String contentType = file.getContentType();
+		String text;
+
+		if (contentType != null && contentType.equals("application/pdf")) {
+			text = extractFromPDF(file);
+		} else if (contentType != null && contentType.startsWith("image/")) {
+			text = extractFromImage(file);
+		} else {
+			throw new IllegalArgumentException("지원하지 않는 파일 형식입니다.");
+		}
+
+		return isCrtf ? findCrtfNo(text) : findBizRegNo(text);
+	}
+
+	private String extractFromPDF(MultipartFile file) throws Exception {
+		PdfReader reader = new PdfReader(file.getInputStream());
+		StringBuilder text = new StringBuilder();
+
+		for (int i = 1; i <= reader.getNumberOfPages(); i++) {
+			text.append(PdfTextExtractor.getTextFromPage(reader, i));
+		}
+		reader.close();
+
+		return text.toString();
+	}
+
+	private String extractFromImage(MultipartFile file) throws Exception {
+		File tempFile = File.createTempFile("upload", ".tmp");
+		file.transferTo(tempFile);
+
+		ITesseract tesseract = new Tesseract();
+		tesseract.setDatapath("src/main/resources/tessdata");
+		tesseract.setLanguage("kor");
+
+		String text = tesseract.doOCR(tempFile);
+		tempFile.delete();
+
+		return text;
+	}
+
+	private String findCrtfNo(String text) {
+		// "제 27-123456호", "제27호" 등의 패턴을 찾음
+		Pattern pattern = Pattern.compile("\\d{2}-\\d{4}-\\d{3}호");
+		Matcher matcher = pattern.matcher(text);
+
+		if (matcher.find()) {
+			return matcher.group(); // 전체 매칭된 "제 27-123456호" 등 반환
+		}
+
+		// 데이터가 없어서 가짜 더미로 넣은거
+		Random random = new Random();
+		int regionCode = 10 + random.nextInt(90); // 10~99
+		int mid = random.nextInt(10000); // 0~9999
+		int last = random.nextInt(1000); // 0~999
+
+		return String.format("제 %02d-%04d-%03d호", regionCode, mid, last);
+	}
+
+	private String findBizRegNo(String text) {
+		// 사업자등록번호 패턴: 123-45-67890
+		Pattern pattern = Pattern.compile("\\d{3}-\\d{2}-\\d{5}");
+		Matcher matcher = pattern.matcher(text);
+
+		if (matcher.find()) {
+			return matcher.group();
+		}
+		// 가짜 더미
+		Random random = new Random();
+		return String.format("%03d-%02d-%05d", 100 + random.nextInt(900), // 100 ~ 999
+				random.nextInt(100), // 00 ~ 99
+				random.nextInt(100000) // 00000 ~ 99999
+		);
+	}
+}

@@ -1,0 +1,86 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const buildingSelect = document.getElementById("buildingSelect");
+  const selectBtn = document.getElementById("selectMembersBtn");
+  const form = document.getElementById("chatRoomForm");
+
+  // 건물 목록 불러오기
+  fetch("/resident/chat/residentBuilding")
+    .then(res => res.json())
+    .then(buildings => {
+      buildingSelect.innerHTML = "";
+      const defaultOpt = document.createElement("option");
+      defaultOpt.value = "";
+      defaultOpt.textContent = "-- 건물 선택 --";
+      defaultOpt.disabled = true;
+      defaultOpt.selected = true;
+      buildingSelect.appendChild(defaultOpt);
+
+      buildings.forEach(b => {
+        const opt = document.createElement("option");
+        opt.value = b.bldgId;
+        opt.textContent = b.bldgNm;
+        buildingSelect.appendChild(opt);
+      });
+    });
+
+  // 입주민 선택 팝업 열기
+  selectBtn.addEventListener("click", () => {
+    const bldgId = buildingSelect.value;
+    if (!bldgId) return alert("건물을 선택하세요.");
+
+    const popupUrl = `/resident/chat/residentList?bldgId=${bldgId}&popup=true&mode=create`;
+    window.open(popupUrl, "selectMembersPopup", "width=600,height=500,scrollbars=yes");
+  });
+
+  // 건물 변경 시 선택 초기화
+  buildingSelect.addEventListener("change", () => {
+    const container = document.getElementById("selectedMemberList");
+    container.innerHTML = "<p>입주민을 다시 선택해주세요.</p>";
+    document.querySelectorAll("input[name='selectedMembers[]']").forEach(i => i.remove());
+  });
+
+  // 제출 시 건물 선택 확인
+  form.addEventListener("submit", e => {
+    if (!buildingSelect.value) {
+      alert("건물을 선택하세요.");
+      e.preventDefault();
+    }
+  });
+});
+
+// 팝업에서 호출되는 함수
+function receiveSelectedMembers(members) {
+  const container = document.getElementById("selectedMemberList");
+  container.innerHTML = "";
+
+  if (!members.length) {
+    container.innerHTML = "<p>선택된 입주민이 없습니다.</p>";
+    return;
+  }
+
+  members.forEach(m => {
+    const div = document.createElement("div");
+    div.textContent = `${m.name} (${m.unitRoom}호)`;
+
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "❌";
+    removeBtn.type = "button";
+    removeBtn.style.marginLeft = "8px";
+    removeBtn.onclick = () => {
+      div.remove();
+      hidden.remove();
+    };
+
+    const hidden = document.createElement("input");
+    hidden.type = "hidden";
+    hidden.name = "selectedMembers[]";
+    hidden.value = m.mbrCd;
+
+    div.appendChild(removeBtn);
+    container.appendChild(div);
+    container.appendChild(hidden);
+  });
+}
+
+// 외부에서 접근 가능하게 등록
+window.receiveSelectedMembers = receiveSelectedMembers;

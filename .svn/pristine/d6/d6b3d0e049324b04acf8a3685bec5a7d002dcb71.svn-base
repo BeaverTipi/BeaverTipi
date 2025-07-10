@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.admin.mapper.CommonCodeMapper">
+<select id="selectCommonCodeList">
+SELECT CODE_GROUP
+	, CODE_NAME
+	, CODE_VALUE
+	, DESCRIPTION
+	, PARENT_CODE_GROUP
+	, PARENT_CODE_VALUE
+FROM COMMON_CODE
+WHERE CODE_GROUP =#{codeGroup}
+</select>
+
+</mapper>

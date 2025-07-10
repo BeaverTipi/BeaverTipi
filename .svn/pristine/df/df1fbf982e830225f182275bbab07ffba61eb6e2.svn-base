@@ -1,0 +1,46 @@
+package kr.or.ddit.building.product.service;
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.building.mapper.RentalOwnerProductMapper;
+import kr.or.ddit.vo.FacilityOptionVO;
+import kr.or.ddit.vo.ListingVO;
+
+@Service
+public class RentalOwnerProductServiceImpl implements RentalOwnerProductService {
+
+    @Autowired
+    private RentalOwnerProductMapper productMapper;
+
+    @Override
+    public int insertProduct(ListingVO listing) {
+        return productMapper.insertProduct(listing);
+    }
+
+    @Override
+    public List<ListingVO> selectProductList(String mbrCd) {
+        return productMapper.selectProductList(mbrCd);
+    }
+
+    @Override
+    public ListingVO selectProductById(String lstgId) {
+        return productMapper.selectProductById(lstgId);
+    }
+
+    @Override
+    public int updateProduct(ListingVO listing) {
+        return productMapper.updateProduct(listing);
+    }
+
+    @Override
+    public int deleteProduct(String lstgId) {
+        return productMapper.deleteProduct(lstgId);
+    }
+
+    @Override
+    public List<FacilityOptionVO> selectAllFacilityOptions() {
+        return productMapper.selectAllFacilityOptions();
+    }
+}

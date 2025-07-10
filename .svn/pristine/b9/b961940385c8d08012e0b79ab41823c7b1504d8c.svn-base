@@ -1,0 +1,183 @@
+1752045647678|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752045647679|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752045647679|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752046073080|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752046073081|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752046073081|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752048148374|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752048148374|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752048148374|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752048877780|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752048877781|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752048877781|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752049881414|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752049881414|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752049881415|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752049891675|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752049891676|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752049891676|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752049903837|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752049903837|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752049903837|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752049912811|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752049912811|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752049912811|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752050027576|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752050027576|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752050027577|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752050043899|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752050043899|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752050043899|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752050116242|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752050116242|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752050116243|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752050227885|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752050227885|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752050227885|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752050329980|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752050329980|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752050329980|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752051958543|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752051958543|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752051958544|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752052011162|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752052011162|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752052011162|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752052037113|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752052037113|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752052037113|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752052065203|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752052065203|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752052065203|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752052239277|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752052239278|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752052239278|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752052414673|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752052414673|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752052414673|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752052474421|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752052474422|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752052474422|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752052478695|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752052478695|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752052478695|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752052481400|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752052481401|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752052481401|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752052501967|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752052501967|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752052501968|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752052762068|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752052762068|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752052762068|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752052764764|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752052764764|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752052764765|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752052769483|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752052769483|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752052769483|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752053154798|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752053154799|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752053154799|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752053176702|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752053176702|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752053176702|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752053190957|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752053190957|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752053190957|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752053240060|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752053240060|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752053240060|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752053730960|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752053730960|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752053730960|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752053783579|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752053783580|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752053783580|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752053936517|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752053936517|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752053936518|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752054074666|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752054074666|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752054074666|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752054088920|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752054088920|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752054088920|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752054093608|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752054093608|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752054093608|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752054654861|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752054654862|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752054654862|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752054703641|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752054703641|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752054703642|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752054775104|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752054775104|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752054775104|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752054783023|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752054783024|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752054783024|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752055602136|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752055602137|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752055602137|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752055705322|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752055705322|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752055705322|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752055710255|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752055710256|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752055710256|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752056135568|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752056135569|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752056135569|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752056149537|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752056149537|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752056149538|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752056165011|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752056165012|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752056165012|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752056189942|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752056189942|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752056189943|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752056199981|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752056199982|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752056199982|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752056263783|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752056263783|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752056263784|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752056870905|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752056870905|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752056870906|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752057074912|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752057074912|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752057074913|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752057077789|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752057077789|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752057077790|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752057881970|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752057881971|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752057881971|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752057896945|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752057896945|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752057896945|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752057962771|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752057962771|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752057962772|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752059371143|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752059371144|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752059371144|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752059846213|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752059846213|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752059846213|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752060204167|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752060204167|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752060204167|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752114291559|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752114291560|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752114291560|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752114294511|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752114294512|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752114294512|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done
+1752114316804|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.spy.P6SpyFactory with options: com.p6spy.engine.spy.P6SpyOptions
+1752114316804|0|debug|connection -1|url ||Registered factory: com.p6spy.engine.logging.P6LogFactory with options: com.p6spy.engine.logging.P6LogOptions
+1752114316805|0|debug|connection -1|url ||com.p6spy.engine.spy.P6ModuleManager re/initiating modules done

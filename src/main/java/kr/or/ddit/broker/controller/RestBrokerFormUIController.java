@@ -1,0 +1,76 @@
+/** 
+ * <pre>
+ * << 개정이력(Modification Information) >>
+ *   
+ *   수정일      			수정자           수정내용
+ *  -----------   	-------------    ---------------------------
+ * 2025. 7. 10.     		김찬영            최초 생성
+ *
+ * </pre>
+ */
+package kr.or.ddit.broker.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import kr.or.ddit.broker.service.BrokerCommonCodeService;
+import kr.or.ddit.vo.CommonCodeVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 
+ * @author developer_KCY
+ * @since
+ * @see
+ *
+ *
+ */
+@Slf4j
+@RestController
+@RequestMapping("/rest/broker/myoffice/form")	//form uri는 read와 동일
+public class RestBrokerFormUIController {
+
+	@Autowired
+	BrokerCommonCodeService codeService;
+	
+//	@Value(${common-code-group})
+//	List<String> allowedGroups
+	
+	/** /rest/broker/myoffice/form/bankList
+	 * @return List<'BANK'>
+	 */
+	@GetMapping("/bankList")
+	public List<CommonCodeVO> bankList() {
+		log.debug("GET/rest/broker/myoffice/form/bankList 실행...");
+		return codeService.readBankList();
+	}
+	
+	/** /rest/broker/myoffice/form/lesserTypeList
+	 * @return List<'LSR'>
+	 */
+	@GetMapping("/lesserTypeList")
+	public List<CommonCodeVO> lesserTypeList() {
+		log.debug("GET/rest/broker/myoffice/form/lesserTypeList 실행...");
+		return codeService.readLesserTypeList();
+	}
+	
+	@PostMapping
+	public Map<String, List<CommonCodeVO>> commonCode(
+			@RequestBody Map<String, Map<String, String>> requestBody
+	) {
+		Map<String, String> codeGroupParams = requestBody.get("codeGroup");
+	    if (codeGroupParams == null || codeGroupParams.isEmpty())
+	        throw new IllegalArgumentException("codeGroup 파라미터가 비어있습니다.");
+	    
+		log.info("-----------------------------> {}", codeGroupParams);
+		Map<String, List<CommonCodeVO>> commonCodeMap = codeService.sortCommonCodes(codeGroupParams);
+		return commonCodeMap;
+	}
+}

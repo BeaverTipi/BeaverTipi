@@ -2,17 +2,16 @@ package kr.or.ddit.broker.lstg.controller;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.or.ddit.broker.BrokerAuthUnpackingUtility;
 import kr.or.ddit.broker.lstg.service.BrokerLstgService;
-import kr.or.ddit.vo.ListingPackVO;
+import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
+import kr.or.ddit.vo.ListingVO;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -27,33 +26,37 @@ public class RestBrokerLstgController {
 	BrokerLstgService service;
 	
 	@Autowired
-	BrokerAuthUnpackingUtility authUnpack;
+	BrokerAuthUnpackingService authUnpack;
 	
 	@GetMapping("/list")
-	public List<ListingPackVO> lstgList(
+	public List<ListingVO> lstgList(
 			Principal principal
 	) {
 		String username = principal.getName();
 		log.error("{}", username);
 		String mbrCd = authUnpack.getMbrCd(username);
-		List<ListingPackVO> lstgList= service.readLstgListByMbrCd(mbrCd);
+		
+		
+		List<ListingVO> lstgList= service.readLstgListByMbrCd(mbrCd);
 		log.error("{}", lstgList);
 		return lstgList;
 	}
 	
-	@GetMapping("/listing-details/{lstgId}")
-	public ListingPackVO lstgDetails(
+	@GetMapping("/listing-details")
+	public ListingVO lstgDetails(
 			Principal principal,
-			@PathVariable String lstgId
+			@RequestBody String lstgId
 	) {
 		
 		String username = principal.getName();
 		log.error("Handler::lstgDetails() -> username: {}", username);
 		String mbrCd = authUnpack.getMbrCd(username);
 		
-		Map<String, String> lstgDetailsParams = Map.of("mbrCd", mbrCd, "lstgId", lstgId);
-		ListingPackVO lstgDetails = service.readLstgDetails(lstgDetailsParams);
-		log.error("{}", lstgDetails);
-		return lstgDetails;
+//		Map<String, String> lstgDetailsParams = Map.of("mbrCd", mbrCd, "lstgId", lstgId);
+//		ListingPackVO lstgDetails = service.readLstgDetails(lstgDetailsParams);
+		
+		
+		log.error("{}", lstgId);
+		return null;
 	}
 }

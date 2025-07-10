@@ -1,0 +1,52 @@
+/** 
+ * <pre>
+ * << 개정이력(Modification Information) >>
+ *   
+ *   수정일      			수정자           수정내용
+ *  -----------   	-------------    ---------------------------
+ * 2025. 7. 9.     			김찬영            최초 생성
+ *
+ * </pre>
+ */
+package kr.or.ddit.broker.contract.controller;
+
+import java.security.Principal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import kr.or.ddit.broker.BrokerAuthUnpackingUtility;
+import kr.or.ddit.broker.contract.service.BrokerContractService;
+import kr.or.ddit.vo.BrokerVO;
+import kr.or.ddit.vo.ListingVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 
+ * @author developer_KCY
+ * @since
+ * @see
+ *
+ *
+ */
+@Slf4j
+@RestController
+@RequestMapping("/rest/broker/myoffice/cont/new")
+public class RestBrokerContractNewController {
+	
+	@Autowired
+	BrokerAuthUnpackingUtility authUnpack;
+	@Autowired
+	BrokerContractService service;
+	
+	@GetMapping("/listing")
+	public List<ListingVO> lstgListForContract(Principal principal) {
+		BrokerVO broker = authUnpack.getRealUser(principal);
+		log.error("{}", broker);
+		List<ListingVO> lstgList = service.readLstgListForContract(broker.getMbrCd());
+		return lstgList;
+	}
+}

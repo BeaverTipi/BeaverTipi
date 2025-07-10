@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.resident.mapper.UnitResidentMapper">
+	<resultMap type="UnitResidentVO" id="unitResidentMap">
+		<id column="unit_id" property="unitId" />
+		<result column="bldg_id" property="bldgId" />
+		<result column="move_in_dt" property="moveInDt" />
+		<result column="mbr_cd" property="mbrCd" />
+	<association property="building" javaType="kr.or.ddit.vo.BuildingVO">
+	  <id column="b_bldg_id" property="bldgId"/>
+	  <result column="b_bldg_nm" property="bldgNm"/>
+	  <result column="b_bldg_img_path" property="bldgImgPath"/>
+	  <result column="b_bldg_addr" property="bldgAddr"/>
+	  <result column="b_bldg_dtl_addr" property="bldgDtlAddr"/>
+	</association>
+</resultMap>
+
+<select id="selectByMember" parameterType="String" resultMap="unitResidentMap">
+	SELECT
+	  ur.unit_id,
+	  ur.bldg_id,
+	  ur.move_in_dt,
+	  ur.mbr_cd,
+	  b.bldg_id AS b_bldg_id,
+	  b.bldg_nm AS b_bldg_nm,
+	  b.bldg_img_path AS b_bldg_img_path,
+	  b.bldg_addr AS b_bldg_addr,
+	  b.bldg_dtl_addr AS b_bldg_dtl_addr
+	FROM unit_resident ur
+	JOIN building b ON ur.bldg_id = b.bldg_id
+	WHERE ur.mbr_cd = #{mbrCd}
+</select>
+
+</mapper>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="kr.or.ddit.main.mapper.SubscribeSubscriptionMapper">
+	<resultMap type="SolutionSubscriptionVO" id="solSubMap" autoMapping="true">
+		<id property="subsId" column="SUBS_ID"/>
+		<association property="solution" javaType="SolutionVO">
+			<id property="solId" column="SOL_ID"/>
+			<result property="solName" column="SOL_NAME"/>
+			<result property="solDesc" column="SOL_DESC"/>
+			<result property="solTrialDur" column="SOL_TRIAL_DUR"/>
+			<result property="solPrice" column="SOL_PRICE"/>
+			<result property="solCycle" column="SOL_CYCLE"/>
+			<result property="solIsActive" column="SOL_IS_ACTIVE"/>
+			<result property="solActiveGrpCd" column="SOL_ACTIVE_GRP_CD"/>
+			<result property="solGrpCd" column="SOL_GRP_CD"/>
+			<result property="solCcCd" column="SOL_CC_CD"/>
+		</association>
+	</resultMap>
+<select id="selectSolutionList">
+SELECT SOL_ID
+		, SOL_NAME
+		, SOL_DESC
+		, SOL_TRIAL_DUR
+		, SOL_PRICE
+		, SOL_CYCLE
+		, SOL_IS_ACTIVE
+		, SOL_ACTIVE_GRP_CD
+		, SOL_CC_CD
+		, SOL_GRP_CD
+FROM SOLUTION
+WHERE SOL_ACTIVE_GRP_CD='YNFG' AND SOL_IS_ACTIVE='Y'
+</select>
+<select id="selectSolution">
+SELECT SOL_ID
+		, SOL_NAME
+		, SOL_DESC
+		, SOL_TRIAL_DUR
+		, SOL_PRICE
+		, SOL_CYCLE
+		, SOL_IS_ACTIVE
+		, SOL_ACTIVE_GRP_CD
+		, SOL_CC_CD
+		, SOL_GRP_CD
+FROM SOLUTION
+WHERE SOL_ID=#{solId} 
+AND SOL_ACTIVE_GRP_CD='YNFG'
+AND SOL_IS_ACTIVE='Y'
+</select>
+<select id="selectSolutionSubscription">
+SELECT  SUBS_ID
+		, SUBS_AUTO_RENEW_GRP_CD
+		, SUBS_STATUS_GRP_CD
+		, SUBS_REVOKED_AT
+		, SUBS_AUTO_RENEW_YN
+		, SUBS_STATUS
+		, SUBS_EXPIRATION_DATE
+		, SUBS_UPDATED_DATE
+		, SUBS_STARTED_AT
+		, SOL_ID
+		, MBR_CD
+FROM SOLUTION_SUBSCRIPTION
+WHERE MBR_CD=#{username} 
+AND SUBS_STATUS='001' 
+AND SUBS_STATUS_GRP_CD = 'SBSTA'
+</select>
+
+<select id="selectCommonCodeSolutionList">
+SELECT SOL_ID
+		, SOL_NAME
+		, SOL_DESC
+		, SOL_TRIAL_DUR
+		, SOL_PRICE
+		, SOL_CYCLE
+		, SOL_IS_ACTIVE
+		, SOL_ACTIVE_GRP_CD
+		, SOL_CC_CD
+		, SOL_GRP_CD
+FROM SOLUTION
+WHERE SOL_ACTIVE_GRP_CD='YNFG'
+AND SOL_IS_ACTIVE='Y'
+AND SOL_GRP_CD='SOL'
+AND SOL_CC_CD=#{sol}
+</select>
+
+<select id="checkedSolutionSubscription" resultMap="solSubMap">
+SELECT  SUBS_ID
+		, SUBS_AUTO_RENEW_GRP_CD
+		, SUBS_STATUS_GRP_CD
+		, SUBS_REVOKED_AT
+		, SUBS_AUTO_RENEW_YN
+		, SUBS_STATUS
+		, SUBS_EXPIRATION_DATE
+		, SUBS_UPDATED_DATE
+		, SUBS_STARTED_AT
+		, SUBS_APPROVAL_YN
+		, SOL_ID
+		, MBR_CD
+		, SOL_NAME
+		, SOL_DESC
+		, SOL_TRIAL_DUR
+		, SOL_PRICE
+		, SOL_CYCLE
+		, SOL_IS_ACTIVE
+		, SOL_ACTIVE_GRP_CD
+		, SOL_GRP_CD
+		, SOL_CC_CD
+FROM SOLUTION_SUBSCRIPTION
+NATURAL JOIN SOLUTION
+WHERE SOL_CC_CD=#{solCcCd}
+AND MBR_CD=#{username} 
+AND SUBS_APPROVAL_YN = 'N'
+</select>
+<select id="checkedSolutionSubscriptionList" resultMap="solSubMap">
+SELECT  SUBS_ID
+		, SUBS_AUTO_RENEW_GRP_CD
+		, SUBS_STATUS_GRP_CD
+		, SUBS_REVOKED_AT
+		, SUBS_AUTO_RENEW_YN
+		, SUBS_STATUS
+		, SUBS_EXPIRATION_DATE
+		, SUBS_UPDATED_DATE
+		, SUBS_STARTED_AT
+		, SUBS_APPROVAL_YN
+		, SOL_ID
+		, MBR_CD
+		, SOL_NAME
+		, SOL_DESC
+		, SOL_TRIAL_DUR
+		, SOL_PRICE
+		, SOL_CYCLE
+		, SOL_IS_ACTIVE
+		, SOL_ACTIVE_GRP_CD
+		, SOL_GRP_CD
+		, SOL_CC_CD
+FROM SOLUTION_SUBSCRIPTION
+NATURAL JOIN SOLUTION
+WHERE MBR_CD=#{username} 
+AND SUBS_APPROVAL_YN = 'N'
+</select>
+<insert id="insertSolutionSubscription">
+INSERT INTO SOLUTION_SUBSCRIPTION(
+SUBS_ID
+, MBR_CD
+, SOL_ID
+, SUBS_STARTED_AT
+, SUBS_UPDATED_DATE
+, SUBS_EXPIRATION_DATE
+, SUBS_STATUS
+, SUBS_AUTO_RENEW_YN
+, SUBS_REVOKED_AT
+, SUBS_STATUS_GRP_CD
+, SUBS_AUTO_RENEW_GRP_CD
+, SUBS_APPROVAL_YN
+) VALUES(
+TRIM('S')||TRIM(TO_CHAR(SEQ_SUBS_ID.NEXTVAL,'00000'))
+, #{mbrCd}
+, #{solId}
+, #{subsStartedAt}
+, #{subsUpdatedDate}
+, #{subsExpirationDate}
+, #{subsStatus}
+, #{subsAutoRenewYn}
+, #{subsRevokedAt}
+, #{subsStatusGrpCd}
+, #{subsAutoRenewGrpCd}
+, #{subsApprovalYn}
+)
+</insert>
+
+<insert id="insertBroker">
+INSERT INTO BROKER(
+MBR_CD
+, BROK_NM
+, BROK_REG_NO
+, CRTF_NO
+, REPR_NM
+, REPR_TEL_NO
+, REG_DTM
+, BROK_ADDR2
+, BROK_ADDR1
+, AUTH_APPR_YN
+)VALUES(
+#{mbrCd}
+, #{brokNm}
+, #{brokRegNo}
+, #{crtfNo}
+, #{reprNm}
+, #{reprTelNo}
+, #{regDtm}
+, #{brokAddr2}
+, #{brokAddr1}
+, #{authApprYn}
+)
+
+</insert>
+
+<insert id="insertTenancy">
+INSERT INTO TENANCY(
+RENTAL_PTY_ID
+, RENTAL_PTY_BIZ_REG_FILE_PATH
+, RENTAL_PTY_REG_BLDG_CNT
+, RENTAL_PTY_ACCT_NO
+, RENTAL_PTY_BIZ_REG_NO
+, RENTAL_PTY_FILE
+, RENTAL_PTY_FILE2
+, LSR_YN_TYPE_CD
+, RENTAL_PTY_BANK_NM
+, MBR_CD
+, LSR_TYPE_GROUP_CD
+, AUTH_APPR_YN
+)VALUES(
+#{rentalPtyId}
+, #{rentalPtyBizRegFilePath}
+, #{rentalPtyRegBldgCnt}
+, #{rentalPtyAcctNo}
+, #{rentalPtyBizRegNo}
+, #{rentalPtyFile}
+, #{rentalPtyFile2}
+, #{lsrYnTypeCd}
+, #{rentalPtyBankNm}
+, #{mbrCd}
+, #{lsrTypeGroupCd}
+, #{authApprYn}
+)
+</insert>
+
+</mapper>

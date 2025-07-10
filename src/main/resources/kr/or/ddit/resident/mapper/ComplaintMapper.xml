@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.resident.mapper.ComplaintMapper">
+
+  <!-- 1) resultMap 정의 -->
+  <resultMap id="complaintMap" type="kr.or.ddit.vo.ResidentBoardVO">
+    <id     column="RSD_BRD_ID"       property="rsdBrdId"/>
+    <result column="OPEN_YN"          property="openYn"/>
+    <result column="REQ_STATUS"       property="reqStatus"/>
+    <result column="BRD_CODE"         property="brdCode"/>
+    <result column="BLDG_ID"          property="bldgId"/>
+    <result column="MBR_CD"           property="mbrCd"/>
+    <result column="BRD_TITL_NM"      property="rsdBrdTitl"/>
+    <result column="BRD_CONT"         property="rsdBrdCont"/>
+    <result column="BRD_PBLS_DTM"     property="rsdBrdPblsDtm"/>
+    <result column="BRD_VW_CNT"       property="rsdBrdCnt"/>
+    <result column="BRD_MOD_DTM"      property="rsdBrdModDtm"/>
+    <result column="BRD_DEL_YN"       property="brdDelYn"/>        <!-- BOARD 삭제 플래그 -->
+    <result column="RSD_BRD_DEL_YN"   property="rsdBrdDelYn"/>    <!-- RESIDENT_BOARD 삭제 플래그 -->
+    <result column="MBR_NNM"          property="mbrNnm"/>
+  </resultMap>
+
+  <!-- 2) 페이징 처리된 민원 목록 조회 -->
+  <select id="selectComplaintList"
+          resultMap="complaintMap"
+          parameterType="map">
+    SELECT * FROM (
+      SELECT ROWNUM AS RN, T.* FROM (
+        SELECT
+          R.RSD_BRD_ID,
+          R.OPEN_YN,
+          R.REQ_STATUS,
+          B.BRD_CODE,
+          B.BLDG_ID,
+          B.MBR_CD,
+          B.BRD_TITL_NM,
+          B.BRD_CONT,
+          B.BRD_PBLS_DTM,
+          B.BRD_VW_CNT,
+          B.BRD_MOD_DTM,
+          B.BRD_DEL_YN,
+          R.RSD_BRD_DEL_YN,
+          M.MBR_NNM
+        FROM RESIDENT_BOARD R
+        JOIN BOARD      B ON R.RSD_BRD_ID = B.BRD_NO
+        JOIN MEMBER     M ON B.MBR_CD     = M.MBR_CD
+        <where>
+          <!-- 소프트 삭제되지 않은 것만 -->
+          AND R.RSD_BRD_DEL_YN = 'N'
+          AND B.BRD_DEL_YN     = 'N'
+
+          <if test="search.bldgId != null and search.bldgId != ''">
+            AND B.BLDG_ID  = #{search.bldgId}
+          </if>
+          <if test="search.brdCode != null and search.brdCode != ''">
+            AND B.BRD_CODE = #{search.brdCode}
+          </if>
+          <if test="search.openYn != null and search.openYn != ''">
+            AND R.OPEN_YN  = #{search.openYn}
+          </if>
+          <if test="search.reqStatus != null and search.reqStatus != ''">
+            AND R.REQ_STATUS = #{search.reqStatus}
+          </if>
+          <if test="search.searchWord != null and search.searchWord != ''">
+            <choose>
+              <when test="search.searchType == 'title'">
+                AND B.BRD_TITL_NM LIKE '%'||#{search.searchWord}||'%'
+              </when>
+              <when test="search.searchType == 'content'">
+                AND B.BRD_CONT   LIKE '%'||#{search.searchWord}||'%'
+              </when>
+              <otherwise>
+                AND (
+                  B.BRD_TITL_NM LIKE '%'||#{search.searchWord}||'%'
+                  OR B.BRD_CONT   LIKE '%'||#{search.searchWord}||'%'
+                )
+              </otherwise>
+            </choose>
+          </if>
+        </where>
+        ORDER BY B.BRD_PBLS_DTM DESC
+      ) T
+      WHERE ROWNUM &lt;= #{paging.lastRecordIndex}
+    )
+    WHERE RN &gt;= #{paging.firstRecordIndex}
+  </select>
+
+  <!-- 3) 페이징 전 전체 건수 조회 -->
+  <select id="selectComplaintTotalCount"
+          parameterType="kr.or.ddit.util.page.SimpleSearch"
+          resultType="int">
+    SELECT COUNT(*)
+      FROM RESIDENT_BOARD R
+      JOIN BOARD B ON R.RSD_BRD_ID = B.BRD_NO
+    <where>
+      AND R.RSD_BRD_DEL_YN = 'N'
+      AND B.BRD_DEL_YN     = 'N'
+      <if test="bldgId != null and bldgId != ''">
+        AND B.BLDG_ID  = #{bldgId}
+      </if>
+      <if test="brdCode != null and brdCode != ''">
+        AND B.BRD_CODE = #{brdCode}
+      </if>
+      <if test="openYn != null and openYn != ''">
+        AND R.OPEN_YN  = #{openYn}
+      </if>
+      <if test="reqStatus != null and reqStatus != ''">
+        AND R.REQ_STATUS = #{reqStatus}
+      </if>
+      <if test="searchWord != null and searchWord != ''">
+        <choose>
+          <when test="searchType == 'title'">
+            AND B.BRD_TITL_NM LIKE '%'||#{searchWord}||'%'
+          </when>
+          <when test="searchType == 'content'">
+            AND B.BRD_CONT   LIKE '%'||#{searchWord}||'%'
+          </when>
+          <otherwise>
+            AND (
+              B.BRD_TITL_NM LIKE '%'||#{searchWord}||'%'
+              OR B.BRD_CONT   LIKE '%'||#{searchWord}||'%'
+            )
+          </otherwise>
+        </choose>
+      </if>
+    </where>
+  </select>
+
+  <!-- 4) 단건 상세 조회 -->
+  <select id="selectComplaintById"
+          parameterType="String"
+          resultMap="complaintMap">
+    SELECT
+      R.RSD_BRD_ID,
+      R.OPEN_YN,
+      R.REQ_STATUS,
+      B.BRD_CODE,
+      B.BLDG_ID,
+      B.MBR_CD,
+      B.BRD_TITL_NM,
+      B.BRD_CONT,
+      B.BRD_PBLS_DTM,
+      B.BRD_VW_CNT,
+      B.BRD_MOD_DTM,
+      B.BRD_DEL_YN,
+      R.RSD_BRD_DEL_YN,
+      M.MBR_NNM
+    FROM RESIDENT_BOARD R
+    JOIN BOARD  B ON R.RSD_BRD_ID = B.BRD_NO
+    JOIN MEMBER M ON B.MBR_CD     = M.MBR_CD
+    <where>
+      R.RSD_BRD_ID       = #{rsdBrdId}
+      AND R.RSD_BRD_DEL_YN = 'N'
+      AND B.BRD_DEL_YN     = 'N'
+    </where>
+  </select>
+
+  <!-- 5) PK 채번용 시퀀스 조회 -->
+  <select id="getNextComplaintId" resultType="String">
+    SELECT TO_CHAR(SEQ_RSD_BRD_ID.NEXTVAL) FROM DUAL
+  </select>
+
+  <!-- 6) INSERT: BOARD -->
+  <insert id="insertComplaintBoard" parameterType="kr.or.ddit.vo.ResidentBoardVO">
+    INSERT INTO BOARD (
+      BRD_NO, BRD_CODE, BLDG_ID, MBR_CD,
+      BRD_TITL_NM, BRD_CONT, BRD_PBLS_DTM,
+      BRD_VW_CNT, BRD_DEL_YN
+    ) VALUES (
+      #{rsdBrdId}, #{brdCode}, #{bldgId}, #{mbrCd},
+      #{rsdBrdTitl}, #{rsdBrdCont}, #{rsdBrdPblsDate},
+      0, 'N'
+    )
+  </insert>
+
+  <!-- 7) INSERT: RESIDENT_BOARD (삭제 플래그 기본 'N') -->
+  <insert id="insertComplaint" parameterType="kr.or.ddit.vo.ResidentBoardVO">
+    INSERT INTO RESIDENT_BOARD (
+      RSD_BRD_ID, BRD_CODE, MBR_CD, BLDG_ID,
+      OPEN_YN, REQ_STATUS, RSD_BRD_DEL_YN
+    ) VALUES (
+      #{rsdBrdId}, #{brdCode}, #{mbrCd}, #{bldgId},
+      #{openYn}, #{reqStatus}, 'N'
+    )
+  </insert>
+
+  <!-- 8) UPDATE: BOARD -->
+  <update id="updateComplaintBoard" parameterType="kr.or.ddit.vo.ResidentBoardVO">
+    UPDATE BOARD
+       SET BRD_TITL_NM  = #{rsdBrdTitl},
+           BRD_CONT      = #{rsdBrdCont},
+           BRD_MOD_DTM   = #{rsdBrdModDate}
+     WHERE BRD_NO       = #{rsdBrdId}
+  </update>
+
+  <!-- 9) UPDATE: RESIDENT_BOARD -->
+  <update id="updateComplaint" parameterType="kr.or.ddit.vo.ResidentBoardVO">
+    UPDATE RESIDENT_BOARD
+       SET OPEN_YN      = #{openYn},
+           REQ_STATUS   = #{reqStatus}
+     WHERE RSD_BRD_ID   = #{rsdBrdId}
+  </update>
+
+  <!-- 10) 소프트 삭제 -->
+  <update id="softDeleteComplaint" parameterType="String">
+    UPDATE BOARD
+       SET BRD_DEL_YN = 'Y'
+     WHERE BRD_NO     = #{rsdBrdId}
+  </update>
+  <update id="softDeleteResidentBoard" parameterType="String">
+    UPDATE RESIDENT_BOARD
+       SET RSD_BRD_DEL_YN = 'Y'
+     WHERE RSD_BRD_ID      = #{rsdBrdId}
+  </update>
+
+</mapper>

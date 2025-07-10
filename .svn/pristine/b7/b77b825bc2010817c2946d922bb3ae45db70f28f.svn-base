@@ -1,0 +1,31 @@
+package kr.or.ddit.main.subscribe.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.main.mapper.SubscribeSubscriptionMapper;
+import kr.or.ddit.vo.SolutionSubscriptionVO;
+import kr.or.ddit.vo.SolutionVO;
+import lombok.RequiredArgsConstructor;
+@Service
+@RequiredArgsConstructor
+public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionService {
+	private final SubscribeSubscriptionMapper mapper;
+	@Override
+	public List<SolutionVO> readSolutionList() {
+		// TODO Auto-generated method stub
+		return mapper.selectSolutionList();
+	}
+	@Override
+	public SolutionSubscriptionVO readSolutionSubscription(String username) {
+		// TODO Auto-generated method stub
+		return mapper.selectSolutionSubscription(username);
+	}
+	@Override
+	public SolutionVO readSolution(String solId) {
+		// TODO Auto-generated method stub
+		return mapper.selectSolution(solId);
+	}
+
+}

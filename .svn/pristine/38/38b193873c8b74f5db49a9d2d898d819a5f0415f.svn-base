@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.main.mapper.KakaoMapDataMapper">
+<select id="selectNotLatLngList" resultType="kr.or.ddit.vo.ListingVO">
+ 	SELECT
+ 		LSTG_ID
+ 		LSTG_ADD
+ 	FROM
+ 		LISTING
+ 	WHERE 
+ 		LSTG_LAT IS NULL OR LSTG_LNG IS NULL
+</select>
+<update id="updateLatLng">
+	UPDATE
+		LISTING
+	SET
+		LSTG_LAT = #{lstgLat},
+        LSTG_LNG = #{lstgLng}
+    WHERE
+    	LSTG_ID = #{lstgId}
+</update>
+
+<select id="selectLatLngMarkList" resultType="kr.or.ddit.vo.ListingVO">
+ 	SELECT
+ 		LSTG_ADD
+ 		, LSTG_LAT
+ 		, LSTG_LNG
+ 	FROM 
+ 		LISTING
+</select>
+
+
+<select id="selectCategoryByListingList" resultType="kr.or.ddit.vo.ListingVO">
+	select 
+		lstg_id
+		, mbr_cd
+		, lstg_type_code2
+		, lstg_add, lstg_add2
+		, lstg_ex_area
+		, lstg_gr_area
+		, lstg_room_cnt
+		, lstg_room_num
+		, lstg_dst
+		, lstg_type_sale
+		, lstg_lease
+		, lstg_lease_m
+		, lstg_lease_amt
+		, lstg_floor
+		, lstg_park_yn
+		, lstg_lat
+		, lstg_lng
+		, lstg_del
+		, lstg_reg_date
+		, lstg_prod_stat
+		, lstg_nm
+		, lstg_type_code1
+		, rental_pty_id
+	from listing 
+</select>
+
+
+</mapper>

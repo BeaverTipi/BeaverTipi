@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.admin.mapper.ManageMemberMapper">
+	<resultMap type="MemberVO" id="memberMap" autoMapping="true">
+		<id property="mbrCd" column="MBR_CD" />
+		<collection property="memRoleList" javaType="list"
+			ofType="kr.or.ddit.vo.RoleAchievedVO" column="MBR_CD"
+			select="selectRolesForMember" />
+	</resultMap>
+
+	<select id="selectRolesForMember" resultType="kr.or.ddit.vo.RoleAchievedVO">
+		SELECT USER_ROLE_ID, MBR_CD
+		FROM ROLE_ACHIEVED
+		WHERE MBR_CD = #{mbrCd}
+	</select>
+
+	<sql id="memberSearchCondition">
+		<where>
+			<if test="detailSearch != null">
+				<if test="detailSearch.mbrId != null and detailSearch.mbrId != ''">
+					AND MBR.MBR_ID LIKE '%' || #{detailSearch.mbrId} || '%'
+				</if>
+				<if test="detailSearch.mbrFrstRegDtFrom != null">
+					AND MBR.MBR_FRST_REG_DT <![CDATA[ >= ]]> #{detailSearch.mbrFrstRegDtFrom}
+				</if>
+				<if test="detailSearch.mbrFrstRegDtTo != null">
+					AND MBR.MBR_FRST_REG_DT <![CDATA[ <= ]]> #{detailSearch.mbrFrstRegDtTo}
+                </if>
+				<if test="detailSearch.mbrStatusCode != null and detailSearch.mbrStatusCode != ''">
+					AND MBR.MBR_STATUS_CODE = #{detailSearch.mbrStatusCode}
+				</if>
+				<if test="detailSearch.mbrEmlAddr != null and detailSearch.mbrEmlAddr != ''">
+					AND MBR.MBR_EML_ADDR LIKE '%' || #{detailSearch.mbrEmlAddr} || '%'
+				</if>
+				<if test="detailSearch.userRoleId != null and detailSearch.userRoleId != ''">
+					AND MBR.MBR_CD IN (
+						SELECT RA_SUB.MBR_CD
+						FROM ROLE_ACHIEVED RA_SUB
+						WHERE RA_SUB.USER_ROLE_ID = #{detailSearch.userRoleId}
+						)
+				</if>
+			</if>
+			</where>
+	</sql>
+
+	<select id="selectMemberList"
+			parameterType="kr.or.ddit.util.page.PaginationInfo"
+			resultMap="memberMap">
+		SELECT *
+		FROM (
+			SELECT ROWNUM rn, inner_member.*
+			FROM (
+				SELECT
+					MBR.MBR_CD,
+					MBR.MBR_ID,
+					MBR.MBR_PW,
+					MBR.MBR_NM,
+					MBR.MBR_NNM,
+					MBR.MBR_TELNO,
+					MBR.MBR_EML_ADDR,
+					MBR.MBR_BASIC_ADDR,
+					MBR.MBR_DETAIL_ADDR,
+					MBR.MBR_PROFIL_IMAGE,
+					MBR.MBR_FRST_REG_DT,
+					MBR.MBR_STATUS_CODE,
+					MBR.MBR_DELETE_DATE,
+					MBR.MBR_ZIP
+				FROM MEMBER MBR
+				<include refid="memberSearchCondition" /> ORDER BY MBR.MBR_FRST_REG_DT DESC ) inner_member
+			WHERE ROWNUM &lt;= #{lastRecordIndex}
+		)
+		WHERE rn &gt;= #{firstRecordIndex}
+	</select>
+
+	<select id="selectTotalCount"
+			parameterType="kr.or.ddit.util.page.PaginationInfo"
+			resultType="int">
+		SELECT COUNT(*)
+		FROM MEMBER MBR
+		<include refid="memberSearchCondition" /> </select>
+
+	<update id="updateMemberStatus" parameterType="kr.or.ddit.vo.MemberVO">
+		UPDATE MEMBER
+		SET
+		MBR_STATUS_CODE = #{mbrStatusCode}
+		WHERE
+		MBR_CD = #{mbrCd}
+	</update>
+
+</mapper>

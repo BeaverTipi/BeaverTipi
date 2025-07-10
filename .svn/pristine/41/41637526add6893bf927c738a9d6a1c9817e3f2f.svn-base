@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.util.file.mapper.FileMapper">
+<insert id="insertFile">
+INSERT INTO FILE(
+		FILE_ID
+		, FILE_ATTACH_SEQ
+		, FILE_SOURCE_REF
+		, FILE_ORIGINALNAME
+		, FILE_SAVEDNAME
+		, FILE_MIME
+		, FILE_SIZE
+		, DOC_TYPE_CD
+		, FILE_PATH_URL
+		, REG_DTM
+	)VALUES(
+		#{fileId}
+		, #{fileAttachSeq}
+		, #{fileSourceRef}
+		, #{fileOriginalname}
+		, #{fileSavedname}
+		, #{fileMime}
+		, #{fileSize}
+		, #{docTypeCd}
+		, #{filePathUrl}
+		, #{regDtm}
+	)
+</insert>
+<select id="selectMaxAttachSeq" >
+SELECT 
+		FILE_ID
+		, FILE_ATTACH_SEQ
+		, FILE_SOURCE_REF
+		, FILE_SAVEDNAME
+		, FILE_MIME
+		, FILE_SIZE
+		, DOC_TYPE_CD
+		, FILE_PATH_URL
+		, REG_DTM
+		, FILE_SOURCE_ID
+FROM FILE
+WHERE FILE_SOURCE_REF=#{fileSourceRef} 
+AND FILE_SOURCE_ID = #{fileSourceId}
+</select>
+<select id="selectFilesOlderThanFiveYears">
+    SELECT
+		    FILE_ID
+		    , FILE_ATTACH_SEQ
+		    , FILE_SOURCE_REF
+		    , FILE_SAVEDNAME
+		    , FILE_MIME
+		    , FILE_SIZE
+		    , DOC_TYPE_CD
+		    , FILE_PATH_URL
+		    , REG_DTM
+		    , FILE_SOURCE_ID
+    FROM FILE
+    <![CDATA[
+    WHERE REG_DTM <= ADD_MONTHS(SYSDATE, -60)
+    ]]>
+</select>
+<select id="selectFile">
+	SELECT 
+		    FILE_ID
+		    , FILE_ATTACH_SEQ
+		    , FILE_SOURCE_REF
+		    , FILE_SAVEDNAME
+		    , FILE_MIME
+		    , FILE_SIZE
+		    , DOC_TYPE_CD
+		    , FILE_PATH_URL
+		    , REG_DTM
+	FROM FILE
+	WHERE FILE_ID = #{fileId}
+</select>
+<select id="selectFileList" parameterType="kr.or.ddit.vo.FileVO" resultType="kr.or.ddit.vo.FileVO">
+    SELECT *
+    FROM FILE
+    WHERE FILE_SOURCE_REF = #{fileSourceRef}
+    <if test="fileSourceId != null">
+        AND FILE_SOURCE_ID = #{fileSourceId}
+    </if>
+    <if test="docTypeCd != null">
+        AND DOC_TYPE_CD = #{docTypeCd}
+    </if>
+</select>
+
+<delete id="deleteFileById">
+    DELETE FROM FILE WHERE FILE_ID = #{fileId}
+</delete>
+<update id="updateFile" >
+UPDATE FILE
+SET
+	FILE_SOURCE_ID = #{fileSourceId}
+	, FILE_ATTACH_SEQ = #{fileAttachSeq}
+	, FILE_SOURCE_REF = #{fileSourceRef}
+	, FILE_SAVEDNAME = #{fileSavedname}
+	, FILE_MIME = #{fileMime}
+	, FILE_SIZE = #{fileSize}
+	, DOC_TYPE_CD = #{docTypeCd}
+	, FILE_PATH_URL = #{filePathUrl}
+	, REG_DTM = #{regDtm}
+WHERE FILE_ID = #{fileId}
+</update>
+
+</mapper>

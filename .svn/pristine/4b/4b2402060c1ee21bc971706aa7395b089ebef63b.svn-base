@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.main.mapper.KakaoMapDataMapper">
+<select id="selectNotLatLngList" resultType="kr.or.ddit.vo.ListingVO">
+ 	SELECT
+ 		LSTG_ID,
+ 		LSTG_ADD
+ 	FROM
+ 		LISTING
+ 	WHERE 
+ 		LSTG_LAT IS NULL OR LSTG_LNG IS NULL
+</select>
+<update id="updateLatLng">
+	UPDATE
+		LISTING
+	SET
+		LSTG_LAT = #{lstgLat},
+        LSTG_LNG = #{lstgLng}
+    WHERE
+    	LSTG_ID = #{lstgId}
+</update>
+
+<select id="selectLatLngMarkList" resultType="kr.or.ddit.vo.ListingVO">
+ 	SELECT
+ 		LSTG_ID,
+ 		LSTG_ADD,
+ 		LSTG_LAT,
+ 		LSTG_LNG,
+ 		LSTG_NM,
+ 		LSTG_EX_AREA,
+ 		LSTG_LEASE,
+ 		LSTG_LEASE_M,
+ 		LSTG_TYPE_CODE1,
+ 		LSTG_POSTAL
+ 	FROM 
+ 		LISTING
+ 	WHERE
+ 		LSTG_LAT BETWEEN #{swLat} AND #{neLat}
+ 		AND LSTG_LNG BETWEEN #{swLng} AND #{neLng}
+	 	<if test="category != null">
+	  		AND lstg_type_code1 = #{category}
+		</if>
+</select>
+
+
+<select id="selectCategory" resultType="kr.or.ddit.vo.ListingVO">
+	SELECT
+		LSTG_ID,
+		MBR_CD,
+		LSTG_TYPE_CODE2,
+		LSTG_ADD,
+		LSTG_ADD2,
+		LSTG_NM,
+		LSTG_TYPE_CODE1,
+		RENTAL_PTY_ID
+	FROM
+		LISTING
+	WHERE
+		LSTG_TYPE_CODE1 = #{lstgTypeCode1}
+</select>
+
+<select id="selectListingDetailList" resultType="kr.or.ddit.vo.ListingVO">
+	SELECT
+		LSTG_ID, 
+		MBR_CD, 
+		LSTG_TYPE_CODE2, 
+		LSTG_ADD, 
+		LSTG_ADD2, 
+		LSTG_EX_AREA, 
+		LSTG_GR_AREA, 
+		LSTG_ROOM_CNT, 
+		LSTG_ROOM_NUM, 
+		LSTG_DST, 
+		LSTG_TYPE_SALE, 
+		LSTG_LEASE, 
+		LSTG_LEASE_M, 
+		LSTG_LEASE_AMT, 
+		LSTG_FLOOR, 
+		LSTG_PARK_YN, 
+		LSTG_REG_DATE, 
+		LSTG_NM, 
+		LSTG_TYPE_CODE1, 
+		RENTAL_PTY_ID, 
+		LSTG_POSTAL
+	FROM
+		LISTING
+	WHERE
+		LSTG_ID = #{lstgId}
+		AND LSTG_DEL ='1'
+</select>
+
+
+</mapper>

@@ -1,0 +1,19 @@
+package kr.or.ddit.main.subscribe.service;
+
+import java.util.List;
+
+import kr.or.ddit.vo.BrokerVO;
+import kr.or.ddit.vo.SolutionSubscriptionVO;
+import kr.or.ddit.vo.SolutionVO;
+import kr.or.ddit.vo.TenancyVO;
+
+public interface SubscribeSubsriptionService {
+	public SolutionSubscriptionVO readSolutionSubscription(String username);
+	public List<SolutionVO>	readSolutionList();
+	public SolutionVO readSolution(String solId);
+	public void SolutionSubscription(SolutionSubscriptionVO solitionSubVO);
+	public List<SolutionVO> readCommonCodeSolutionList(Integer sol);
+	public void createBroker(BrokerVO broker);
+	
+	public void createTenancy(TenancyVO tenancy);
+}

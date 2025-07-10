@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.ddit.building.mapper.RentalOwnerProductMapper">
+
+    <!-- 매물 등록 -->
+    <insert id="insertProduct" parameterType="ListingVO">
+        INSERT INTO LISTING (
+            LSTG_ID,
+            MBR_CD,
+            RENTAL_PTY_ID,
+            LSTG_TYPE_CODE1,
+            LSTG_TYPE_CODE2,
+            LSTG_ADD,
+            LSTG_ADD2,
+            LSTG_EX_AREA,
+            LSTG_GR_AREA,
+            LSTG_ROOM_CNT,
+            LSTG_ROOM_NUM,
+            LSTG_NM,
+            LSTG_DST,
+            LSTG_TYPE_SALE,
+            LSTG_LEASE,
+            LSTG_LEASE_M,
+            LSTG_LEASE_AMT,
+            LSTG_FLOOR,
+            LSTG_PARK_YN,
+            LSTG_LAT,
+            LSTG_LNG,
+            LSTG_DEL,
+            LSTG_REG_DATE,
+            LSTG_PROD_STAT,
+            LSTG_POSTAL
+        ) VALUES (
+            'L' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(SEQ_LSTG_ID.NEXTVAL, 5, '0'),
+            #{mbrCd},
+            #{rentalPtyId},
+            #{lstgTypeCode1},
+            #{lstgTypeCode2},
+            #{lstgAdd},
+            #{lstgAdd2},
+            #{lstgExArea},
+            #{lstgGrArea},
+            #{lstgRoomCnt},
+            #{lstgRoomNum},
+            #{lstgNm},
+            #{lstgDst},
+            #{lstgTypeSale},
+            #{lstgLease},
+            #{lstgLeaseM},
+            #{lstgLeaseAmt},
+            #{lstgFloor},
+            #{lstgParkYn},
+            #{lstgLat},
+            #{lstgLng},
+            #{lstgDel},
+            SYSDATE,
+            #{lstgProdStat},
+            #{lstgPostal}
+        )
+    </insert>
+
+    <!-- 매물 목록 조회 -->
+    <select id="selectProductList" parameterType="string" resultType="ListingVO">
+        SELECT 
+            L.LSTG_ID,
+            L.MBR_CD,
+            L.LSTG_NM,
+            L.LSTG_DST,
+            L.LSTG_PROD_STAT,
+            (
+                SELECT LI.LSTG_IMG_URL
+                FROM LISTING_IMAGE LI
+                WHERE LI.LSTG_ID = L.LSTG_ID
+                AND ROWNUM = 1
+            ) AS lstgImgUrl
+        FROM LISTING L
+        WHERE L.MBR_CD = #{mbrCd}
+        ORDER BY L.LSTG_ID DESC
+    </select>
+
+    <!-- 매물 상세 조회 -->
+    <select id="selectProductById" parameterType="string" resultType="ListingVO">
+        SELECT 
+            LSTG_ID,
+            MBR_CD,
+            RENTAL_PTY_ID,
+            LSTG_TYPE_CODE1,
+            LSTG_TYPE_CODE2,
+            LSTG_ADD,
+            LSTG_ADD2,
+            LSTG_EX_AREA,
+            LSTG_GR_AREA,
+            LSTG_ROOM_CNT,
+            LSTG_ROOM_NUM,
+            LSTG_NM,
+            LSTG_DST,
+            LSTG_TYPE_SALE,
+            LSTG_LEASE,
+            LSTG_LEASE_M,
+            LSTG_LEASE_AMT,
+            LSTG_FLOOR,
+            LSTG_PARK_YN,
+            LSTG_LAT,
+            LSTG_LNG,
+            LSTG_DEL,
+            LSTG_REG_DATE,
+            LSTG_PROD_STAT
+        FROM LISTING
+        WHERE LSTG_ID = #{lstgId}
+    </select>
+
+    <!-- 매물 수정 -->
+    <update id="updateProduct" parameterType="ListingVO">
+        UPDATE LISTING
+        SET
+            LSTG_TYPE_CODE1   = #{lstgTypeCode1},
+            LSTG_TYPE_CODE2   = #{lstgTypeCode2},
+            LSTG_ADD          = #{lstgAdd},
+            LSTG_ADD2         = #{lstgAdd2},
+            LSTG_EX_AREA      = #{lstgExArea},
+            LSTG_GR_AREA      = #{lstgGrArea},
+            LSTG_ROOM_CNT     = #{lstgRoomCnt},
+            LSTG_ROOM_NUM     = #{lstgRoomNum},
+            LSTG_NM           = #{lstgNm},
+            LSTG_DST          = #{lstgDst},
+            LSTG_TYPE_SALE    = #{lstgTypeSale},
+            LSTG_LEASE        = #{lstgLease},
+            LSTG_LEASE_M      = #{lstgLeaseM},
+            LSTG_LEASE_AMT    = #{lstgLeaseAmt},
+            LSTG_FLOOR        = #{lstgFloor},
+            LSTG_PARK_YN         = #{lstgParkYn},
+            LSTG_LAT          = #{lstgLat},
+            LSTG_LNG          = #{lstgLng},
+            LSTG_DEL          = #{lstgDel},
+            LSTG_PROD_STAT    = #{lstgProdStat}
+        WHERE LSTG_ID = #{lstgId}
+    </update>
+
+    <!-- 매물 삭제 -->
+    <delete id="deleteProduct" parameterType="string">
+        DELETE FROM LISTING
+        WHERE LSTG_ID = #{lstgId}
+    </delete>
+
+    <!-- 시설 옵션 전체 조회 -->
+    <select id="selectAllFacilityOptions" resultType="kr.or.ddit.vo.FacilityOptionVO">
+        SELECT 
+            FAC_OPT_ID,
+            FAC_OPT_TYPE_CD,
+            FAC_OPT_NM,
+            FAC_OPT_DESC,
+            FAC_TYPE_GROUP_CD
+        FROM FACILITY_OPTION
+        ORDER BY FAC_TYPE_GROUP_CD, FAC_OPT_NM
+    </select>
+
+</mapper>

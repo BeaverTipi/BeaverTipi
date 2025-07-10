@@ -1,0 +1,157 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="jakarta.tags.core" prefix="c"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>BeaverTipi 메인</title>
+<!-- 
+ * == 개정이력(Modification Information) ==
+ *   
+ *   수정일               수정자           수정내용
+ *  ============      ============== =======================
+ *  2025-07-07           김아린           최초 생성
+ *
+-->
+</head>
+<body>
+
+	<!-- 주택 관리 플랜 -->
+	<section class="py-5 bg-white">
+		<div class="container">
+			<div class="row align-items-center mb-5">
+				<div class="col-md-6">
+					<img
+						src="${pageContext.request.contextPath}/volt/assets/img/subscribe/임대인페이지.png"
+						class="img-fluid" alt="임대인">
+				</div>
+				<div class="col-md-6">
+					<h2 class="fw-bold mb-3">주택 관리 플랜</h2>
+
+					<p class="fw-bold fs-5 mb-4">
+						번거로운 매물, 건물 관리<br> <span class="text-warning">beavertipi</span>를
+						통해 손쉽게 관리하세요.
+					</p>
+
+					<p class="text-muted">
+						현재처럼 엑셀로 매물, 건물, 입주/퇴거 관리를 하시느라 지치셨다면<br> 이제 계약, 알림, 입주/퇴거까지
+						전자계약 시스템으로 간편하게 해결하세요.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 부동산 가맹 (전자계약) -->
+	<section class="py-5 bg-light">
+		<div class="container">
+			<div class="row align-items-center mb-5">
+				<div class="col-md-6">
+					<h2 class="fw-bold mb-3">공인중개 가맹 플랜</h2>
+					<p class="fw-bold fs-5 mb-4">
+						<span class="text-warning">beavertipi</span>를 통한 전자계약으로<br>지금
+						앉아 있는 그 자리에서 편안하게
+					</p>
+
+					<p class="text-muted">
+						실거래가 신고, 확정일자, 임대차 신고 등이 자동으로 처리되어<br> 전자공인중개사 서류 제출도 가능해집니다.
+					</p>
+				</div>
+				<div class="col-md-6 text-center">
+					<img
+						src="${pageContext.request.contextPath}/volt/assets/img/subscribe/중개인페이지.png"
+						class="img-fluid border border-dark border-1" alt="중개인페이지">
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 매물 홍보 -->
+	<section class="py-5 bg-white">
+		<div class="container">
+			<div class="row align-items-start mb-4">
+				<div class="col-md-6">
+					<h2 class="fw-bold mb-3">공인중개 프리미엄 가맹 플랜</h2>
+					<p class="fw-bold fs-5 mb-4">
+						<span class="text-warning">beavertipi</span> 만의 매물 홍보
+					</p>
+
+					<p class="text-muted">
+						공인중개사무소 프리미엄 가입 시<br> 고품질 자체채널을 통한 매물 라이브 연동으로<br> 홍보를
+						효과적으로 돕습니다.
+					</p>
+				</div>
+				<div class="col-md-6 text-center">
+					<img
+						src="${pageContext.request.contextPath}/volt/assets/img/subscribe/홍보페이지.png"
+						class="img-fluid border border-dark border-1" alt="중개인페이지">
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 요금제 선택 -->
+	<section class="py-5 bg-light">
+		<div class="container text-center">
+			<h4 class="fw-bold mb-4">요금제 선택</h4>
+			<form action="${pageContext.request.contextPath}/billing/pay"
+				method="post" class="d-inline-block text-start">
+				<div class="mb-4">
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="solution"
+							id="planB" value="" checked> <label
+							class="form-check-label" for="planB">선택</label>
+					</div>
+					<c:forEach items="${solutionList }" var="solution">
+
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="solution"
+								id="${solution.solId}" value="${solution.solId}"> <label
+								class="form-check-label" data- for="${solution.solId}">${solution.solName}</label>
+						</div>
+					</c:forEach>
+
+				</div>
+				<div class="mb-3">
+					<label class="form-label">결제 수단 선택</label><br />
+
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="paymentMethod"
+							id="card" value="" checked /> <label class="form-check-label"
+							for="card">선택</label>
+					</div>
+					<c:forEach items="${commonCodeList }" var="commoncode">
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="radio" name="paymentMethod"
+								id="${commoncode.codeGroup }${commoncode.codeValue}"
+								value="${commoncode.codeName}"
+								data-group="${commoncode.codeGroup }" /> <label
+								class="form-check-label" for="card">${commoncode.codeName}</label>
+						</div>
+					</c:forEach>
+				</div>
+				<c:set value="${principal.realUser.mbrNm }" var="name" />
+				<c:choose>
+					<c:when test="${solutionSubscription eq null }">
+						<div class="text-center">
+							<button type="button" class="btn btn-dark btn-lg px-5"
+								onclick="requestPayment()">결제하기</button>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<div class="text-center">
+							<button type="submit"
+								formaction="${pageContext.request.contextPath}/billing/change"
+								class="btn btn-outline-dark btn-lg px-5 me-2">변경하기</button>
+							<button type="submit"
+								formaction="${pageContext.request.contextPath}/billing/cancel"
+								class="btn btn-outline-dark btn-lg px-5">해지하기</button>
+						</div>
+					</c:otherwise>
+				</c:choose>
+			</form>
+		</div>
+	</section>
+
+</body>
+</html>

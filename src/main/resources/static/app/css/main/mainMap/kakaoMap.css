@@ -1,0 +1,331 @@
+/** 
+ * <pre>
+ * << 개정이력(Modification Information) >>
+ *   
+ *   수정일      			수정자           수정내용
+ *  -----------   	-------------    ---------------------------
+ *  2025. 7. 10.     	 윤현식         최초 생성
+ *
+ * </pre>
+ */
+@charset "UTF-8";
+
+/* === 기본 설정 === */
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	font-family: 'Malgun Gothic', sans-serif;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+}
+
+#wrap {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+}
+
+@font-face {
+	font-family: 'Paperlogy-8ExtraBold';
+	src:
+		url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2')
+		format('woff2');
+	font-weight: 800;
+	font-style: normal;
+}
+
+/* === 전체 레이아웃 === */
+.map-container {
+	display: flex;
+	width: 100%;
+	height: calc(100vh - 60px); /* 헤더 높이 고려 */
+}
+
+.sidebar {
+	width: 160px;
+	min-width: 160px;
+	background: #fff;
+	border-right: 1px solid #ddd;
+}
+
+.list-panel {
+	width: 300px;
+	min-width: 300px;
+	background: #fff;
+	overflow-y: auto;
+	border-right: 1px solid #ddd;
+	z-index: 1;
+}
+
+.list-item {
+	width: 100%;
+	max-width: 280px;
+	margin: 10px auto;
+	background: white;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	padding: 10px;
+	cursor: pointer;
+}
+
+/* === 지도와 모달 포함한 영역 === */
+.map-area {
+	flex: 1;
+	position: relative;
+	display: flex;
+}
+
+/* === 지도 === */
+.map-area #map {
+	flex: 1;
+	width: 100%;
+	height: 100%;
+}
+
+#map {
+	flex: 1;
+	transition: all 0.3s ease;
+}
+
+/* === 상세 정보 모달 === */
+.side-modal {
+	width: 300px;
+	min-width: 300px;
+	background-color: #fff;
+	border-right: 1px solid #ccc;
+	box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+	overflow-y: auto;
+	display: none; /* 기본은 감춤 */
+	position: relative;
+}
+
+.side-modal.active {
+	display: block;
+}
+
+.side-modal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 15px;
+	border-bottom: 1px solid #ccc;
+}
+
+.side-modal-body {
+	padding: 15px;
+}
+
+/* === 버튼 및 리스트 === */
+.modal-close-btn {
+	background: none;
+	border: none;
+	font-size: 20px;
+	cursor: pointer;
+}
+
+.listing-list .list-content {
+	padding: 12px 10px;
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	margin-bottom: 8px;
+}
+
+.listing-list .list-title {
+	font-size: 14px;
+	font-weight: bold;
+	color: #222;
+	margin-bottom: 5px;
+}
+
+.listing-list .list-desc div {
+	font-size: 12px;
+	color: #555;
+	margin-bottom: 2px;
+}
+
+/* === 카테고리 버튼 === */
+.sidebar-inner {
+	padding: 10px;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.sidebar-category-list {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.category-btn {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	padding: 8px;
+	border: 1px solid #ddd;
+	border-radius: 10px;
+	text-decoration: none;
+	color: #333;
+	transition: all 0.2s ease;
+	background: #f9f9f9;
+}
+
+.category-btn img {
+	width: 28px;
+	height: 28px;
+	margin-bottom: 5px;
+}
+
+.category-btn span {
+	font-size: 13px;
+	font-weight: 500;
+	white-space: nowrap;
+	text-align: center;
+}
+
+.category-btn:hover {
+	background: #e6f0ff;
+	color: #007bff;
+	border-color: #007bff;
+}
+
+.category-btn.active {
+	background: #007bff;
+	color: #fff;
+	border-color: #007bff;
+}
+
+.category-btn.active span {
+	color: #fff;
+}
+
+/* === 오버레이 === */
+.wrap {
+	position: absolute;
+	left: 0;
+	bottom: 40px;
+	width: 288px;
+	height: 132px;
+	margin-left: -144px;
+	text-align: left;
+	line-height: 1.5;
+}
+
+.wrap .info {
+	position: relative;
+	width: 286px;
+	height: 120px;
+	border-radius: 5px;
+	border-bottom: 2px solid #ccc;
+	border-right: 1px solid #ccc;
+	background: #fff;
+	box-shadow: 0px 1px 2px #888;
+}
+
+.info .title {
+	font-size: 14px; /* 너무 크지 않게 */
+	padding: 6px 10px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.info .close {
+	position: absolute;
+	top: 6px;
+	right: 10px;
+	width: 17px;
+	height: 17px;
+	background:
+		url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png')
+		no-repeat center center;
+	background-size: contain;
+	cursor: pointer;
+}
+
+.info .body {
+	position: relative;
+	overflow: hidden;
+}
+
+.info .desc {
+	margin: 13px 0 0 90px;
+	height: 75px;
+	white-space: normal;
+	overflow: visible;
+	font-size: 13px;
+}
+
+.desc .jibun {
+	font-size: 11px;
+	color: #888;
+	margin-top: 2px;
+}
+
+.info .img {
+	position: absolute;
+	top: 6px;
+	left: 5px;
+	width: 73px;
+	height: 71px;
+	border: 1px solid #ddd;
+	color: #888;
+	overflow: hidden;
+}
+
+.info:after {
+	content: '';
+	position: absolute;
+	margin-left: -12px;
+	left: 50%;
+	bottom: 0;
+	width: 22px;
+	height: 12px;
+	background:
+		url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png');
+}
+
+/* === 페이지네이션 === */
+.pagination-container {
+	display: flex;
+	justify-content: center;
+	padding: 10px;
+}
+
+.pagination-container .page-link {
+	display: inline-block;
+	padding: 6px 12px;
+	margin: 0 5px;
+	border: 1px solid #d5dce6;
+	border-radius: 4px;
+	background: linear-gradient(to bottom, #ffffff, #f1f3f5);
+	color: #333c48;
+	font-size: 13px;
+	text-decoration: none;
+	transition: background 0.2s ease;
+	font-family: 'Paperlogy-8ExtraBold', sans-serif;
+}
+
+.pagination-container .page-link:hover, .pagination-container .page-link:focus
+	{
+	background: linear-gradient(to bottom, #ffffff, #e5e8ef);
+}
+
+.pagination-container .page-link.on {
+	background: #007bff;
+	border-color: #007bff;
+	color: #fff;
+	font-weight: bold;
+	pointer-events: none;
+	cursor: default;
+}
