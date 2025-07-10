@@ -3,8 +3,8 @@
 <mapper namespace="kr.or.ddit.main.mapper.MemberMapper">
 	<resultMap type="MemberVO" id="memberMap" autoMapping="true">
 		<id property="mbrCd" column="MBR_CD" />
-		<association property="tenancy" javaType="TenancyVO">
-			<id property="rentalPtyId" column="RENTAL_PTY_ID" />
+		<association property="tenancy" javaType="TenancyVO" >
+			<id property="rentalPtyId" column="T_RENTAL_PTY_ID" />
 			<result property="lsrTypeGroupCd" column="LSR_TYPE_GROUP_CD" />
 			<result property="rentalPtyBizRegFilePath"
 				column="RENTAL_PTY_BIZ_REG_FILE_PATH" />
@@ -16,8 +16,8 @@
 			<result property="rentalPtyFile" column="RENTAL_PTY_FILE" />
 			<result property="rentalPtyFile2" column="RENTAL_PTY_FILE2" />
 			<result property="lsrYnTypeCd" column="LSR_YN_TYPE_CD" />
-			<result property="rentalPtyBankNm" column="RENTAL_PTY_BANK_NM" />
 			<result property="mbrCd" column="T_MBR_CD" />
+			<result property="authApprYn" column="T_AUTH_APPR_YN" />
 		</association>
 		<association property="broker" javaType="BrokerVO">
 			<id property="mbrCd" column="B_MBR_CD" />
@@ -29,6 +29,8 @@
 			<result property="regDtm" column="REG_DTM" />
 			<result property="brokAddr2" column="BROK_ADDR2" />
 			<result property="brokAddr1" column="BROK_ADDR1" />
+			<result property="brokZip" column="BROK_ZIP" />
+			<result property="authApprYn" column="B_AUTH_APPR_YN" />
 		</association>
 		<collection property="memRoleList" javaType="list"
 			ofType="RoleAchievedVO">
@@ -41,6 +43,7 @@
 			<id property="bldgId" column="BLDG_ID" />
 			<id property="rentalPtyId" column="RENTAL_PTY_ID" />
 			<result property="moveInDt" column="MOVE_IN_DT" />
+			<result property="moveOutDt" column="MOVE_OUT_DT" />
 			<result property="mbrCd" column="UR_MBR_CD" />
 		</collection>
 
@@ -69,7 +72,7 @@
 		, UR.MBR_CD UR_MBR_CD
 		, UR.UNIT_ID
 		, UR.BLDG_ID
-		, UR.RENTAL_PTY_ID
+		, UR.RENTAL_PTY_ID UR_RENTAL_PTY_ID
 		, UR.MOVE_IN_DT
 		, B.MBR_CD B_MBR_CD
 		, B.BROK_NM
@@ -80,19 +83,19 @@
 		, B.REG_DTM
 		, B.BROK_ADDR2
 		, B.BROK_ADDR1
-		, B.AUTH_APPR_YN
+		, B.BROK_ZIP
+		, B.AUTH_APPR_YN B_AUTH_APPR_YN
 		, T.MBR_CD T_MBR_CD
 		, T.RENTAL_PTY_ACCT_NO
 		, T.RENTAL_PTY_REG_BLDG_CNT
 		, T.RENTAL_PTY_BIZ_REG_NO
-		, T.RENTAL_PTY_ID
+		, T.RENTAL_PTY_ID T_RENTAL_PTY_ID
 		, T.RENTAL_PTY_BIZ_REG_FILE_PATH
 		, T.RENTAL_PTY_FILE
 		, T.RENTAL_PTY_FILE2
 		, T.LSR_YN_TYPE_CD
-		, T.RENTAL_PTY_BANK_NM
 		, T.LSR_TYPE_GROUP_CD
-		, T.AUTH_APPR_YN
+		, T.AUTH_APPR_YN T_AUTH_APPR_YN
 		FROM
 		MEMBER M
 		LEFT OUTER JOIN ROLE_ACHIEVED RA ON (M.MBR_CD=RA.MBR_CD)
@@ -109,7 +112,7 @@
 
 	<select id="selectMemberByMail" parameterType="String"
 		resultMap="memberMap">
-				SELECT 
+	SELECT 
 		M.MBR_CD MBR_CD
 		, M.MBR_ID
 		, M.MBR_PW
@@ -129,7 +132,7 @@
 		, UR.MBR_CD UR_MBR_CD
 		, UR.UNIT_ID
 		, UR.BLDG_ID
-		, UR.RENTAL_PTY_ID
+		, UR.RENTAL_PTY_ID UR_RENTAL_PTY_ID
 		, UR.MOVE_IN_DT
 		, B.MBR_CD B_MBR_CD
 		, B.BROK_NM
@@ -140,19 +143,19 @@
 		, B.REG_DTM
 		, B.BROK_ADDR2
 		, B.BROK_ADDR1
-		, B.AUTH_APPR_YN
+		, B.AUTH_APPR_YN B_AUTH_APPR_YN
+		, B.BROK_ZIP
 		, T.MBR_CD T_MBR_CD
 		, T.RENTAL_PTY_ACCT_NO
 		, T.RENTAL_PTY_REG_BLDG_CNT
 		, T.RENTAL_PTY_BIZ_REG_NO
-		, T.RENTAL_PTY_ID
+		, T.RENTAL_PTY_ID T_RENTAL_PTY_ID
 		, T.RENTAL_PTY_BIZ_REG_FILE_PATH
 		, T.RENTAL_PTY_FILE
 		, T.RENTAL_PTY_FILE2
 		, T.LSR_YN_TYPE_CD
-		, T.RENTAL_PTY_BANK_NM
 		, T.LSR_TYPE_GROUP_CD
-		, T.AUTH_APPR_YN
+		, T.AUTH_APPR_YN T_AUTH_APPR_YN
 		FROM
 		MEMBER M
 		LEFT OUTER JOIN ROLE_ACHIEVED RA ON (M.MBR_CD=RA.MBR_CD)
