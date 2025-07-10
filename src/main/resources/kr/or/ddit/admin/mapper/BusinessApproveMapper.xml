@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.admin.mapper.BusinessApproveMapper">
+<resultMap type="SolutionSubscriptionVO" id="solSubMap" autoMapping="true">
+<association property="member" javaType="MemberVO">
+<id property="mbrCd" column="M_MBR_CD"/>
+<result property="mbrId" column="MBR_ID"/>
+<result property="mbrPw" column="MBR_PW"/>
+<result property="mbrNm" column="MBR_NM"/>
+<result property="mbrNnm" column="MBR_NNM"/>
+<result property="mbrTelno" column="MBR_TELNO"/>
+<result property="mbrEmlAddr" column="MBR_EML_ADDR"/>
+<result property="mbrBasicAddr" column="MBR_BASIC_ADDR"/>
+<result property="mbrDetailAddr" column="MBR_DETAIL_ADDR"/>
+<result property="mbrProfilImage" column="MBR_PROFIL_IMAGE"/>
+<result property="mbrFrstRegDt" column="MBR_FRST_REG_DT"/>
+<result property="mbrStatusCode" column="MBR_STATUS_CODE"/>
+<result property="mbrDeleteDate" column="MBR_DELETE_DATE"/>
+<result property="mbrZip" column="MBR_ZIP"/>
+</association>
+<association property="tenancy" javaType="TenancyVO">
+<id property="rentalPtyId" column="RENTAL_PTY_ID"/>
+<result property="rentalPtyBizRegFilePath" column="RENTAL_PTY_BIZ_REG_FILE_PATH"/>
+<result property="rentalPtyRegBldgCnt" column="RENTAL_PTY_REG_BLDG_CNT"/>
+<result property="rentalPtyBizRegNo" column="RENTAL_PTY_BIZ_REG_NO"/>
+<result property="rentalPtyFile" column="RENTAL_PTY_FILE"/>
+<result property="rentalPtyFile2" column="RENTAL_PTY_FILE2"/>
+<result property="lsrYnTypeCd" column="LSR_YN_TYPE_CD"/>
+<result property="mbrCd" column="MBR_CD"/>
+<result property="lsrTypeGroupCd" column="LSR_TYPE_GROUP_CD"/>
+<result property="authApprYn" column="T_AUTH_APPR_YN"/>
+</association>
+<association property="broker" javaType="BrokerVO">
+<id property="mbrCd" column="B_MBR_CD"/>
+<result property="brokNm" column="BROK_NM"/>
+<result property="brokRegNo" column="BROK_REG_NO"/>
+<result property="crtfNo" column="CRTF_NO"/>
+<result property="reprNm" column="REPR_NM"/>
+<result property="reprTelNo" column="REPR_TEL_NO"/>
+<result property="regDtm" column="REG_DTM"/>
+<result property="brokAddr2" column="BROK_ADDR2"/>
+<result property="brokAddr1" column="BROK_ADDR1"/>
+<result property="authApprYn" column="B_AUTH_APPR_YN"/>
+<result property="brokZip" column="BROK_ZIP"/>
+</association>
+</resultMap>
+
+<select id="selectBusinessApproveList" resultMap="solSubMap">
+SELECT *
+FROM (
+	  SELECT A.*, ROWNUM RNUM
+	  FROM (
+			SELECT
+				SS.SUBS_ID
+				, SS.MBR_CD
+				, SS.SUBS_STARTED_AT
+				, SS.SOL_ID
+				, SS.SUBS_UPDATED_DATE
+				, SS.SUBS_EXPIRATION_DATE
+				, SS.SUBS_STATUS
+				, SS.SUBS_REVOKED_AT
+				, SS.SUBS_AUTO_RENEW_YN
+				, SS.SUBS_STATUS_GRP_CD
+				, SS.SUBS_AUTO_RENEW_GRP_CD
+				, SS.SUBS_APPROVAL_YN
+				, M.MBR_CD M_MBR_CD
+				, M.MBR_ID
+				, M.MBR_PW
+				, M.MBR_NM
+				, M.MBR_NNM
+				, M.MBR_TELNO
+				, M.MBR_EML_ADDR
+				, M.MBR_BASIC_ADDR
+				, M.MBR_DETAIL_ADDR
+				, M.MBR_PROFIL_IMAGE
+				, M.MBR_FRST_REG_DT
+				, M.MBR_STATUS_CODE
+				, M.MBR_DELETE_DATE
+				, M.MBR_ZIP
+		        , B.MBR_CD B_MBR_CD
+		        , B.BROK_NM
+		        , B.BROK_REG_NO
+		        , B.CRTF_NO
+		        , B.REPR_NM
+		        , B.REPR_TEL_NO
+		        , B.REG_DTM
+		        , B.BROK_ADDR2
+		        , B.BROK_ADDR1
+		        , B.BROK_ZIP
+		        , B.AUTH_APPR_YN B_AUTH_APPR_YN
+		        , T.RENTAL_PTY_ID
+		        , T.RENTAL_PTY_BIZ_REG_FILE_PATH
+		        , T.RENTAL_PTY_REG_BLDG_CNT
+		        , T.RENTAL_PTY_BIZ_REG_NO
+		        , T.RENTAL_PTY_FILE
+		        , T.RENTAL_PTY_FILE2
+		        , T.LSR_YN_TYPE_CD
+		        , T.MBR_CD T_MBR_CD
+		        , T.LSR_TYPE_GROUP_CD
+		        , T.AUTH_APPR_YN T_AUTH_APPR_YN
+			FROM SOLUTION_SUBSCRIPTION SS
+			LEFT OUTER JOIN MEMBER M ON SS.MBR_CD = M.MBR_CD
+		    LEFT OUTER JOIN BROKER B ON M.MBR_CD = B.MBR_CD
+		    LEFT OUTER JOIN TENANCY T ON M.MBR_CD = T.MBR_CD
+		    LEFT OUTER JOIN SOLUTION S ON SS.SOL_ID = S.SOL_ID 
+			<where>
+				
+				<if test="detailSearch != null">
+					<if test="detailSearch.mbrId != null and detailSearch.mbrId != ''">
+						AND M.MBR_ID LIKE '%' || #{detailSearch.mbrId} || '%'
+					</if>
+					<if test="detailSearch.mbrNm != null and detailSearch.mbrNm != ''">
+						AND M.MBR_NM LIKE '%' || #{detailSearch.mbrNm} || '%'
+					</if>
+					<if test="detailSearch.mbrCd != null and detailSearch.mbrCd != ''">
+						AND M.MBR_CD = #{detailSearch.mbrCd}
+					</if>
+					<if test="detailSearch.role != null and detailSearch.role != ''">
+					<choose>
+						<when test="detailSearch.role == '002'">
+							AND B.MBR_CD IS NOT NULL
+						</when>
+						<when test="detailSearch.role == '001'">
+							AND T.MBR_CD IS NOT NULL
+						</when>
+					</choose>
+					</if>
+					 <if test="detailSearch.authApprYn != null and detailSearch.authApprYn != ''">
+					            AND (
+					                (B.MBR_CD IS NOT NULL AND B.AUTH_APPR_YN = #{detailSearch.authApprYn})
+					                OR
+					                (T.MBR_CD IS NOT NULL AND T.AUTH_APPR_YN = #{detailSearch.authApprYn})
+					            )
+			        </if>
+				</if>
+			</where>
+		
+			ORDER BY SS.SUBS_ID DESC)A
+			<![CDATA[
+		WHERE ROWNUM  <= #{lastRecordIndex}
+	)
+WHERE RNUM >= #{firstRecordIndex}
+]]>
+</select>
+
+<select id="selectTotalRecord" resultType="int">
+SELECT COUNT(*)
+FROM SOLUTION_SUBSCRIPTION SS
+LEFT OUTER JOIN MEMBER M ON SS.MBR_CD = M.MBR_CD
+LEFT OUTER JOIN BROKER B ON M.MBR_CD = B.MBR_CD
+LEFT OUTER JOIN TENANCY T ON M.MBR_CD = T.MBR_CD
+<where>
+	<if test="detailSearch != null">
+		<if test="detailSearch.mbrId != null and detailSearch.mbrId != ''">
+			AND M.MBR_ID LIKE '%' || #{detailSearch.mbrId} || '%'
+		</if>
+		<if test="detailSearch.mbrNm != null and detailSearch.mbrNm != ''">
+			AND M.MBR_NM LIKE '%' || #{detailSearch.mbrNm} || '%'
+		</if>
+		<if test="detailSearch.mbrCd != null and detailSearch.mbrCd != ''">
+			AND M.MBR_CD = #{detailSearch.mbrCd}
+		</if>
+		<if test="detailSearch.role != null and detailSearch.role != ''">
+			<choose>
+				<when test="detailSearch.role == '002'">
+					AND B.MBR_CD IS NOT NULL
+				</when>
+				<when test="detailSearch.role == '001'">
+					AND T.MBR_CD IS NOT NULL
+				</when>
+			</choose>
+		</if>
+		<if test="detailSearch.authApprYn != null and detailSearch.authApprYn != ''">
+			AND (
+				(B.MBR_CD IS NOT NULL AND B.AUTH_APPR_YN = #{detailSearch.authApprYn})
+				OR
+				(T.MBR_CD IS NOT NULL AND T.AUTH_APPR_YN = #{detailSearch.authApprYn})
+			)
+		</if>
+	</if>
+</where>
+</select>
+
+</mapper>

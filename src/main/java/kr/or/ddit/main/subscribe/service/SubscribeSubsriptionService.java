@@ -16,5 +16,6 @@ public interface SubscribeSubsriptionService {
 	public void createBroker(BrokerVO broker);
 	public void createTenancy(TenancyVO tenancy);
 	
-	public SolutionSubscriptionVO checkedSolutionSubscription(String username);
+	public SolutionSubscriptionVO checkedSolutionSubscription(String username, String SolutionCode);
+	public List<SolutionSubscriptionVO> checkedSolutionSubscriptionList(String username);
 }

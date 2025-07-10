@@ -3,6 +3,7 @@ package kr.or.ddit.main.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.SolutionSubscriptionVO;
@@ -19,5 +20,7 @@ public interface SubscribeSubscriptionMapper {
 	public int insertSolutionSubscription(SolutionSubscriptionVO solSubVO);
 	public int insertBroker(BrokerVO broker);
 	public int insertTenancy(TenancyVO tenancy);
-	public SolutionSubscriptionVO checkedSolutionSubscription(String username);
+	// Service or Repository
+	public SolutionSubscriptionVO checkedSolutionSubscription(@Param("username") String username, @Param("solCcCd") String solCcCd);
+	public List<SolutionSubscriptionVO> checkedSolutionSubscriptionList(String username);
 }

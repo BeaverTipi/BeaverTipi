@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 import kr.or.ddit.vo.BoardVO; // ⭐ BoardVO import 포함 ⭐
+import kr.or.ddit.vo.BusinessApproveSearchVO;
 import kr.or.ddit.vo.MemberSearchVO;
 import lombok.Getter;
 import lombok.Setter; // ⭐ @Setter 어노테이션 포함 ⭐
@@ -114,6 +115,29 @@ public class PaginationInfo<T> {
 					System.err.println("URL Encoding failed for BoardVO: " + e.getMessage());
 				}
 			}
+			else if (this.detailSearch instanceof BusinessApproveSearchVO) {
+			    BusinessApproveSearchVO vo = (BusinessApproveSearchVO) this.detailSearch;
+			    try {
+			        if (vo.getMbrCd() != null && !vo.getMbrCd().isEmpty()) {
+			            sb.append("&detailSearch.mbrCd=").append(URLEncoder.encode(vo.getMbrCd(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (vo.getMbrId() != null && !vo.getMbrId().isEmpty()) {
+			            sb.append("&detailSearch.mbrId=").append(URLEncoder.encode(vo.getMbrId(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (vo.getMbrNm() != null && !vo.getMbrNm().isEmpty()) {
+			            sb.append("&detailSearch.mbrNm=").append(URLEncoder.encode(vo.getMbrNm(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (vo.getAuthApprYn() != null && !vo.getAuthApprYn().isEmpty()) {
+			            sb.append("&detailSearch.authApprYn=").append(URLEncoder.encode(vo.getAuthApprYn(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (vo.getRole() != null && !vo.getRole().isEmpty()) {
+			            sb.append("&detailSearch.role=").append(URLEncoder.encode(vo.getRole(), StandardCharsets.UTF_8.toString()));
+			        }
+			    } catch (UnsupportedEncodingException e) {
+			        System.err.println("URL Encoding failed for BusinessApproveSearchVO: " + e.getMessage());
+			    }
+			}
+
 		}
 
 		// simpleSearch 필드 처리 (URL 인코딩 추가)

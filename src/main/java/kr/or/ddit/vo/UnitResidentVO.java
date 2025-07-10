@@ -13,6 +13,7 @@ public class UnitResidentVO implements Serializable {
 	private String bldgId;
 	private String rentalPtyId;
 	private String moveInDt;
+	private String moveOutDt;
 	private String mbrCd;
 	
 	

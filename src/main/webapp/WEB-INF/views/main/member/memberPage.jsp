@@ -1,5 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+  // JSTL 외에 script 코드 사용 없이 구현
+%>
+<c:set var="defaultTabId" value="broker-info" />
+<c:if test="${not empty member.tenancy and empty member.broker}">
+  <c:set var="defaultTabId" value="tenancy-info" />
+</c:if>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -9,21 +16,12 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/main/member/memberPage.css">
 </head>
 <body>
-  <div class="register-wrapper">
+  <div class="register-wrapper" data-default-tab="${defaultTabId}">
     <div class="signup-container">
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2 class="signup-title">회원 정보</h2>
-        <a href="${pageContext.request.contextPath}/account/update" class="btn-primary"
-           style="text-decoration: none; text-align: center;">수정하기</a>
+        <a href="${pageContext.request.contextPath}/account/update" class="btn-primary" style="text-decoration: none; text-align: center;">수정하기</a>
       </div>
-
-      <c:if test="${not empty solution}">
-        <div class="form-group">
-          <label>닉네임</label>
-          <div class="form-control">${solution.solName}</div>
-        </div>
-      </c:if>
-
       <div class="form-group">
         <label>프로필 이미지</label>
         <div style="text-align: center;">
@@ -62,32 +60,51 @@
           </div>
         </div>
       </div>
-<c:if test="${not empty solutionSubscription}">
-  <div class="form-group"><label>구독 승인 여부</label>
-    <div class="form-control" style="display: flex; justify-content: space-between; align-items: center;">
-      <c:choose>
-        <c:when test="${solutionSubscription.apprYn eq 'Y'}">
-          <span>승인됨</span>
-          <form action="${pageContext.request.contextPath}/payment/solution" method="post" style="margin: 0;">
-            <input type="hidden" name="solId" value="${solutionSubscription.solId}" />
-            <button type="submit" class="btn btn-outline-primary btn-sm">결제하기</button>
+
+      <c:if test="${not empty solutionSubscriptionList}">
+        <div class="subscription-card-wrapper">
+  <c:forEach var="subscription" items="${solutionSubscriptionList}">
+    <div class="subscription-card">
+      <div class="subscription-header">
+        <h5 class="subscription-title">${subscription.solution.solName}</h5>
+        <c:if test="${subscription.subsApprovalYn eq 'Y' and subscription.subsStatus ne '001'}">
+          <form action="${pageContext.request.contextPath}/payment/solution" method="post">
+            <input type="hidden" name="solId" value="${subscription.solution.solId}" />
+            <button type="submit" class="btn btn-primary btn-sm">결제하기</button>
           </form>
-        </c:when>
-        <c:when test="${solutionSubscription.apprYn eq 'N'}">
-          미승인
-        </c:when>
-        <c:otherwise>
-          확인 불가
-        </c:otherwise>
-      </c:choose>
+        </c:if>
+      </div>
+
+      <ul class="subscription-details">
+        <li>
+          <strong>승인 여부:</strong>
+          <c:choose>
+            <c:when test="${subscription.subsApprovalYn eq 'Y'}"><span class="text-success">승인됨</span></c:when>
+            <c:when test="${subscription.subsApprovalYn eq 'N'}"><span class="text-danger">미승인</span></c:when>
+            <c:otherwise><span class="text-muted">확인 불가</span></c:otherwise>
+          </c:choose>
+        </li>
+        <li>
+          <strong>솔루션 활성 상태:</strong>
+          <c:choose>
+            <c:when test="${subscription.subsStatus eq '001'}"><span class="text-success">사용 가능</span></c:when>
+            <c:when test="${subscription.subsStatus eq '002'}"><span class="text-success">일시 정지</span></c:when>
+            <c:when test="${subscription.subsStatus eq '003'}"><span class="text-success">취소</span></c:when>
+            <c:otherwise><span class="text-danger">사용 불가</span></c:otherwise>
+          </c:choose>
+        </li>
+        <li><strong>결제 금액:</strong> <span>${subscription.solution.solPrice} 원</span></li>
+      </ul>
     </div>
-  </div>
-</c:if>
+  </c:forEach>
+</div>
+
+      </c:if>
 
       <c:if test="${not empty member.broker or not empty member.tenancy}">
         <div class="tab-buttons">
           <c:if test="${not empty member.broker}">
-            <button class="tab-button active" onclick="openTab('broker-info')">공인중개사 정보</button>
+            <button class="tab-button" onclick="openTab('broker-info')">공인중개사 정보</button>
           </c:if>
           <c:if test="${not empty member.tenancy}">
             <button class="tab-button" onclick="openTab('tenancy-info')">임대인 정보</button>
@@ -95,7 +112,7 @@
         </div>
 
         <c:if test="${not empty member.broker}">
-          <div id="broker-info" class="tab-content active">
+          <div id="broker-info" class="tab-content">
             <div class="form-group-wrapper">
               <div class="form-group"><label>사무소 이름</label><div class="form-control">${member.broker.brokNm}</div></div>
               <div class="form-group"><label>사업자등록번호</label><div class="form-control">${member.broker.brokRegNo}</div></div>
@@ -114,7 +131,7 @@
               <div class="form-group"><label>등록된 건물 수</label><div class="form-control">${member.tenancy.rentalPtyRegBldgCnt}</div></div>
               <div class="form-group"><label>계좌번호</label><div class="form-control">${member.tenancy.rentalPtyAcctNo}</div></div>
               <div class="form-group"><label>사업자등록번호</label><div class="form-control">${member.tenancy.rentalPtyBizRegNo}</div></div>
-              <div class="form-group"><label>은협명</label><div class="form-control">${member.tenancy.rentalPtyBankNm}</div></div>
+              <div class="form-group"><label>은행명</label><div class="form-control">${member.tenancy.rentalPtyBankNm}</div></div>
               <div class="form-group"><label>임대유형</label><div class="form-control">${member.tenancy.lsrTypeGroupCd}</div></div>
               <div class="form-group"><label>임대자 유형</label><div class="form-control">${member.tenancy.lsrYnTypeCd}</div></div>
             </div>
@@ -124,6 +141,6 @@
     </div>
   </div>
 
-  <script src="/app/js/main/member/memberPage.js"></script>
+  <script src="${pageContext.request.contextPath}/app/js/main/member/memberPage.js"></script>
 </body>
 </html>

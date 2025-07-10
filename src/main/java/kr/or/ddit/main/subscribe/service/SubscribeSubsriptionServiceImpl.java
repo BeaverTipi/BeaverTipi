@@ -84,7 +84,9 @@ public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionServ
 
 	@Override
 	public void createSolutionSubscription(SolutionSubscriptionVO solitionSubVO) {
-		if(this.checkedSolutionSubscription(solitionSubVO.getMbrCd())!=null) {
+		String sol = solitionSubVO.getSolution().getSolCcCd();
+		SolutionSubscriptionVO solSob = this.checkedSolutionSubscription(solitionSubVO.getMbrCd(),sol);
+		if(solSob!=null) {
 			throw new SubscriptionException();
 		}
 		if (mapper.insertSolutionSubscription(solitionSubVO) < 1) {
@@ -94,8 +96,14 @@ public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionServ
 	}
 
 	@Override
-	public SolutionSubscriptionVO checkedSolutionSubscription(String username) {
-		return mapper.checkedSolutionSubscription(username);
+	public SolutionSubscriptionVO checkedSolutionSubscription(String username, String solutionCode) {
+		return mapper.checkedSolutionSubscription(username,solutionCode);
+	}
+
+	@Override
+	public List<SolutionSubscriptionVO> checkedSolutionSubscriptionList(String username) {
+		// TODO Auto-generated method stub
+		return mapper.checkedSolutionSubscriptionList(username);
 	}
 
 }

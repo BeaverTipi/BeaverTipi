@@ -86,6 +86,9 @@ public class SubscribeSubsriptionController {
 	            SolutionSubscriptionVO sol = new SolutionSubscriptionVO();
 	            sol.setSolId(solutionId);
 	            sol.setMbrCd(mbrCd);
+	            SolutionVO solution = new SolutionVO();
+	            solution.setSolCcCd("002");
+	            sol.setSolution(solution);
 	            service.createSolutionSubscription(sol);
 
 	            broker.setMbrCd(mbrCd);

@@ -1,5 +1,7 @@
 package kr.or.ddit.main.member.controller;
 
+import java.util.List;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -26,9 +28,9 @@ public class MemberReadController {
 		String username = auth.getName();
 		String logInfo = "LOCAL";
 		MemberVO member = service.readMember(username);
-		SolutionSubscriptionVO solSub = subService.checkedSolutionSubscription(member.getMbrCd());
+		List<SolutionSubscriptionVO> solSub = subService.checkedSolutionSubscriptionList(member.getMbrCd());
 		if(solSub !=null) {
-			model.addAttribute("solutionSubscription", solSub);
+			model.addAttribute("solutionSubscriptionList", solSub);
 		}
 		
 		if (principal instanceof OAuth2User) {

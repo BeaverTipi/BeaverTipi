@@ -63,7 +63,7 @@
           role="list" id="submenu-dashboard" aria-expanded="false">
           <ul class="flex-column nav">
             <li class="nav-item ">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/tables/bootstrap-tables.html">
+              <a class="nav-link" href="${pageContext.request.contextPath}/admin/business/approve">
                 <span class="sidebar-text">비지니스 계정 승인</span>
               </a>
             </li>
@@ -82,11 +82,7 @@
                 <span class="sidebar-text">회원 신고 관리</span>
               </a>
             </li>
-            <li class="nav-item ">
-              <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/tables/bootstrap-tables.html">
-                <span class="sidebar-text">구독 관리</span>
-              </a>
-            </li>
+
           </ul>
         </div>
       </li>

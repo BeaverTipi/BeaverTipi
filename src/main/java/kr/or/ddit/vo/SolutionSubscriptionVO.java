@@ -20,4 +20,9 @@ public class SolutionSubscriptionVO implements Serializable{
 	private String subsStatus;
 	private String subsAutoRenewYn;
 	private String subsRevokedAt;
+	
+	private SolutionVO solution;
+	private BrokerVO broker;
+	private TenancyVO tenancy;
+	private MemberVO member;
 }
