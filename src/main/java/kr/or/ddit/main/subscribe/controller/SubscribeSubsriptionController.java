@@ -75,29 +75,21 @@ public class SubscribeSubsriptionController {
 	@PostMapping("/apply/broker")
 	public String brokerFormProcess(@AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
 	                                @RequestParam(name = "solution", required = false) String solutionId,
-	                                @Validated(BrokerInsertGroup.class) @ModelAttribute("broker") BrokerVO broker,
+	                                @Validated(BrokerInsertGroup.class) @ModelAttribute(BROKER) BrokerVO broker,
 	                                BindingResult errors,
 	                                RedirectAttributes redirectAttributes) {
 	    String lvn = "redirect:/apply/broker";
 
 	    if (!errors.hasErrors()) {
 	        try {
-	            log.info("▶▶ 로그인 사용자: {}", principal);
-	            log.info("▶▶ 사용자 코드: {}", principal.getRealUser().getMbrCd());
-	            log.info("▶▶ 선택한 솔루션 ID: {}", solutionId);
 	            String mbrCd = principal.getRealUser().getMbrCd();
 	            SolutionSubscriptionVO sol = new SolutionSubscriptionVO();
 	            sol.setSolId(solutionId);
 	            sol.setMbrCd(mbrCd);
-
-	            log.info("▶▶ 솔루션 구독 insert 시도");
 	            service.createSolutionSubscription(sol);
-	            log.info("▶▶ 솔루션 구독 insert 완료");
 
-	            log.info("▶▶ 브로커 등록 시도: {}", broker);
 	            broker.setMbrCd(mbrCd);
 	            service.createBroker(broker);
-	            log.info("▶▶ 브로커 등록 완료");
 
 	            lvn = "redirect:/account/read";
 
@@ -108,7 +100,6 @@ public class SubscribeSubsriptionController {
 	            redirectAttributes.addFlashAttribute("solutionId", solutionId);
 	        }
 	    } else {
-	    	log.warn("▶▶ 유효성 검사 실패! errors: {}", errors);
 	        String errorName = BindingResult.MODEL_KEY_PREFIX + "broker";
 	        redirectAttributes.addFlashAttribute("broker", broker);
 	        redirectAttributes.addFlashAttribute("solutionId", solutionId);
@@ -135,11 +126,13 @@ public class SubscribeSubsriptionController {
 		// 검증 통과
 		if (!errors.hasErrors()) {
 			try {
-				String mbrCd=principal.getRealUser().getMbrCd();
+				String mbrCd = principal.getRealUser().getMbrCd();
+				
 				SolutionSubscriptionVO sol = new SolutionSubscriptionVO();
 				sol.setSolId(solutionId);
 				sol.setMbrCd(mbrCd);
 				service.createSolutionSubscription(sol);
+				
 				tenancy.setMbrCd(mbrCd);
 				service.createTenancy(tenancy);
 				// 수정 성공 후? 새 mypage로 이동

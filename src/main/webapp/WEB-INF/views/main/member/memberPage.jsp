@@ -62,6 +62,27 @@
           </div>
         </div>
       </div>
+<c:if test="${not empty solutionSubscription}">
+  <div class="form-group"><label>구독 승인 여부</label>
+    <div class="form-control" style="display: flex; justify-content: space-between; align-items: center;">
+      <c:choose>
+        <c:when test="${solutionSubscription.apprYn eq 'Y'}">
+          <span>승인됨</span>
+          <form action="${pageContext.request.contextPath}/payment/solution" method="post" style="margin: 0;">
+            <input type="hidden" name="solId" value="${solutionSubscription.solId}" />
+            <button type="submit" class="btn btn-outline-primary btn-sm">결제하기</button>
+          </form>
+        </c:when>
+        <c:when test="${solutionSubscription.apprYn eq 'N'}">
+          미승인
+        </c:when>
+        <c:otherwise>
+          확인 불가
+        </c:otherwise>
+      </c:choose>
+    </div>
+  </div>
+</c:if>
 
       <c:if test="${not empty member.broker or not empty member.tenancy}">
         <div class="tab-buttons">

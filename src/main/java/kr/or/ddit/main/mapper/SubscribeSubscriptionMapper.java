@@ -11,6 +11,7 @@ import kr.or.ddit.vo.TenancyVO;
 
 @Mapper
 public interface SubscribeSubscriptionMapper {
+	
 	public List<SolutionVO> selectSolutionList();
 	public SolutionVO selectSolution(String solId);
 	public SolutionSubscriptionVO selectSolutionSubscription(String username);
@@ -18,4 +19,5 @@ public interface SubscribeSubscriptionMapper {
 	public int insertSolutionSubscription(SolutionSubscriptionVO solSubVO);
 	public int insertBroker(BrokerVO broker);
 	public int insertTenancy(TenancyVO tenancy);
+	public SolutionSubscriptionVO checkedSolutionSubscription(String username);
 }

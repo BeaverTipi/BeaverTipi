@@ -7,33 +7,41 @@ import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.ddit.main.mapper.SubscribeSubscriptionMapper;
 import kr.or.ddit.util.file.service.FileService;
+import kr.or.ddit.util.validate.exception.BrokerException;
 import kr.or.ddit.util.validate.exception.FileIOException;
+import kr.or.ddit.util.validate.exception.SubscriptionException;
+import kr.or.ddit.util.validate.exception.TenancyException;
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.SolutionSubscriptionVO;
 import kr.or.ddit.vo.SolutionVO;
 import kr.or.ddit.vo.TenancyVO;
 import lombok.RequiredArgsConstructor;
+
 @Service
 @RequiredArgsConstructor
 public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionService {
 	private final SubscribeSubscriptionMapper mapper;
 	private final FileService service;
+
 	@Override
 	public List<SolutionVO> readSolutionList() {
 		// TODO Auto-generated method stub
 		return mapper.selectSolutionList();
 	}
+
 	@Override
 	public SolutionSubscriptionVO readSolutionSubscription(String username) {
 		// TODO Auto-generated method stub
 		return mapper.selectSolutionSubscription(username);
 	}
+
 	@Override
 	public SolutionVO readSolution(String solId) {
 		// TODO Auto-generated method stub
 		return mapper.selectSolution(solId);
 	}
+
 	@Override
 	public List<SolutionVO> readCommonCodeSolutionList(String sol) {
 		// TODO Auto-generated method stub
@@ -43,39 +51,51 @@ public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionServ
 	@Override
 	public void createBroker(BrokerVO broker) {
 		MultipartFile file = broker.getBrokFile();
-		try {
-			service.uploadAndSave(file, "broker", "BROKER", broker.getMbrCd(), "");
-		}catch(FileIOException e) {
-			e.printStackTrace();
-			return;
+		if (file != null || file.isEmpty()) {
+			try {
+				service.uploadAndSave(file, "broker", "BROKER", broker.getMbrCd(), "");
+			} catch (FileIOException e) {
+				e.printStackTrace();
+				return;
+			}
 		}
-		if(mapper.insertBroker(broker)<1) {
-			throw new RuntimeException();
+		if (mapper.insertBroker(broker) < 1) {
+			throw new BrokerException();
 		}
-		
+
 	}
-	
+
 	@Override
 	public void createTenancy(TenancyVO tenancy) {
 		MultipartFile file = tenancy.getTenancyFile();
-		try {
-			service.uploadAndSave(file, "broker", "BROKER",tenancy.getMbrCd(), "");
-		}catch(FileIOException e) {
-			e.printStackTrace();
-			return;
+		if (file != null || file.isEmpty()) {
+			try {
+				service.uploadAndSave(file, "broker", "BROKER", tenancy.getMbrCd(), "");
+			} catch (FileIOException e) {
+				e.printStackTrace();
+				return;
+			}
 		}
-		
-		if(mapper.insertTenancy(tenancy)<1) {
-			throw new RuntimeException();
+		if (mapper.insertTenancy(tenancy) < 1) {
+			throw new TenancyException();
 		}
-		
+
 	}
+
 	@Override
 	public void createSolutionSubscription(SolutionSubscriptionVO solitionSubVO) {
-		if(mapper.insertSolutionSubscription(solitionSubVO)<1) {
-			throw new RuntimeException();
+		if(this.checkedSolutionSubscription(solitionSubVO.getMbrCd())!=null) {
+			throw new SubscriptionException();
 		}
-		
+		if (mapper.insertSolutionSubscription(solitionSubVO) < 1) {
+			throw new SubscriptionException("구독권을 넣는데 오류가 생겼습니다.");
+		}
+
+	}
+
+	@Override
+	public SolutionSubscriptionVO checkedSolutionSubscription(String username) {
+		return mapper.checkedSolutionSubscription(username);
 	}
 
 }

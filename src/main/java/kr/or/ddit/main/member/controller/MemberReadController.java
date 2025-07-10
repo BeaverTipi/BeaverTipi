@@ -8,14 +8,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import kr.or.ddit.main.member.service.MemberService;
+import kr.or.ddit.main.subscribe.service.SubscribeSubsriptionService;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.SolutionSubscriptionVO;
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
 public class MemberReadController {
 	private final MemberService service;
-    
+    private final SubscribeSubsriptionService subService;
 	
 	@GetMapping("/account/read")
 	public String mypage(Model model,
@@ -24,7 +26,10 @@ public class MemberReadController {
 		String username = auth.getName();
 		String logInfo = "LOCAL";
 		MemberVO member = service.readMember(username);
-		
+		SolutionSubscriptionVO solSub = subService.checkedSolutionSubscription(member.getMbrCd());
+		if(solSub !=null) {
+			model.addAttribute("solutionSubscription", solSub);
+		}
 		
 		if (principal instanceof OAuth2User) {
 			logInfo = "KAKAO";
