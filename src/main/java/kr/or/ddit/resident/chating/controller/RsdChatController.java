@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.or.ddit.resident.chating.dto.ChatMessageDTO;
+import kr.or.ddit.resident.chating.dto.ParticipantDTO;
 import kr.or.ddit.resident.chating.service.RsdChatServiceImpl;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.util.validate.InsertGroup;
@@ -70,14 +71,14 @@ public class RsdChatController {
 
 	    return "redirect:/resident/chat?popup=true";
 	}
-	
+	// 건물 내 입주민 조회
 	@GetMapping("/chat/residentList")
 	public String residentList(
 		@RequestParam("bldgId") String bldgId
 		) {
 		return "resident/chat/ResidentList";
 	}
-	
+	// 채팅방에 있는 멤버들 조회
 	@GetMapping("/chat/getResidentList")
 	@ResponseBody
 	public List<UnitResidentVO> getResidentList(
@@ -96,14 +97,35 @@ public class RsdChatController {
 	    @AuthenticationPrincipal RealUserWrapper<MemberVO> principal	
 	) {
 		String mbrCd = principal.getRealUser().getMbrCd();
+		String bldgId = service.getResidentChatRoomInfo(residentChatRoomId).getBldgId();
 	    List<ChatMessageDTO> messages = service.getMessages(residentChatRoomId);
 	    model.addAttribute("messages", messages);
 	    model.addAttribute("residentChatRoomId", residentChatRoomId);
 	    model.addAttribute("mbrCd", mbrCd);
+	    model.addAttribute("bldgId", bldgId);
 	    return "resident/chat/ChatRoom";
 	}
 	
+	@GetMapping("/chat/room/participant")
+	public List<ParticipantDTO> chatParticipant(@RequestParam("residentChatRoomId") String residentChatRoomId) {
+		return service.getParticiapntList(residentChatRoomId);
+		
+	}
 	
+	@PostMapping("/chat/room/leave")
+	public String chatLeave(
+		@RequestParam("residentChatRoomId") String residentChatRoomId,
+		@AuthenticationPrincipal RealUserWrapper<MemberVO> principal
+		) {
+		String mbrCd = principal.getRealUser().getMbrCd();
+		ChatRoomInVO criVO = new ChatRoomInVO();
+		criVO.setMbrCd(mbrCd);
+		criVO.setResidentChatRoomId(residentChatRoomId);
+		
+		service.editLeaveChatRoom(criVO);
+		
+		return "redirect:/resident/chat?popup=true";
+	}
 	
 	
 	
@@ -128,6 +150,8 @@ public class RsdChatController {
 		String mbrCd = principal.getRealUser().getMbrCd();
 		return service.getResidentBuildingList(mbrCd);
 	}
+	
+
 	
 	
 }

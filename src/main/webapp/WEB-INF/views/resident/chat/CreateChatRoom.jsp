@@ -29,6 +29,6 @@
     <button type="button" onclick="window.history.back()">취소</button>
   </form>
 
-  <script src="${pageContext.request.contextPath}/app/js/resident/ChatCreate.js"></script>
+  <script src="${pageContext.request.contextPath}/app/js/chat/chatCreate.js"></script>
 </body>
 </html>

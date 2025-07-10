@@ -5,200 +5,13 @@
 <head>
   <meta charset="UTF-8">
   <title>채팅방</title>
-  <style>
-    body {
-      font-family: 'Noto Sans KR', sans-serif;
-      background-color: #f0f0f0;
-      margin: 0;
-      padding: 0;
-    }
-	
-    .header {
-      display: flex;
-      align-items: center;
-      padding: 10px;
-      background-color: #ffffff;
-      border-bottom: 1px solid #ccc;
-    }
-
-    .chatimg {
-      width: 160px;
-      height: 40px;
-      margin-right: 10px;
-    }
-
-    .header h1 {
-      font-size: 20px;
-      margin: 0;
-    }
-
-    #chatbox {
-      height: 400px;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      background-color: #ffffff;
-      margin: 10px auto;
-      max-width: 600px;
-      border-radius: 8px;
-    }
-
-    .message {
-      margin: 5px 0;
-      max-width: 80%;
-      word-wrap: break-word;
-      padding: 10px 14px;
-      border-radius: 16px;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .my-message {
-      align-self: flex-end;
-      background-color: #d1e7dd;
-    }
-
-    .other-message {
-      align-self: flex-start;
-      background-color: #f8d7da;
-    }
-
-    .sender-name {
-      font-weight: bold;
-      font-size: 13px;
-      margin-bottom: 2px;
-      color: #333;
-      align-self: flex-start;
-    }
-
-    .input-container {
-      display: flex;
-      align-items: center;
-      max-width: 600px;
-      margin: 0 auto 20px;
-      padding: 0 10px;
-    }
-
-    #messageInput {
-      flex: 1;
-      padding: 10px;
-      resize: none;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      margin-right: 8px;
-      height: 60px;
-    }
-
-    button {
-      width: 80px;
-      height: 60px;
-      background-color: #3572ef;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #6a93ff;
-    }
-	/* ✅ 사이드바 확장용 CSS */
-	.sidebar-toggle-btn {
-	  position: fixed;
-	  top: 16px;
-	  right: 16px;
-	  background-color: transparent;
-	  border: 1px solid #333;
-	  color: #333;
-	  border-radius: 4px;
-	  font-size: 16px;
-	  padding: 0; 
-	  height: 32px;
-	  width: 36px; 
-	  display: flex;
-	  align-items: center;
-	  justify-content: center;
-	  z-index: 500;
-	}
-	#closeSidebarBtn {
-	  width: 36px;
-	  height: 36px;
-	  background-color: transparent;
-	  border: 1px solid #333;
-	  color: #333;
-	  border-radius: 4px;
-	  font-size: 16px;
-	  padding: 0;
-	  display: flex;
-	  align-items: center;
-	  justify-content: center;
-	  cursor: pointer;
-	}
-	
-	.chat-sidebar {
-	  position: fixed;
-	  top: 0;
-	  right: -300px;
-	  width: 280px;
-	  height: 100%;
-	  background-color: #ffffff;
-	  border-left: 1px solid #ccc;
-	  box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-	  transition: right 0.3s ease;
-	  z-index: 1000;
-	  padding: 16px;
-	}
-	
-	.chat-sidebar.visible {
-	  right: 0;
-	}
-	
-	.sidebar-header {
-	  display: flex;
-	  justify-content: space-between;
-	  align-items: center;
-	  margin-bottom: 12px;
-	}
-	
-	.participant-list {
-	  list-style: none;
-	  padding: 0;
-	  margin: 0 0 16px 0;
-	}
-	
-	.participant-list li {
-	  padding: 8px 0;
-	  border-bottom: 1px solid #eee;
-	  font-size: 14px;
-	}
-	
-	.invite-btn {
-	  width: 100%;
-	  padding: 10px;
-	  background-color: #28a745;
-	  color: white;
-	  font-weight: bold;
-	  border: none;
-	  border-radius: 5px;
-	  cursor: pointer;
-	}
-	
-	.invite-btn:hover {
-	  background-color: #45c16c;
-	}    
-  </style>
+<link rel ="stylesheet" href = "/app/css/chat/chatRoom.css">
 </head>
 <body>
-
   <c:if test="${param.popup eq 'true'}">
     <div class="header">
       <img src="/volt/assets/img/brand/dark.png" class="chatimg" alt="Logo">
+      <button id="leaveChatRoomBtn" class="sidebar-toggle-btn-small">🚪</button>
       <button id="toggleSidebarBtn" class="sidebar-toggle-btn">👥</button>
     </div>
 
@@ -216,142 +29,36 @@
       </c:forEach>
     </div>
 
-
-
     <div class="input-container">
       <textarea id="messageInput" placeholder="메시지를 입력하세요" rows="3"></textarea>
       <button onclick="sendMessage()">전송</button>
     </div>
   </c:if>
 
-	<div id="chatSidebar" class="chat-sidebar">
-	  <div class="sidebar-header">
-	    <h3>참여자 목록</h3>
-	    <button id="closeSidebarBtn">✖</button>
+  <div id="chatSidebar" class="chat-sidebar">
+    <div class="sidebar-header">
+      <h3>참여자 목록</h3>
+      <button id="closeSidebarBtn">✖</button>
+    </div>
+    <ul id="participantList" class="participant-list"></ul>
+    <button id="inviteBtn" class="invite-btn">+ 초대하기</button>
+  </div>
+
+  <!-- ✅ 채팅방 나가기 확인 모달 -->
+	<div id="leaveModal" class="modal">
+	  <p>정말 채팅방을 나가시겠습니까?</p>
+	  <div class="modal-buttons">
+	    <button id="confirmLeaveBtn">예</button>
+	    <button id="cancelLeaveBtn">아니오</button>
 	  </div>
-	  <ul id="participantList" class="participant-list"></ul>
-	  <button id="inviteBtn" class="invite-btn">+ 초대하기</button>
 	</div>
-  <script>
-    const residentChatRoomId = "${residentChatRoomId}";
-    const loginMbrCd = "${mbrCd}";
-    const socket = new WebSocket("ws://" + location.host + "/ws/chat?residentChatRoomId=" + residentChatRoomId);
-
-    socket.onopen = function () {
-      console.log(" WebSocket 연결 성공");
-    };
-
-    socket.onmessage = function (event) {
-      try {
-        const msg = JSON.parse(event.data);
-        console.log(" 메시지 수신:", msg);
-        const isMine = msg.mbrCd === loginMbrCd;
-
-        const chatbox = document.getElementById("chatbox");
-
-        if (!isMine) {
-          const nameDiv = document.createElement("div");
-          nameDiv.classList.add("sender-name");
-          nameDiv.textContent = msg.unitRoom + "호 " + msg.mbrNnm;
-          chatbox.appendChild(nameDiv);
-        }
-
-        const messageDiv = document.createElement("div");
-        messageDiv.classList.add("message", isMine ? "my-message" : "other-message");
-        messageDiv.innerHTML = msg.rcmCont.replace(/\n/g, "<br>");
-        chatbox.appendChild(messageDiv);
-
-        chatbox.scrollTop = chatbox.scrollHeight;
-      } catch (e) {
-        console.error(" 메시지 파싱 오류:", e);
-        console.log("수신된 원시 메시지:", event.data);
-      }
-    };
-
-    socket.onerror = function (error) {
-      console.error(" WebSocket 오류:", error);
-    };
-
-    socket.onclose = function (event) {
-      console.warn(` WebSocket 종료 (코드: ${event.code}, 이유: ${event.reason})`);
-    };
-
-    function sendMessage() {
-      const input = document.getElementById("messageInput");
-      const content = input.value.trim();
-      if (!content) return;
-
-      const msg = {
-		    residentChatRoomId: residentChatRoomId,
-		    mbrCd: loginMbrCd,
-		    rcmCont: content.replace(/\n/g, "\\n")     
-    	};
-
-      if (socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify(msg));
-        console.log(" 메시지 전송:", msg);
-        displayMessage("", content, true);
-      } else {
-        console.warn("WebSocket이 열려 있지 않음. 메시지 전송 실패");
-      }
-
-      input.value = "";
-    }
-
-    function displayMessage(senderNickname, message, isMyMessage) {
-      const chatbox = document.getElementById("chatbox");
-
-      if (!isMyMessage && senderNickname) {
-        const nameDiv = document.createElement("div");
-        nameDiv.classList.add("sender-name");
-        nameDiv.textContent = senderNickname;
-        chatbox.appendChild(nameDiv);
-      }
-
-      const messageDiv = document.createElement("div");
-      messageDiv.classList.add("message", isMyMessage ? "my-message" : "other-message");
-      messageDiv.innerHTML = message.replace(/\n/g, "<br>");
-      chatbox.appendChild(messageDiv);
-
-      chatbox.scrollTop = chatbox.scrollHeight;
-    }
-
-    document.getElementById("messageInput").addEventListener("keydown", function (event) {
-      if (event.key === "Enter" && !event.shiftKey) {
-        sendMessage();
-        event.preventDefault();
-      }
-    });
- // ✅ 사이드바 기능
-    const sidebar = document.getElementById("chatSidebar");
-    const toggleBtn = document.getElementById("toggleSidebarBtn");
-    const closeBtn = document.getElementById("closeSidebarBtn");
-    const participantList = document.getElementById("participantList");
-
-    toggleBtn.addEventListener("click", () => {
-    	  sidebar.classList.add("visible");
-    	  loadParticipants();
-    	});
-
-    closeBtn.addEventListener("click", () => {
-      sidebar.classList.remove("visible");
-    });
-
-    function loadParticipants() {
-      fetch(`/chat/participants?residentChatRoomId=${residentChatRoomId}`)
-        .then(res => res.json())
-        .then(data => {
-          participantList.innerHTML = "";
-          data.forEach(p => {
-            const li = document.createElement("li");
-            li.textContent = `${p.unitRoom}호 ${p.mbrNnm}`;
-            participantList.appendChild(li);
-          });
-        })
-        .catch(err => {
-          console.error("참여자 목록 로딩 실패:", err);
-        });
-    }
-  </script>
+	<script>
+  window.chatInfo = {
+    residentChatRoomId: "${residentChatRoomId}",
+    loginMbrCd: "${mbrCd}",
+    bldgId: "${bldgId}"
+  };
+</script>
+  <script src="${pageContext.request.contextPath}/app/js/chat/chatRoom.js"></script>
 </body>
 </html>

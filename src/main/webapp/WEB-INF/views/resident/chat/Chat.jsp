@@ -148,6 +148,6 @@
     </div>
   </div>
 
-  <script src="${pageContext.request.contextPath}/app/js/resident/ChatList.js"></script>
+  <script src="${pageContext.request.contextPath}/app/js/chat/chatList.js"></script>
 </body>
 </html>

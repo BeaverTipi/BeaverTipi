@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.resident.chating.dto.ChatMessageDTO;
+import kr.or.ddit.resident.chating.dto.ParticipantDTO;
 import kr.or.ddit.resident.mapper.RsdChatMapper;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.ChatRoomInVO;
@@ -70,6 +71,23 @@ public class RsdChatServiceImpl implements RsdChatServcie {
 	public ChatMessageDTO getWhoIsSender(String mbrCd, String residentChatRoomId) {
 		// TODO Auto-generated method stub
 		return mapper.selectWhoIsSender(mbrCd, residentChatRoomId);
+	}
+
+	@Override
+	public List<ParticipantDTO> getParticiapntList(String residentChatRoomId) {
+		// TODO Auto-generated method stub
+		return mapper.selectChatParticipantList(residentChatRoomId);
+	}
+
+	@Override
+	public void editLeaveChatRoom(ChatRoomInVO criVO) {
+		
+		 mapper.updateLeaveChatRoom(criVO);
+	}
+
+	@Override
+	public ResidentChatRoomVO getResidentChatRoomInfo(String residentChatRoomId) {
+		return mapper.selectResidentChatRoomInfo(residentChatRoomId);
 	}
 
 

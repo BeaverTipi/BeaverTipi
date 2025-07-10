@@ -87,14 +87,13 @@
 		)
 	</insert>
 
-
-
 	<select id="selectBuildingChatList" resultType="ResidentChatRoomVO">
 	SELECT DISTINCT A.RESIDENT_CHAT_ROOM_TITLE, A.RESIDENT_CHAT_ROOM_ID
 	FROM RESIDENT_CHAT_ROOM A
 	INNER JOIN CHAT_ROOM_IN B ON(A.RESIDENT_CHAT_ROOM_ID = B.RESIDENT_CHAT_ROOM_ID)
 	WHERE B.MBR_CD = #{mbrCd}
 	AND A.BLDG_ID = #{bldgId}
+	AND B.RESIDENT_CHAT_ROOM_STATUS_CODE='JOIN'
 	</select> 
 
 	<select id = "selectResidentBuildingList" resultType="BuildingVO">
@@ -122,5 +121,35 @@
 		WHERE d.resident_chat_room_id = #{residentChatRoomId}
 		  AND c.mbr_cd = #{mbrCd}
     </select>
-
+	
+	<select id="selectChatParticipantList" resultType ="kr.or.ddit.resident.chating.dto.ParticipantDTO">
+	SELECT DISTINCT A.MBR_CD, COALESCE(B.MBR_NNM,B.MBR_NM) AS MBR_NNM , E.UNIT_ROOM
+	FROM CHAT_ROOM_IN A
+	INNER JOIN MEMBER B ON (A.MBR_CD = B.MBR_CD)
+	INNER JOIN RESIDENT_CHAT_ROOM C ON (A.RESIDENT_CHAT_ROOM_ID = C.RESIDENT_CHAT_ROOM_ID)
+	INNER JOIN UNIT_RESIDENT D ON (A.MBR_CD = D.MBR_CD)
+	INNER JOIN UNIT E ON (C.BLDG_ID = E.BLDG_ID AND D.UNIT_ID = E.UNIT_ID )
+	WHERE A.RESIDENT_CHAT_ROOM_ID = #{residentChatRoomId}
+	AND RESIDENT_CHAT_ROOM_STATUS_CODE = '0'
+	</select>
+	
+	<update id="updateLeaveChatRoom" parameterType = "ChatRoomInVO">
+	UPDATE CHAT_ROOM_IN
+	SET RESIDENT_CHAT_ROOM_STATUS_CODE ='LEAVED',
+    CHAT_LEAVE_DATE = SYSDATE
+	WHERE RESIDENT_CHAT_ROOM_ID = #{residentChatRoomId}
+	AND MBR_CD=#{mbrCd}
+	AND RESIDENT_CHAT_ROOM_STATUS_CODE = 'JOIN'
+	</update>
+	
+	<select id="selectResidentChatRoomInfo" parameterType="string" resultType="ResidentChatRoomVO">
+		SELECT *
+		FROM RESIDENT_CHAT_ROOM
+		WHERE RESIDENT_CHAT_ROOM_ID = #{residentChatRoomId}
+	</select>
+	
+	
+	
+	
+	
 </mapper>

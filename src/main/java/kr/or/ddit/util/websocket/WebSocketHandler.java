@@ -15,9 +15,11 @@ import kr.or.ddit.resident.chating.dto.ChatMessageDTO;
 import kr.or.ddit.resident.chating.service.RsdChatServiceImpl;
 import kr.or.ddit.vo.ResidentChatMessageVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class WebSocketHandler extends TextWebSocketHandler {
 
     private final RsdChatServiceImpl service;
@@ -74,5 +76,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         sessionList.remove(session);
+
+        String roomId = (String) session.getAttributes().get("residentChatRoomId");
+        log.info("WebSocket 연결 종료 → sessionId={}, roomId={}, 상태코드={}, 사유={}",
+                 session.getId(), roomId, status.getCode(), status.getReason());
     }
 }

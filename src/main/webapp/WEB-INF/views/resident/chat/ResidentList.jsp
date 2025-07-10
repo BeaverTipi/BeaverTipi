@@ -14,7 +14,7 @@
   </style>
 </head>
 <body>
-  <h2>🏢 입주민 검색</h2>
+  <h2 id="pageTitle">🏢 입주민 검색</h2>
 
   <div>
     <select id="searchType">
@@ -48,10 +48,15 @@
   <script>
     window.addEventListener("load", () => {
       let bldgId = null;
-
       const urlParams = new URLSearchParams(window.location.search);
       bldgId = urlParams.get("bldgId");
-      console.log("📦 bldgId:", bldgId);
+      const mode = urlParams.get("mode") ?? "create"; // ✅ 추가된 mode 파라미터
+
+      console.log("📦 bldgId:", bldgId, "🧭 mode:", mode);
+
+      // ✅ 제목 텍스트 동적으로 변경
+      document.getElementById("pageTitle").textContent = 
+        mode === "invite" ? "🏢 입주민 초대" : "🏢 입주민 선택";
 
       if (!bldgId) {
         alert("건물 ID가 전달되지 않았습니다.");
@@ -167,10 +172,21 @@
           unitRoom: chk.dataset.unitRoom // ✅ 추가됨
         }));
 
-        if (window.opener && typeof window.opener.receiveSelectedMembers === "function") {
-          window.opener.receiveSelectedMembers(members);
-        }
+        handleSelectionByMode(members); // ✅ mode에 따라 함수 분기 호출
         window.close();
+      }
+
+      // ✅ mode 분기 처리용 함수 추가
+      function handleSelectionByMode(members) {
+        if (mode === "invite") {
+          if (window.opener && typeof window.opener.receiveInviteTargets === "function") {
+            window.opener.receiveInviteTargets(members);
+          }
+        } else {
+          if (window.opener && typeof window.opener.receiveSelectedMembers === "function") {
+            window.opener.receiveSelectedMembers(members);
+          }
+        }
       }
 
       // 전역 함수로 노출

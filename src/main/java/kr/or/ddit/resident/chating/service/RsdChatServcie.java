@@ -3,6 +3,7 @@ package kr.or.ddit.resident.chating.service;
 import java.util.List;
 
 import kr.or.ddit.resident.chating.dto.ChatMessageDTO;
+import kr.or.ddit.resident.chating.dto.ParticipantDTO;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.ChatRoomInVO;
 import kr.or.ddit.vo.ResidentChatMessageVO;
@@ -27,4 +28,10 @@ public interface RsdChatServcie {
 	public void createMessage(ResidentChatMessageVO rcmVO);
 	
 	public ChatMessageDTO getWhoIsSender(String mbrCd, String residentChatRoomId);
+	
+	public List<ParticipantDTO> getParticiapntList(String residentChatRoomId);
+	
+	public void editLeaveChatRoom(ChatRoomInVO criVO);
+	
+	public ResidentChatRoomVO getResidentChatRoomInfo(String residentChatRoomId);
 }

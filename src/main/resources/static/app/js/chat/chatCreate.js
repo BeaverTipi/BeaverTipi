@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const bldgId = buildingSelect.value;
     if (!bldgId) return alert("건물을 선택하세요.");
 
-    const popupUrl = `/resident/chat/residentList?bldgId=${bldgId}&popup=true`;
+    const popupUrl = `/resident/chat/residentList?bldgId=${bldgId}&popup=true&mode=create`;
     window.open(popupUrl, "selectMembersPopup", "width=600,height=500,scrollbars=yes");
   });
 

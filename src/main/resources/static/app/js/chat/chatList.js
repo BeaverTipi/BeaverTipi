@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 1. 채팅방 개설 버튼
   createBtn?.addEventListener("click", () => {
-    window.location.href = "/resident/chat/createRoom?popup=true";;
+    window.location.href = "/resident/chat/createRoom?popup=true";
   });
 
   // 공개 / 참여 채팅 토글
