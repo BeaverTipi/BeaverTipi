@@ -12,7 +12,7 @@
       margin: 0;
       padding: 0;
     }
-
+	
     .header {
       display: flex;
       align-items: center;
@@ -108,6 +108,90 @@
     button:hover {
       background-color: #6a93ff;
     }
+	/* ✅ 사이드바 확장용 CSS */
+	.sidebar-toggle-btn {
+	  position: fixed;
+	  top: 16px;
+	  right: 16px;
+	  background-color: transparent;
+	  border: 1px solid #333;
+	  color: #333;
+	  border-radius: 4px;
+	  font-size: 16px;
+	  padding: 0; 
+	  height: 32px;
+	  width: 36px; 
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  z-index: 500;
+	}
+	#closeSidebarBtn {
+	  width: 36px;
+	  height: 36px;
+	  background-color: transparent;
+	  border: 1px solid #333;
+	  color: #333;
+	  border-radius: 4px;
+	  font-size: 16px;
+	  padding: 0;
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  cursor: pointer;
+	}
+	
+	.chat-sidebar {
+	  position: fixed;
+	  top: 0;
+	  right: -300px;
+	  width: 280px;
+	  height: 100%;
+	  background-color: #ffffff;
+	  border-left: 1px solid #ccc;
+	  box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+	  transition: right 0.3s ease;
+	  z-index: 1000;
+	  padding: 16px;
+	}
+	
+	.chat-sidebar.visible {
+	  right: 0;
+	}
+	
+	.sidebar-header {
+	  display: flex;
+	  justify-content: space-between;
+	  align-items: center;
+	  margin-bottom: 12px;
+	}
+	
+	.participant-list {
+	  list-style: none;
+	  padding: 0;
+	  margin: 0 0 16px 0;
+	}
+	
+	.participant-list li {
+	  padding: 8px 0;
+	  border-bottom: 1px solid #eee;
+	  font-size: 14px;
+	}
+	
+	.invite-btn {
+	  width: 100%;
+	  padding: 10px;
+	  background-color: #28a745;
+	  color: white;
+	  font-weight: bold;
+	  border: none;
+	  border-radius: 5px;
+	  cursor: pointer;
+	}
+	
+	.invite-btn:hover {
+	  background-color: #45c16c;
+	}    
   </style>
 </head>
 <body>
@@ -115,6 +199,7 @@
   <c:if test="${param.popup eq 'true'}">
     <div class="header">
       <img src="/volt/assets/img/brand/dark.png" class="chatimg" alt="Logo">
+      <button id="toggleSidebarBtn" class="sidebar-toggle-btn">👥</button>
     </div>
 
     <div id="chatbox">
@@ -131,12 +216,22 @@
       </c:forEach>
     </div>
 
+
+
     <div class="input-container">
       <textarea id="messageInput" placeholder="메시지를 입력하세요" rows="3"></textarea>
       <button onclick="sendMessage()">전송</button>
     </div>
   </c:if>
 
+	<div id="chatSidebar" class="chat-sidebar">
+	  <div class="sidebar-header">
+	    <h3>참여자 목록</h3>
+	    <button id="closeSidebarBtn">✖</button>
+	  </div>
+	  <ul id="participantList" class="participant-list"></ul>
+	  <button id="inviteBtn" class="invite-btn">+ 초대하기</button>
+	</div>
   <script>
     const residentChatRoomId = "${residentChatRoomId}";
     const loginMbrCd = "${mbrCd}";
@@ -178,7 +273,7 @@
     };
 
     socket.onclose = function (event) {
-      console.warn(`🔌 WebSocket 종료 (코드: ${event.code}, 이유: ${event.reason})`);
+      console.warn(` WebSocket 종료 (코드: ${event.code}, 이유: ${event.reason})`);
     };
 
     function sendMessage() {
@@ -187,10 +282,10 @@
       if (!content) return;
 
       const msg = {
-        residentChatRoomId: residentChatRoomId,
-        mbrCd: loginMbrCd,
-        rcmCont: content.replace(/\n/g, "\\n")
-      };
+		    residentChatRoomId: residentChatRoomId,
+		    mbrCd: loginMbrCd,
+		    rcmCont: content.replace(/\n/g, "\\n")     
+    	};
 
       if (socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify(msg));
@@ -227,6 +322,36 @@
         event.preventDefault();
       }
     });
+ // ✅ 사이드바 기능
+    const sidebar = document.getElementById("chatSidebar");
+    const toggleBtn = document.getElementById("toggleSidebarBtn");
+    const closeBtn = document.getElementById("closeSidebarBtn");
+    const participantList = document.getElementById("participantList");
+
+    toggleBtn.addEventListener("click", () => {
+    	  sidebar.classList.add("visible");
+    	  loadParticipants();
+    	});
+
+    closeBtn.addEventListener("click", () => {
+      sidebar.classList.remove("visible");
+    });
+
+    function loadParticipants() {
+      fetch(`/chat/participants?residentChatRoomId=${residentChatRoomId}`)
+        .then(res => res.json())
+        .then(data => {
+          participantList.innerHTML = "";
+          data.forEach(p => {
+            const li = document.createElement("li");
+            li.textContent = `${p.unitRoom}호 ${p.mbrNnm}`;
+            participantList.appendChild(li);
+          });
+        })
+        .catch(err => {
+          console.error("참여자 목록 로딩 실패:", err);
+        });
+    }
   </script>
 </body>
 </html>
