@@ -29,6 +29,13 @@ document.addEventListener("DOMContentLoaded", () => {
 			disableClickZoom: true
 		});
 
+		const modalCloseBtn = document.getElementById('sideModalClose');
+		if (modalCloseBtn) {
+			modalCloseBtn.addEventListener('click', () => {
+				document.getElementById('side-detail-modal').classList.remove('active');
+			});
+		}
+
 		kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
 			const level = map.getLevel() - 1;
 			map.setLevel(level, { anchor: cluster.getCenter() });
@@ -85,8 +92,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			});
 
 			groupedMap.forEach((group, key) => {
-				const lat = parseFloat(item.lstgLat);
-				const lng = parseFloat(item.lstgLng);
+				const lat = parseFloat(group[0].lstgLat);
+				const lng = parseFloat(group[0].lstgLng);
 
 				if (!isNaN(lat) && !isNaN(lng) &&
 					lat >= -90 && lat <= 90 &&
@@ -96,24 +103,47 @@ document.addEventListener("DOMContentLoaded", () => {
 					const position = new kakao.maps.LatLng(lat, lng);
 					const marker = new kakao.maps.Marker({
 						position: position,
-						title: item.lstgNm || item.bldgNm,
-						postal: item.lstgPostal
+						title: group[0].lstgNm || group[0].bldgNm,
+						postal: group[0].lstgPostal
 					});
 
 					markers.push(marker);
+
+					const titleText = group.length === 1
+						? `${group[0].lstgNm || group[0].bldgNm}`
+						: `${group[0].lstgNm || group[0].bldgNm} 외 ${group.length - 1}건`;
+
+					const formatDeal = (item) => {
+						const saleType = item.lstgTypeSale;
+						const lease = item.lstgLease || 0;
+						const leaseM = item.lstgLeaseM || 0;
+						const leaseAmt = item.lstgLeaseAmt || 0;
+
+						switch (saleType) {
+							case 1: // 전세
+								return `전세 ${lease.toLocaleString()}만원`;
+							case 2: // 월세
+								return `보증금 ${leaseAmt.toLocaleString()} / 월 ${leaseM.toLocaleString()}만원`;
+							case 3: // 매매
+								return `매매 ${leaseAmt.toLocaleString()}만원`;
+							default:
+								return `정보 없음`;
+						}
+					};
+
 
 					const content = document.createElement('div');
 					content.className = 'wrap';
 					content.innerHTML = `
 					<div class="info">
 						<div class="title">
-							${group[0].lstgNm || group[0].bldgNm} 외 ${group.length - 1}건
+							${titleText}
 							<div class="close" title="닫기" style="cursor:pointer;"></div>
 						</div>
 						<div class="body">
 							<div class="desc">
 								${group.map(item => `
-									<div><strong>${item.lstgNm || item.bldgNm}</strong> - ${item.lstgLease || 0}/${item.lstgLeaseM || 0}</div>
+									<div><strong>${item.lstgNm || item.bldgNm}</strong> - 보증금 : ${formatDeal(item)}</div>
 								`).join('')}
 							</div>
 						</div>
@@ -167,12 +197,12 @@ document.addEventListener("DOMContentLoaded", () => {
 				const listItem = document.createElement('div');
 				listItem.className = 'list-item';
 				listItem.innerHTML = `
-						<div class="info">
-							<div class="title">
+						<div class="list-content">
+							<div class="list-title">
 								${item.lstgNm || item.bldgNm}
 							</div>
-							<div class="body">
-								<div class="desc">
+							<div class="list-body">
+								<div class="list-desc">
 									<div>도로명 : ${item.lstgAdd || item.bldgAddr}</div>
 									<div>우편주소 : ${item.lstgPostal}</div>
 									<div>면적: ${item.lstgExArea || '-'} ㎡</div>
@@ -187,12 +217,53 @@ document.addEventListener("DOMContentLoaded", () => {
 				// 목록 항목 클릭 시 지도 이동
 				listItem.addEventListener('click', () => {
 					map.panTo(position);
+					const lstgId = item.lstgId;
 
-				});
+					fetch(`/map/api/detail?lstgId=${lstgId}`)
+						.then(res => res.json())
+						.then(detail => {
+							showDetailModal(detail);
+						})
+						.catch(err => {
+							console.error("상세 정보 로딩 실패:", err);
+							showDetailModal({});
+						});
+				}); /* listItem.addEventListener 끝*/
 
 				listContainer.appendChild(listItem);
 
 			}); /* slice.forEach 끝 */
+
+			function getDealType(code) {
+				switch (code) {
+					case 1: return '전세';
+					case 2: return '월세';
+					case 3: return '매매';
+					default: return '미정';
+				}
+			}
+
+			function showDetailModal(data) {
+				const modal = document.getElementById('side-detail-modal');
+				const body = document.getElementById('sideModalBody');
+
+				modal.classList.add('active');
+
+				body.innerHTML = `
+				    <h3>${data.lstgNm || '-'}</h3>
+				    <p><strong>주소:</strong> ${data.lstgAdd || '-'} ${data.lstgAdd2 || ''}</p>
+				    <p><string>우편주소:</strong> ${data.lstgPostal}</p>
+				    <p><strong>면적:</strong> ${data.lstgExArea || '-'}㎡</p>
+				    <p><strong>방 개수:</strong> ${data.lstgRoomCnt || '-'}개</p>
+				    <p><strong>거래유형:</strong> ${getDealType(data.lstgTypeSale)}</p>
+				    <p><strong>보증금:</strong> ${data.lstgLease || 0} / <strong>월세:</strong> ${data.lstgLeaseM || 0}</p>
+				    <p><strong>매매가:</strong> ${data.lstgLeaseAmt || 0}</p>
+				    <p><strong>층수:</strong> ${data.lstgFloor || '-'}</p>
+				    <p><strong>주차 가능:</strong> ${data.lstgParkYn === 'Y' ? '가능' : '불가능'}</p>
+				  `;
+
+			}
+
 
 			if (sliced.length === 0) {
 				const noItem = document.createElement('div');
@@ -209,13 +280,12 @@ document.addEventListener("DOMContentLoaded", () => {
 					const pageBtn = document.createElement('a');
 					pageBtn.href = '#';
 					pageBtn.innerText = i;
-					pageBtn.style.margin = '0 5px';
+					pageBtn.classList.add('page-link');
 					if (i === page) pageBtn.classList.add('on'); // 현재 페이지 스타일 지정
 
 					pageBtn.addEventListener('click', (e) => {
 						e.preventDefault();
 						renderListPage(i);
-						document.getElementById('listing-list').scrollIntoView({ behavior: 'smooth' });
 					});
 
 					paginationContainer.appendChild(pageBtn);

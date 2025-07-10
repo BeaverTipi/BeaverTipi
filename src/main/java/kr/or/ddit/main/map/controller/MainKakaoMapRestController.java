@@ -42,13 +42,15 @@ public class MainKakaoMapRestController {
 			: ResponseEntity.ok(categoryList);
 	}
 	
-	@GetMapping("/list")
-	public ResponseEntity<List<ListingVO>> getListingDetalList(String lstgId){
-		List<ListingVO> ListingList = service.selectListingDetailList(lstgId);
-		
-		return ListingList == null || ListingList.isEmpty()
-			? ResponseEntity.noContent().build()
-			: ResponseEntity.ok(ListingList);
+	@GetMapping("/detail")
+	public ResponseEntity<?> getListingDetalList(@RequestParam("lstgId") String lstgId){
+		List<ListingVO> detailList = service.selectListingDetailList(lstgId);
+
+		if (detailList == null || detailList.isEmpty()) {
+			return ResponseEntity.noContent().build(); // 204 → JS에서 catch 블럭으로 감
+		}
+
+		return ResponseEntity.ok(detailList.get(0));
 	}
 	
 }

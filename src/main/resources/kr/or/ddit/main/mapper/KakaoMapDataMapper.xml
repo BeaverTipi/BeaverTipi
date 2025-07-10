@@ -86,8 +86,22 @@
 		LISTING
 	WHERE
 		LSTG_ID = #{lstgId}
-		AND LSTG_DEL ='1'
+		AND LSTG_DEL ='N'
 </select>
 
+<select id="selectFilter" resultType="kr.or.ddit.vo.ListingVO">
+	SELECT
+		LI.LSTG_ID,
+		LOP.FAC_OPT_ID,
+		FOP.FAC_OPT_TYPE_CD,
+		FOP.FAC_OPT_NM,
+		FOP.FAC_OPT_DESC
+	FROM
+		LISTING LI
+		JOIN LISTING_OPTION LOP ON LI.LSTG_ID = LOP.LSTG_ID
+		JOIN FACILITY_OPTION FOP ON LOP.FAC_OPT_ID = FOP.FAC_OPT_ID
+	WHERE
+		
+</select>
 
 </mapper>
