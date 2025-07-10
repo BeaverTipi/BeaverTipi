@@ -26,6 +26,11 @@
     .category-btn.active {
 	font-weight: bold;
 	color: #007bff;
+	#pagination a.on {
+    font-weight: bold;
+    color: #007bff;
+    text-decoration: underline;
+}
 }
 </style>
 <div style="display: flex; height: 600px;">
@@ -34,10 +39,11 @@
 		<%@ include file="/WEB-INF/fragments/mainPageMapSidebar.jsp" %>
 	</nav>
 	
-	<div style="width: 350px; padding: 10px; overflow-y: auto;">
+	<section style="width: 350px; padding: 10px; overflow-y: auto;">
 		<div id="listing-list" class="listing-list"></div>
 		<div id="pagination" class="pagination-container"></div>
-	</div>
+		<div id="detail-box" class="detail-box" style="margin-top:20px; border:1px solid #ccc; padding:10px; display:none;"></div>
+	</section>
 	 
 	<div class="map_wrap" style="flex : 1; height: 500px;">
 		<div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>

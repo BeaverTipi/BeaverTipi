@@ -21,6 +21,19 @@ document.addEventListener("DOMContentLoaded", () => {
 		// 지도 객체 생성
 		const map = new kakao.maps.Map(mapContainer, mapOption);
 
+		// 클러스터러 생성
+		const clusterer = new kakao.maps.MarkerClusterer({
+			map: map,
+			averageCenter: false,
+			minLevel: 5,
+			disableClickZoom: true
+		});
+
+		kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
+			const level = map.getLevel() - 1;
+			map.setLevel(level, { anchor: cluster.getCenter() });
+		});
+
 		// 마커 배열 저장(숨김/보이기 용)
 		const markers = [];
 
@@ -47,8 +60,11 @@ document.addEventListener("DOMContentLoaded", () => {
 				currentOverlay.setMap(null);
 				currentOverlay = null;
 			}
-			// 기존 마커 제거
+			/*// 기존 마커 제거
 			markers.forEach(m => m.setMap(null));
+			markers.length = 0;*/
+
+			clusterer.clear(); // 클러스터 초기화
 			markers.length = 0;
 
 			// 목록 초기화
@@ -58,7 +74,17 @@ document.addEventListener("DOMContentLoaded", () => {
 			currentListData = data;
 			renderListPage(1);
 
-			data.forEach((item, index) => {
+			const groupedMap = new Map();
+
+			data.forEach(item => {
+				const key = `${item.lstgLat}_${item.lstgLng}`;
+				if (!groupedMap.has(key)) {
+					groupedMap.set(key, []);
+				}
+				groupedMap.get(key).push(item);
+			});
+
+			groupedMap.forEach((group, key) => {
 				const lat = parseFloat(item.lstgLat);
 				const lng = parseFloat(item.lstgLng);
 
@@ -69,7 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 					const position = new kakao.maps.LatLng(lat, lng);
 					const marker = new kakao.maps.Marker({
-						map: map,
 						position: position,
 						title: item.lstgNm || item.bldgNm,
 						postal: item.lstgPostal
@@ -82,15 +107,14 @@ document.addEventListener("DOMContentLoaded", () => {
 					content.innerHTML = `
 					<div class="info">
 						<div class="title">
-							${item.lstgNm || item.bldgNm}
+							${group[0].lstgNm || group[0].bldgNm} 외 ${group.length - 1}건
 							<div class="close" title="닫기" style="cursor:pointer;"></div>
 						</div>
 						<div class="body">
 							<div class="desc">
-								<div>도로명 : ${item.lstgAdd || item.bldgAddr}</div>
-								<div>우편주소 : ${item.lstgPostal}</div>
-								<div>면적: ${item.lstgExArea || '-'} ㎡</div>
-								<div>보증금: ${item.lstgLease || 0} / 월세: ${item.lstgLeaseM || 0}</div>
+								${group.map(item => `
+									<div><strong>${item.lstgNm || item.bldgNm}</strong> - ${item.lstgLease || 0}/${item.lstgLeaseM || 0}</div>
+								`).join('')}
 							</div>
 						</div>
 					</div>
@@ -117,6 +141,9 @@ document.addEventListener("DOMContentLoaded", () => {
 					console.warn(`잘못된 좌표값 : ID=${item.id}, lat: ${lat}, lng: ${lng}`);
 				}
 			}); /* data.foreach 끝 */
+
+			clusterer.addMarkers(markers);
+
 		} /* renderMarkers 끝 */
 
 		const ITEMS_PER_PAGE = 5;
@@ -160,11 +187,20 @@ document.addEventListener("DOMContentLoaded", () => {
 				// 목록 항목 클릭 시 지도 이동
 				listItem.addEventListener('click', () => {
 					map.panTo(position);
+
 				});
 
 				listContainer.appendChild(listItem);
 
 			}); /* slice.forEach 끝 */
+
+			if (sliced.length === 0) {
+				const noItem = document.createElement('div');
+				noItem.className = 'no-item';
+				noItem.innerText = '해당 범위에 매물이 없습니다.';
+				listContainer.appendChild(noItem);
+			}
+
 
 			// 페이지네이션 생성
 			if (paginationContainer) {
@@ -179,6 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					pageBtn.addEventListener('click', (e) => {
 						e.preventDefault();
 						renderListPage(i);
+						document.getElementById('listing-list').scrollIntoView({ behavior: 'smooth' });
 					});
 
 					paginationContainer.appendChild(pageBtn);
