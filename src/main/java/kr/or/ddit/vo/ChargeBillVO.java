@@ -6,19 +6,17 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(of="unitId")
+@EqualsAndHashCode(of="chgbillId")
 public class ChargeBillVO implements Serializable{
-	private String chgbillStatusCode;
-	private Integer chgbillCurrentVer;
-	private String chgbillDueDate;
-	private String chgbillDesc;
-	private String chgbillNm;
-	private String chgbillDt;
-	private String chgbillPck;
-	private String unitMntnFeeCd;
 	private String chgbillId;
+	private String rentalPtyId;
 	private String unitId;
 	private String bldgId;
 	private String chgbillChargeMonth;
-	private Integer chgbillCalcAmount;
+	private long chgbillAmount;
+	private String chgbillStatus;
+	private String chgbillStatusGrpCd;
+	private String chgbillDueDate;
+	private String chgbillPaidDate;
+	private String chgbillDesc;
 }

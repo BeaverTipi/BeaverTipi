@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.resident.mapper.ChargeBillMapper">
+
+	<select id="selectChargeBill" resultType="ChargeBillVO">
+	SELECT 
+		CHGBILL_ID AS chgbillId,
+		RENTAL_PTY_ID AS rentalPtyId,
+		UNIT_ID AS unitId,
+		BLDG_ID AS bldgId,
+		CHGBILL_CHARGE_MONTH AS chgbillChargeMonth,
+		CHGBILL_AMOUNT AS chgbillAmount,
+		CHGBILL_STATUS AS chgbillStatus,
+		CHGBILL_STATUS_GRP_CD AS chgbillStatusGrpCd,
+		CHGBILL_DUE_DATE AS chgbillDueDate,
+		CHGBILL_PAID_DATE AS chgbillPaidDate,
+		CHGBILL_DESC AS chgbillDesc
+	FROM CHARGE_BILL
+	WHERE UNIT_ID = #{unitId}
+	AND CHGBILL_CHARGE_MONTH = #{chgbillChargeMonth}
+</select>
+
+
+</mapper>
