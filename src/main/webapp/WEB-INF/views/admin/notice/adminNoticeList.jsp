@@ -8,6 +8,7 @@
 <meta charset="UTF-8">
 <title>공지사항</title>
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/board/adminNotice.css">
+	<script src="${pageContext.request.contextPath}/app/js/admin/board/boardToggle.js"></script>
 </head>
 <body>
 <h1>공지사항</h1>
@@ -32,8 +33,15 @@
 									<a href="#" class="toggle-detail"  >${board.brdTitlNm }</a>
 								</td>
 								<td>${board.brdPblsDtm }</td>
-								<td>${board.boardCartegory.brdCode }</td>
-								<td>${board.brdVmCnt }</td>
+								<td>
+									<c:choose>
+								        <c:when test="${board.boardCartegory.brdCode.startsWith('N')}">공지사항</c:when>
+								        <c:when test="${board.boardCartegory.brdCode.startsWith('F')}">FAQ</c:when>
+								        <c:when test="${board.boardCartegory.brdCode.startsWith('Q')}">QNA</c:when>
+								        <c:otherwise>기타</c:otherwise>
+								    </c:choose>
+								</td>
+								<td>${board.brdVwCnt }</td>
 								<td>${board.boardCartegory.brdCmntYn }</td>
 							</tr>
 							<tr style="display: none;">

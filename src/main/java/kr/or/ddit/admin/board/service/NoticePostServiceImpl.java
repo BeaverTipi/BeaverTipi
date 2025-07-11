@@ -13,38 +13,36 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class NoticePostServiceImpl implements NoticePostService {
-	
+
 	private final NoticePostMapper mapper;
-	
+
 	@Override
-	public List<BoardVO> readNoticeList(PaginationInfo<BoardVO> paging) {
-		return mapper.selectNoticeList(paging);
+	public List<BoardVO> readBoardList(PaginationInfo<BoardVO> paging) {
+		return mapper.selectBoardList(paging);
 	}
 
 	@Override
-	public Optional<BoardVO> readNotice(String brdNo) {
-		return Optional.ofNullable(mapper.selectNoticeById(brdNo));
+	public Optional<BoardVO> readBoard(String brdNo) {
+		return Optional.ofNullable(mapper.selectBoardById(brdNo));
 	}
 
 	@Override
-	public void createNotice(BoardVO board) {
-		mapper.insertNotice(board);
+	public int createBoard(BoardVO board) {
+		return mapper.insertBoard(board);
 	}
 
 	@Override
-	public void modifyNotice(BoardVO board) {
-		mapper.updateNotice(board);
+	public int modifyBoard(BoardVO board) {
+		return mapper.updateBoard(board);
 	}
 
 	@Override
-	public void deleteNotice(BoardVO board) {
-		mapper.deleteNotice(board);
-		
+	public int deleteBoard(BoardVO board) {
+		return mapper.softDeleteBoard(board.getBrdNo());
 	}
 
 	@Override
-	public int getTotalNoticeRecord(PaginationInfo<BoardVO> paging) {
-		return mapper.selectTotalNoticeRecord(paging);
+	public int getTotalBoardRecord(PaginationInfo<BoardVO> paging) {
+		return mapper.selectTotalBoardRecord(paging);
 	}
-
 }

@@ -11,10 +11,11 @@
 	<script src="${pageContext.request.contextPath}/app/js/admin/board/boardToggle.js"></script>
 </head>
 <body>
-	<h1>새 공지사항 등록</h1>
+	<h1>공지사항 수정</h1>
 	<div class="card">
 		<div class="card-body">
 			<form:form modelAttribute="board" method="post">
+    			<form:hidden path="brdDelYn" value="N" />
 				<div>
 					<div class="form-control">
 						<label class="label" for="brdTitlNm">제목</label>
@@ -23,9 +24,9 @@
 					</div>
 					<div class="form-control">
 						<label class="label" for="brdCode">공지유형</label>
-						<form:radiobutton path="brdCode" value="N001" />공지사항
-						<form:radiobutton path="brdCode" value="F001" />FAQ
-						<form:radiobutton path="brdCode" value="Q001" />QnA
+						<form:radiobutton path="brdCode" value="N0001" />공지사항
+						<form:radiobutton path="brdCode" value="F0001" />FAQ
+						<form:radiobutton path="brdCode" value="Q0001" />QnA
 						<form:errors path="brdCode" cssClass="text-danger" />			
 					</div>
 						<div class="form-detail" id="noticeDetailBox" style="display:none">
@@ -46,7 +47,7 @@
 									</div>
 									<div>
 										<label class="label" for="notice[${status.index}].noticeEndDtm">종료일시</label>
-										<form:input path="notice[${status.index}].noticeEndDtm" type="datetime-local" />
+										<form:input path="notice[${status.index}].noticeEndDtm" type="date" />
 										<form:errors path="notice[${status.index}].noticeEndDtm" cssClass="text-danger" />							
 									</div>
 								</c:forEach>
@@ -62,7 +63,7 @@
 										<form:errors path="faq[${status.index}].faqCtgry" cssClass="text-danger" />							
 									</div>
 								</c:forEach>
-						</div>
+							</div>
 						<div class="form-detail" id="qnaDetailBox" style="display:none">
 							<label class="label" for="qna">상세설정</label>
 								<c:forEach var="qnaItem" items="${board.qna }" varStatus="status">
@@ -81,22 +82,14 @@
 						<form:errors path="brdCont" cssClass="text-danger" />			
 					</div>
 				</div>
-			</form:form>
-		</div>
-	</div>
-	<div class="form-control">
-    	<label class="label">댓글 허용 여부</label>
-    	<span>
-	        	<form:radiobutton path="board.boardCartegory.brdCmntYn" value="Y" /> 허용
-	        	<form:radiobutton path="board.boardCartegory.brdCmntYn" value="N" /> 비허용
-	        	<form:errors path="board.boardCartegory.brdCmntYn" cssClass="text-danger" />
-    	</span>
-	</div>
 		<div class="card-footer">
 			<div class="button-group">
 				<button type="submit" class="btn btn-outline-success">등록</button>
-				<button type="reset" class="btn btn-outline-danger">취소</button>
+				<a class="btn btn-outline-danger" href="${pageContext.request.contextPath}/admin/notice/list"">취소</a>
 			</div>
 		</div>
+			</form:form>
+		</div>
+	</div>
 </body>
 </html>

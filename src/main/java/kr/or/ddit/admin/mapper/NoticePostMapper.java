@@ -9,11 +9,11 @@ import kr.or.ddit.vo.BoardVO;
 
 @Mapper
 public interface NoticePostMapper {
-	public List<BoardVO> selectNoticeList(PaginationInfo<BoardVO> paging);
-	public BoardVO selectNoticeById(String brdNo);
-	public int insertNotice(BoardVO board);
-	public int updateNotice(BoardVO board);
-	public int deleteNotice(BoardVO board);
-	
-	public int selectTotalNoticeRecord(PaginationInfo<BoardVO> paging);
+    public List<BoardVO> selectBoardList(PaginationInfo<BoardVO> paging);
+    public BoardVO selectBoardById(String brdNo);
+    public int insertBoard(BoardVO board);
+    public int updateBoard(BoardVO board);
+    public int softDeleteBoard(String brdNo);
+
+    public int selectTotalBoardRecord(PaginationInfo<BoardVO> paging);
 }

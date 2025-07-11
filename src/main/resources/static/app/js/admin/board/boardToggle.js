@@ -39,3 +39,16 @@ document.addEventListener("DOMContentLoaded",()=>{
 		if (selected) {
 			toggleDetail(selected.value);
 		}
+		
+	const titleLinks = document.querySelectorAll(".toggle-detail");
+	titleLinks.forEach(link => {
+		link.addEventListener("click", function (e) {
+			e.preventDefault();
+			const row = this.closest("tr");
+			const detailRow = row.nextElementSibling;
+			if (detailRow && detailRow.style) {
+				detailRow.style.display = detailRow.style.display === "none" ? "table-row" : "none";
+			}
+		});
+	});
+});

@@ -46,7 +46,7 @@
 									</div>
 									<div>
 										<label class="label" for="notice[${status.index}].noticeEndDtm">종료일시</label>
-										<form:input path="notice[${status.index}].noticeEndDtm" type="datetime-local" />
+										<form:input path="notice[${status.index}].noticeEndDtm" type="date" />
 										<form:errors path="notice[${status.index}].noticeEndDtm" cssClass="text-danger" />							
 									</div>
 								</c:forEach>
@@ -61,15 +61,17 @@
 										<form:radiobutton path="faq[${status.index}].faqCtgry" value="서비스이용" />서비스이용
 										<form:errors path="faq[${status.index}].faqCtgry" cssClass="text-danger" />							
 									</div>
+								</c:forEach>
+							</div>
+						<div class="form-detail" id="qnaDetailBox" style="display:none">
+							<label class="label" for="qna">상세설정</label>
+								<c:forEach var="qnaItem" items="${board.qna }" varStatus="status">
 									<div>
-										<label class="label" for="faq[${status.index}].faqCreDtm">생성 일시</label>
-										<form:input path="faq[${status.index}].faqCreDtm" type="datetime-local" />
-										<form:errors path="faq[${status.index}].faqCreDtm" cssClass="text-danger" />							
-									</div>
-									<div>
-										<label class="label" for="faq[${status.index}].faqModDtm">수정 일시</label>
-										<form:input path="faq[${status.index}].faqModDtm" type="datetime-local" />
-										<form:errors path="faq[${status.index}].faqModDtm" cssClass="text-danger" />							
+										<label class="label" for="qna[${status.index}].qnaCtgry">QnA 유형</label>
+										<form:radiobutton path="qna[${status.index}].qnaCtgry" value="결제" />결제
+										<form:radiobutton path="qna[${status.index}].qnaCtgry" value="계정" />계정
+										<form:radiobutton path="qna[${status.index}].qnaCtgry" value="서비스이용" />서비스이용
+										<form:errors path="qna[${status.index}].qnaCtgry" cssClass="text-danger" />							
 									</div>
 								</c:forEach>
 						</div>
@@ -79,14 +81,14 @@
 						<form:errors path="brdCont" cssClass="text-danger" />			
 					</div>
 				</div>
-			</form:form>
-		</div>
-	</div>
 		<div class="card-footer">
 			<div class="button-group">
-				<button type="button" class="btn btn-outline-success" onclick="location.href='${pageContext.request.contextPath}/admin/notice/list'">등록</button>
+				<button type="submit" class="btn btn-outline-success" onclick="location.href='${pageContext.request.contextPath}/admin/notice/list'">등록</button>
 				<button type="reset" class="btn btn-outline-danger">취소</button>
 			</div>
 		</div>
+			</form:form>
+		</div>
+	</div>
 </body>
 </html>
