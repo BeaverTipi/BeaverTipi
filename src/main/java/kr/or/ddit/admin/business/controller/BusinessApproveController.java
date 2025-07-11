@@ -15,7 +15,7 @@ import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.util.renderer.DefaultPaginationRenderer;
 import kr.or.ddit.vo.BusinessApproveSearchVO;
 import kr.or.ddit.vo.CommonCodeVO;
-import kr.or.ddit.vo.SolutionSubscriptionVO;
+import kr.or.ddit.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,19 +49,21 @@ public class BusinessApproveController {
 				paging.setTotalRecordCount(totalRecord);
 
 				// 3. 목록 조회
-				List<SolutionSubscriptionVO> approveList = service.readBusinessApproveList(paging);
+				List<MemberVO> approveList = service.readBusinessApproveList(paging);
 
 				// 4. 페이징 HTML 생성
 				String pagingHTML = new DefaultPaginationRenderer().renderPagination(paging, "fnPaging");
 
 				List<CommonCodeVO> roleList = commonService.readCommonCodeList("SOL");
 				List<CommonCodeVO> statusCodeList = commonService.readCommonCodeList("APST");
+				List<CommonCodeVO> fileCodeList = commonService.readCommonCodeList("FILE");
 				// 5. 모델 바인딩
 				model.addAttribute("approveList", approveList);
 				model.addAttribute("pagingHTML", pagingHTML);
 				model.addAttribute("pagingInfo", paging);
 				model.addAttribute("roleList", roleList);
 				model.addAttribute("statusCodeList", statusCodeList);
+				model.addAttribute("fileCodeList", fileCodeList);
 
 				return "admin/business/businessApprove";
 		}

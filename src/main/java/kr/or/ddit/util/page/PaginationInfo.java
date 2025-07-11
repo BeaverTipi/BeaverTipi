@@ -133,6 +133,9 @@ public class PaginationInfo<T> {
 			        if (vo.getRole() != null && !vo.getRole().isEmpty()) {
 			            sb.append("&detailSearch.role=").append(URLEncoder.encode(vo.getRole(), StandardCharsets.UTF_8.toString()));
 			        }
+			        if (vo.getHasFile() != null && !vo.getHasFile().isEmpty()) {
+			        	sb.append("&detailSearch.hasFile=").append(URLEncoder.encode(vo.getHasFile(), StandardCharsets.UTF_8.toString()));
+			        }
 			    } catch (UnsupportedEncodingException e) {
 			        System.err.println("URL Encoding failed for BusinessApproveSearchVO: " + e.getMessage());
 			    }

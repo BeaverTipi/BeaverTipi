@@ -1,0 +1,254 @@
+@charset "UTF-8";
+
+/* ========================== */
+/* 공통 레이아웃 & 헤더 영역 */
+/* ========================== */
+
+.container {
+    width: 90%;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    margin: 20px 0;
+    color: #333;
+    font-size: 1.8em;
+}
+
+/* ========================== */
+/* 검색 영역 layout          */
+/* ========================== */
+
+.search-area {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.search-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.search-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    flex-basis: calc(30% - 10px);
+    min-width: 280px;
+    max-width: 400px;
+}
+
+.search-item label {
+    font-weight: bold;
+    min-width: 70px;
+    color: #555;
+    flex-shrink: 0;
+}
+
+.search-item .input-field,
+.search-item .select-field {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    width: 100%;
+    box-sizing: border-box;
+    vertical-align: middle;
+}
+
+#memberTypeSelect {
+    height: auto !important;
+    min-height: unset !important;
+}
+
+.date-range-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-grow: 1;
+}
+
+.date-range-group .input-field {
+    flex-grow: 1;
+}
+
+.search-item.search-buttons-in-row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    flex-grow: 1;
+    min-width: unset;
+    flex-basis: auto;
+}
+
+.search-item.search-buttons-in-row button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+}
+
+.search-item.search-buttons-in-row button:hover {
+    opacity: 0.9;
+}
+
+.search-item.search-buttons-in-row button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+}
+
+.search-item.search-buttons-in-row .reset-button {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* ========================== */
+/* 공통 버튼 영역             */
+/* ========================== */
+
+.search-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.search-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+}
+
+.search-actions button:hover {
+    opacity: 0.9;
+}
+
+.search-actions .save-button {
+    background-color: #28a745;
+    color: white;
+    width: 120px;
+}
+
+.btn-warning {
+    background-color: #f4c987;
+    color: #000;
+    border: none;
+}
+
+.btn-dark {
+    background-color: #1f2d3d;
+    color: #fff;
+    border: none;
+}
+
+.form-control,
+.form-select {
+    height: 42px;
+}
+
+/* ========================== */
+/* 테이블 영역 (아래 스타일 우선) */
+/* ========================== */
+
+.table-container {
+    margin-top: 10px;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    border-top: 1px solid #ddd;
+}
+
+.table th,
+.table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;          /* 중앙 정렬 */
+    vertical-align: middle;      /* 수직 중앙 정렬 */
+}
+
+.table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #333;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.table .member-status-select {
+    padding: 5px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.no-data-center {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+}
+
+/* ========================== */
+/* 페이지네이션 스타일        */
+/* ========================== */
+
+.pagination-wrapper {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination-wrapper a,
+.pagination-wrapper span.bg-primary {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 0 6px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.2s ease-in-out;
+}
+
+.pagination-wrapper span.bg-primary {
+    background-color: #1f2d3d;
+    color: #fff;
+    font-weight: bold;
+}
+
+.pagination-wrapper a:hover {
+    background-color: #f0f0f0;
+    color: #000;
+}

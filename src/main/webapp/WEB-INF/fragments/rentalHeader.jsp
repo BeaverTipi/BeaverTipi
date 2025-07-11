@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="jakarta.tags.core"  prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="security"%>
+<security:authorize access="isAuthenticated()">
  <security:authentication property="principal" var="principal"/>
  <nav class="navbar navbar-top navbar-expand navbar-dashboard navbar-dark ps-0 pe-2 pb-0">
   <div class="container-fluid px-0">
@@ -183,3 +185,9 @@
     </div>
   </div>
 </nav>
+</security:authorize>
+<security:authorize access="!isAuthenticated()">
+  <script>
+    location.href = '${pageContext.request.contextPath}/';
+  </script>
+</security:authorize>

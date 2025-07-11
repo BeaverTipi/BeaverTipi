@@ -19,4 +19,5 @@ public class BusinessApproveSearchVO implements Serializable {
 
 	// 구독 관련
 	private String role;           // 유형 (broker / landlord 등)
+	private String hasFile;
 }

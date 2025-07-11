@@ -129,9 +129,7 @@
           <div id="tenancy-info" class="tab-content">
             <div class="form-group-wrapper">
               <div class="form-group"><label>등록된 건물 수</label><div class="form-control">${member.tenancy.rentalPtyRegBldgCnt}</div></div>
-              <div class="form-group"><label>계좌번호</label><div class="form-control">${member.tenancy.rentalPtyAcctNo}</div></div>
               <div class="form-group"><label>사업자등록번호</label><div class="form-control">${member.tenancy.rentalPtyBizRegNo}</div></div>
-              <div class="form-group"><label>은행명</label><div class="form-control">${member.tenancy.rentalPtyBankNm}</div></div>
               <div class="form-group"><label>임대유형</label><div class="form-control">${member.tenancy.lsrTypeGroupCd}</div></div>
               <div class="form-group"><label>임대자 유형</label><div class="form-control">${member.tenancy.lsrYnTypeCd}</div></div>
             </div>

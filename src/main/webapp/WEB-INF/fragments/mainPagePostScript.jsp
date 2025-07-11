@@ -36,7 +36,7 @@
 <!-- Simplebar -->
 <script src="${pageContext.request.contextPath}/volt/vendor/simplebar/dist/simplebar.min.js"></script>
 
-<!-- Github buttons -->
+<!-- Github buttons --> 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <!-- axios -->
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -49,7 +49,7 @@
 <script src="${pageContext.request.contextPath}/volt/assets/js/volt.js"></script>
 <!-- Custom axios -->
 <script src="${pageContext.request.contextPath}/volt/assets/js/customAxios.js"></script>
-<script src="${pageContext.request.contextPath}/app/js/main/mainPage.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/main/login.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/chat/chatPopup.js" defer></script>
 
 <!-- tosspayments -->

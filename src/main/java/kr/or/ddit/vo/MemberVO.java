@@ -65,4 +65,7 @@ public class MemberVO implements Serializable {
 	private List<UnitResidentVO> residentList;
 	private TenancyVO tenancy;
 	private BrokerVO broker;
+	
+	private List<FileVO> fileListBroker;
+	private List<FileVO> fileListTenancy;
 }

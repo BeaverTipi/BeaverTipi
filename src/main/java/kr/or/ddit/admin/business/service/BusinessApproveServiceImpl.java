@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import kr.or.ddit.admin.mapper.BusinessApproveMapper;
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.vo.BusinessApproveSearchVO;
-import kr.or.ddit.vo.SolutionSubscriptionVO;
+import kr.or.ddit.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
@@ -20,7 +20,7 @@ public class BusinessApproveServiceImpl implements BusinessApproveService {
 	}
 
 	@Override
-	public List<SolutionSubscriptionVO> readBusinessApproveList(PaginationInfo<BusinessApproveSearchVO> paging) {
+	public List<MemberVO> readBusinessApproveList(PaginationInfo<BusinessApproveSearchVO> paging) {
 		// TODO Auto-generated method stub
 		return mapper.selectBusinessApproveList(paging);
 	}
