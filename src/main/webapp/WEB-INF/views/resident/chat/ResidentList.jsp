@@ -47,24 +47,36 @@
 
   <script>
     window.addEventListener("load", () => {
-      let bldgId = null;
-      const urlParams = new URLSearchParams(window.location.search);
-      bldgId = urlParams.get("bldgId");
-      const mode = urlParams.get("mode") ?? "create"; // ✅ 추가된 mode 파라미터
+    	const urlParams = new URLSearchParams(window.location.search);
+    	const mode = urlParams.get("mode") ?? "create";
 
-      console.log("📦 bldgId:", bldgId, "🧭 mode:", mode);
+    	console.log("🧭 mode:", mode);
 
-      // ✅ 제목 텍스트 동적으로 변경
-      document.getElementById("pageTitle").textContent = 
-        mode === "invite" ? "🏢 입주민 초대" : "🏢 입주민 선택";
+    	document.getElementById("pageTitle").textContent =
+    	  mode === "invite" ? "🏢 입주민 초대" : "🏢 입주민 선택";
 
-      if (!bldgId) {
-        alert("건물 ID가 전달되지 않았습니다.");
-        return;
-      }
+    	if (mode === "create") {
+    	  const bldgId = urlParams.get("bldgId");
+    	  console.log("📦 bldgId:", bldgId);
 
-      fetchResidents(bldgId);
+    	  if (!bldgId) {
+    	    alert("건물 ID가 전달되지 않았습니다.");
+    	    return;
+    	  }
 
+    	  fetchResidents(bldgId);
+    	} else if (mode === "invite") {
+    	  const residentChatRoomId = urlParams.get("residentChatRoomId");
+    	  console.log("💬 residentChatRoomId:", residentChatRoomId);
+
+    	  if (!residentChatRoomId) {
+    	    alert("채팅방 ID가 전달되지 않았습니다.");
+    	    return;
+    	  }
+
+    	  fetchInviteResidents(residentChatRoomId);
+    	}
+	
       function fetchResidents(urlOrBldgId) {
         const url = urlOrBldgId.startsWith("/resident/")
           ? urlOrBldgId
@@ -86,7 +98,24 @@
             alert("입주민 목록을 불러오는 중 오류가 발생했습니다.");
           });
       }
+      function fetchInviteResidents(residentChatRoomId) {
+    	  const url = "/resident/chat/room/invite/residentList?residentChatRoomId=" + residentChatRoomId;
+    	  console.log("📡 초대 모드 요청 URL:", url);
 
+    	  fetch(url)
+    	    .then(res => res.json())
+    	    .then(data => {
+    	      console.log("📥 초대 모드 받은 데이터:", data);
+    	      renderResidents(data);
+    	    })
+    	    .catch(err => {
+    	      console.error("❌ 초대 모드 입주민 목록 실패:", err);
+    	      alert("입주민 목록을 불러오는 중 오류가 발생했습니다.");
+    	    });
+    	}
+      
+      
+      
       function searchResidents() {
         const searchType = document.querySelector("#searchType").value;
         const keyword = document.querySelector("#searchKeyword").value.trim();

@@ -5,6 +5,7 @@
  *   수정일      			수정자           수정내용
  *  -----------   	-------------    ---------------------------
  * 2025. 7. 10.     	     김재윤            최초작성
+ * 2025. 7. 11. 			 김재윤			초대 기능 추가
  *
  * </pre>
  */
@@ -116,7 +117,7 @@ const socket = new WebSocket("ws://" + location.host + "/ws/chat?residentChatRoo
     });
 
     function loadParticipants() {
-      fetch(`/chat/participants?residentChatRoomId=${residentChatRoomId}`)
+		fetch(`/resident/chat/room/participant?residentChatRoomId=${residentChatRoomId}`)
         .then(res => res.json())
         .then(data => {
           participantList.innerHTML = "";
@@ -152,32 +153,71 @@ const socket = new WebSocket("ws://" + location.host + "/ws/chat?residentChatRoo
 	    headers: { "Content-Type": "application/x-www-form-urlencoded" },
 	    body: formData.toString()
 	  })
-	  .then(res => {
-	    if (res.ok) {
-	      alert("채팅방에서 나갔습니다.");
-	
-	      // ✅ WebSocket 명시적으로 종료 (1000 코드)
-	      if (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING) {
-	        socket.close(1000, "사용자가 퇴장함");
-	      }
-	
-	      window.close();
-	    } else {
-	      alert("채팅방 나가기 실패");
-	    }
-	  })
-	  .catch(err => {
-	    console.error("나가기 요청 오류:", err);
-	  });
+.then(res => {
+  console.log("✅ leave 응답 상태:", res.status);
+
+  if (res.ok) {
+    alert("채팅방에서 나갔습니다.");
+
+    if (window.opener) {
+      console.log("📡 window.opener 접근됨");
+    } else {
+      console.warn("❌ window.opener 접근 불가");
+    }
+
+    if (typeof window.opener?.refreshChatRoomList === "function") {
+      console.log("✅ 부모 함수 존재 → 호출");
+      window.opener.refreshChatRoomList();
+    } else {
+      console.warn("❌ 부모 함수 없음 → 호출 실패");
+    }
+
+    window.close();
+  } else {
+    alert("채팅방 나가기 실패");
+  }
+})
 	
 	  // ✅ 모달 닫기
 	  document.getElementById("leaveModal").style.display = "none";
 	});
 	
 	document.getElementById("inviteBtn")?.addEventListener("click", () => {
-  const bldgId = window.chatInfo?.bldgId; 
   const residentChatRoomId = window.chatInfo?.residentChatRoomId;
 
-  const popupUrl = `/resident/chat/residentList?bldgId=${bldgId}&popup=true&mode=invite`;
-  window.open(popupUrl, "inviteResidentPopup", "width=700,height=600");
+  const popupUrl = `/resident/chat/residentList?residentChatRoomId=${residentChatRoomId}&popup=true&mode=invite`;
+  window.open(popupUrl, "inviteResidentPopup", "width=600,height=500");
 });
+
+	window.receiveInviteTargets = function(members) {
+	  const residentChatRoomId = window.chatInfo?.residentChatRoomId;
+	  if (!residentChatRoomId || !members?.length) {
+	    alert("초대할 사용자를 선택해주세요.");
+	    return;
+	  }
+	
+	  const inviteMbrCdList = members.map(m => m.mbrCd);
+	
+	  const formData = new URLSearchParams();
+	  formData.append("residentChatRoomId", residentChatRoomId);
+	  inviteMbrCdList.forEach(cd => formData.append("inviteMbrCdList", cd)); // ✅ 여러 개 가능
+	
+	fetch("/resident/chat/room/invite", {
+	  method: "POST",
+	  headers: { "Content-Type": "application/x-www-form-urlencoded" },
+	  body: formData.toString()
+	})
+	.then(res => {
+	  if (!res.ok) throw new Error("초대 요청 실패");
+	  return res.text(); // 👈 여기서 "ok" 받음
+	})
+	.then(data => {
+	  console.log("✅ 서버 응답:", data);
+	  alert("초대가 완료되었습니다!");
+	  loadParticipants();
+	})
+	.catch(err => {
+	  console.error("❌ 초대 실패:", err);
+	  alert("초대 중 오류가 발생했습니다.");
+	});
+};

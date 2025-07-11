@@ -58,8 +58,8 @@ function loadBuildingOptions() {
 
       buildings.forEach(bldg => {
         const option = document.createElement("option");
-        option.value = bldg.bldgId;          // ✅ 서버에 넘길 ID
-        option.textContent = bldg.bldgNm; // ✅ 사용자에게 보여줄 이름
+        option.value = bldg.bldgId;
+        option.textContent = bldg.bldgNm;
         buildingSelect.appendChild(option);
       });
 
@@ -86,7 +86,7 @@ function loadChatRooms() {
     return;
   }
 
-  fetch(`/resident/chat/list?bldgId=${bldgId}`) // ✅ 정확한 ID 전달
+  fetch(`/resident/chat/list?bldgId=${bldgId}`)
     .then(res => {
       if (!res.ok) throw new Error("채팅방 목록 요청 실패");
       return res.json();
@@ -117,7 +117,7 @@ function renderChatRoomList(chatRooms) {
 function createChatRoomItem(room) {
   const item = document.createElement("div");
   item.className = "chat-room-item";
-  item.dataset.roomId = room. residentChatRoomId;
+  item.dataset.roomId = room.residentChatRoomId;
 
   item.innerHTML = `
     <div class="chat-room-name">${room.residentChatRoomTitle}</div>
@@ -125,11 +125,13 @@ function createChatRoomItem(room) {
       ${room.lastMessage || "최근 메시지가 없습니다."}
     </div>
   `;
+
   item.addEventListener("dblclick", () => {
-  const roomId = item.dataset.roomId;
-  const popupUrl = `/resident/chat/room?residentChatRoomId=${roomId}&popup=true`;
-  window.open(popupUrl, "chatRoomPopup", "width=450,height=600,scrollbars=yes");
-});
+    const roomId = item.dataset.roomId;
+    const popupUrl = `/resident/chat/room?residentChatRoomId=${roomId}&popup=true`;
+    window.open(popupUrl, "chatRoomPopup", "width=450,height=600,scrollbars=yes");
+  });
+
   return item;
 }
 
@@ -138,5 +140,60 @@ function renderEmptyMessage(message) {
   const chatRoomList = document.querySelector("#chatRoomList");
   chatRoomList.innerHTML = `
     <div class="chat-empty-message">${message}</div>
-  `;  
+  `;
 }
+
+// 목록 수동 갱신 함수
+function refreshChatRoomList() {
+  const buildingSelect = document.querySelector("#buildingSelect");
+  const bldgId = buildingSelect?.value;
+
+  if (!bldgId) {
+    console.warn("❌ 채팅 목록 갱신 실패: 건물이 선택되지 않았습니다.");
+    renderEmptyMessage("건물을 선택해주세요.");
+    return;
+  }
+
+  fetch(`/resident/chat/list?bldgId=${bldgId}`)
+    .then(res => res.json())
+    .then(renderChatRoomList)
+    .catch(err => {
+      console.error("❌ 목록 갱신 실패:", err);
+    });
+}
+
+window.refreshChatRoomList = refreshChatRoomList;
+
+function updateChatRoomPreview(roomId, sender, content) {
+  const item = document.querySelector(`[data-room-id="${roomId}"]`);
+  if (!item) return;
+
+  const preview = item.querySelector(".chat-room-last-message");
+  if (preview) {
+    preview.textContent = `${sender} : ${content}`;
+  }
+
+  // 선택적 정렬 처리 로직 붙일 수 있음
+  // window.refreshChatRoomList(); // 강제 전체 갱신 시
+}
+
+// ✅ 채팅 목록 WebSocket 연결
+const chatListSocket = new WebSocket("ws://" + location.host + "/ws/chatlist");
+
+chatListSocket.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+
+  if (data.type === "messagePreview") {
+    updateChatRoomPreview(data.residentChatRoomId, data.sender, data.content);
+  } else if (data.type === "newRoom") {
+    window.refreshChatRoomList();
+  }
+};
+
+chatListSocket.onopen = () => {
+  console.log("✅ 채팅 목록 WebSocket 연결 성공");
+};
+
+chatListSocket.onclose = () => {
+  console.log("❌ 채팅 목록 WebSocket 연결 종료");
+};

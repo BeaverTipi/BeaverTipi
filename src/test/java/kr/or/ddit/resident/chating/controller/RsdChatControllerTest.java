@@ -20,7 +20,11 @@ class RsdChatControllerTest {
 	@Test
 	void testGetResidentList() {
 		String bldgId="B2507010459";
-		List<UnitResidentVO> residentList = mapper.selectResidentList(bldgId);
+		UnitResidentVO uriVO = new UnitResidentVO();
+		String mbrCd="M2507000130";
+		uriVO.setBldgId(bldgId);
+		uriVO.setMbrCd(mbrCd);
+		List<UnitResidentVO> residentList = mapper.selectResidentList(uriVO);
 		residentList.forEach(r -> 
 	    log.info("입주민: {}, 닉네임: {}, 호실: {}", 
 	        r.getMbrCd(), 

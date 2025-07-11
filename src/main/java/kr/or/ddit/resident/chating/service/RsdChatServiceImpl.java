@@ -91,9 +91,16 @@ public class RsdChatServiceImpl implements RsdChatServcie {
 	}
 
 	@Override
-	public void createInviteChatRoom(String mbrCd, String residentChatRoomId) {
-		mapper.inviteChatRoom(mbrCd, residentChatRoomId);
-		
+	public void createInviteChatRoom(String residentChatRoomId, List<String> inviteMbrCdList) {
+	  for (String mbrCd : inviteMbrCdList) {
+	    mapper.inviteChatRoom(residentChatRoomId, mbrCd);
+	  }
+	}
+
+	@Override
+	public List<UnitResidentVO> getNotInChatRoomResidentList(String residentChatRoomId) {
+
+		return mapper.selectNotInChatRoomResidentList(residentChatRoomId);
 	}
 
 

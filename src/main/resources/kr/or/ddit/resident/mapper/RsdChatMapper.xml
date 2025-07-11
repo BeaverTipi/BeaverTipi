@@ -112,6 +112,22 @@
 	AND A.MBR_CD != #{mbrCd}
 	</select>
 	
+	<select id="selectNotInChatRoomResidentList" resultMap="unitResidentMap">
+	SELECT A.MBR_CD, COALESCE(B.MBR_NNM,B.MBR_NM) AS MBR_NNM, C.UNIT_ROOM
+	FROM UNIT_RESIDENT A
+	INNER JOIN MEMBER B ON (A.MBR_CD = B.MBR_CD)
+	INNER JOIN UNIT C ON (A.UNIT_ID = C.UNIT_ID)
+	WHERE A.BLDG_ID = (SELECT DISTINCT A.BLDG_ID
+                        FROM RESIDENT_CHAT_ROOM A
+                        INNER JOIN CHAT_ROOM_IN B ON (A.RESIDENT_CHAT_ROOM_ID = B.RESIDENT_CHAT_ROOM_ID)
+                        WHERE A.RESIDENT_CHAT_ROOM_ID = #{residentChatRoomId})
+	AND B.MBR_CD NOT IN (
+		SELECT MBR_CD
+		FROM CHAT_ROOM_IN
+		WHERE RESIDENT_CHAT_ROOM_ID = #{residentChatRoomId}
+		)
+	</select>
+	
     <select id="selectWhoIsSender" resultType="kr.or.ddit.resident.chating.dto.ChatMessageDTO">
     	SELECT a.unit_room, COALESCE(c.mbr_nnm, c.mbr_nm) AS mbr_nnm
 		FROM unit a
@@ -132,6 +148,7 @@
 	INNER JOIN UNIT E ON (C.BLDG_ID = E.BLDG_ID AND D.UNIT_ID = E.UNIT_ID )
 	WHERE A.RESIDENT_CHAT_ROOM_ID = #{residentChatRoomId}
 	AND RESIDENT_CHAT_ROOM_STATUS_CODE = 'JOIN'
+	ORDER BY TO_NUMBER(E.UNIT_ROOM) , COALESCE(B.MBR_NNM,B.MBR_NM)
 	</select>
 	
 	<update id="updateLeaveChatRoom" parameterType = "ChatRoomInVO">
@@ -150,8 +167,8 @@
 	</select>
 	
 	<insert id="inviteChatRoom">
-	INSERT INTO CHAT_ROOM_IN (RESIDENT_CHAT_ROOM_ID, MBR_CD)
-	VALUES (${residentChatRoomId},{mbrCd} )
+	  INSERT INTO CHAT_ROOM_IN (RESIDENT_CHAT_ROOM_ID, MBR_CD)
+	  VALUES (#{residentChatRoomId},#{mbrCd})
 	</insert>
 	
 	

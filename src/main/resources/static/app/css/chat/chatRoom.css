@@ -179,20 +179,26 @@
       margin-bottom: 12px;
     }
 
-    .participant-list {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 16px 0;
-    }
+	.participant-list {
+	  list-style: none;
+	  padding: 0;
+	  margin: 0 0 16px 0;
+	  max-height: 320px;     /* ✅ 목록 전체 높이 제한 */
+	  overflow-y: auto;      /* ✅ 세로 스크롤 활성화 */
+	  padding-right: 4px;    /* 🔍 스크롤 공간 확보 */
+	}
 
     .participant-list li {
       padding: 8px 0;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid rgb(0, 0, 0);
       font-size: 14px;
+      height : 50px;
+      line-height : 35px;
     }
 
     .invite-btn {
       width: 100%;
+      height : 50px;
       padding: 10px;
       background-color: #28a745;
       color: white;

@@ -28,6 +28,8 @@ public interface RsdChatMapper {
 	
 	List<UnitResidentVO> selectResidentList(UnitResidentVO uriVO); 
 	
+	List<UnitResidentVO> selectNotInChatRoomResidentList(String residentChatRoomId); 
+	
 	int insertChatRoomIn(ChatRoomInVO criVO);
 	
 	List<ChatMessageDTO> selectMessages(String residentChatRoomId);
@@ -45,8 +47,8 @@ public interface RsdChatMapper {
 	ResidentChatRoomVO selectResidentChatRoomInfo(String residentChatRoomId);
 	
 	int inviteChatRoom(
-			@Param("mbrCd") String mbrCd,
-			@Param("residentChatRoomId") String residentChatRoomId
+			  @Param("residentChatRoomId") String residentChatRoomId,
+			  @Param("mbrCd") String mbrCd 
 			);
 	
 }

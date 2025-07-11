@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.*;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WebSocketHandler extends TextWebSocketHandler {
 
     private final RsdChatServiceImpl service;
+    private final ChatListSocketHandler chatListSocketHandler; // ✅ 목록용 브로드캐스트 핸들러
 
     private final List<WebSocketSession> sessionList = new ArrayList<>();
 
@@ -50,10 +53,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
         ObjectMapper mapper = new ObjectMapper();
         ResidentChatMessageVO msg = mapper.readValue(message.getPayload(), ResidentChatMessageVO.class);
 
+        // ✅ 메시지 저장
         service.createMessage(msg);
 
+        // ✅ 보낸 사람 정보 조회
         ChatMessageDTO senderInfo = service.getWhoIsSender(msg.getMbrCd(), msg.getResidentChatRoomId());
 
+        // ✅ 방 참여자에게 브로드캐스트
         Map<String, Object> broadcastMsg = new HashMap<>();
         broadcastMsg.put("residentChatRoomId", msg.getResidentChatRoomId());
         broadcastMsg.put("mbrCd", msg.getMbrCd());
@@ -71,6 +77,14 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 }
             }
         }
+
+        // ✅ 목록 사용자에게도 실시간 프리뷰 갱신 브로드캐스트
+        chatListSocketHandler.broadcastMessageUpdate(
+        	    msg.getResidentChatRoomId(),
+        	    senderInfo.getMbrNnm(),
+        	    msg.getRcmCont(),
+        	    senderInfo.getUnitRoom() // ✅ 추가됨
+        	);
     }
 
     @Override

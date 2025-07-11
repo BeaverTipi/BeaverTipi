@@ -40,8 +40,8 @@
       <h3>참여자 목록</h3>
       <button id="closeSidebarBtn">✖</button>
     </div>
-    <ul id="participantList" class="participant-list"></ul>
     <button id="inviteBtn" class="invite-btn">+ 초대하기</button>
+    <ul id="participantList" class="participant-list"></ul>
   </div>
 
   <!-- ✅ 채팅방 나가기 확인 모달 -->

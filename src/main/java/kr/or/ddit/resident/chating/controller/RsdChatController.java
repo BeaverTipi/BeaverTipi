@@ -3,6 +3,7 @@ package kr.or.ddit.resident.chating.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -74,7 +75,8 @@ public class RsdChatController {
 	
 	@GetMapping("/chat/residentList")
 	public String residentList(
-		@RequestParam("bldgId") String bldgId
+		@RequestParam(value = "bldgId", required = false) String bldgId,
+		@RequestParam(value = "residentChatRoomId", required = false) String residentChatRoomId
 		) {
 		return "resident/chat/ResidentList";
 	}
@@ -113,6 +115,7 @@ public class RsdChatController {
 	}
 	
 	@GetMapping("/chat/room/participant")
+	@ResponseBody
 	public List<ParticipantDTO> chatParticipant(@RequestParam("residentChatRoomId") String residentChatRoomId) {
 		return service.getParticiapntList(residentChatRoomId);
 		
@@ -134,14 +137,22 @@ public class RsdChatController {
 	}
 	
 	@PostMapping("/chat/room/invite")
-	public void chatInvite(
-			@RequestParam("residentChatRoomId") String residentChatRoomId,
-			@AuthenticationPrincipal RealUserWrapper<MemberVO> principal
-			) {
-		String mbrCd = principal.getRealUser().getMbrCd();
-		service.createInviteChatRoom(mbrCd, residentChatRoomId);
+	public ResponseEntity<String> chatInvite(
+	  @RequestParam("residentChatRoomId") String residentChatRoomId,
+	  @RequestParam("inviteMbrCdList") List<String> inviteMbrCdList
+	) {
+	  service.createInviteChatRoom(residentChatRoomId, inviteMbrCdList);
+	  return ResponseEntity.ok("OK");
 	}
+//	채팅방에 참여중이지 않은 입주민 조회
 	
+	@GetMapping("/chat/room/invite/residentList")
+	@ResponseBody
+	public List<UnitResidentVO> getInviteResident(
+	  @RequestParam("residentChatRoomId") String residentChatRoomId
+	) {
+	  return service.getNotInChatRoomResidentList(residentChatRoomId); 
+	}
 	
 //	참여중인 건물별 채팅 목록 조회
 	@GetMapping("/chat/list")
