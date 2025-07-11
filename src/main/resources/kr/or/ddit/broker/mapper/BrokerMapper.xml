@@ -6,6 +6,7 @@
 	
 	
 	- 2025-07-09 최초작성
+	- 2025-07-10 매일수정중
  -->
 
 <!-- Facility Option 정보 매핑 -->
@@ -102,6 +103,24 @@ SELECT L.*
  ORDER BY L.LSTG_ID ASC
 </select>
 
+
+<select id="selectWishlistForLessee" parameterType="String" resultType="ListingWishlistVO">
+	SELECT *
+	  FROM LISTING_WISHLIST LW
+	 INNER JOIN MEMBER M ON(LW.MBR_CD = M.MBR_CD) 
+	 WHERE LSTG_ID = #{lstgId}
+	 ORDER BY M.MBR_NM
+</select>
+<select id="selectLesseeInfo" parameterType="String" resultType="MemberVO">
+	SELECT *
+	  FROM MEMBER
+	 WHERE MBR_CD = #{mbrCd}
+</select>
+<select id="selectCommonCodeByGroup" parameterType="String" resultType="CommonCodeVO">
+    SELECT *
+      FROM COMMON_CODE
+     WHERE CODE_GROUP = #{codeGroup}
+</select>
 <select id="selectBankList" resultType="CommonCodeVO">
 	SELECT *
 	  FROM COMMON_CODE
@@ -111,10 +130,5 @@ SELECT L.*
 	SELECT *
 	  FROM COMMON_CODE
 	 WHERE CODE_GROUP = 'LSR'
-</select>
-<select id="selectCommonCodeByGroup" resultType="CommonCodeVO">
-    SELECT *
-      FROM COMMON_CODE
-     WHERE CODE_GROUP = #{codeGroup}
 </select>
 </mapper>

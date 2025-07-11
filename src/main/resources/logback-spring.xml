@@ -1,5 +1,7 @@
 <configuration>
-	
+<!-- 2025-07-10 developer_KCY 23:34 추가 -->
+<statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
 <conversionRule conversionWord="cabbr" converterClass="kr.or.ddit.util.p6spy.CustomAbbreviatorConverter"/>
 <property name="LOG_PATTERN"
 		  value="%d{HH:mm:ss} %highlight(%-5level) --- %cyan(%cabbr) : %msg%n"/>

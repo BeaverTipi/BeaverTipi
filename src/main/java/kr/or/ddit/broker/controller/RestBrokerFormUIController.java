@@ -12,17 +12,19 @@ package kr.or.ddit.broker.controller;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import kr.or.ddit.broker.service.BrokerCommonCodeService;
+import kr.or.ddit.util.crypto.AES256Util;
 import kr.or.ddit.vo.CommonCodeVO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,7 +42,9 @@ import lombok.extern.slf4j.Slf4j;
 public class RestBrokerFormUIController {
 
 	@Autowired
-	BrokerCommonCodeService service;
+	BrokerCommonCodeService codeService;
+	@Autowired
+	AES256Util aes256Util;
 	
 //	@Value(${common-code-group})
 //	List<String> allowedGroups
@@ -51,7 +55,7 @@ public class RestBrokerFormUIController {
 	@GetMapping("/bankList")
 	public List<CommonCodeVO> bankList() {
 		log.debug("GET/rest/broker/myoffice/form/bankList 실행...");
-		return service.readBankList();
+		return codeService.readBankList();
 	}
 	
 	/** /rest/broker/myoffice/form/lesserTypeList
@@ -60,19 +64,50 @@ public class RestBrokerFormUIController {
 	@GetMapping("/lesserTypeList")
 	public List<CommonCodeVO> lesserTypeList() {
 		log.debug("GET/rest/broker/myoffice/form/lesserTypeList 실행...");
-		return service.readLesserTypeList();
+		return codeService.readLesserTypeList();
 	}
 	
 	@PostMapping
-	public Map<String, List<CommonCodeVO>> commonCode(
-			@RequestBody Map<String, Map<String, String>> requestBody
-	) {
-		Map<String, String> codeGroupParams = requestBody.get("codeGroup");
-	    if (codeGroupParams == null || codeGroupParams.isEmpty())
-	        throw new IllegalArgumentException("codeGroup 파라미터가 비어있습니다.");
+	public Map<String, String> encryptedCommonCode(@RequestBody Map<String, String> payload) {
+	    String iv = payload.get("iv");
+		String encrypted = payload.get("encrypted");
+	    if (encrypted == null) throw new IllegalArgumentException("암호화된 요청 없음");
+
+	    String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
+
+	    ObjectMapper mapper = new ObjectMapper();
+	    Map<String, Map<String, String>> parsedRequest;
+	    try {
+	        parsedRequest = mapper.readValue(decryptedJson, new TypeReference<>() {});
+	    } catch (Exception e) {
+	        throw new RuntimeException("요청 JSON 파싱 실패", e);
+	    }
+
+	    Map<String, String> codeGroupParams = parsedRequest.get("codeGroup");
+	    if (codeGroupParams == null) throw new IllegalArgumentException("codeGroup 누락");
+	    log.debug("---------------> {}", codeGroupParams);
 	    
-		log.info("-----------------------------> {}", codeGroupParams);
-		Map<String, List<CommonCodeVO>> commonCodeMap = service.sortCommonCodes(codeGroupParams);
-		return commonCodeMap;
+	    Map<String, List<CommonCodeVO>> resultMap = codeService.sortCommonCodes(codeGroupParams);
+
+	    try {
+	        String resultJson = mapper.writeValueAsString(resultMap);
+	        Map<String, String> encryptedResponse = aes256Util.encryptWithDynamicIV(resultJson);
+	        return encryptedResponse;
+	    } catch (Exception e) {
+	        throw new RuntimeException("응답 암호화 실패", e);
+	    }
 	}
+
+//	@PostMapping
+//	public Map<String, List<CommonCodeVO>> commonCode(
+//			@RequestBody Map<String, Map<String, String>> requestBody
+//	) {
+//		Map<String, String> codeGroupParams = requestBody.get("codeGroup");
+//	    if (codeGroupParams == null || codeGroupParams.isEmpty())
+//	        throw new IllegalArgumentException("codeGroup 파라미터가 비어있습니다.");
+//	    
+//		log.info("-----------------------------> {}", codeGroupParams);
+//		Map<String, List<CommonCodeVO>> commonCodeMap = codeService.sortCommonCodes(codeGroupParams);
+//		return commonCodeMap;
+//	}
 }

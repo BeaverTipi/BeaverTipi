@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.or.ddit.broker.BrokerAuthUnpackingUtility;
+import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.MemberVO;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RestRealUserReadController {
 
 	@Autowired
-	BrokerAuthUnpackingUtility authUnpack;
+	BrokerAuthUnpackingService authUnpack;
 	
 	@GetMapping("/read")
 	public MemberVO realUser(

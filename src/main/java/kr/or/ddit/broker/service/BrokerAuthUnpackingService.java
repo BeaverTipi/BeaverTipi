@@ -1,4 +1,4 @@
-package kr.or.ddit.broker;
+package kr.or.ddit.broker.service;
 
 import java.security.Principal;
 
@@ -10,7 +10,7 @@ import kr.or.ddit.broker.mapper.BrokerAuthUnpackingMapper;
 import kr.or.ddit.vo.BrokerVO;
 
 @Component
-public class BrokerAuthUnpackingUtility implements HandlerInterceptor {
+public class BrokerAuthUnpackingService implements HandlerInterceptor {
 	
 	@Autowired
 	BrokerAuthUnpackingMapper mapper;

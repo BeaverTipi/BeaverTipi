@@ -13,12 +13,12 @@ package kr.or.ddit.broker.service.impl;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.broker.mapper.BrokerMapper;
 import kr.or.ddit.broker.service.BrokerContractService;
 import kr.or.ddit.vo.ListingVO;
+import kr.or.ddit.vo.ListingWishlistVO;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -53,6 +53,16 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	public Map<String, Object> readContractPartyInfo(Map<String, String> partyInfoParams) {
 		Map<String, Object> contractPartyInfo = null;
 		return contractPartyInfo;
+	}
+
+	/**
+	 *
+	 */
+	@Override
+	public List<ListingWishlistVO> readLesseeVolunteerList(String lstgId) {
+		List<ListingWishlistVO> lesseeVolunteerList = null;
+		lesseeVolunteerList = mapper.selectWishlistForLessee(lstgId);
+		return lesseeVolunteerList;
 	}
 
 }

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.or.ddit.broker.BrokerAuthUnpackingUtility;
 import kr.or.ddit.broker.lstg.service.BrokerLstgService;
+import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
 import kr.or.ddit.vo.ListingVO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +26,7 @@ public class RestBrokerLstgController {
 	BrokerLstgService service;
 	
 	@Autowired
-	BrokerAuthUnpackingUtility authUnpack;
+	BrokerAuthUnpackingService authUnpack;
 	
 	@GetMapping("/list")
 	public List<ListingVO> lstgList(

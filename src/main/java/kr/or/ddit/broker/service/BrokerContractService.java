@@ -15,6 +15,8 @@ import java.util.Map;
 
 import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.ListingVO;
+import kr.or.ddit.vo.ListingWishlistVO;
+import kr.or.ddit.vo.MemberVO;
 
 /**
  * 
@@ -35,6 +37,12 @@ public interface BrokerContractService {
 	 * @return 중개인, 임대인, 임차인 세 명에 대한 정보를 담은 Map
 	 */
 	public Map<String, Object> readContractPartyInfo(Map<String, String> partyInfoParams /*lstgId, mbrCd(lessee)*/);
+	
+	/**
+	 * @param lstgId: 한 매물에 좋아요 누른 사람들
+	 * @return 
+	 */
+	public List<ListingWishlistVO> readLesseeVolunteerList(String lstgId);
 	
 
 }
