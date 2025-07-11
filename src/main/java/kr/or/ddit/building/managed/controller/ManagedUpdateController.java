@@ -53,7 +53,14 @@ public class ManagedUpdateController {
     // 수정 처리
     @PostMapping("/edit")
     public String editUnit(@ModelAttribute("buildingVO") BuildingVO buildingVO) {
-        managedService.updateBuilding(buildingVO);
+        
+    	if (buildingVO.getBldgTypeCode() == null || buildingVO.getBldgTypeCode().isBlank()) {
+            // 오류 로그 찍고, 폼으로 다시 보내거나 예외 처리 필요
+            return "redirect:/building/managed/edit?bldgId=" + buildingVO.getBldgId(); // 혹은 에러 페이지
+        }
+    	
+    	managedService.updateBuilding(buildingVO);
+        
         return "redirect:/building/managed/list?bldgId=" + buildingVO.getBldgId();
     }
 }

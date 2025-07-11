@@ -1,16 +1,102 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib uri="jakarta.tags.core" prefix="c" %>
-<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@taglib uri="jakarta.tags.functions" prefix="fn" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <title>신규 건물 등록</title>
   <link rel="stylesheet" href="/app/css/building/managed/managedAdd.css">
-  <!-- 카카오 -->
   <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+ 	<style>
+		.account-list {
+		  display: flex;
+		  flex-direction: column;
+		  gap: 8px;
+		  margin-top: 5px;
+		}
+		
+		.account-line {
+		  display: flex;
+		  align-items: center;
+		  gap: 10px;
+		}
+		
+		.account-input {
+		  width: 280px;
+  		  min-width: 280px;
+		  box-sizing: border-box;
+		  flex-grow: 1;
+		  border: 1px solid #ccc;
+		  border-radius: 10px;
+		  padding: 10px 12px;
+		  font-size: 0.9rem;
+		  background-color: #f5f5f5;
+		  color: #333;
+		}
+		.form-container {
+		  display: flex;
+		  gap: 30px;
+		  align-items: flex-start;
+		}
+		
+		/* 왼쪽 폼 */
+		.form-box {
+		  flex-grow: 1;
+		  min-width: 600px;
+		}
+		f
+		/* 오른쪽 이미지 등록 */
+		.image-box {
+		  width: 300px;
+		  min-width: 300px;
+		  border: 1px solid #ccc;
+		  background: #f8f8f8;
+		  padding: 10px;
+		  text-align: center;
+		}
+		
+		.image-box img {
+		  width: 100%;
+		  height: auto;
+		  max-height: 250px;
+		  object-fit: cover;
+		  border-radius: 6px;
+		  margin-bottom: 10px;
+		}
+		
+		.image-box button {
+		  width: 100%;
+		  padding: 8px 0;
+		  background: #333;
+		  color: #fff;
+		  border: none;
+		  border-radius: 6px;
+		  cursor: pointer;
+		}
+		.form-submit-row {
+		  margin-top: 30px;
+		  text-align: right;
+		}
+		
+		.submit-btn {
+		  padding: 10px 20px;
+		  background-color: #3a80f6;
+		  border: none;
+		  color: white;
+		  font-size: 1rem;
+		  border-radius: 6px;
+		  cursor: pointer;
+		}
+		
+		.image-box {
+		  max-width: 240px;
+		  margin-top: 20px;
+		}
+	</style>
 </head>
+
 
 <body>
 
@@ -49,36 +135,19 @@
           </div>
 
           <div class="form-row">
-            <input type="hidden" name="delYn" value="N">
-            <label for="accNum">수납계좌</label>
-            <select name="accNum" id="accNum" class="form-control" required>
-              <c:choose>
-                <c:when test="${empty buildingVO.accNum}">
-                  <option value="" selected disabled>계좌를 선택하세요</option>
-                </c:when>
-                <c:otherwise>
-                  <option value="" disabled>계좌를 선택하세요</option>
-                </c:otherwise>
-              </c:choose>
-
-              <c:if test="${not empty buildingVO.accList}">
-                <c:forEach var="account" items="${buildingVO.accList}">
-                  <c:choose>
-                    <c:when test="${buildingVO.accNum == account.accNum}">
-                      <option value="${account.accNum}" selected>
-                        ${account.accBank} / ${account.accNum}
-                      </option>
-                    </c:when>
-                    <c:otherwise>
-                      <option value="${account.accNum}">
-                        ${account.accBank} / ${account.accNum}
-                      </option>
-                    </c:otherwise>
-                  </c:choose>
-                </c:forEach>
-              </c:if>
-            </select>
-          </div>
+            <input type="hidden" name="delYn" value="N" />
+			    <label>수납계좌</label>
+			  <div class="account-list">
+			    <c:forEach var="account" items="${buildingVO.accList}">
+			      <div class="account-line">
+			        <input type="text" class="account-input" 
+			               value="${account.accBank} / ${account.accNum}" readonly />
+			        <input type="checkbox" name="accNum" value="${account.accNum}"
+			               <c:if test="${fn:contains(buildingVO.accNum, account.accNum)}">checked</c:if> />
+			      </div>
+			    </c:forEach>
+			  </div>
+			</div>
         </div>
 
         <!-- 오른쪽 -->
@@ -112,23 +181,24 @@
           <div class="form-row">
             <label for="bldgUnitCnt">호실 수</label>
             <form:input path="bldgUnitCnt" type="number" id="bldgUnitCnt" placeholder="입력해주세요" />
+                  <div class="image-box">
+		  <img src="/images/sample-building.jpg" alt="건물 이미지 미리보기">
+		  <button type="button">이미지 등록</button>
+		</div>
           </div>
         </div>
+        
+       
       </div>
+      
+ 
+	    <div style="margin-top: 40px; clear: both;">
+	  <button class="submit-btn" type="submit">건물 등록</button>
+	</div>
+      </form:form>
     </div>
 
-    <!-- ✅ 이미지 등록 -->
-    <div class="image-box">
-      <img src="/images/sample-building.jpg" alt="건물 이미지 미리보기">
-      <button type="button">이미지 등록</button>
-    </div>
-  </div>
 
-  <!-- 하단 등록 버튼 -->
-  <div style="margin-top: 40px; clear: both;">
-    <button class="submit-btn" type="submit">건물 등록</button>
-  </div>
-</form:form>
 
 <script src="/app/js/building/managed/managedAdd.js"></script>
 <script>

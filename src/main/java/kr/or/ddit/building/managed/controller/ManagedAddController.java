@@ -46,6 +46,9 @@ public class ManagedAddController {
 	        
 	        
 	        model.addAttribute("buildingVO", buildingVO);
+	        
+	        
+	        
 	        return "building/managed/managedAdd";
 	  }
 
