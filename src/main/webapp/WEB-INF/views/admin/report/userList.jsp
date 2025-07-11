@@ -5,79 +5,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>신고 회원 조회</title>
+    <title>회원 & 매물 신고 관리</title>
     <link rel="stylesheet" href="/app/css/admin/common_admin.css">
     <link rel="stylesheet" href="/app/css/admin/board/userList.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <style>
-        /* 추가적인 스타일링 (필요에 따라 userList.css로 이동 가능) */
-        .report-title {
-            cursor: pointer;
-            color: #007bff; /* 링크 색상 */
-            text-decoration: underline; /* 밑줄 */
-        }
-        .modal-body img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .modal-body .file-link {
-            display: block;
-            margin-bottom: 5px;
-            color: #28a745;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .modal-body .file-link:hover {
-            text-decoration: underline;
-        }
-        #attachFilesSection {
-            margin-top: 15px;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-        }
-        #attachFilesSection h5 {
-            margin-bottom: 10px;
-            color: #343a40;
-        }
-        .modal-dialog.modal-lg .modal-body {
-            max-height: calc(100vh - 200px);
-            overflow-y: auto;
-        }
-        .alert-secondary {
-            white-space: pre-wrap;
-            word-break: break-all; /* 긴 문자열이 있을 때 넘치지 않도록 강제 줄바꿈 */
-        }
-
-        /* 탭 스타일 추가 */
-        .nav-tabs .nav-item .nav-link {
-            cursor: pointer;
-            border: 1px solid transparent;
-            border-top-left-radius: .25rem;
-            border-top-right-radius: .25rem;
-            padding: .5rem 1rem;
-            color: #495057;
-        }
-        .nav-tabs .nav-item .nav-link.active {
-            color: #495057;
-            background-color: #fff;
-            border-color: #dee2e6 #dee2e6 #fff;
-        }
-        .nav-tabs {
-            border-bottom: 1px solid #dee2e6;
-            margin-bottom: 20px;
-        }
-    </style>
 </head>
 <body>
-
-<h2>신고 회원 조회</h2>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/app/js/admin/board/userList.js"></script>
+<h2>회원 & 매물 신고 관리</h2>
 
 <div class="container">
     <form:form modelAttribute="detailSearch" action="/admin/report/userList" method="get" id="searchForm">
@@ -211,7 +149,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                <button type="button" class="btn btn-secondary" id="closeReportDetailModalBtn">닫기</button>
             </div>
         </div>
     </div>
@@ -230,7 +168,7 @@
                 <p>선택된 회원 ID: <strong id="selectedMbrCd"></strong></p>
                 <p>현재 상태: <strong id="currentMbrStatus"></strong></p>
                 <div class="form-group">
-                    <label for="newMbrStatus">새로운 상태:</label>
+                    <label for="newMbrStatus">변경할 상태:</label>
                     <select class="form-control" id="newMbrStatus">
                         <option value="ACTIVE">정상</option>
                         <option value="INACTIVE">비활성</option>
@@ -240,7 +178,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-secondary" id="cancelStatusChangeModalBtn">취소</button>
                 <button type="button" class="btn btn-primary" id="btnUpdateMemberStatus">변경</button>
             </div>
         </div>
@@ -260,7 +198,7 @@
                 <p>선택된 매물 ID: <strong id="selectedLstgId"></strong></p>
                 <p>현재 상태: <strong id="currentLstgDel"></strong></p>
                 <div class="form-group">
-                    <label for="newLtsgDel">새로운 상태:</label>
+                    <label for="newLtsgDel">변경할 상태:</label>
                     <select class="form-control" id="newLtsgDel">
                         <option value="N">미삭제 (활성)</option>
                         <option value="Y">삭제 (비활성)</option>
@@ -268,14 +206,12 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-secondary" id="cancelListingStatusChangeModalBtn">취소</button>
                 <button type="button" class="btn btn-primary" id="btnUpdateListingDeleteStatus">변경</button>
             </div>
         </div>
     </div>
 </div>
-
-<script src="/app/js/admin/board/userList.js"></script>
 
 </body>
 </html>

@@ -2,6 +2,7 @@ package kr.or.ddit.vo;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,5 +28,11 @@ public class MemberSearchVO implements Serializable {
     private String mbrStatusCode; // 회원 상태 코드
     private String mbrEmlAddr; // 이메일 주소 검색
 
-
+    public String getMbrFrstRegDtToPlusOne() {
+        if (this.mbrFrstRegDtTo != null) {
+            // mbrFrstRegDtTo에 하루를 더하고 포맷합니다.
+            return this.mbrFrstRegDtTo.plusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        }
+        return null; // 또는 로직에 따라 다르게 처리
+    }
 }

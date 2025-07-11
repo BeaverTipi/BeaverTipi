@@ -78,7 +78,7 @@ public class ReportPostServiceImpl implements ReportPostService {
     @Override
     public void updateReportedMemberStatus(String mbrCd, String mbrStatus) {
     	Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("mbrCd", mbrCd);
+        paramMap.put("mbrId", mbrCd);
         paramMap.put("mbrStatus", mbrStatus);
         reportPostMapper.updateMemberStatus(paramMap); // Map 객체 전달
     }

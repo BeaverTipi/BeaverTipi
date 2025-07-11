@@ -1,5 +1,14 @@
 @charset "UTF-8";
 
+/* 새로운 상태 select 박스 크기 조절 */
+    #newMbrStatus {
+        height: 100%; /* 부모 요소의 전체 너비를 차지하도록 */
+    }
+    
+    #newLtsgDel {
+        height: 100%; /* 부모 요소의 전체 너비를 차지하도록 */
+    }
+
 /* 검색 버튼 그룹 정렬 시작 */
 /* .search-row.bottom-row 내부의 .search-item search-buttons-in-row 요소를 오른쪽 끝으로 정렬 */
 .search-item.search-buttons-in-row {
@@ -76,3 +85,63 @@
 }
 
 /* 페이징 스타일 끝 */
+
+.report-title {
+            cursor: pointer;
+            color: #007bff; /* 링크 색상 */
+            text-decoration: underline; /* 밑줄 */
+        }
+        .modal-body img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .modal-body .file-link {
+            display: block;
+            margin-bottom: 5px;
+            color: #28a745;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .modal-body .file-link:hover {
+            text-decoration: underline;
+        }
+        #attachFilesSection {
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        #attachFilesSection h5 {
+            margin-bottom: 10px;
+            color: #343a40;
+        }
+        .modal-dialog.modal-lg .modal-body {
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+        .alert-secondary {
+            white-space: pre-wrap;
+            word-break: break-all; /* 긴 문자열이 있을 때 넘치지 않도록 강제 줄바꿈 */
+        }
+
+        /* 탭 스타일 추가 */
+        .nav-tabs .nav-item .nav-link {
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-top-left-radius: .25rem;
+            border-top-right-radius: .25rem;
+            padding: .5rem 1rem;
+            color: #495057;
+        }
+        .nav-tabs .nav-item .nav-link.active {
+            color: #495057;
+            background-color: #fff;
+            border-color: #dee2e6 #dee2e6 #fff;
+        }
+        .nav-tabs {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 20px;
+        }

@@ -122,6 +122,7 @@
             ,B.BRD_PBLS_DTM
             ,R.RPT_TARGET_ID
             ,R.RPT_STATUS_CODE
+            ,R.RPT_CODE AS RPT_CODE
             ,M.MBR_STATUS_CODE AS RPT_TARGET_MBR_STATUS
             ,M.MBR_ID AS RPT_TARGET_MBR_CD
             ,L.LSTG_DEL AS LSTG_DEL
@@ -135,7 +136,7 @@
     <update id="updateMemberStatus" parameterType="map">
         UPDATE MEMBER
         SET MBR_STATUS_CODE = #{mbrStatus}
-        WHERE MBR_CD = #{mbrCd}
+        WHERE MBR_ID = #{mbrId}
     </update>
     
     <update id="updateListingDeleteStatus" parameterType="map">

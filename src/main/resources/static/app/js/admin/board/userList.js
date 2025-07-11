@@ -14,14 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (searchForm) {
         searchForm.addEventListener('submit', function(event) {
-            // ⭐ 탭 전환 시에는 페이지 번호를 초기화하는 대신, 검색 시에만 1로 초기화 ⭐
-            // 이 로직은 컨트롤러에서 page=1로 다시 설정해주기 때문에 필요 없을 수 있습니다.
-            // 하지만 명시적으로 초기화하려면 검색 버튼 클릭 시에만 적용되도록 해야 합니다.
-            // 현재 코드에는 검색 버튼에 대한 명시적인 이벤트 리스너가 없으므로,
-            // 검색 버튼이 눌리면 폼이 제출되고 컨트롤러에서 페이지를 처리할 것입니다.
-            // 만약 검색 버튼 클릭 시 항상 1페이지로 가고 싶다면, 검색 버튼에 이벤트 리스너를 추가하여
-            // currentPageNoInput.value = 1; 을 설정한 후 searchForm.submit(); 을 호출해야 합니다.
-            // 현재 상태에서는 탭 클릭 시에만 currentPageNoInput.value = 1; 이 적용됩니다.
         });
     }
 
@@ -71,13 +63,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => {
                     if (response.data.status === 'success') {
                         alert(response.data.message);
-                        // 원본 상태를 업데이트하여 중복 저장 방지 (필요 시)
-                        // document.querySelectorAll('#reportedUserTable tbody tr').forEach(function(row) {
-                        //     const selectElement = row.querySelector('.report-status-select');
-                        //     if (selectElement) {
-                        //         selectElement.dataset.originalStatus = selectElement.value;
-                        //     }
-                        // });
                         window.location.reload(); // 성공 시 페이지 새로고침
                     } else {
                         alert('상태 저장 실패: ' + response.data.message);
@@ -213,8 +198,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('신고 상세 정보를 불러오는 데 실패했습니다.');
             });
     });
+	
+	// 직접 닫기 버튼 이벤트 리스너 추가
+    $('#closeReportDetailModalBtn').on('click', function() {
+        console.log("신고 상세 모달 닫기 버튼 클릭됨.");
+        $('#reportDetailModal').modal('hide');
+    });
 
-    // ⭐ 회원 상태 변경 모달의 "변경" 버튼 클릭 이벤트 ⭐
+    $('#cancelStatusChangeModalBtn').on('click', function() {
+        console.log("회원 상태 변경 모달 취소 버튼 클릭됨.");
+        $('#statusChangeModal').modal('hide');
+    });
+
+    $('#cancelListingStatusChangeModalBtn').on('click', function() {
+        console.log("매물 삭제 상태 변경 모달 취소 버튼 클릭됨.");
+        $('#listingStatusChangeModal').modal('hide');
+    });
+	
+    // 회원 상태 변경 모달의 "변경" 버튼 클릭 이벤트
     $('#btnUpdateMemberStatus').on('click', function() {
         const mbrCd = $('#selectedMbrCd').text();
         const newStatus = $('#newMbrStatus').val();
