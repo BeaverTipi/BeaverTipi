@@ -17,6 +17,26 @@
 	<!-- 헤더 등 상단 영역이 있다면 여기 포함 -->
 
 	<div class="map-container">
+		<div class="filter-bar">
+			<div class="filter-group">
+				<select id="saleTypeFilter">
+					<option value="">거래유형</option>
+					<option value="1">월세</option>
+					<option value="2">전세</option>
+					<option value="3">매매</option>
+				</select> <select id="roomSizeFilter">
+					<option value="">방 크기</option>
+					<option value="1">1룸</option>
+					<option value="2">2룸</option>
+					<option value="3">3룸 이상</option>
+				</select> <select id="approvalDateFilter">
+					<option value="">사용승인일</option>
+					<option value="2020">2020년 이후</option>
+					<option value="2010">2010년 이후</option>
+				</select> <input type="text" id="keywordFilter" placeholder="키워드 검색" />
+			</div>
+		</div>
+
 		<!-- 1. 사이드바 -->
 		<nav class="sidebar">
 			<%@ include file="/WEB-INF/fragments/mainPageMapSidebar.jsp"%>

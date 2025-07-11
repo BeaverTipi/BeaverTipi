@@ -3,6 +3,7 @@ package kr.or.ddit.main.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import kr.or.ddit.vo.ListingVO;
 
@@ -10,8 +11,19 @@ import kr.or.ddit.vo.ListingVO;
 public interface KakaoMapDataMapper {
 	public List<ListingVO> selectNotLatLngList();
 	public int updateLatLng(ListingVO vo);
-	public List<ListingVO> selectLatLngMarkList(double swLat, double swLng, double neLat, double neLng, Integer category);
+	public List<ListingVO> selectLatLngMarkList(
+			@Param("swLat")double swLat, 
+			@Param("swLng")double swLng, 
+			@Param("neLat")double neLat, 
+			@Param("neLng")double neLng, 
+			@Param("category")Integer category,
+			@Param("keyword")String Keyword,
+			@Param("typeCode1List") List<Integer> typeCode1List,
+	        @Param("typeCode2List") List<Integer> typeCode2List,
+	        @Param("saleTypeList") List<Integer> saleTypeList,
+	        @Param("facilityOptionList") List<String> facilityOptionList,
+	        @Param("mbrCd") String mbrCd
+			);
 	public List<ListingVO> selectCategory();
 	public List<ListingVO> selectListingDetailList(String lstgId);
-	public List<ListingVO> selectFilter();
 }

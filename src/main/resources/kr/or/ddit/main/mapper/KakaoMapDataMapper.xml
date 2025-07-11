@@ -22,24 +22,78 @@
 
 <select id="selectLatLngMarkList" resultType="kr.or.ddit.vo.ListingVO">
  	SELECT
- 		LSTG_ID,
- 		LSTG_ADD,
- 		LSTG_LAT,
- 		LSTG_LNG,
- 		LSTG_NM,
- 		LSTG_EX_AREA,
- 		LSTG_LEASE,
- 		LSTG_LEASE_M,
- 		LSTG_TYPE_CODE1,
- 		LSTG_POSTAL
+ 		LI.LSTG_ID,
+ 		LI.MBR_CD,
+ 		LI.LSTG_ADD,
+ 		LI.LSTG_LAT,
+ 		LI.LSTG_LNG,
+ 		LI.LSTG_NM,
+ 		LI.LSTG_EX_AREA,
+ 		LI.LSTG_GR_AREA,
+ 		LI.LSTG_TYPE_SALE,
+ 		LI.LSTG_LEASE,
+ 		LI.LSTG_LEASE_M,
+ 		LI.LSTG_LEASE_AMT,
+ 		LI.LSTG_FLOOR,
+ 		LI.LSTG_PARK_YN,
+ 		LI.LSTG_TYPE_CODE1,
+ 		LI.LSTG_TYPE_CODE2,
+ 		LI.LSTG_POSTAL,
+	 		(SELECT COUNT(*)
+	        FROM LISTING_WISHLIST W
+	        WHERE W.LSTG_ID = LI.LSTG_ID 
+	        AND W.MBR_CD = #{mbrCd}) AS wishCount
  	FROM 
- 		LISTING
+ 		LISTING LI
  	WHERE
- 		LSTG_LAT BETWEEN #{swLat} AND #{neLat}
- 		AND LSTG_LNG BETWEEN #{swLng} AND #{neLng}
+ 		LI.LSTG_LAT BETWEEN #{swLat} AND #{neLat}
+ 		AND LI.LSTG_LNG BETWEEN #{swLng} AND #{neLng}
+ 		
+ 		<if test="typeCode1List != null and typeCode1List.size() > 0">
+	      AND LI.LSTG_TYPE_CODE1 IN
+	      <foreach item="type" collection="typeCode1List" open="(" separator="," close=")">
+	        #{type}
+	      </foreach>
+	    </if>
+	    
+	    <if test="typeCode2List != null and typeCode2List.size() > 0">
+	      AND LI.LSTG_TYPE_CODE2 IN
+	      <foreach item="type" collection="typeCode2List" open="(" separator="," close=")">
+	        #{type}
+	      </foreach>
+	    </if>
+	    
+	    <if test="saleTypeList != null and saleTypeList.size() > 0">
+	      AND LI.LSTG_TYPE_SALE IN
+	      <foreach item="type" collection="saleTypeList" open="(" separator="," close=")">
+	        #{type}
+	      </foreach>
+	    </if>
+ 		
 	 	<if test="category != null">
-	  		AND lstg_type_code1 = #{category}
+	  		AND LI.lstg_type_code1 = #{category}
 		</if>
+		
+		<if test="keyword != null and keyword != ''">
+			AND (
+	            LI.LSTG_ADD LIKE CONCAT('%', #{keyword}, '%')
+	            OR LI.LSTG_ADD2 LIKE CONCAT('%', #{keyword}, '%')
+	            OR LI.LSTG_GR_AREA LIKE CONCAT('%',#{keyword}, '%')
+	            OR LI.LSTG_NM LIKE CONCAT('%', #{keyword}, '%')
+	        )
+		</if>
+		
+		 <if test="facilityOptionList != null and facilityOptionList.size() > 0">
+	      AND EXISTS (
+	        SELECT 1
+	        FROM LISTING_OPTION LOP
+	        WHERE LOP.LSTG_ID = LI.LSTG_ID
+	        AND LOP.FAC_OPT_ID IN
+	        <foreach item="opt" collection="facilityOptionList" open="(" separator="," close=")">
+	          #{opt}
+	        </foreach>
+	      )
+	    </if>
 </select>
 
 
@@ -87,21 +141,6 @@
 	WHERE
 		LSTG_ID = #{lstgId}
 		AND LSTG_DEL ='N'
-</select>
-
-<select id="selectFilter" resultType="kr.or.ddit.vo.ListingVO">
-	SELECT
-		LI.LSTG_ID,
-		LOP.FAC_OPT_ID,
-		FOP.FAC_OPT_TYPE_CD,
-		FOP.FAC_OPT_NM,
-		FOP.FAC_OPT_DESC
-	FROM
-		LISTING LI
-		JOIN LISTING_OPTION LOP ON LI.LSTG_ID = LOP.LSTG_ID
-		JOIN FACILITY_OPTION FOP ON LOP.FAC_OPT_ID = FOP.FAC_OPT_ID
-	WHERE
-		
 </select>
 
 </mapper>

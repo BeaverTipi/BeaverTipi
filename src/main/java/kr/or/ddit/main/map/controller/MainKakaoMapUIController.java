@@ -21,28 +21,5 @@ public class MainKakaoMapUIController{
 		model.addAttribute("jsApiKey", apiKeyProvider.getJsApiKey());
 		return "main/mainMap/mainKakaoMapUI";
 	}
-	
-//	@ResponseBody
-//	@PostMapping(value="/pointList")
-//	public ResponseEntity<List<ListingVO>> categoryList(@RequestParam Map<String, String> param){
-//		
-//		String category = param.get("category");
-//		log.info("category : " + category);
-//  		List<ListingVO> listingList = service.selectCategoryByListingList();
-//		return new ResponseEntity<List<ListingVO>>(listingList, HttpStatus.OK);
-//	}
-
-//	@GetMapping("/data")
-//	@ResponseBody
-//	public List<Map<String, String>> getBuildingData() {
-//		List<BuildingVO> listings = service.selectNotLatLngList();
-//			return list.stream()
-//					   .filter(b -> b.getBldgAddr() != null)
-//					   .map(b -> Map.of(
-//							"id", String.valueOf(b.getBldgId()),
-//							"address", b.getBldgAddr() + " " + (b.getBldgDtlAddr() != null ? b.getBldgDtlAddr() : "")
-//					   ))
-//					   .collect(Collectors.toList());
-//	}
 
 }

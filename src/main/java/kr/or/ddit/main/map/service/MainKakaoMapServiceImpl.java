@@ -23,11 +23,6 @@ public class MainKakaoMapServiceImpl implements MainKakaoMapService {
 	public int updateLatLng(ListingVO vo) {
 		return kakaoMapDataMapper.updateLatLng(vo);
 	}
-
-	@Override
-	public List<ListingVO> selectLatLngMarkList(double swLat, double swLng, double neLat, double neLng, Integer category) {
-		return kakaoMapDataMapper.selectLatLngMarkList(swLat, swLng, neLat, neLng, category);
-	}
 	
 	@Override
 	public List<ListingVO> selectCategory() {
@@ -39,7 +34,15 @@ public class MainKakaoMapServiceImpl implements MainKakaoMapService {
 		return kakaoMapDataMapper.selectListingDetailList(lstgId);
 	}
 
-
-
+	@Override
+	public List<ListingVO> selectLatLngMarkList(
+			double swLat, double swLng, double neLat, double neLng,
+			Integer category, String keyword, 
+			List<Integer> typeCode1List, List<Integer> typeCode2List,
+			List<Integer> saleTypeList, List<String> facilityOptionList, String mbrCd) {
+		return kakaoMapDataMapper.selectLatLngMarkList(
+				swLat, swLng, neLat, neLng, category, keyword, 
+				typeCode1List, typeCode2List, saleTypeList, facilityOptionList, mbrCd);
+	}
 
 }

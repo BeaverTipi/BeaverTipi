@@ -1,7 +1,6 @@
 package kr.or.ddit.admin.board.controller;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,7 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,24 +33,29 @@ public class NoticePostWriteController {
 	private NoticePostService service;
 
 	static final String MODELNAME = "board";
-	
+
 	@ModelAttribute("board")
 	public BoardVO prepareBoard(HttpSession session) {
-	    BoardVO board = new BoardVO();
-	    board.setBrdCode("N0001");
-	    board.setNotice(List.of(new NoticeVO()));
-	    board.setFaq(List.of(new FAQVO()));
-	    board.setQna(List.of(new QnAVO()));
-
-	    MemberVO authMember = (MemberVO) session.getAttribute("authMember");
-	    if (authMember != null) {
-	        board.setMbrCd(authMember.getMbrCd());
-	    }
-
-	    return board;
+		BoardVO board = new BoardVO();
+		board.setBrdCode("N0001");
+		board.setNotice(List.of(new NoticeVO()));
+		board.setFaq(List.of(new FAQVO()));
+		board.setQna(List.of(new QnAVO()));
+		return board;
 	}
 
-	
+	@InitBinder("board")
+	public void initBinder(WebDataBinder binder,
+			@AuthenticationPrincipal(expression = "realUser") MemberVO authMember) {
+		Object target = binder.getTarget();
+		if (target instanceof BoardVO && authMember != null) {
+			BoardVO board = (BoardVO) target;
+			if (board.getMbrCd() == null || board.getMbrCd().isBlank()) {
+				board.setMbrCd(authMember.getMbrCd());
+			}
+		}
+	}
+
 	@GetMapping
 	public String noticewriteForm(Model model) {
 //		if (!model.containsAttribute("board")) {
@@ -62,25 +68,18 @@ public class NoticePostWriteController {
 //
 //			model.addAttribute("board", board);
 //		}
-		
-		
+
 		model.addAttribute("pageTitle", "새 공지사항 등록");
 		return "admin/notice/adminNoticeForm";
 	}
-	
+
 	@PostMapping
-	public String noticeWriteSubmit(@Validated(InsertGroup.class) @ModelAttribute("board") BoardVO board,
+	public String noticeWriteSubmit(
+			@Validated(InsertGroup.class) @ModelAttribute("board") BoardVO board,
 			BindingResult errors, 
-			RedirectAttributes redirectAttributes, 
-			 @AuthenticationPrincipal(expression = "realUser") MemberVO authMember) {
+			RedirectAttributes redirectAttributes
+	) {
 		String lvn;
-		if (authMember != null) {
-	        board.setMbrCd(authMember.getMbrCd());
-	    }
-	    if (authMember != null) {
-	    	System.out.println("▶ MBR_CD from session = " + authMember.getMbrCd());
-	    }
-		
 		if (!errors.hasErrors()) {
 			int result = service.createBoard(board);
 			System.out.println("▶ 저장 결과: " + result);

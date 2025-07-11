@@ -85,7 +85,7 @@
 		<div class="card-footer">
 			<div class="button-group">
 				<button type="submit" class="btn btn-outline-success">등록</button>
-				<a class="btn btn-outline-danger" href="${pageContext.request.contextPath}/admin/notice/list"">취소</a>
+				<a class="btn btn-outline-danger" href="${pageContext.request.contextPath}/admin/notice/list">취소</a>
 			</div>
 		</div>
 			</form:form>
