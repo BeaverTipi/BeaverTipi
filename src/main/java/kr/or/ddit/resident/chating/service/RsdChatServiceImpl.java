@@ -52,8 +52,8 @@ public class RsdChatServiceImpl implements RsdChatServcie {
 	}
 
 	@Override
-	public List<UnitResidentVO> getResidentList(String bldgId) {
-		return mapper.selectResidentList(bldgId);
+	public List<UnitResidentVO> getResidentList(UnitResidentVO uriVO) {
+		return mapper.selectResidentList(uriVO);
 	}
 
 	@Override
@@ -88,6 +88,12 @@ public class RsdChatServiceImpl implements RsdChatServcie {
 	@Override
 	public ResidentChatRoomVO getResidentChatRoomInfo(String residentChatRoomId) {
 		return mapper.selectResidentChatRoomInfo(residentChatRoomId);
+	}
+
+	@Override
+	public void createInviteChatRoom(String mbrCd, String residentChatRoomId) {
+		mapper.inviteChatRoom(mbrCd, residentChatRoomId);
+		
 	}
 
 

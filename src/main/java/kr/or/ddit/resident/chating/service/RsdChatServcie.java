@@ -21,7 +21,7 @@ public interface RsdChatServcie {
 
 	public List<BuildingVO> getResidentBuildingList(String mbrCd);
 
-	public List<UnitResidentVO> getResidentList(String bldgId);
+	public List<UnitResidentVO> getResidentList(UnitResidentVO uriVO);
 	
 	public List<ChatMessageDTO> getMessages(String residentChatRoomId);
 	
@@ -34,4 +34,7 @@ public interface RsdChatServcie {
 	public void editLeaveChatRoom(ChatRoomInVO criVO);
 	
 	public ResidentChatRoomVO getResidentChatRoomInfo(String residentChatRoomId);
+	
+	public void createInviteChatRoom(String mbrCd, String residentChatRoomId);
+	
 }

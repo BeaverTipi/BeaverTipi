@@ -109,6 +109,7 @@
 	INNER JOIN MEMBER B ON (A.MBR_CD = B.MBR_CD)
 	INNER JOIN UNIT C ON (A.UNIT_ID = C.UNIT_ID)
 	WHERE A.BLDG_ID = #{bldgId}
+	AND A.MBR_CD != #{mbrCd}
 	</select>
 	
     <select id="selectWhoIsSender" resultType="kr.or.ddit.resident.chating.dto.ChatMessageDTO">
@@ -130,7 +131,7 @@
 	INNER JOIN UNIT_RESIDENT D ON (A.MBR_CD = D.MBR_CD)
 	INNER JOIN UNIT E ON (C.BLDG_ID = E.BLDG_ID AND D.UNIT_ID = E.UNIT_ID )
 	WHERE A.RESIDENT_CHAT_ROOM_ID = #{residentChatRoomId}
-	AND RESIDENT_CHAT_ROOM_STATUS_CODE = '0'
+	AND RESIDENT_CHAT_ROOM_STATUS_CODE = 'JOIN'
 	</select>
 	
 	<update id="updateLeaveChatRoom" parameterType = "ChatRoomInVO">
@@ -148,7 +149,10 @@
 		WHERE RESIDENT_CHAT_ROOM_ID = #{residentChatRoomId}
 	</select>
 	
-	
+	<insert id="inviteChatRoom">
+	INSERT INTO CHAT_ROOM_IN (RESIDENT_CHAT_ROOM_ID, MBR_CD)
+	VALUES (${residentChatRoomId},{mbrCd} )
+	</insert>
 	
 	
 	

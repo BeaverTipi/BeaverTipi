@@ -71,21 +71,27 @@ public class RsdChatController {
 
 	    return "redirect:/resident/chat?popup=true";
 	}
-	// 건물 내 입주민 조회
+	
 	@GetMapping("/chat/residentList")
 	public String residentList(
 		@RequestParam("bldgId") String bldgId
 		) {
 		return "resident/chat/ResidentList";
 	}
-	// 채팅방에 있는 멤버들 조회
+	// 건물 내 입주민 조회
 	@GetMapping("/chat/getResidentList")
 	@ResponseBody
 	public List<UnitResidentVO> getResidentList(
-		@RequestParam("bldgId") String bldgId			
+		@RequestParam("bldgId") String bldgId,	
+		@AuthenticationPrincipal RealUserWrapper<MemberVO> principal
 		) {
-		return service.getResidentList(bldgId);
+		
+		UnitResidentVO uriVO = new UnitResidentVO();
+		uriVO.setBldgId(bldgId);
+		uriVO.setMbrCd(principal.getRealUser().getMbrCd());
+		return service.getResidentList(uriVO);
 	}
+
 	
 	
 	
@@ -127,7 +133,14 @@ public class RsdChatController {
 		return "redirect:/resident/chat?popup=true";
 	}
 	
-	
+	@PostMapping("/chat/room/invite")
+	public void chatInvite(
+			@RequestParam("residentChatRoomId") String residentChatRoomId,
+			@AuthenticationPrincipal RealUserWrapper<MemberVO> principal
+			) {
+		String mbrCd = principal.getRealUser().getMbrCd();
+		service.createInviteChatRoom(mbrCd, residentChatRoomId);
+	}
 	
 	
 //	참여중인 건물별 채팅 목록 조회
