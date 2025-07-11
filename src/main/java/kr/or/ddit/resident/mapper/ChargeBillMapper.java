@@ -14,4 +14,6 @@ public interface ChargeBillMapper {
 	        @Param("previousMonth") String currentMonth,
 	        @Param("beforeLastMonth") String previousMonth
 	    );
+	
+	public List<ChargeBillVO> selectChargeBillDetail(String unitId,String chargeMonth);
 }

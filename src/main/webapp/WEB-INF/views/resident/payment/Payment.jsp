@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="<c:url value='/css/style.css'/>" />
   <link rel="stylesheet" href="<c:url value='/css/theme.css'/>" />
   <link rel="stylesheet" href="<c:url value='/css/modal.css'/>" />
-  <script src="<c:url value='/js/payment.js'/>"></script>
+  <script src="<c:url value='/app/js/building/move-in/residentList.js'/>?v=${now.time}"></script>
   <style>
     /* 컨테이너 */
     body { font-family: Arial, sans-serif; background: #f8f9fa; color: #212529; margin:0; }
@@ -25,8 +25,10 @@
                   transition: background-color .3s; }
     .tab-button.active { background:#fff; border-color:#ddd; border-bottom:2px solid #007bff;
                          color:#007bff; }
-    .tabs form { margin-left:auto; }
-
+	.tabs form {
+		  margin-left: 20px;
+		  align-self: center;
+		}
     /* 결제 방식 */
     .payment-method { margin-bottom:30px; padding:20px; border:1px solid #ddd;
                       border-radius:8px; background:#f9f9f9; }
@@ -72,25 +74,55 @@
     .pay-button:hover { background:#218838; }
     .cancel-button { background:#6c757d; color:#fff; }
     .cancel-button:hover { background:#5a6268; }
+    
+     /* 상세보기 모달 버튼 */
+    .modal {
+	  display: none;
+	  position: fixed;
+	  z-index: 999;
+	  padding-top: 80px;
+	  left: 0; top: 0;
+	  width: 100%; height: 100%;
+	  overflow: auto;
+	  background-color: rgba(0,0,0,0.4);
+	}
+	.modal-content {
+	  background-color: #fff;
+	  margin: auto;
+	  padding: 30px;
+	  border: 1px solid #888;
+	  width: 80%;
+	  max-width: 700px;
+	  border-radius: 8px;
+	}
+	.modal .close {
+	  float: right;
+	  font-size: 28px;
+	  font-weight: bold;
+	  cursor: pointer;
+	}
+	.modal .close:hover {
+	  color: red;
+	}
+    
   </style>
 </head>
 <body>
   <div class="container">
     <!-- 상단 탭 & 빌딩 선택 -->
     <div class="tabs">
-      <button class="tab-button active">납부</button>
-      <form id="noticeSearchForm" method="get" action="/resident/payment">
-        <input type="hidden" name="page" value="${pagingInfo.currentPageNo}" />
-        <select name="bldgIdParam" onchange="noticeSearchForm.submit()">
-          <c:forEach var="unit" items="${unitList}">
-            <option value="${unit.bldgId}"
-              <c:if test="${selectedBldgId eq unit.bldgId}">selected</c:if>>
-              ${unit.building.bldgNm}
-            </option>
-          </c:forEach>
-        </select>
-      </form>
-    </div>
+	  <button class="tab-button active">납부</button>
+	  <form id="noticeSearchForm" method="get" action="/resident/payment" style="margin-left: 20px;">
+	    <select name="bldgIdParam" onchange="noticeSearchForm.submit()">
+	      <c:forEach var="unit" items="${unitList}">
+	        <option value="${unit.bldgId}"
+	          <c:if test="${selectedBldgId eq unit.bldgId}">selected</c:if>>
+	          ${unit.building.bldgNm}
+	        </option>
+	      </c:forEach>
+	    </select>
+	  </form>
+	</div>
 
     <!-- 결제 방식 선택 -->
     <div class="payment-method">
@@ -125,8 +157,8 @@
       <!-- 전월 -->
       <div class="payment-panel">
         <h3>
-          전월 (${lastMonth})
-          <button type="button" class="detail-btn" data-month="${lastMonth}">상세보기</button>
+          전월 (${previousMonth})
+          <button type="button" class="detail-btn" data-month="${previousMonth}">상세보기</button>
         </h3>
         <table class="vertical-table">
            <tbody>
@@ -154,7 +186,38 @@
   <div id="detailModal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
-      <div id="modalBody"></div>
+      <div id="modalBody">
+      	<h3>202507 청구서 상세 내역</h3>
+			  <h4>📌 사용자 정보</h4>
+			  <ul>
+			    <li>지로번호: 2505000007</li>
+			    <li>건물명: 현대아파트</li>
+			    <li>임대인명: 홍길동</li>
+			    <li>입주민명: 김찬영</li>
+			  </ul>
+			
+			  <h4>💡 에너지 사용량</h4>
+			  <ul>
+			    <li>전기 사용량: 123 kWh</li>
+			    <li>전기요금: 25,000원</li>
+			    <li>가스 사용량: 30㎥</li>
+			    <li>가스요금: 15,000원</li>
+			    <li>수도 사용량: 20㎥</li>
+			    <li>수도요금: 10,000원</li>
+			  </ul>
+			
+			  <h4>🧾 공동 관리비 내역</h4>
+			  <ul>
+			    <li>총 관리비: 18,000원</li>
+			  </ul>
+			
+			  <h4>📍 청구내역</h4>
+			  <ul>
+			    <li>청구금액: 68,000원</li>
+			    <li>납부상태: 미납</li>
+			    <li>납부마감일자: 2025-07-25</li>
+			  </ul>
+      </div>
     </div>
   </div>
 </body>

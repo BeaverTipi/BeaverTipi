@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.or.ddit.resident.chargebill.service.PaymentService;
 import kr.or.ddit.resident.unitResident.service.UnitResidentService;
@@ -104,9 +105,12 @@ public class PaymentPayController {
         	    .filter(bill -> beforeLastMonth.equals(bill.getChgbillChargeMonth()))
         	    .toList();
 
-        	model.addAttribute("chargeBillListLastMonth", chargeBillListLastMonth);
-        	model.addAttribute("chargeBillListBeforeLastMonth", chargeBillListBeforeLastMonth);
-        // 모델에 데이터 추가
+        	// 모델에 데이터 추가
+       	model.addAttribute("chargeBillListLastMonth", chargeBillListLastMonth);
+       	model.addAttribute("chargeBillListBeforeLastMonth", chargeBillListBeforeLastMonth);
+        model.addAttribute("previousMonth", previousMonth);
+        log.info("previousMonth=========={}",previousMonth);
+        model.addAttribute("beforeLastMonth", beforeLastMonth);
         model.addAttribute("chargeBillList", chargeBillList);
         model.addAttribute("unitList", units);
         model.addAttribute("bldgIdParam", bldgIdParam);
@@ -117,6 +121,18 @@ public class PaymentPayController {
         log.info("chargeBillListBeforeLastMonth.size={}", chargeBillListBeforeLastMonth.size());
         return "resident/payment/Payment";
     }
+    
+    @GetMapping("/detail")
+    @ResponseBody
+    public List<ChargeBillVO> getChargeBillDetail(
+    		@RequestParam String unitId,
+    		@RequestParam String chargeMonth
+    		){
+    	
+    	
+    	return paymentService.retrieveChargeBillListForMonths(unitId, chargeMonth, chargeMonth);
+    }
+    
 
     private String getCurrentMonth() {
         LocalDate currentDate = LocalDate.now();
@@ -134,6 +150,8 @@ public class PaymentPayController {
         LocalDate beforeLastMonth = currentDate.minusMonths(2); // 전전월 계산
         return beforeLastMonth.format(DateTimeFormatter.ofPattern("yyyyMM"));
     }
+    
+    
 
 
 }

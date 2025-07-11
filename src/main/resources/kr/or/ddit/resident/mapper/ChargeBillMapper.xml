@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.resident.mapper.ChargeBillMapper">
+	<resultMap type="ChargeBillVO" id="chargeBillResultMap">
+		<result property="chgbillId" column="chgbillId"/>
+	    <result property="rentalPtyId" column="rentalPtyId"/>
+	    <result property="unitId" column="unitId"/>
+	    <result property="bldgId" column="bldgId"/>
+	    <result property="chgbillChargeMonth" column="chgbillChargeMonth"/>
+	    <result property="chgbillAmount" column="chgbillAmount"/>
+	    <result property="chgbillStatus" column="chgbillStatus"/>
+	    <result property="chgbillStatusGrpCd" column="chgbillStatusGrpCd"/>
+	    <result property="chgbillDueDate" column="chgbillDueDate"/>
+	    <result property="chgbillPaidDate" column="chgbillPaidDate"/>
+	    <result property="chgbillDesc" column="chgbillDesc"/>
+	</resultMap>
+
 
 	 <select id="selectChargeBillForMonths" resultType="ChargeBillVO">
 		   SELECT 
@@ -19,6 +33,5 @@
 	    WHERE UNIT_ID = #{unitId}
 	    AND CHGBILL_CHARGE_MONTH IN (#{previousMonth}, #{beforeLastMonth})
 	   </select>
-
 
 </mapper>

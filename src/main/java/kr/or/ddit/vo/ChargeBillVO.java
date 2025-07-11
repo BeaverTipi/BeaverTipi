@@ -21,6 +21,19 @@ public class ChargeBillVO implements Serializable {
     private String chgbillDueDate;  // 날짜는 String으로 저장
     private String chgbillPaidDate;  // 날짜는 String으로 저장
     private String chgbillDesc;
+    
+    private String intgFeeId;
+    private long intgFeeAmount;
+    private String chargeMonth;
+    private String feeStatus;
+
+    private Double energyUsageQty;
+    private Long energyChargeAmount;
+    private String energyType;
+
+    private String residentName;
+    private String buildingName;
+
 
     // String으로 저장된 날짜를 LocalDate로 변환
     public LocalDate getChgbillDueDateAsLocalDate() {
