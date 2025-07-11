@@ -6,6 +6,7 @@
  *  -----------   	-------------    ---------------------------
  * 2025. 7.  9.     		김찬영            최초 생성
  * 2025. 7. 10.     		김찬영            수정.
+ * 2025. 7. 11.     		김찬영            패키지 고침.
  *
  * </pre>
  */
@@ -33,12 +34,7 @@ import kr.or.ddit.vo.MemberVO;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 
  * @author developer_KCY
- * @since
- * @see
- *
- *
  */
 @Slf4j
 @RestController

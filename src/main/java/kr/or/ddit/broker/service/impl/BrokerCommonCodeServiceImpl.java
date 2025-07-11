@@ -5,6 +5,7 @@
  *   수정일      			수정자           수정내용
  *  -----------   	-------------    ---------------------------
  * 2025. 7. 10.     		김찬영            최초 생성
+ * 2025. 7. 11.     		김찬영            패키지 고침.
  *
  * </pre>
  */
@@ -24,12 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 
  * @author developer_KCY
- * @since
- * @see
- *
- *
  */
 @Slf4j
 @Service

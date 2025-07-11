@@ -5,6 +5,7 @@
  *   수정일      			수정자           수정내용
  *  -----------   	-------------    ---------------------------
  * 2025. 7. 10.     		김찬영            최초 생성
+ * 2025. 7. 11.     		김찬영            패키지 고침.
  *
  * </pre>
  */
@@ -29,12 +30,7 @@ import kr.or.ddit.vo.CommonCodeVO;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 
  * @author developer_KCY
- * @since
- * @see
- *
- *
  */
 @Slf4j
 @RestController
@@ -45,9 +41,6 @@ public class RestBrokerFormUIController {
 	BrokerCommonCodeService codeService;
 	@Autowired
 	AES256Util aes256Util;
-	
-//	@Value(${common-code-group})
-//	List<String> allowedGroups
 	
 	/** /rest/broker/myoffice/form/bankList
 	 * @return List<'BANK'>
@@ -67,6 +60,10 @@ public class RestBrokerFormUIController {
 		return codeService.readLesserTypeList();
 	}
 	
+	/**	/rest/broker/myoffice/form
+	 * @param encrypted-payload with iv
+	 * @return
+	 */
 	@PostMapping
 	public Map<String, String> encryptedCommonCode(@RequestBody Map<String, String> payload) {
 	    String iv = payload.get("iv");
@@ -97,17 +94,4 @@ public class RestBrokerFormUIController {
 	        throw new RuntimeException("응답 암호화 실패", e);
 	    }
 	}
-
-//	@PostMapping
-//	public Map<String, List<CommonCodeVO>> commonCode(
-//			@RequestBody Map<String, Map<String, String>> requestBody
-//	) {
-//		Map<String, String> codeGroupParams = requestBody.get("codeGroup");
-//	    if (codeGroupParams == null || codeGroupParams.isEmpty())
-//	        throw new IllegalArgumentException("codeGroup 파라미터가 비어있습니다.");
-//	    
-//		log.info("-----------------------------> {}", codeGroupParams);
-//		Map<String, List<CommonCodeVO>> commonCodeMap = codeService.sortCommonCodes(codeGroupParams);
-//		return commonCodeMap;
-//	}
 }

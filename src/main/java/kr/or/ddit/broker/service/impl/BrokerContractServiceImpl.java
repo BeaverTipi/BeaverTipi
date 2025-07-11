@@ -5,6 +5,7 @@
  *   수정일      			수정자           수정내용
  *  -----------   	-------------    ---------------------------
  * 2025. 7. 9.     			김찬영            최초 생성
+ * 2025. 7. 11.     		김찬영            패키지 고침.
  *
  * </pre>
  */
@@ -22,12 +23,7 @@ import kr.or.ddit.vo.ListingWishlistVO;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 
  * @author developer_KCY
- * @since
- * @see
- *
- *
  */
 @Service
 @RequiredArgsConstructor

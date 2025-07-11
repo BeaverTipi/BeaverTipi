@@ -1,3 +1,14 @@
+/** 
+ * <pre>
+ * << 개정이력(Modification Information) >>
+ *   
+ *   수정일      			수정자           수정내용
+ *  -----------   	-------------    ---------------------------
+ * 2025. 7. ?.     			김찬영            최초 생성
+ * 2025. 7. 11.     		김찬영            패키지 고침.
+ *
+ * </pre>
+ */
 package kr.or.ddit.broker.service;
 
 import java.security.Principal;
@@ -9,6 +20,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import kr.or.ddit.broker.mapper.BrokerAuthUnpackingMapper;
 import kr.or.ddit.vo.BrokerVO;
 
+/**
+ * @author developer_KCY 
+ */
 @Component
 public class BrokerAuthUnpackingService implements HandlerInterceptor {
 	

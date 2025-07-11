@@ -1,4 +1,15 @@
-package kr.or.ddit.broker.member;
+/** 
+ * <pre>
+ * << 개정이력(Modification Information) >>
+ *   
+ *   수정일      			수정자           수정내용
+ *  -----------   	-------------    ---------------------------
+ * 2025. 7.  ?.     		김찬영            최초 생성
+ * 2025. 7. 11.     		김찬영            패키지 고침.
+ *
+ * </pre>
+ */
+package kr.or.ddit.broker.controller;
 
 import java.security.Principal;
 
@@ -12,6 +23,9 @@ import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.MemberVO;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author developer_KCY
+ */
 @Slf4j
 @RestController
 @RequestMapping("/rest/broker/myoffice/member")

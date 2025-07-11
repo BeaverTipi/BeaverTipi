@@ -87,23 +87,31 @@
 		<result property="facTypeGroupCd" column="FAC_TYPE_GROUP_CD" />
 	</collection>
 </resultMap>
+<sql id="selectLstgList">
+	SELECT L.*
+	       ,TI.*
+	       ,BI.*
+	       ,LF.*
+	  FROM LISTING L
+	  LEFT OUTER JOIN V_TENANCY_INFO TI ON(L.RENTAL_PTY_ID = TI.RENTAL_PTY_ID_T)
+	  LEFT OUTER JOIN V_BROKER_INFO BI ON(L.MBR_CD = BI.MBR_CD_B)
+	  LEFT OUTER JOIN V_LISTING_FACILITY LF ON(L.LSTG_ID = LF.LSTG_ID_LF)
+	 WHERE L.MBR_CD = #{mbrCd}
+</sql>
 
-<select id="selectLstgListForContract" parameterType="String" resultMap="ListingMap">
-SELECT L.*
-       ,TI.*
-       ,BI.*
-       ,LF.*
-  FROM LISTING L
-  LEFT OUTER JOIN V_TENANCY_INFO TI ON(L.RENTAL_PTY_ID = TI.RENTAL_PTY_ID_T)
-  LEFT OUTER JOIN V_BROKER_INFO BI ON(L.MBR_CD = BI.MBR_CD_B)
-  LEFT OUTER JOIN V_LISTING_FACILITY LF ON(L.LSTG_ID = LF.LSTG_ID_LF)
- WHERE L.MBR_CD = #{mbrCd}
-   AND L.LSTG_PROD_STAT = '1'
-   AND L.LSTG_DEL = 'N'
- ORDER BY L.LSTG_ID ASC
+<select id="selectLstgList" parameterType="String" resultMap="ListingMap">
+	<include refid="selectLstgList" />
 </select>
-
-
+<select id="selectLstgListForContract" parameterType="String" resultMap="ListingMap">
+	<include refid="selectLstgList" />
+	   AND L.LSTG_PROD_STAT = '1'
+	   AND L.LSTG_DEL = 'N'
+	 ORDER BY L.LSTG_ID ASC
+</select>
+<select id="selectLstgDetails" parameterType="Map" resultMap="ListingMap">
+	<include refid="selectLstgList" />
+	   AND L.LSTG_ID = #{lstgId}
+</select>
 <select id="selectWishlistForLessee" parameterType="String" resultType="ListingWishlistVO">
 	SELECT *
 	  FROM LISTING_WISHLIST LW
