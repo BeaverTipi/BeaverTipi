@@ -40,5 +40,6 @@ public interface BrokerContractService {
 	 */
 	public List<ListingWishlistVO> readLesseeVolunteerList(String lstgId);
 	
+	public Map<String, Object> readContractPartyInfo(Map<String, String> partyInfoParams);
 
 }
