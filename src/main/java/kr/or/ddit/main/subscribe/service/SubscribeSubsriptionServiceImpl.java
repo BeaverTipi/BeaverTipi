@@ -50,10 +50,13 @@ public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionServ
 
 	@Override
 	public void createBroker(BrokerVO broker) {
+		if (this.checkedBrokerCount(broker.getMbrCd()) > 0) {
+			throw new BrokerException();
+		}
 		MultipartFile file = broker.getBrokFile();
 		if (file != null || file.isEmpty()) {
 			try {
-				service.uploadAndSave(file, "broker", "BROKER", broker.getMbrCd(), "");
+				service.uploadAndSave(file, "broker", "BROKER", broker.getMbrCd(), "001");
 			} catch (FileIOException e) {
 				e.printStackTrace();
 				return;
@@ -62,21 +65,26 @@ public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionServ
 		if (mapper.insertBroker(broker) < 1) {
 			throw new BrokerException();
 		}
+		
 
 	}
 
 	@Override
 	public void createTenancy(TenancyVO tenancy) {
+		if (this.checkedTenancyCount(tenancy.getMbrCd())>0) {
+			throw new TenancyException();
+		}
+		
 		MultipartFile file = tenancy.getTenancyFile();
 		if (file != null || file.isEmpty()) {
 			try {
-				service.uploadAndSave(file, "broker", "BROKER", tenancy.getMbrCd(), "");
+				service.uploadAndSave(file, "broker", "BROKER", tenancy.getMbrCd(), "002");
 			} catch (FileIOException e) {
 				e.printStackTrace();
 				return;
 			}
 		}
-		if (mapper.insertTenancy(tenancy) < 1) {
+		if(mapper.insertTenancy(tenancy)<1) {
 			throw new TenancyException();
 		}
 
@@ -104,6 +112,19 @@ public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionServ
 	public List<SolutionSubscriptionVO> checkedSolutionSubscriptionList(String username) {
 		// TODO Auto-generated method stub
 		return mapper.checkedSolutionSubscriptionList(username);
+	}
+
+
+	@Override
+	public int checkedBrokerCount(String username) {
+		// TODO Auto-generated method stub
+		return mapper.selectBrokerCount(username);
+	}
+
+	@Override
+	public int checkedTenancyCount(String username) {
+		// TODO Auto-generated method stub
+		return mapper.selectTenancyCount(username);
 	}
 
 }

@@ -65,37 +65,63 @@
         <div class="subscription-card-wrapper">
   <c:forEach var="subscription" items="${solutionSubscriptionList}">
     <div class="subscription-card">
-      <div class="subscription-header">
-        <h5 class="subscription-title">${subscription.solution.solName}</h5>
-        <c:if test="${subscription.subsApprovalYn eq 'Y' and subscription.subsStatus ne '001'}">
-          <form action="${pageContext.request.contextPath}/payment/solution" method="post">
+  <div class="subscription-header">
+    <h5 class="subscription-title">${subscription.solution.solName}</h5>
+  </div>
+ <table class="subscription-table">
+  <tbody>
+    <tr>
+      <th>승인 여부</th>
+      <td>
+        <span class="${subscription.subsApprovalYn eq 'Y' ? 'text-success' : (subscription.subsApprovalYn eq 'N' ? 'text-danger' : 'text-muted')}">
+          <c:choose>
+            <c:when test="${subscription.subsApprovalYn eq 'Y'}">승인됨</c:when>
+            <c:when test="${subscription.subsApprovalYn eq 'N'}">미승인</c:when>
+            <c:otherwise>확인 불가</c:otherwise>
+          </c:choose>
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <th>솔루션 활성 상태</th>
+      <td>
+        <c:choose>
+          <c:when test="${subscription.subsStatus eq '001'}"><span class="text-success">사용 가능</span></c:when>
+          <c:when test="${subscription.subsStatus eq '002'}"><span class="text-muted">일시 정지</span></c:when>
+          <c:when test="${subscription.subsStatus eq '003'}"><span class="text-muted">취소</span></c:when>
+          <c:otherwise><span class="text-danger">사용 불가</span></c:otherwise>
+        </c:choose>
+      </td>
+    </tr>
+
+<tr>
+  <th>결제 금액</th>
+  <td>
+    <div class="payment-row">
+      ${subscription.solution.solPrice} 원
+      <c:choose>
+        <c:when test="${subscription.subsApprovalYn eq 'Y' and subscription.subsStatus ne '001'}">
+          <form action="${pageContext.request.contextPath}/payment/solution" method="post" class="inline-payment-form">
             <input type="hidden" name="solId" value="${subscription.solution.solId}" />
             <button type="submit" class="btn btn-primary btn-sm">결제하기</button>
           </form>
-        </c:if>
-      </div>
-
-      <ul class="subscription-details">
-        <li>
-          <strong>승인 여부:</strong>
-          <c:choose>
-            <c:when test="${subscription.subsApprovalYn eq 'Y'}"><span class="text-success">승인됨</span></c:when>
-            <c:when test="${subscription.subsApprovalYn eq 'N'}"><span class="text-danger">미승인</span></c:when>
-            <c:otherwise><span class="text-muted">확인 불가</span></c:otherwise>
-          </c:choose>
-        </li>
-        <li>
-          <strong>솔루션 활성 상태:</strong>
-          <c:choose>
-            <c:when test="${subscription.subsStatus eq '001'}"><span class="text-success">사용 가능</span></c:when>
-            <c:when test="${subscription.subsStatus eq '002'}"><span class="text-success">일시 정지</span></c:when>
-            <c:when test="${subscription.subsStatus eq '003'}"><span class="text-success">취소</span></c:when>
-            <c:otherwise><span class="text-danger">사용 불가</span></c:otherwise>
-          </c:choose>
-        </li>
-        <li><strong>결제 금액:</strong> <span>${subscription.solution.solPrice} 원</span></li>
-      </ul>
+        </c:when>
+        <c:otherwise>
+          <div class="empty-button-space"></div> <%-- 버튼 없는 경우에도 동일한 높이 확보 --%>
+        </c:otherwise>
+      </c:choose>
     </div>
+  </td>
+</tr>
+
+
+
+
+  </tbody>
+</table>
+
+</div>
+
   </c:forEach>
 </div>
 

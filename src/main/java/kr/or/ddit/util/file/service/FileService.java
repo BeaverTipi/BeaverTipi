@@ -1,5 +1,6 @@
 package kr.or.ddit.util.file.service;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.core.io.Resource;
@@ -17,5 +18,9 @@ public interface FileService {
 	public ResponseEntity<Resource> downloadFile(String fileId);
 	
 	public String generatePresignedDownloadUrl(String fileId, int expireMinutes);
+	public FileVO readFile(String fileId);
 
+	public List<FileVO> readFileList(String sourceRef, String sourceId);
+	public InputStream getFileStream(String fileId); // S3 파일 스트림 제공
+    public String getPresignedUrl(String fileId, int expireMinutes); // Presigned URL 제공
 }

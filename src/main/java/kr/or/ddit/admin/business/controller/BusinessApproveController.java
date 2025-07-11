@@ -1,20 +1,34 @@
 package kr.or.ddit.admin.business.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import jakarta.servlet.http.HttpServletResponse;
 import kr.or.ddit.admin.business.service.BusinessApproveService;
 import kr.or.ddit.admin.code.service.CommonCodeService;
+import kr.or.ddit.util.file.service.FileService;
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.util.renderer.DefaultPaginationRenderer;
+import kr.or.ddit.util.validate.exception.FileIOException;
 import kr.or.ddit.vo.BusinessApproveSearchVO;
 import kr.or.ddit.vo.CommonCodeVO;
+import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +41,10 @@ public class BusinessApproveController {
 	private final BusinessApproveService service;
 	private final CommonCodeService commonService;
 	private final String MODELNAME = "search";
+	private final FileService fileService;
+	
+	private final ObjectMapper mapper;
+
 	
 	@ModelAttribute(MODELNAME)
 	public BusinessApproveSearchVO search() {
@@ -64,8 +82,54 @@ public class BusinessApproveController {
 				model.addAttribute("roleList", roleList);
 				model.addAttribute("statusCodeList", statusCodeList);
 				model.addAttribute("fileCodeList", fileCodeList);
-
 				return "admin/business/businessApprove";
 		}
+	
+
+	@GetMapping("/filePopup/{mbrCd}/{userType}")
+	public String showFilePopup(@PathVariable String mbrCd,
+	                            @PathVariable String userType,
+	                            Model model) throws JsonProcessingException {
+
+	    List<FileVO> fileList = fileService.readFileList(userType, mbrCd);
+
+	    String fileListJson = mapper.writeValueAsString(fileList);
+
+	    model.addAttribute("fileListJson", fileListJson);
+	    model.addAttribute("mbrCd", mbrCd);
+	    model.addAttribute("userType", userType);
+
+	    return "admin/business/filePopup";
+	}
+
+
+	
+	@GetMapping("/file/preview/{fileId}")
+	public void previewFile(@PathVariable String fileId, HttpServletResponse response) {
+	    FileVO file = fileService.readFile(fileId);
+	    if (file == null) throw new FileIOException("파일이 존재하지 않습니다.");
+
+	    response.setContentType(file.getFileMime());
+	    response.setHeader("Content-Disposition", "inline; filename=\"" + file.getFileOriginalname() + "\"");
+
+	    try (InputStream is = fileService.getFileStream(fileId)) {
+	        StreamUtils.copy(is, response.getOutputStream());
+	    } catch (IOException e) {
+	        throw new FileIOException("파일 미리보기 처리 중 오류 발생", e);
+	    }
+	}
+    // ✅ 다운로드
+    @GetMapping("/download/{fileId}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileId) {
+        return fileService.downloadFile(fileId); // 기존 구현된 downloadFile 사용
+    }
+
+    // ✅ Presigned URL 활용 (옵션)
+    @GetMapping("/presigned/{fileId}")
+    public String generatePresignedUrl(@PathVariable String fileId,
+                                       @RequestParam(defaultValue = "3") int expireMinutes) {
+        return fileService.getPresignedUrl(fileId, expireMinutes); // 3분 유효한 URL
+    }
+
 }
 

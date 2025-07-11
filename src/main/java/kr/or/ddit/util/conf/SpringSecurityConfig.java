@@ -26,6 +26,7 @@ import org.springframework.security.web.context.RequestAttributeSecurityContextR
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -54,7 +55,7 @@ public class SpringSecurityConfig {
 	private String registerUrl;
 	private String oauth2RegisterUrl;
 	private String deleteValue;
-	
+
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
 		return configuration.getAuthenticationManager();
@@ -177,7 +178,10 @@ public class SpringSecurityConfig {
 		handler.setInvalidateHttpSession(true);
 		return handler;		
 	}
-	
+	@Bean
+	public HttpSessionEventPublisher httpSessionEventPublisher() {
+	    return new HttpSessionEventPublisher();
+	}
 	
 	@Bean
 	@Order(2)

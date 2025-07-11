@@ -69,9 +69,7 @@ class SubscribeSubscriptionMapperTest {
 		tenancy.setRentalPtyId("2025070077");
 		tenancy.setRentalPtyBizRegNo("1234574404");
 		tenancy.setRentalPtyRegBldgCnt(8);
-		tenancy.setRentalPtyAcctNo("110658207596");
 		tenancy.setLsrYnTypeCd("001");
-		tenancy.setRentalPtyBankNm("하나은행");
 		tenancy.setMbrCd("M2507000064");
 		int cnt = mapper.insertTenancy(tenancy);
 		assertEquals(cnt, 1);

@@ -15,7 +15,8 @@ public interface SubscribeSubsriptionService {
 	public List<SolutionVO> readCommonCodeSolutionList(String sol);
 	public void createBroker(BrokerVO broker);
 	public void createTenancy(TenancyVO tenancy);
-	
+	public int checkedBrokerCount(String username);
+	public int checkedTenancyCount(String username);
 	public SolutionSubscriptionVO checkedSolutionSubscription(String username, String SolutionCode);
 	public List<SolutionSubscriptionVO> checkedSolutionSubscriptionList(String username);
 }

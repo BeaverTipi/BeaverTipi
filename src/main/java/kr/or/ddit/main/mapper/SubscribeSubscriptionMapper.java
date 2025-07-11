@@ -19,6 +19,8 @@ public interface SubscribeSubscriptionMapper {
 	public List<SolutionVO> selectCommonCodeSolutionList(String sol);
 	public int insertSolutionSubscription(SolutionSubscriptionVO solSubVO);
 	public int insertBroker(BrokerVO broker);
+	public int selectBrokerCount(String username);
+	public int selectTenancyCount(String username);
 	public int insertTenancy(TenancyVO tenancy);
 	// Service or Repository
 	public SolutionSubscriptionVO checkedSolutionSubscription(@Param("username") String username, @Param("solCcCd") String solCcCd);

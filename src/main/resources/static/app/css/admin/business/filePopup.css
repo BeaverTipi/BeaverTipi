@@ -1,0 +1,18 @@
+@charset "UTF-8";
+
+/* filePopup.css */
+#pdfCanvas {
+  border: 1px solid #ccc;
+  width: 100%;
+  height: auto;
+}
+
+#pdf-controls {
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* 필요한 추가 스타일은 여기에 */
+#fileDataHolder{
+	display : none;
+}

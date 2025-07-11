@@ -34,18 +34,6 @@
 							<form:errors path="rentalPtyBizRegNo" cssClass="text-danger small" />
 						</div>
 
-						<div class="form-group">
-							<label for="rentalPtyAcctNo">계좌번호</label>
-							<form:input path="rentalPtyAcctNo" cssClass="form-control" id="rentalPtyAcctNo" />
-							<form:errors path="rentalPtyAcctNo" cssClass="text-danger small" />
-						</div>
-
-						<div class="form-group">
-							<label for="rentalPtyBankNm">은행명</label>
-							<form:input path="rentalPtyBankNm" cssClass="form-control" id="rentalPtyBankNm" />
-							<form:errors path="rentalPtyBankNm" cssClass="text-danger small" />
-						</div>
-
 						<div class="form-group mb-4">
 							<label class="form-label d-block mb-2">구독 솔루션 선택</label>
 

@@ -36,15 +36,9 @@
     </association>
     <collection property="fileListBroker" ofType="FileVO">
       <id property="fileId" column="B_FILE_ID" />
-      <result property="fileOriginalname"
-        column="B_FILE_ORIGINALNAME" />
-      <result property="filePathUrl" column="B_FILE_PATH_URL" />
     </collection>
     <collection property="fileListTenancy" ofType="FileVO">
       <id property="fileId" column="T_FILE_ID" />
-      <result property="fileOriginalname"
-        column="T_FILE_ORIGINALNAME" />
-      <result property="filePathUrl" column="T_FILE_PATH_URL" />
     </collection>
   </resultMap>
 
@@ -94,11 +88,7 @@
           , NULL AS T_AUTH_APPR_YN
           , NULL AS T_AUTH_APPR_DT
           , F_B.FILE_ID AS B_FILE_ID
-          , F_B.FILE_ORIGINALNAME AS B_FILE_ORIGINALNAME
-          , F_B.FILE_PATH_URL AS B_FILE_PATH_URL
           , NULL AS T_FILE_ID
-          , NULL AS T_FILE_ORIGINALNAME
-          , NULL AS T_FILE_PATH_URL
         FROM MEMBER M
         INNER JOIN BROKER B ON M.MBR_CD = B.MBR_CD
         LEFT OUTER JOIN FILES F_B ON F_B.FILE_SOURCE_REF = 'BROKER' AND F_B.FILE_SOURCE_ID = M.MBR_CD
@@ -181,11 +171,7 @@
           , T.AUTH_APPR_YN T_AUTH_APPR_YN
           , T.AUTH_APPR_DT T_AUTH_APPR_DT
           , NULL AS B_FILE_ID
-          , NULL AS B_FILE_ORIGINALNAME
-          , NULL AS B_FILE_PATH_URL
           , F_T.FILE_ID AS T_FILE_ID
-          , F_T.FILE_ORIGINALNAME AS T_FILE_ORIGINALNAME
-          , F_T.FILE_PATH_URL AS T_FILE_PATH_URL
         FROM MEMBER M
         INNER JOIN TENANCY T ON M.MBR_CD = T.MBR_CD
         LEFT OUTER JOIN FILES F_T ON F_T.FILE_SOURCE_REF = 'TENANCY' AND F_T.FILE_SOURCE_ID = M.MBR_CD

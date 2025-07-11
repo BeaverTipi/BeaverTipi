@@ -1,6 +1,7 @@
 package kr.or.ddit.util.file.service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -191,5 +192,44 @@ public class FileServiceImpl implements FileService {
         return random + originName;
     }
 
-    
+    @Override
+    public FileVO readFile(String fileId) {
+        return mapper.selectFile(fileId);
+    }
+
+    @Override
+    public List<FileVO> readFileList(String sourceRef, String sourceId) {
+        FileVO condition = new FileVO();
+        condition.setFileSourceRef(sourceRef);
+        condition.setFileSourceId(sourceId);
+        return mapper.selectFileList(condition);
+    }
+    @Override
+    public InputStream getFileStream(String fileId) {
+        FileVO file = mapper.selectFile(fileId);
+        if (file == null) {
+            throw new FileIOException("파일이 존재하지 않습니다.");
+        }
+
+        String s3Key = file.getFileDir() + "/" + file.getFileSavedname();
+
+        try {
+            return s3Uploader.getObject(s3Key).getObjectContent();
+        } catch (Exception e) {
+            throw new FileIOException("파일 스트림을 가져오는 데 실패했습니다.", e);
+        }
+    }
+
+    @Override
+    public String getPresignedUrl(String fileId, int expireMinutes) {
+        FileVO file = mapper.selectFile(fileId);
+        if (file == null) {
+            throw new FileIOException("파일이 존재하지 않습니다.");
+        }
+
+        String s3Key = file.getFileDir() + "/" + file.getFileSavedname();
+        return s3Uploader.generatePresignedUrl(s3Key, expireMinutes);
+    }
+
+
 }
