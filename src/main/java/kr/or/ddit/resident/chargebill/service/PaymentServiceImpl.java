@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import kr.or.ddit.resident.mapper.ChargeBillMapper;
 import kr.or.ddit.vo.ChargeBillVO;
-import lombok.RequiredArgsConstructor;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -16,8 +15,10 @@ public class PaymentServiceImpl implements PaymentService {
 	private  ChargeBillMapper mapper;
 
 	@Override
-	public List<ChargeBillVO> retrieveChargeBillList(String unitId, String chargeMonth) {
-		return mapper.selectChargeBill(unitId, chargeMonth);
+	public List<ChargeBillVO> retrieveChargeBillListForMonths(String unitId, String currentMonth, String previousMonth) {
+	    // 전월 및 전전월의 청구 내역 조회
+	    List<ChargeBillVO> chargeBillListCurrentMonth = mapper.selectChargeBillForMonths(unitId, currentMonth, previousMonth);
+	    return chargeBillListCurrentMonth;
 	}
 	
 }

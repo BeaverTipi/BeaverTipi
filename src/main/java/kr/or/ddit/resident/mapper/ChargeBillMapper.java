@@ -9,8 +9,9 @@ import kr.or.ddit.vo.ChargeBillVO;
 @Mapper
 public interface ChargeBillMapper {
 	
-	public List<ChargeBillVO> selectChargeBill(
-		@Param("unitId") String unitId,
-		@Param("chgbillChargeMonth") String ChargeMonth
-	);
+	public List<ChargeBillVO> selectChargeBillForMonths(
+	        @Param("unitId") String unitId,
+	        @Param("previousMonth") String currentMonth,
+	        @Param("beforeLastMonth") String previousMonth
+	    );
 }
