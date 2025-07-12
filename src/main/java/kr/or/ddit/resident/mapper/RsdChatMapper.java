@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import kr.or.ddit.resident.chating.dto.ChatMessageDTO;
+import kr.or.ddit.resident.chating.dto.LastMessageDTO;
 import kr.or.ddit.resident.chating.dto.ParticipantDTO;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.ChatRoomInVO;
@@ -50,5 +51,5 @@ public interface RsdChatMapper {
 			  @Param("residentChatRoomId") String residentChatRoomId,
 			  @Param("mbrCd") String mbrCd 
 			);
-	
+	LastMessageDTO selectLastMessage(String residentChatRoomId);
 }

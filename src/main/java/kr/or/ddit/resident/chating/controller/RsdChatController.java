@@ -32,12 +32,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/resident")
 public class RsdChatController {
 
-	@Autowired
-	RsdChatServiceImpl service;
+	@Autowired 
+	RsdChatServiceImpl service; 
 //  채팅 팝업
-	@GetMapping("/chat")
+	@GetMapping("/chat") 
 	public String residentChat() {
-
+		 
 	    return "resident/chat/Chat";
 	}
 	
@@ -65,7 +65,7 @@ public class RsdChatController {
 	            ChatRoomInVO vo = new ChatRoomInVO();
 	            vo.setMbrCd(mbrCd);
 	            return vo;
-	        })
+	        }) 
 	        .toList();
 
 	    service.createChatRoom(crVO, criVO, residentList);

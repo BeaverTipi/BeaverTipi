@@ -171,6 +171,19 @@
 	  VALUES (#{residentChatRoomId},#{mbrCd})
 	</insert>
 	
+	<select id="selectLastMessage" resultType = "kr.or.ddit.resident.chating.dto.LastMessageDTO">
+	SELECT A.RCM_CONT, A.RESIDENT_CHAT_ROOM_ID , COALESCE(B.MBR_NNM,B.MBR_NM) AS MBR_NNM, D.UNIT_ROOM
+	FROM (SELECT *
+	        FROM (SELECT A.*, B.BLDG_ID
+	        FROM RESIDENT_CHAT_MESSAGE A
+	        INNER JOIN RESIDENT_CHAT_ROOM B ON (A.RESIDENT_CHAT_ROOM_ID = B.RESIDENT_CHAT_ROOM_ID)
+	        WHERE A.RESIDENT_CHAT_ROOM_ID = #{residentChatRoomId}
+	        ORDER BY RCM_TIME DESC)
+	        WHERE ROWNUM = 1) A
+	INNER JOIN MEMBER B ON (A.MBR_CD = B.MBR_CD)
+	INNER JOIN UNIT_RESIDENT C ON (A.MBR_CD = C.MBR_CD)
+	INNER JOIN UNIT D ON (C.UNIT_ID = D.UNIT_ID AND A.BLDG_ID = D.BLDG_ID)	
+	</select>
 	
 	
 </mapper>
