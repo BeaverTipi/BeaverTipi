@@ -8,20 +8,13 @@
 <meta charset="UTF-8">
 <title>비즈니스 계정 목록</title>
 
-<!--  
- * == 개정이력(Modification Information) ==
- *   
- *   수정일               수정자           수정내용
- *  ============      ============== =======================
- *  2025. 7. 10.           김아린           최초 생성
--->
-
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/app/css/admin/common_admin.css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/common_admin.css" />
 </head>
 <body>
 	<div class="container mt-5">
 		<h2 class="mb-4">비즈니스 계정 목록</h2>
+
+		<!-- 검색 폼 -->
 		<form:form id="searchForm" modelAttribute="search" method="get"
 			action="${pageContext.request.contextPath}/admin/business/approve"
 			cssClass="border p-4 rounded bg-light">
@@ -30,18 +23,15 @@
 			<div class="row align-items-end">
 				<div class="col-md-2 mb-3">
 					<label class="form-label">회원코드</label>
-					<form:input path="mbrCd" cssClass="form-control"
-						placeholder="회원코드 입력" />
+					<form:input path="mbrCd" cssClass="form-control" placeholder="회원코드 입력" />
 				</div>
 				<div class="col-md-2 mb-3">
 					<label class="form-label">아이디</label>
-					<form:input path="mbrId" cssClass="form-control"
-						placeholder="아이디 입력" />
+					<form:input path="mbrId" cssClass="form-control" placeholder="아이디 입력" />
 				</div>
 				<div class="col-md-2 mb-3">
 					<label class="form-label">이름</label>
-					<form:input path="mbrNm" cssClass="form-control"
-						placeholder="이름 입력" />
+					<form:input path="mbrNm" cssClass="form-control" placeholder="이름 입력" />
 				</div>
 				<div class="col-md-2 mb-3">
 					<label class="form-label">상태</label>
@@ -80,9 +70,8 @@
 			</div>
 		</form:form>
 
-
-		<form:form id="bulkForm" method="post"
-			action="/admin/business/bulkAction">
+		<!-- 승인/거절 목록 및 일괄 처리 폼 -->
+		<form:form id="bulkForm" method="post" action="/admin/business/bulkAction">
 			<table class="table table-bordered mt-4">
 				<thead class="table-light">
 					<tr>
@@ -101,52 +90,55 @@
 					<c:choose>
 						<c:when test="${not empty approveList}">
 							<c:forEach items="${approveList}" var="item" varStatus="stat">
+								<c:set var="apprYn" value="${not empty item.broker.authApprYn ? item.broker.authApprYn : item.tenancy.authApprYn}" />
+								<c:set var="isDisabled" value="${apprYn == 'Y' or apprYn == 'N'}" />
+								<c:set var="userType" value="${item.broker.mbrCd != null ? 'BROKER' : (item.tenancy.mbrCd != null ? 'TENANCY' : '')}" />
 								<tr>
-									<c:set var="apprYn" value="${not empty item.broker.authApprYn ? item.broker.authApprYn : item.tenancy.authApprYn}" />
-									<c:set var="isDisabled" value="${apprYn == 'Y' || apprYn == 'N'}" />
-								<tr>
-									<td><input type="checkbox" name="userIds" value="${item.mbrCd}" class="row-check" ${isDisabled ? 'disabled' : ''}></td>
+									<td>
+										<input type="checkbox" name="userIds" value="${item.mbrCd}" class="row-check" data-usertype="${userType}" <c:if test="${isDisabled}">disabled</c:if> />
+									</td>
 									<td>${pagingInfo.firstRecordIndex + stat.index}</td>
 									<td>${item.mbrCd}</td>
 									<td>${item.mbrId}</td>
 									<td>${item.mbrNm}</td>
-									<td><c:choose>
+									<td>
+										<c:choose>
 											<c:when test="${item.broker.authApprYn != null}">
 												<c:forEach var="statusCode" items="${statusCodeList}">
-													<c:if
-														test="${statusCode.codeValue == item.broker.authApprYn}">
+													<c:if test="${statusCode.codeValue == item.broker.authApprYn}">
 														${statusCode.codeName}
 													</c:if>
 												</c:forEach>
 											</c:when>
 											<c:when test="${item.tenancy.authApprYn != null}">
 												<c:forEach var="statusCode" items="${statusCodeList}">
-													<c:if
-														test="${statusCode.codeValue == item.tenancy.authApprYn}">
+													<c:if test="${statusCode.codeValue == item.tenancy.authApprYn}">
 														${statusCode.codeName}
 													</c:if>
 												</c:forEach>
 											</c:when>
 											<c:otherwise>-</c:otherwise>
-										</c:choose></td>
-									<td><c:choose>
-											<c:when test="${item.broker.mbrCd != null}">중개인</c:when>
-											<c:when test="${item.tenancy.mbrCd != null}">임대인</c:when>
+										</c:choose>
+									</td>
+									<td>
+										<c:choose>
+											<c:when test="${userType == 'BROKER'}">중개인</c:when>
+											<c:when test="${userType == 'TENANCY'}">임대인</c:when>
 											<c:otherwise>-</c:otherwise>
-										</c:choose></td>
-									<td><c:choose>
+										</c:choose>
+									</td>
+									<td>
+										<c:choose>
 											<c:when test="${not empty item.fileListBroker}">
-												<button type="button" class="btn btn-sm btn-outline-info"
-													onclick="openFilePopup('${item.mbrCd}', 'BROKER')">보기</button>
+												<button type="button" class="btn btn-sm btn-outline-info" onclick="openFilePopup('${item.mbrCd}', 'BROKER')">보기</button>
 											</c:when>
 											<c:when test="${not empty item.fileListTenancy}">
-												<button type="button" class="btn btn-sm btn-outline-info"
-													onclick="openFilePopup('${item.mbrCd}', 'TENANCY')">보기</button>
+												<button type="button" class="btn btn-sm btn-outline-info" onclick="openFilePopup('${item.mbrCd}', 'TENANCY')">보기</button>
 											</c:when>
 											<c:otherwise>-</c:otherwise>
-										</c:choose></td>
-									<td><c:set var="apprYn"
-											value="${not empty item.broker.authApprYn ? item.broker.authApprYn : item.tenancy.authApprYn}" />
+										</c:choose>
+									</td>
+									<td>
 										<c:choose>
 											<c:when test="${apprYn == 'W' || empty apprYn}">
 												<c:set var="approveLabel" value="" />
@@ -159,10 +151,8 @@
 														<c:set var="rejectLabel" value="${status.codeName}" />
 													</c:if>
 												</c:forEach>
-												<button type="button" class="btn btn-sm btn-outline-success"
-													onclick="submitApproval('${item.mbrCd}')">${approveLabel}</button>
-												<button type="button" class="btn btn-sm btn-outline-danger"
-													onclick="submitRejection('${item.mbrCd}')">${rejectLabel}</button>
+												<button type="button" class="btn btn-sm btn-outline-success" onclick="submitApproval('${item.mbrCd}', '${userType}')">${approveLabel}</button>
+												<button type="button" class="btn btn-sm btn-outline-danger" onclick="submitRejection('${item.mbrCd}', '${userType}')">${rejectLabel}</button>
 											</c:when>
 											<c:otherwise>
 												<c:forEach var="status" items="${statusCodeList}">
@@ -178,14 +168,12 @@
 																<span class="text-secondary">${status.codeName}</span>
 															</c:otherwise>
 														</c:choose>
-
 													</c:if>
 												</c:forEach>
 											</c:otherwise>
-										</c:choose></td>
+										</c:choose>
+									</td>
 								</tr>
-
-
 							</c:forEach>
 						</c:when>
 						<c:otherwise>
@@ -196,20 +184,21 @@
 					</c:choose>
 				</tbody>
 			</table>
+
 			<div class="pagination-wrapper d-flex justify-content-center mt-3">
 				<div class="text-center w-100">
 					<c:out value="${pagingHTML}" escapeXml="false" />
 				</div>
 			</div>
+
 			<div class="d-flex justify-content-end gap-2 mt-3">
-				<button type="submit" name="action" value="approve"
-					class="btn btn-success">일괄 승인</button>
-				<button type="submit" name="action" value="reject"
-					class="btn btn-danger">일괄 거절</button>
+				<button type="submit" name="action" value="approve" class="btn btn-success">일괄 승인</button>
+				<button type="submit" name="action" value="reject" class="btn btn-danger">일괄 거절</button>
 			</div>
 		</form:form>
 	</div>
-	<script src="/app/js/admin/business/businessApprove.js"></script>
+
+	<script src="${pageContext.request.contextPath}/app/js/admin/business/businessApprove.js"></script>
 
 </body>
 </html>

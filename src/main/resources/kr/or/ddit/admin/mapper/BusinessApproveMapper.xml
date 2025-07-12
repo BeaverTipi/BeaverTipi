@@ -309,5 +309,24 @@
     </where>
   )
 </select>
-
+<update id="updateTenancyApprove">
+UPDATE TENANCY
+SET AUTH_APPR_YN = 'Y'
+WHERE MBR_CD=#{mbrCd}
+</update>
+<update id="updateTenancyReject">
+UPDATE TENANCY
+SET AUTH_APPR_YN = 'N'
+WHERE MBR_CD=#{mbrCd}
+</update>
+<update id="updateBrokerApprove">
+UPDATE BROKER
+SET AUTH_APPR_YN = 'Y'
+WHERE MBR_CD=#{mbrCd}
+</update>
+<update id="updateBrokerReject">
+UPDATE BROKER
+SET AUTH_APPR_YN = 'N'
+WHERE MBR_CD=#{mbrCd}
+</update>
 </mapper>

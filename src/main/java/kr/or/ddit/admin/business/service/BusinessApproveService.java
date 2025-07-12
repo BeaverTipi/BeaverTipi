@@ -10,4 +10,8 @@ public interface BusinessApproveService {
 	public Integer readTotalRecord(PaginationInfo<BusinessApproveSearchVO> paging);
 
 	public List<MemberVO> readBusinessApproveList(PaginationInfo<BusinessApproveSearchVO> paging);
+
+	public void approveMember(String mbrCd, String userType);
+
+	public void rejectMember(String mbrCd, String userType);
 }

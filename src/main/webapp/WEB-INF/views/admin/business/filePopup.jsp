@@ -19,17 +19,20 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 </head>
 <body>
-<div id="fileDataHolder" data-filelist='${fileListJson}'/>
+<div id="fileDataHolder" data-filelist='${fileListJson}'></div>
   <h3>첨부파일 목록</h3>
-  <table border="1" id="fileTable">
-    <thead>
-      <tr><th>파일명</th><th>크기</th></tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
+<h3><button id="toggleFileListBtn" type="button">첨부파일 목록 보기</button></h3>
+<table border="1" id="fileTable">
+  <thead>
+    <tr><th>파일명</th><th>크기</th></tr>
+  </thead>
+  <tbody></tbody>
+</table>
   <hr>
   <canvas id="pdfCanvas"></canvas>
+  <div>
+  페이지 <span id="fileIndex">0</span> / <span id="totalCount">0</span>
+</div>
   <div id="pdf-controls">
     <button id="prevBtn">이전</button>
     <button id="nextBtn">다음</button>

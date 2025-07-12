@@ -33,10 +33,11 @@ INSERT INTO FILES(
 </insert>
 <select id="selectMaxAttachSeq" >
 SELECT 
-		FILE_ID
+		MAX(FILE_ATTACH_SEQ)
 		, FILE_ATTACH_SEQ
 		, FILE_SOURCE_REF
 		, FILE_SAVEDNAME
+		, FILE_ORIGINALNAME
 		, FILE_MIME
 		, FILE_SIZE
 		, DOC_TYPE_CD
@@ -54,6 +55,7 @@ AND FILE_SOURCE_ID = #{fileSourceId}
 		    , FILE_ATTACH_SEQ
 		    , FILE_SOURCE_REF
 		    , FILE_SAVEDNAME
+			, FILE_ORIGINALNAME
 		    , FILE_MIME
 		    , FILE_SIZE
 		    , DOC_TYPE_CD
@@ -88,6 +90,7 @@ AND FILE_SOURCE_ID = #{fileSourceId}
 		    , FILE_ATTACH_SEQ
 		    , FILE_SOURCE_REF
 		    , FILE_SAVEDNAME
+			, FILE_ORIGINALNAME
 		    , FILE_MIME
 		    , FILE_SIZE
 		    , DOC_TYPE_CD
@@ -97,16 +100,16 @@ AND FILE_SOURCE_ID = #{fileSourceId}
 		    , FILE_DIR
     FROM FILES
     WHERE FILE_SOURCE_REF = #{fileSourceRef}
-    <if test="fileSourceId != null">
+    <if test="fileSourceId != null and fileSourceId != ''">
         AND FILE_SOURCE_ID = #{fileSourceId}
     </if>
-    <if test="docTypeCd != null">
+    <if test="docTypeCd != null and docTypeCd != ''">
         AND DOC_TYPE_CD = #{docTypeCd}
     </if>
 </select>
 
 <delete id="deleteFileById">
-    DELETE FROM FILE WHERE FILE_ID = #{fileId}
+    DELETE FROM FILES WHERE FILE_ID = #{fileId}
 </delete>
 <update id="updateFile" >
 UPDATE FILES
@@ -116,6 +119,7 @@ SET
 	, FILE_ATTACH_SEQ = #{fileAttachSeq}
 	, FILE_SOURCE_REF = #{fileSourceRef}
 	, FILE_SAVEDNAME = #{fileSavedname}
+	, FILE_ORIGINALNAME = #{fileOriginalname}
 	, FILE_MIME = #{fileMime}
 	, FILE_SIZE = #{fileSize}
 	, DOC_TYPE_CD = #{docTypeCd}

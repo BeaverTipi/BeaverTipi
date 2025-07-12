@@ -13,4 +13,9 @@ public interface BusinessApproveMapper {
 	public Integer selectTotalRecord(PaginationInfo<BusinessApproveSearchVO> paging);
 
 	public List<MemberVO> selectBusinessApproveList(PaginationInfo<BusinessApproveSearchVO> paging);
+	
+	public Integer updateTenancyApprove(String mbrCd);
+	public Integer updateTenancyReject(String mbrCd);
+	public Integer updateBrokerReject(String mbrCd);
+	public Integer updateBrokerApprove(String mbrCd);
 }

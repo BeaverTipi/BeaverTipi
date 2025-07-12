@@ -3,8 +3,8 @@ package kr.or.ddit.admin.business.controller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,12 +12,14 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import jakarta.servlet.http.HttpServletResponse;
 import kr.or.ddit.admin.business.service.BusinessApproveService;
@@ -25,7 +27,9 @@ import kr.or.ddit.admin.code.service.CommonCodeService;
 import kr.or.ddit.util.file.service.FileService;
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.util.renderer.DefaultPaginationRenderer;
+import kr.or.ddit.util.validate.exception.ApprovedException;
 import kr.or.ddit.util.validate.exception.FileIOException;
+import kr.or.ddit.util.validate.exception.RejectedException;
 import kr.or.ddit.vo.BusinessApproveSearchVO;
 import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.FileVO;
@@ -85,8 +89,35 @@ public class BusinessApproveController {
 				return "admin/business/businessApprove";
 		}
 	
+    @PostMapping("/approve/{userType}/{mbrCd}")
+    public String formApprove(@PathVariable String mbrCd,@PathVariable String userType, RedirectAttributes redirectAttributes) {
+        try {
+        	        service.approveMember(mbrCd, userType);
+        	        redirectAttributes.addFlashAttribute("message", "승인 처리되었습니다.");
+        } catch (ApprovedException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+        } catch (Exception e) {
+    	redirectAttributes.addFlashAttribute("message", "승인 처리 중 오류가 발생했습니다.");
+    }
+        return "redirect:/admin/business/approve"; // 목록 페이지로 리다이렉트
+    }
 
-	@GetMapping("/filePopup/{mbrCd}/{userType}")
+    @PostMapping("/reject/{userType}/{mbrCd}")
+    public String formReject(@PathVariable String mbrCd, @PathVariable String userType,RedirectAttributes redirectAttributes) {
+        try {
+            service.rejectMember(mbrCd,userType);
+            redirectAttributes.addFlashAttribute("message", "거절 처리되었습니다.");
+        } catch (RejectedException e) {
+            redirectAttributes.addFlashAttribute("message",  e.getMessage());
+        }catch (Exception e) {
+    	redirectAttributes.addFlashAttribute("message", "거절 처리 중 오류가 발생했습니다.");
+    }
+        return "redirect:/admin/business/approve";
+    }
+
+
+
+	@GetMapping("/filePopup/{userType}/{mbrCd}")
 	public String showFilePopup(@PathVariable String mbrCd,
 	                            @PathVariable String userType,
 	                            Model model) throws JsonProcessingException {
@@ -102,6 +133,37 @@ public class BusinessApproveController {
 	    return "admin/business/filePopup";
 	}
 
+	@PostMapping("/bulkAction")
+	public ResponseEntity<String> bulkAction(@RequestBody Map<String, Object> bulkRequest) {
+	    try {
+	        String action = (String) bulkRequest.get("action");
+	        List<Map<String, String>> users = (List<Map<String, String>>) bulkRequest.get("users");
+
+	        if ("approve".equalsIgnoreCase(action)) {
+	            for (Map<String, String> user : users) {
+	                String userType = user.get("userType");
+	                String mbrCd = user.get("mbrCd");
+	                service.approveMember(mbrCd, userType);
+	            }
+	        } else if ("reject".equalsIgnoreCase(action)) {
+	            for (Map<String, String> user : users) {
+	                String userType = user.get("userType");
+	                String mbrCd = user.get("mbrCd");
+	                service.rejectMember(mbrCd, userType);
+	            }
+	        } else {
+	            return ResponseEntity.badRequest().body("알 수 없는 작업입니다.");
+	        }
+
+	        return ResponseEntity.ok("일괄 처리 완료");
+	    } catch (RejectedException e) {
+	        log.error("bulkAction 오류", e);
+	        return ResponseEntity.status(500).body(e.getMessage());
+	    } catch (ApprovedException e) {
+		log.error("bulkAction 오류", e);
+		return ResponseEntity.status(500).body(e.getMessage());
+	}
+	}
 
 	
 	@GetMapping("/file/preview/{fileId}")
@@ -118,11 +180,6 @@ public class BusinessApproveController {
 	        throw new FileIOException("파일 미리보기 처리 중 오류 발생", e);
 	    }
 	}
-    // ✅ 다운로드
-    @GetMapping("/download/{fileId}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileId) {
-        return fileService.downloadFile(fileId); // 기존 구현된 downloadFile 사용
-    }
 
     // ✅ Presigned URL 활용 (옵션)
     @GetMapping("/presigned/{fileId}")
