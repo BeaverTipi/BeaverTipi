@@ -19,11 +19,11 @@
   <!-- 카테고리 + 배너 -->
   <div class="category-banner">
     <div class="categories">
-      <button class="category-btn">원룸,투룸<br><i class="bi bi-house-door"></i></button>
-      <button class="category-btn">주택/빌라<br><i class="bi bi-house"></i></button>
-      <button class="category-btn">오피스텔<br><i class="bi bi-buildings"></i></button>
-      <button class="category-btn">아파트/신축<br><i class="bi bi-building"></i></button>
-      <button class="category-btn">신축분양<br><i class="bi bi-building-check"></i></button>
+      <button class="category-btn" onclick="location.href='${pageContext.request.contextPath}/main/map?category=0'">원룸,투룸<br><i class="bi bi-house-door"></i></button>
+      <button class="category-btn" onclick="location.href='${pageContext.request.contextPath}/main/map?category=1'">주택/빌라<br><i class="bi bi-house"></i></button>
+      <button class="category-btn" onclick="location.href='${pageContext.request.contextPath}/main/map?category=2'">오피스텔<br><i class="bi bi-buildings"></i></button>
+      <button class="category-btn" onclick="location.href='${pageContext.request.contextPath}/main/map?category=3'">아파트/신축<br><i class="bi bi-building"></i></button>
+      <button class="category-btn" onclick="location.href='${pageContext.request.contextPath}/main/map?category=4'">신축분양<br><i class="bi bi-building-check"></i></button>
     </div>
     <div class="banner">
       <img src="/volt/assets/img/images/ourads.png" alt="광고 배너">

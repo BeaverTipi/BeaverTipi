@@ -26,8 +26,7 @@ body {
 
 #wrap {
 	display: flex;
-	flex-direction: column;
-	height: 100vh;
+	height: 90vh;
 }
 
 @font-face {
@@ -42,8 +41,9 @@ body {
 /* === 전체 레이아웃 === */
 .map-container {
 	display: flex;
-	width: 100%;
-	height: calc(100vh - 60px); /* 헤더 높이 고려 */
+	flex-direction: column;
+	flex: 1;
+	padding-top: 55px;
 }
 
 .sidebar {
@@ -328,4 +328,149 @@ body {
 	font-weight: bold;
 	pointer-events: none;
 	cursor: default;
+}
+
+.filter-bar {
+	position: fixed;
+	top: 68px; /* navbar 높이만큼 설정 */
+	left: 160px; /* sidebar 고려 */
+	right: 0;
+	height: 48px;
+	padding: 6px 16px;
+	background-color: #fff;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	z-index: 1000;
+}
+
+.filter-group>* {
+	margin-right: 12px;
+	font-size: 14px;
+}
+
+/* === 추가 필터 모달 === */
+#filterModal {
+	position: fixed;
+	top: 120px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 1050;
+	max-height: 80vh;
+	overflow-y: auto;
+	display: none;
+}
+
+.filter-modal.show {
+	display: block !important;
+}
+
+.filter-modal-content {
+	background: white;
+	padding: 20px;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	min-width: 300px;
+}
+
+/* 내부 구역 간 정렬 */
+#filterModal .filter-section {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+#filterModal .filter-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+#filterModal .filter-label {
+	font-weight: bold;
+	min-width: 80px;
+	font-size: 13px;
+}
+
+/* 인풋 요소들 */
+#filterModal input[type="number"], #filterModal input[type="text"] {
+	padding: 5px 8px;
+	font-size: 13px;
+	width: 100px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+/* 체크박스 그룹 */
+.checkbox-group {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.checkbox-group label {
+	font-size: 13px;
+	color: #333;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.filter-modal {
+	position: fixed;
+	top: 120px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 1050;
+	max-height: 80vh;
+	overflow-y: auto;
+	display: none; /* 이 부분 중요 */
+}
+
+.filter-dropdown-wrapper {
+	position: relative;
+	display: inline-block;
+}
+
+.filter-toggle-btn {
+	padding: 8px 14px;
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 20px;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.filter-dropdown {
+	display: none;
+	position: absolute;
+	top: 40px;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 12px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	padding: 10px;
+	z-index: 999;
+	white-space: nowrap;
+}
+
+.filter-option {
+	padding: 6px 14px;
+	margin: 4px;
+	border: 1px solid #ccc;
+	border-radius: 18px;
+	background: #f0f0f0;
+	cursor: pointer;
+	font-size: 13px;
+}
+
+.filter-option.active {
+	background: #2b96ff;
+	color: #fff;
+	border-color: #2b96ff;
+}
+
+.main-section {
+	display: flex;
+	flex: 1;
+	overflow: hidden;
 }
