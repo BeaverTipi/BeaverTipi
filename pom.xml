@@ -198,7 +198,12 @@
 			<artifactId>itextpdf</artifactId>
 			<version>5.5.13.3</version>
 		</dependency>
-
+		<!-- 문자열 관련 알고리즘과 유틸리티 기능 제공 -->
+		<dependency>
+    		<groupId>org.apache.commons</groupId>
+    		<artifactId>commons-text</artifactId>
+    		<version>1.10.0</version>
+    	</dependency>
 
 	</dependencies>
 

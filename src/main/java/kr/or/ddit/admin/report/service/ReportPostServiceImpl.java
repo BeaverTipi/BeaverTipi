@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +56,10 @@ public class ReportPostServiceImpl implements ReportPostService {
         	log.info("Report Detail fetched: {}", reportDetail);
         if (reportDetail != null && reportDetail.getBrdNo() != null) { // ⭐ 게시글 번호(brdNo)가 있어야 파일을 조회할 수 있습니다. ⭐
             log.debug("Found reportDetail for reportId: {}, brdNo: {}", reportId, reportDetail.getBrdNo());
-
+            String escapedContent = StringEscapeUtils.escapeHtml4(reportDetail.getBrdCont());
+            // 그 후에 줄바꿈 문자를 <br> 태그로 변환합니다.
+            reportDetail.setBrdCont(escapedContent.replace("\n", "<br>"));
+            
             // 2. BoardVO의 brdNo를 사용하여 첨부 파일 목록을 가져옵니다.
             //    FileVO의 fileSourceId가 BoardVO의 brdNo와 매핑된다고 가정합니다.
             FileVO searchFileVO = new FileVO();

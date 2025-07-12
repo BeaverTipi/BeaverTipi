@@ -1,0 +1,15 @@
+@charset "UTF-8";
+
+body { padding: 20px; overflow: hidden; } /* 스크롤바가 이중으로 생기지 않도록 body의 overflow를 hidden으로 설정 */
+        .modal-body strong { display: inline-block; width: 150px; }
+        #modalBrdCont { white-space: pre-wrap; word-break: break-word; } /* 줄바꿈 및 긴 텍스트 처리 */
+        #modalAttachFiles img { max-width: 100px; max-height: 100px; margin: 5px; border: 1px solid #ddd; }
+        .file-link { display: block; margin: 5px 0; }
+        .footer-buttons { text-align: right; margin-top: 20px; }
+        /* 콘텐츠를 감싸는 컨테이너에 최소 너비/높이 및 유연한 크기 설정 */
+        .content-wrapper {
+            min-width: 500px; /* 최소 너비 */
+            min-height: 300px; /* 최소 높이 */
+            display: inline-block; /* 콘텐츠 크기에 맞게 조절되도록 */
+            vertical-align: top;
+        }

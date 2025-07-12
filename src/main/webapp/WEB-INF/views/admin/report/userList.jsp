@@ -6,9 +6,9 @@
 <html>
 <head>
     <title>회원 & 매물 신고 관리</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/app/css/admin/common_admin.css">
     <link rel="stylesheet" href="/app/css/admin/board/userList.css">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -43,20 +43,11 @@
                     <form:input path="searchTitle" id="searchTitle" placeholder="제목" class="input-field"/>
                 </div>
                 <div class="search-item">
-                    <label for="searchWriter">작성자ID</label>
-                    <form:input path="searchWriter" id="searchWriter" placeholder="작성자ID" class="input-field"/>
+                    <label for="searchWriter">신고자ID</label>
+                    <form:input path="searchWriter" id="searchWriter" placeholder="신고자ID" class="input-field"/>
                 </div>
+                <%-- ⭐ "처리상태" 필드 div를 "신고기간" 필드보다 위로 이동 ⭐ --%>
                 <div class="search-item">
-                    <label>신고일자</label>
-                    <div class="date-range-group">
-                        <form:input type="date" path="brdPblsDtmFrom" id="brdPblsDtmFrom" class="input-field"/>
-                        <span>~</span>
-                        <form:input type="date" path="brdPblsDtmTo" id="brdPblsDtmTo" class="input-field"/>
-                    </div>
-                </div>
-            </div>
-            <div class="search-row bottom-row">
-                 <div class="search-item">
                     <label for="searchRptStatusCode">처리상태</label>
                     <form:select path="searchRptStatusCode" id="searchRptStatusCode" class="select-field">
                         <form:option value="">--전체--</form:option>
@@ -65,24 +56,33 @@
                         <form:option value="COMP" label="처리완료"/>
                     </form:select>
                 </div>
+            </div>
+            <div class="search-row bottom-row">
+                <%-- ⭐ "신고기간" 필드 div를 "처리상태" 필드 자리로 이동 ⭐ --%>
+                <div class="search-item">
+                    <label>신고기간</label>
+                    <div class="date-range-group">
+                        <form:input type="date" path="brdPblsDtmFrom" id="brdPblsDtmFrom" class="input-field"/>
+                        <span>~</span>
+                        <form:input type="date" path="brdPblsDtmTo" id="brdPblsDtmTo" class="input-field"/>
+                    </div>
+                </div>
                 <div class="search-item search-buttons-in-row">
                     <button type="button" id="resetButton" class="reset-button">초기화</button>
-                    <button type="submit">검색</button>
+                    <button type="submit" id="searchButton">검색</button>
                 </div>
             </div>
-        </div>
-        <div class="search-actions">
-            <button type="button" id="saveButton" class="save-button">저장하기</button>
         </div>
 
         <div class="table-container">
             <table class="table" id="reportedUserTable">
                 <thead>
                     <tr>
+                    	<th>번호</th>
                         <th>제목</th>
-                        <th>신고된 대상</th>
-                        <th>작성자ID</th>
-                        <th>신고일자</th>
+                        <th id="reportedTarget">신고된 대상</th>
+                        <th>신고자ID</th>
+                        <th>신고일시</th>
                         <th>신고처리</th>
                     </tr>
                 </thead>
@@ -90,6 +90,7 @@
                     <c:if test="${not empty reportedUserList}">
                         <c:forEach items="${reportedUserList}" var="report" varStatus="status">
                             <tr>
+                            	<td>${(pagingInfo.currentPageNo - 1) * pagingInfo.recordCountPerPage + status.index + 1}</td>
                                 <td><a href="#" class="report-title" data-report-id="${report.reportId}">${report.brdTitlNm}</a></td>
                                 <td>${report.rptTargetId}</td>
                                 <td>${report.mbrCd}</td>
@@ -113,46 +114,13 @@
                 </tbody>
             </table>
         </div>
-        <div class="paging-area">
+        <div class="pagination-wrapper">
             ${pagingHTML}
         </div>
-    </form:form>
-</div>
-
-<div class="modal fade" id="reportDetailModal" tabindex="-1" aria-labelledby="reportDetailModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reportDetailModalLabel">신고 상세 내용</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p><strong>신고 ID:</strong> <span id="modalReportId"></span></p>
-                <p><strong>게시글 제목:</strong> <span id="modalBrdTitlNm"></span></p>
-                <p><strong>신고 내용:</strong></p>
-                <div id="modalBrdCont" class="alert alert-secondary"></div>
-
-                <p><strong id="modalTargetIdLabel">신고 대상 ID:</strong> <span id="modalRptTargetId"></span></p>
-
-                <div id="memberSpecificInfo">
-                    <p><strong id="modalMbrStatusLabel">신고 대상 회원 현재 상태:</strong> <span id="modalRptTargetMbrStatus"></span></p>
-                </div>
-                <div id="listingSpecificInfo" style="display: none;"> <p><strong>신고 대상 매물 현재 상태:</strong> <span id="modalLstgDel"></span></p>
-                </div>
-
-                <div id="attachFilesSection" style="display: none;">
-                    <h5>첨부 파일:</h5>
-                    <div id="modalAttachFiles" class="d-flex flex-wrap">
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="closeReportDetailModalBtn">닫기</button>
-            </div>
+        <div class="search-actions">
+            <button type="button" id="saveButton" class="save-button">저장하기</button>
         </div>
-    </div>
+    </form:form>
 </div>
 
 <div class="modal fade" id="statusChangeModal" tabindex="-1" aria-labelledby="statusChangeModalLabel" aria-hidden="true">
