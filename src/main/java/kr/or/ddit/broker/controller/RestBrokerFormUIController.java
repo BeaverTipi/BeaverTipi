@@ -48,8 +48,10 @@ public class RestBrokerFormUIController {
 	@GetMapping("/bankList")
 	public List<CommonCodeVO> bankList() {
 		log.debug("GET/rest/broker/myoffice/form/bankList 실행...");
-		return codeService.readBankList();
+		
+		return codeService.readBankList();   
 	}
+	//fsdaf
 	
 	/** /rest/broker/myoffice/form/lesserTypeList
 	 * @return List<'LSR'>
@@ -65,33 +67,18 @@ public class RestBrokerFormUIController {
 	 * @return
 	 */
 	@PostMapping
-	public Map<String, String> encryptedCommonCode(@RequestBody Map<String, String> payload) {
-	    String iv = payload.get("iv");
-		String encrypted = payload.get("encrypted");
-	    if (encrypted == null) throw new IllegalArgumentException("암호화된 요청 없음");
-
-	    String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
-
-	    ObjectMapper mapper = new ObjectMapper();
-	    Map<String, Map<String, String>> parsedRequest;
-	    try {
-	        parsedRequest = mapper.readValue(decryptedJson, new TypeReference<>() {});
-	    } catch (Exception e) {
-	        throw new RuntimeException("요청 JSON 파싱 실패", e);
-	    }
-
-	    Map<String, String> codeGroupParams = parsedRequest.get("codeGroup");
-	    if (codeGroupParams == null) throw new IllegalArgumentException("codeGroup 누락");
-	    log.debug("---------------> {}", codeGroupParams);
+	public Map<String, String> encryptedCommonCode(
+			@RequestBody Map<String, String> payload
+	) {
+		Map<String, Object> parsedRequest = aes256Util.decryptPayloadToMap(payload);
+		
+		Object obj = parsedRequest.get("codeGroup");
+		if( !(obj instanceof Map)) throw new IllegalArgumentException("codeGroup 누락 또는 형식 오류");
+		Map<String, String> codeGroupParams = (Map<String, String>) parsedRequest.get("codeGroup");
+		log.debug("---------------> {}", codeGroupParams);
 	    
 	    Map<String, List<CommonCodeVO>> resultMap = codeService.sortCommonCodes(codeGroupParams);
 
-	    try {
-	        String resultJson = mapper.writeValueAsString(resultMap);
-	        Map<String, String> encryptedResponse = aes256Util.encryptWithDynamicIV(resultJson);
-	        return encryptedResponse;
-	    } catch (Exception e) {
-	        throw new RuntimeException("응답 암호화 실패", e);
-	    }
+	    return aes256Util.encryptObjectToPayload(resultMap);
 	}
 }
