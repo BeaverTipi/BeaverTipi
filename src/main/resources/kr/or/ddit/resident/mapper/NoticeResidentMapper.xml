@@ -67,7 +67,7 @@
       <where>
         N.NOTICE_DEL_YN = 'N'
         AND (N.NOTICE_END_DTM IS NULL OR N.NOTICE_END_DTM >= SYSDATE)
-        AND B.BLDG_ID   = #{simpleSearch.bldgId}
+        AND (B.BLDG_ID = #{simpleSearch.bldgId} OR B.BLDG_ID IS NULL)
         AND B.BRD_CODE  = #{simpleSearch.brdCode}
         <if test="simpleSearch.noticeType != null and simpleSearch.noticeType != ''">
           AND N.NOTICE_TYPE = #{simpleSearch.noticeType}
@@ -112,7 +112,7 @@
     <where>
       N.NOTICE_DEL_YN = 'N'
       AND (N.NOTICE_END_DTM IS NULL OR N.NOTICE_END_DTM >= SYSDATE)
-      AND B.BLDG_ID = #{simpleSearch.bldgId}
+      AND (B.BLDG_ID = #{simpleSearch.bldgId} OR B.BLDG_ID IS NULL)
       AND B.BRD_CODE = #{simpleSearch.brdCode}
       <if test="simpleSearch.noticeType != null and simpleSearch.noticeType != ''">
         AND N.NOTICE_TYPE = #{simpleSearch.noticeType}

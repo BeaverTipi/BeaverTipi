@@ -7,5 +7,8 @@ import kr.or.ddit.vo.ChargeBillVO;
 public interface PaymentService {
 	
 	List<ChargeBillVO> retrieveChargeBillListForMonths(String unitId, String currentMonth, String previousMonth);
+
+	List<ChargeBillVO> selectChargeBillDetail(String unitId, String chargeMonth);
+
 }
 	

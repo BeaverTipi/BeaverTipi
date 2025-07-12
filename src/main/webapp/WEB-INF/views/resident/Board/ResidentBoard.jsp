@@ -105,7 +105,7 @@
           class="search-form">
 
       <!-- 1️⃣ name="bldgIdParam" -->
-      <select name="bldgIdParam">
+      <select name="bldgIdParam" onchange="this.form.submit()">
         <option value="">건물 선택</option>
         <c:forEach var="unit" items="${unitList}">
           <option value="${unit.bldgId}"

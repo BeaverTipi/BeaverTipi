@@ -22,6 +22,7 @@ public class ChargeBillVO implements Serializable {
     private String chgbillPaidDate;  // 날짜는 String으로 저장
     private String chgbillDesc;
     
+    private String chgbillStatusName;
     private String intgFeeId;
     private long intgFeeAmount;
     private String chargeMonth;
@@ -30,7 +31,9 @@ public class ChargeBillVO implements Serializable {
     private Double energyUsageQty;
     private Long energyChargeAmount;
     private String energyType;
-
+    private String energyTypeName;
+    private String rentalPartyName;
+    
     private String residentName;
     private String buildingName;
 

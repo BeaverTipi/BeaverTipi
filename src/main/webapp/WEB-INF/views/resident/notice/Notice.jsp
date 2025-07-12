@@ -20,6 +20,19 @@
     .notice-table th {
       background-color: #f5f5f5;
     }
+    .clickable-row {
+  cursor: pointer;
+}
+.clickable-row:hover {
+  background-color: #f1f1f1;
+}
+.pinned-row {
+  background-color: #e9f3ff;
+  border-left: 4px solid #007bff;
+}
+.entire-row{
+	background-color: #fff8e1;
+}
   </style>
 </head>
 <body>
@@ -29,7 +42,7 @@
 <form method="get" action="/resident/notice" id="noticeSearchForm">
 	<input type="hidden" name="page" value="${pagingInfo.currentPageNo}">
   <!-- 🔽 건물 선택 -->
-  <select name="bldgIdParam">
+  <select name="bldgIdParam" onchange="saveBuildingAndSubmit(this)">
     <c:forEach var="unit" items="${unitList}">
       <option value="${unit.bldgId}" <c:if test="${selectedBldgId eq unit.bldgId}">selected</c:if>>
         ${unit.building.bldgNm}
@@ -77,53 +90,49 @@
       <th>조회수</th>
     </tr>
   </thead>
- <tbody>
-  <c:forEach var="notice" items="${boardList}" varStatus="status">
-    <tr>
-      <td>
-        <c:choose>
-          <c:when test="${notice.noticeType=='002'
-                         or notice.noticeType=='003'
-                         or notice.noticeType=='004'}">
-            &#128204;
-          </c:when>
-          <c:otherwise>
-            ${pagingInfo.firstRecordIndex + status.index}
-          </c:otherwise>
-        </c:choose>
-      </td>
-      <td><c:out value="${notice.noticeTypeCode.codeName}"/></td>
-      <td>
+  <tbody>
+    <c:forEach var="notice" items="${boardList}" varStatus="status">
       <c:url var="detailUrl" value="/resident/notice/detail">
-        <c:param name="noticeNo"    value="${notice.noticeNo}" />
-        <c:param name="bldgIdParam"  value="${selectedBldgId}" />
-        <c:param name="noticeType"   value="${simpleSearch.noticeType}" />
-        <c:param name="page"         value="${pagingInfo.currentPageNo}" />
-        <c:param name="searchType"   value="${simpleSearch.searchType}" />
-        <c:param name="searchWord"   value="${simpleSearch.searchWord}" />
+        <c:param name="noticeNo"      value="${notice.noticeNo}" />
+        <c:param name="bldgIdParam"   value="${selectedBldgId}" />
+        <c:param name="noticeType"    value="${simpleSearch.noticeType}" />
+        <c:param name="page"          value="${pagingInfo.currentPageNo}" />
+        <c:param name="searchType"    value="${simpleSearch.searchType}" />
+        <c:param name="searchWord"    value="${simpleSearch.searchWord}" />
       </c:url>
-      <a href="${detailUrl}">
-        <c:choose>
-          <c:when test="${fn:length(notice.brdTitlNm) > 30}">
-            <c:out value="${fn:substring(notice.brdTitlNm, 0, 30)}"/>...
-          </c:when>
-          <c:otherwise>
-            <c:out value="${notice.brdTitlNm}"/>
-          </c:otherwise>
-        </c:choose>
-      </a>
-    </td>
 
-      <td><c:out value="${notice.member.mbrNnm}"/></td>
-      <td>${notice.formattedBrdPblsDtm}</td>
-      <td><c:out value="${notice.brdVwCnt}"/></td>
-    </tr>
-  </c:forEach>
+      <tr class="clickable-row <c:if test='${notice.noticeType=="002" || notice.noticeType=="003" || notice.noticeType=="004"}'>pinned-row</c:if>'" data-href="${detailUrl}">
+        <td>
+          <c:choose>
+            <c:when test="${notice.noticeType=='002' || notice.noticeType=='003' || notice.noticeType=='004'}">
+              &#128204;
+            </c:when>
+            <c:otherwise>
+              ${pagingInfo.firstRecordIndex + status.index}
+            </c:otherwise>
+          </c:choose>
+        </td>
+        <td><c:out value="${notice.noticeTypeCode.codeName}"/></td>
+        <td>
+          <c:choose>
+            <c:when test="${fn:length(notice.brdTitlNm) > 30}">
+              <c:out value="${fn:substring(notice.brdTitlNm, 0, 30)}"/>...
+            </c:when>
+            <c:otherwise>
+              <c:out value="${notice.brdTitlNm}"/>
+            </c:otherwise>
+          </c:choose>
+        </td>
+        <td><c:out value="${notice.member.mbrNnm}"/></td>
+        <td>${notice.formattedBrdPblsDtm}</td>
+        <td><c:out value="${notice.brdVwCnt}"/></td>
+      </tr>
+    </c:forEach>
 
-  <c:if test="${empty boardList}">
-    <tr><td colspan="6">등록된 공지사항이 없습니다.</td></tr>
-  </c:if>
-</tbody>
+    <c:if test="${empty boardList}">
+      <tr><td colspan="6">등록된 공지사항이 없습니다.</td></tr>
+    </c:if>
+  </tbody>
 </table>
 
 <!-- ➕ 등록 버튼 (권한 체크) -->
@@ -151,6 +160,25 @@
     form.submit();
   }
 </script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.clickable-row').forEach(row => {
+      row.addEventListener('click', () => {
+        const url = row.dataset.href;
+        if (url) window.location.href = url;
+      });
+    });
+  });
+</script>
+<script>
+	function saveBuildingAndSubmit(select) {
+	    localStorage.setItem("selectedBuildingId", select.value);
+	    document.getElementById("noticeSearchForm").submit();
+	  }
+</script>
+
+
 
 </body>
 </html>

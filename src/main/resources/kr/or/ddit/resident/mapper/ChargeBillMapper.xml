@@ -33,5 +33,63 @@
 	    WHERE UNIT_ID = #{unitId}
 	    AND CHGBILL_CHARGE_MONTH IN (#{previousMonth}, #{beforeLastMonth})
 	   </select>
+	   
+	<select id="selectChargeBillDetail" resultType="ChargeBillVO">
+		SELECT
+		    imf.INTG_FEE_ID               AS intgFeeId,
+		    imf.INTG_FEE_AMOUNT           AS intgFeeAmount,
+		    imf.INTG_FEE_MONTH            AS chargeMonth,
+		
+		    cb.CHGBILL_ID                 AS chgbillId,
+		    cb.CHGBILL_AMOUNT             AS chgbillAmount,
+		    cb.CHGBILL_STATUS             AS chgbillStatus,
+		    statusCode.CODE_NAME          AS chgbillStatusName,  -- ✅ 이건 SELECT의 마지막으로 위치 조정
+		
+		    cb.CHGBILL_DUE_DATE           AS chgbillDueDate,
+		
+		    hemu.TOTAL_ENERGY_USAGE_QTY   AS energyUsageQty,
+		    hemu.TOTAL_ENERGY_CHARGE_AMT  AS energyChargeAmount,
+		    ec.CODE_NAME                  AS energyTypeName,
+		
+		    residentMember.MBR_NM         AS residentName,
+		    rentalPartyMember.MBR_NM      AS rentalPartyName,
+		    b.BLDG_NM                     AS buildingName
+		
+		FROM INTEGRATED_MANAGEMENT_FEE imf
+		  INNER JOIN CHARGE_BILL cb
+		    ON cb.UNIT_ID = imf.UNIT_ID
+		   AND cb.CHGBILL_CHARGE_MONTH = imf.INTG_FEE_MONTH
+		
+		  LEFT JOIN COMMON_CODE statusCode  -- ✅ 이렇게 FROM 이후에 JOIN 추가
+		    ON statusCode.CODE_GROUP = 'IFSTA'
+		   AND statusCode.CODE_VALUE = cb.CHGBILL_STATUS
+		
+		  LEFT JOIN HOUSEHOLD_ENERGY_MONTHLY_USAGE hemu
+		    ON hemu.UNIT_ID = imf.UNIT_ID
+		   AND hemu.BLDG_ID = imf.BLDG_ID
+		   AND hemu.DUM_MONTH = imf.INTG_FEE_MONTH
+		
+		  LEFT JOIN COMMON_CODE ec
+		    ON ec.CODE_GROUP = 'ENEG'
+		   AND ec.CODE_VALUE = hemu.ENEG_TYPE
+		
+		  LEFT JOIN UNIT_RESIDENT ur
+		    ON ur.UNIT_ID = imf.UNIT_ID
+		
+		  LEFT JOIN MEMBER residentMember
+		    ON residentMember.MBR_CD = ur.MBR_CD
+		
+		  LEFT JOIN TENANCY t
+		    ON t.RENTAL_PTY_ID = imf.RENTAL_PTY_ID
+		
+		  LEFT JOIN MEMBER rentalPartyMember
+		    ON rentalPartyMember.MBR_CD = t.MBR_CD
+		
+		  LEFT JOIN BUILDING b
+		    ON b.BLDG_ID = imf.BLDG_ID
+		
+		WHERE imf.UNIT_ID = #{unitId}
+		  AND imf.INTG_FEE_MONTH = #{chargeMonth}
 
+	</select>
 </mapper>

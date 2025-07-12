@@ -130,7 +130,7 @@ public class PaymentPayController {
     		){
     	
     	
-    	return paymentService.retrieveChargeBillListForMonths(unitId, chargeMonth, chargeMonth);
+    	return paymentService.selectChargeBillDetail(unitId, chargeMonth);
     }
     
 

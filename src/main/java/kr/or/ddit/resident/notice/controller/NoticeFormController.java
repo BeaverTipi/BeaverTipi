@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kr.or.ddit.admin.code.service.CommonCodeService;
 import kr.or.ddit.resident.notice.service.NoticeService;
@@ -38,11 +39,13 @@ public class NoticeFormController {
     @GetMapping("/form")
     public String showForm(
             Model model,
-            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
+            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
+            @RequestParam(value = "bldgIdParam", required = false) String bldgIdParam
     ) {
         String mbrCd = principal.getRealUser().getMbrCd();
         List<UnitResidentVO> units = unitResidentService.getUnitsByMember(mbrCd);
-
+        
+        model.addAttribute("selectedBldgId", bldgIdParam);
         model.addAttribute("unitList", units);
         model.addAttribute("noticeTypeList", 
             commonCodeService.readCommonCodeList("NOTPE"));
@@ -55,10 +58,31 @@ public class NoticeFormController {
     @PostMapping("/form")
     public String create(
             @ModelAttribute NoticeVO notice,
-            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
+            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
+            @RequestParam("bldgIdHidden") String bldgIdParam,
+            RedirectAttributes redirectAttributes
     ) {
-        notice.setMbrCd(principal.getRealUser().getMbrCd());
+    	String mbrCd = principal.getRealUser().getMbrCd();
+        notice.setMbrCd(mbrCd);
+
+        boolean isAllNotice = "ALL".equalsIgnoreCase(bldgIdParam);
+
+        // 🔍 전체 공지 체크 여부에 따라 건물 ID 처리
+        if (isAllNotice) {
+            notice.setBldgId(null); // 전체 공지일 경우 건물 ID 제거
+        } else {
+            notice.setBldgId(bldgIdParam);
+        }
+        
+
         noticeService.registerNotice(notice);
-        return "redirect:/resident/notice";
+
+        // ✅ 등록 완료 메시지 전달
+        redirectAttributes.addFlashAttribute("success", "공지 등록이 완료되었습니다.");
+
+        // 🔁 등록 후 건물 기준 유지하여 리스트 복귀
+        return "redirect:/resident/notice" + (isAllNotice ? "" : "?bldgIdParam=" + bldgIdParam);
     }
+    
+
 }

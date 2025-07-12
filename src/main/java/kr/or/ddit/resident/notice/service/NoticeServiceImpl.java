@@ -41,13 +41,14 @@ public class NoticeServiceImpl implements NoticeService {
 
 	@Override
 	public int updateNotice(NoticeVO boardVO) {
-		// TODO Auto-generated method stub
+		
+		
 		return mapper.updateNotice(boardVO);
 	}
 
 	@Override
 	public List<NoticeVO> getNoticeList(PaginationInfo paging) {
-		// TODO Auto-generated method stub
+		
 		return mapper.selectNoticeList(paging);
 	}
 

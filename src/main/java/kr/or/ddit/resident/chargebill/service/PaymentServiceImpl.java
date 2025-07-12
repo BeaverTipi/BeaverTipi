@@ -20,5 +20,11 @@ public class PaymentServiceImpl implements PaymentService {
 	    List<ChargeBillVO> chargeBillListCurrentMonth = mapper.selectChargeBillForMonths(unitId, currentMonth, previousMonth);
 	    return chargeBillListCurrentMonth;
 	}
+
+	@Override
+	public List<ChargeBillVO> selectChargeBillDetail(String unitId, String chargeMonth) {
+		// TODO Auto-generated method stub
+		return mapper.selectChargeBillDetail(unitId, chargeMonth);
+	}
 	
 }
