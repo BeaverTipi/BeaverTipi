@@ -70,5 +70,6 @@ a<%@ page language="java" contentType="text/html; charset=UTF-8"
       calendarEl.appendChild(dayEl);
     }
   </script>
+  <script src="${pageContext.request.contextPath}/app/js/building/move-in/residentList.js"></script>
 </body>
 </html>

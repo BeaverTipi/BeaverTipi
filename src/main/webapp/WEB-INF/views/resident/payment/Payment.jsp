@@ -1,224 +1,260 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <title>관리비 납부 비교</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>납부 화면</title>
   <link rel="stylesheet" href="<c:url value='/css/style.css'/>" />
-  <link rel="stylesheet" href="<c:url value='/css/theme.css'/>" />
-  <link rel="stylesheet" href="<c:url value='/css/modal.css'/>" />
-  <script src="<c:url value='/app/js/building/move-in/residentList.js'/>?v=${now.time}"></script>
   <style>
-    /* 컨테이너 */
-    body { font-family: Arial, sans-serif; background: #f8f9fa; color: #212529; margin:0; }
-    .container { max-width:960px; margin:50px auto; background:#fff; padding:20px; border-radius:8px;
-                 box-shadow:0 4px 8px rgba(0,0,0,0.1); }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      color: #212529;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 10px;
+    }
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px dashed #bbb;
+      padding-bottom: 10px;
+    }
+    .page-title h1 {
+      font-size: 22px;
+      margin: 0;
+      color: #007bff;
+    }
+    .page-title p {
+      font-size: 13px;
+      color: #555;
+      margin: 5px 0 0 0;
+    }
+    .building-selector select {
+      padding: 5px 8px;
+      font-size: 14px;
+    }
+    .main-grid {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .notice-grid {
+      flex: 2;
+    }
+    .giro-notice-card {
+      background: #fff;
+      border: 2px dashed #999;
+      border-radius: 6px;
+      padding: 20px;
+    }
+    .giro-notice-card h4 {
+      color: #007bff;
+      margin-top: 0;
+    }
+    .energy-summary {
+      margin-top: 10px;
+      padding: 12px;
+      font-size: 13px;
+      background: #fdfdfd;
+      border: 1px dashed #ccc;
+      border-radius: 6px;
+    }
+    .diff.up { color: #e74c3c; font-weight: bold; }
+    .diff.down { color: #2ecc71; font-weight: bold; }
+    .diff.same { color: #999; }
 
-    /* 탭 / 빌딩 선택 */
-    .tabs { display:flex; margin-bottom:20px; border-bottom:2px solid #ddd; }
-    .tab-button { padding:15px 30px; cursor:pointer; border:1px solid transparent;
-                  background:#f0f0f0; font-size:18px; font-weight:bold; color:#555;
-                  transition: background-color .3s; }
-    .tab-button.active { background:#fff; border-color:#ddd; border-bottom:2px solid #007bff;
-                         color:#007bff; }
-	.tabs form {
-		  margin-left: 20px;
-		  align-self: center;
-		}
-    /* 결제 방식 */
-    .payment-method { margin-bottom:30px; padding:20px; border:1px solid #ddd;
-                      border-radius:8px; background:#f9f9f9; }
-    .payment-method h3 { margin:0 0 10px; color:#007bff; }
-    .payment-options label { margin-right:20px; cursor:pointer; font-size:18px; }
+    .ad-sidebar {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
 
-    /* 좌우 비교 레이아웃 */
-    .payment-comparison { display:flex; gap:20px; margin-bottom:30px; }
-    .payment-panel { flex:1; background:#fff; padding:15px; border:1px solid #ddd;
-                     border-radius:6px; box-shadow:0 2px 4px rgba(0,0,0,0.05); }
+    .ad-sidebar-row {
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+    }
 
-    /* 세로형 테이블 */
-    	.vertical-table {
-		  width: 100%;
-		  border-collapse: collapse;    /* 셀 경계선 합치기 */
-		}
-		
-		/* th, td 모두 테두리와 패딩 적용 */
-		.vertical-table th,
-		.vertical-table td {
-		  border: 1px solid #ddd;
-		  padding: 8px;
-		}
-		
-		/* 왼쪽 첫 번째 컬럼: 헤더(항목) */
-		.vertical-table th {
-		  width: 40%;
-		  text-align: left;   /* 헤더는 왼쪽 정렬 */
-		  background: #fafafa;
-		}
-		
-		/* 오른쪽 두 번째 컬럼: 데이터 */
-		.vertical-table td {
-		  width: 60%;
-		  text-align: right;  /* 데이터는 오른쪽 정렬 */
-		}
+    .ad-box, .total-charge-box, .combined-paybox {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 15px;
+      font-size: 14px;
+      line-height: 1.4;
+      flex: 1;
+    }
 
-    /* 하단 버튼 */
-    .footer-buttons { text-align:center; margin-top:20px; }
-    .footer-buttons button { padding:15px 30px; border:none; border-radius:8px;
-                             font-size:18px; font-weight:bold; cursor:pointer; margin:0 10px; }
-    .pay-button { background:#28a745; color:#fff; }
-    .pay-button:hover { background:#218838; }
-    .cancel-button { background:#6c757d; color:#fff; }
-    .cancel-button:hover { background:#5a6268; }
-    
-     /* 상세보기 모달 버튼 */
-    .modal {
-	  display: none;
-	  position: fixed;
-	  z-index: 999;
-	  padding-top: 80px;
-	  left: 0; top: 0;
-	  width: 100%; height: 100%;
-	  overflow: auto;
-	  background-color: rgba(0,0,0,0.4);
-	}
-	.modal-content {
-	  background-color: #fff;
-	  margin: auto;
-	  padding: 30px;
-	  border: 1px solid #888;
-	  width: 80%;
-	  max-width: 700px;
-	  border-radius: 8px;
-	}
-	.modal .close {
-	  float: right;
-	  font-size: 28px;
-	  font-weight: bold;
-	  cursor: pointer;
-	}
-	.modal .close:hover {
-	  color: red;
-	}
-    
+    .pay-button {
+      background: linear-gradient(to right, #007bff, #00c2ff);
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .double-info-box {
+      display: flex;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 15px;
+      gap: 20px;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 20px;
+    }
+    .info-column:first-child {
+      border-right: 1px dashed #bbb;
+      padding-right: 15px;
+    }
+    .total-charge-amount {
+      font-size: 24px;
+      font-weight: bold;
+      color: #007bff;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
+  <fmt:parseDate var="prevDate" value="${previousMonth}" pattern="yyyyMM" />
   <div class="container">
-    <!-- 상단 탭 & 빌딩 선택 -->
-    <div class="tabs">
-	  <button class="tab-button active">납부</button>
-	  <form id="noticeSearchForm" method="get" action="/resident/payment" style="margin-left: 20px;">
-	    <select name="bldgIdParam" onchange="noticeSearchForm.submit()">
-	      <c:forEach var="unit" items="${unitList}">
-	        <option value="${unit.bldgId}"
-	          <c:if test="${selectedBldgId eq unit.bldgId}">selected</c:if>>
-	          ${unit.building.bldgNm}
-	        </option>
-	      </c:forEach>
-	    </select>
-	  </form>
-	</div>
-
-    <!-- 결제 방식 선택 -->
-    <div class="payment-method">
-      <h3>결제 방식 선택</h3>
-      <div class="payment-options">
-        <input type="radio" id="card_pay" name="payment_method" value="card" checked/>
-        <label for="card_pay">카드 납부</label>
-        <input type="radio" id="virtual_account_pay" name="payment_method" value="virtual_account"/>
-        <label for="virtual_account_pay">가상계좌 입금</label>
+    <div class="header-bar">
+      <div class="page-title">
+        <h1>📄 관리비 납부 비교</h1>
+        <p>${previousMonth} 기준 항목을 전전월과 비교한 요약 카드입니다</p>
       </div>
+      <form id="noticeSearchForm" method="get" action="/resident/payment">
+        <select name="bldgIdParam">
+          <c:forEach var="unit" items="${unitList}">
+            <option value="${unit.bldgId}" <c:if test="${selectedBldgId eq unit.bldgId}">selected</c:if>>
+              ${unit.building.bldgNm}
+            </option>
+          </c:forEach>
+        </select>
+      </form>
     </div>
+    <div class="main-grid">
+     <div class="notice-grid">
+	  <c:set var="totalIntegratedAmount" value="0" />
+	  <c:set var="totalSavedAmount" value="0" />
+	  <c:forEach var="item" items="${chargeBillComparisonList}">
+	    <c:set var="totalIntegratedAmount" value="${totalIntegratedAmount + item.currentAmount}" />
+	    <c:if test="${item.diffAmount < 0}">
+	      <c:set var="totalSavedAmount" value="${totalSavedAmount + (-item.diffAmount)}" />
+	    </c:if>
+	  </c:forEach>
+        <div class="giro-notice-card">
+          <h4><fmt:formatDate value="${prevDate}" pattern="yyyy년 MM월" /> 관리비 요약</h4>
+          <table style="width:100%; border-collapse:collapse; margin-top:12px;">
+            <thead>
+              <tr><th>항목</th><th style="text-align:right">금액</th><th style="text-align:right">변동</th></tr>
+            </thead>
+            <tbody>
+              <c:forEach var="item" items="${chargeBillComparisonList}">
+                <tr>
+                  <td>${item.feeName}</td>
+                  <td style="text-align:right"><fmt:formatNumber value="${item.previousAmount}" type="number" groupingUsed="true" />원</td>
+                  <td style="text-align:right">
+                    <c:choose>
+                      <c:when test="${item.diffAmount > 0}">
+                        <span class="diff up">▲ <fmt:formatNumber value="${item.diffAmount}" />원</span>
+                      </c:when>
+                      <c:when test="${item.diffAmount < 0}">
+                        <span class="diff down">▼ <fmt:formatNumber value="${-item.diffAmount}" />원</span>
+                      </c:when>
+                      <c:otherwise><span class="diff same">변화 없음</span></c:otherwise>
+                    </c:choose>
+                  </td>
+                </tr>
+              </c:forEach>
+            </tbody>
+          </table>
 
-    <!-- 전전월·전월 좌우 비교 -->
-    <div class="payment-comparison">
-      <!-- 전전월 -->
-      <div class="payment-panel">
-		  <h3>전전월 (${beforeLastMonth})
-		  <button type="button" class="detail-btn" data-month="${lastMonth}">상세보기</button>
-		  </h3>
-		  <table class="vertical-table">
-		    <tbody>
-		      <c:forEach var="bill" items="${chargeBillListBeforeLastMonth}">
-		        <tr><th>지로번호</th><td>${bill.chgbillId}</td></tr>
-		        <tr><th>세대명</th><td>${bill.unitId}</td></tr>
-		        <tr><th>총 금액</th><td><fmt:formatNumber value="${bill.chgbillAmount}" type="number"/>원</td></tr>
-		        <tr><th>납부상태</th><td>${bill.chgbillStatus}</td></tr>
-		        <tr><th>납부마감일자</th><td>${bill.formattedDueDate}</td></tr>
-		      </c:forEach>
-		    </tbody>
-		  </table>
+          <div class="energy-summary">
+            <c:forEach var="type" items="${energySummary[currentMonth]}">
+              <c:set var="energyType" value="${type.key}" />
+              <c:if test="${energyType eq '전기' || energyType eq '가스' || energyType eq '수도'}">
+                <c:set var="currRow" value="${type.value}" />
+                <c:set var="prevRow" value="${energySummary[previousMonth][energyType]}" />
+                <c:set var="diffUsage" value="${currRow.usageQty - prevRow.usageQty}" />
+                <c:set var="diffCharge" value="${currRow.chargeAmt - prevRow.chargeAmt}" />
+                <p>
+                    🔹 ${energyType} 사용량:  
+                  						<fmt:formatNumber value="${prevRow.usageQty}" type="number" groupingUsed="true" /> ${prevRow.unitName} →
+        								<fmt:formatNumber value="${currRow.usageQty}" type="number" groupingUsed="true" /> ${currRow.unitName}
+                  <c:choose>
+                    <c:when test="${diffUsage > 0}"><span class="diff up">▲ <fmt:formatNumber value="${diffUsage}" type="number" groupingUsed="true" /></span></c:when>
+                    <c:when test="${diffUsage < 0}"><span class="diff down">▼ <fmt:formatNumber value="${-diffUsage}" type="number" groupingUsed="true" /></span></c:when>
+                    <c:otherwise><span class="diff same">변화 없음</span></c:otherwise>
+                  </c:choose>
+                  , 요금: <fmt:formatNumber value="${prevRow.chargeAmt}" type="currency" /> → <fmt:formatNumber value="${currRow.chargeAmt}" type="currency" />
+                  <c:choose>
+                    <c:when test="${diffCharge > 0}"><span class="diff up">▲ <fmt:formatNumber value="${diffCharge}" type="currency" /></span></c:when>
+                    <c:when test="${diffCharge < 0}"><span class="diff down">▼ <fmt:formatNumber value="${-diffCharge}" type="currency" /></span></c:when>
+                    <c:otherwise><span class="diff same">변화 없음</span></c:otherwise>
+                  </c:choose>
+                </p>
+              </c:if>
+            </c:forEach>
+          </div>
+        </div>
+      </div>
+      <div class="ad-sidebar">
+        <div class="ad-box">
+          <h3>📢 이벤트 안내</h3>
+          <p>관리비 자동이체 시 스타벅스 기프티콘 증정!</p>
+          <img src="/images/ad-banner.jpg" alt="광고 배너" style="width:100%; border-radius:6px; margin-top:10px;" />
+        </div>
+        <div class="total-charge-box">
+		  <h3>📦 총 관리비 내역</h3>
+		  <p class="total-charge-amount">
+		    <fmt:formatNumber value="${totalIntegratedAmount}" type="currency" />
+		  </p>
+		  <c:if test="${totalSavedAmount > 0}">
+		    <p style="font-size:13px; color:#2ecc71; margin-top:6px;">
+		      💚 전월 대비 <strong><fmt:formatNumber value="${totalSavedAmount}" type="currency" /></strong> 절감되었습니다
+		    </p>
+		  </c:if>
 		</div>
-      <!-- 전월 -->
-      <div class="payment-panel">
-        <h3>
-          전월 (${previousMonth})
-          <button type="button" class="detail-btn" data-month="${previousMonth}">상세보기</button>
-        </h3>
-        <table class="vertical-table">
-           <tbody>
-			  <c:if test="${not empty chargeBillListLastMonth}">
-				  <c:set var="bill" value="${chargeBillListLastMonth[0]}" />
-				  <tr><th>지로번호</th>   <td>${bill.chgbillId}</td></tr>
-				  <tr><th>세대명</th>     <td>${bill.unitId}</td></tr>
-				  <tr><th>총 금액</th>     <td><fmt:formatNumber value="${bill.chgbillAmount}" type="number"/>원</td></tr>
-				  <tr><th>납부상태</th>   <td>${bill.chgbillStatus}</td></tr>
-				  <tr><th>납부마감일자</th><td>${bill.formattedDueDate}</td></tr>
-				</c:if>
-			</tbody>
-        </table>
+        <div class="combined-paybox">
+          <h3>💳 결제 방식</h3>
+          <c:forEach items="${payment}" var="pay">
+          <label><input type="radio" name="payment_method" value="${pay.codeName}" checked>${pay.codeName}</label>
+          </c:forEach>
+          <button class="pay-button"  data-name="<fmt:formatDate value='${prevDate}' pattern='MM' />월 총 관리비 금액" data-pay="${totalIntegratedAmount}">💸 납부하기</button>
+        </div>
       </div>
     </div>
-
-    <!-- 결제/취소 버튼 -->
-    <div class="footer-buttons">
-      <button id="payBtn" class="pay-button">납부하기</button>
-      <button type="button" class="cancel-button" onclick="location.reload()">취소</button>
-    </div>
-  </div>
-
-  <!-- 상세보기 모달 (동일) -->
-  <div id="detailModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <div id="modalBody">
-      	<h3>202507 청구서 상세 내역</h3>
-			  <h4>📌 사용자 정보</h4>
-			  <ul>
-			    <li>지로번호: 2505000007</li>
-			    <li>건물명: 현대아파트</li>
-			    <li>임대인명: 홍길동</li>
-			    <li>입주민명: 김찬영</li>
-			  </ul>
-			
-			  <h4>💡 에너지 사용량</h4>
-			  <ul>
-			    <li>전기 사용량: 123 kWh</li>
-			    <li>전기요금: 25,000원</li>
-			    <li>가스 사용량: 30㎥</li>
-			    <li>가스요금: 15,000원</li>
-			    <li>수도 사용량: 20㎥</li>
-			    <li>수도요금: 10,000원</li>
-			  </ul>
-			
-			  <h4>🧾 공동 관리비 내역</h4>
-			  <ul>
-			    <li>총 관리비: 18,000원</li>
-			  </ul>
-			
-			  <h4>📍 청구내역</h4>
-			  <ul>
-			    <li>청구금액: 68,000원</li>
-			    <li>납부상태: 미납</li>
-			    <li>납부마감일자: 2025-07-25</li>
-			  </ul>
+    <div class="double-info-box">
+      <div class="info-column">
+        <h3>💡 입금 안내</h3>
+        <p>국민은행 123-456-7890<br/>예금주: 동산아파트 관리사무소</p>
+        <p>입금자명에 "세대ID(예: 101동201호)"를 꼭 기재해주세요.</p>
+      </div>
+      <div class="info-column">
+        <h3>⚠️ 유의 사항</h3>
+        <ul>
+          <li>납부기한 경과 시 연체료가 부과됩니다.</li>
+          <li>가상계좌 입금 시 반영까지 1~2일 소요됩니다.</li>
+          <li>분할 납부는 불가하며, 전액 입금만 인정됩니다.</li>
+        </ul>
       </div>
     </div>
   </div>
+<script src="https://js.tosspayments.com/v1"></script>
+<script src="${pageContext.request.contextPath}/app/js/building/move-in/residentList.js"></script>
 </body>
 </html>

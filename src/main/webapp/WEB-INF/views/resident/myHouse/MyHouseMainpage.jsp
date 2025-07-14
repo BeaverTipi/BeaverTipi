@@ -75,5 +75,6 @@
 </table>
     </div>
   </div>
+  <script src="${pageContext.request.contextPath}/app/js/building/move-in/residentList.js"></script>
 </body>
 </html>

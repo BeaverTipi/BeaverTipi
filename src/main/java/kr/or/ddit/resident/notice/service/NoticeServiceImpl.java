@@ -41,13 +41,14 @@ public class NoticeServiceImpl implements NoticeService {
 
 	@Override
 	public int updateNotice(NoticeVO boardVO) {
-		// TODO Auto-generated method stub
+		
+		
 		return mapper.updateNotice(boardVO);
 	}
 
 	@Override
 	public List<NoticeVO> getNoticeList(PaginationInfo paging) {
-		// TODO Auto-generated method stub
+		
 		return mapper.selectNoticeList(paging);
 	}
 
@@ -77,6 +78,11 @@ public class NoticeServiceImpl implements NoticeService {
         mapper.insertNotice(notice);
     }
 
+	public void updateBoardBuilding(String noticeNo, String bldgId) {
+	     mapper.updateBoardBuilding(noticeNo, bldgId);
+	}
+
+	
 //	
 //
 //	@Override
@@ -107,6 +113,12 @@ public class NoticeServiceImpl implements NoticeService {
 	public void insertBoard(NoticeVO boardVO) {
 
 		mapper.insertBoard(boardVO);
+	}
+
+	@Override
+	public void updateBoardContent(NoticeVO notice) {
+
+		mapper.updateBoardContent(notice);
 	}
 
 }

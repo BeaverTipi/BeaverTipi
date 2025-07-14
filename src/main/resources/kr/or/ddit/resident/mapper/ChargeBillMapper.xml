@@ -15,23 +15,198 @@
 	    <result property="chgbillDesc" column="chgbillDesc"/>
 	</resultMap>
 
+	<select id="selectChargeBillComparisonDetail" resultType="map">
+  SELECT
+    imf.INT_MAN_FEE_CD,
+    imf.INTG_FEE_ID             AS chargeMonth,
+    imf.INTG_FEE_AMOUNT         AS amount,
 
-	 <select id="selectChargeBillForMonths" resultType="ChargeBillVO">
-		   SELECT 
-	        CHGBILL_ID AS chgbillId,
-	        RENTAL_PTY_ID AS rentalPtyId,
-	        UNIT_ID AS unitId,
-	        BLDG_ID AS bldgId,
-	        CHGBILL_CHARGE_MONTH AS chgbillChargeMonth,
-	        CHGBILL_AMOUNT AS chgbillAmount,
-	        CHGBILL_STATUS AS chgbillStatus,
-	        CHGBILL_STATUS_GRP_CD AS chgbillStatusGrpCd,
-	        CHGBILL_DUE_DATE AS chgbillDueDate,
-	        CHGBILL_PAID_DATE AS chgbillPaidDate,
-	        CHGBILL_DESC AS chgbillDesc
-	    FROM CHARGE_BILL
-	    WHERE UNIT_ID = #{unitId}
-	    AND CHGBILL_CHARGE_MONTH IN (#{previousMonth}, #{beforeLastMonth})
-	   </select>
+    cb.CHGBILL_ID,
+    cb.CHGBILL_AMOUNT,
+    cb.CHGBILL_STATUS,
+    statusCode.CODE_NAME        AS chgbillStatusName,
+    cb.CHGBILL_DUE_DATE,
+
+    residentMember.MBR_NM       AS residentName,
+    rentalPartyMember.MBR_NM    AS rentalPartyName,
+    b.BLDG_NM                   AS buildingName,
+
+    cd.CODE_NAME                AS intManFeeName,
+    cd.DESCRIPTION              AS intManFeeDesc
+
+  FROM INTEGRATED_MANAGEMENT_FEE imf
+
+  INNER JOIN CHARGE_BILL cb
+    ON cb.UNIT_ID = imf.UNIT_ID
+   AND cb.BLDG_ID = imf.BLDG_ID
+   AND cb.RENTAL_PTY_ID = imf.RENTAL_PTY_ID
+   AND cb.CHGBILL_CHARGE_MONTH = imf.INTG_FEE_ID
+
+  LEFT JOIN COMMON_CODE statusCode
+    ON statusCode.CODE_GROUP = 'IFSTA'
+   AND statusCode.CODE_VALUE = cb.CHGBILL_STATUS
+
+  LEFT JOIN COMMON_CODE cd
+    ON cd.CODE_GROUP = 'INTMF'
+   AND cd.CODE_VALUE = imf.INT_MAN_FEE_CD
+
+  LEFT JOIN UNIT_RESIDENT ur
+    ON ur.UNIT_ID = imf.UNIT_ID
+
+  LEFT JOIN MEMBER residentMember
+    ON residentMember.MBR_CD = ur.MBR_CD
+
+  LEFT JOIN TENANCY t
+    ON t.RENTAL_PTY_ID = imf.RENTAL_PTY_ID
+
+  LEFT JOIN MEMBER rentalPartyMember
+    ON rentalPartyMember.MBR_CD = t.MBR_CD
+
+  LEFT JOIN BUILDING b
+    ON b.BLDG_ID = imf.BLDG_ID
+
+  WHERE imf.UNIT_ID = #{unitId}
+    AND imf.INTG_FEE_ID IN 
+    <foreach item="month" collection="months" open="(" separator="," close=")">
+      #{month}
+    </foreach>
+  ORDER BY imf.INT_MAN_FEE_CD, imf.INTG_FEE_ID
+</select>
+
+ <select id="selectEnergyUsageSummary" resultType="map">
+    SELECT
+	    hemu.DUM_MONTH AS chargeMonth,
+	    ec.CODE_NAME AS energyTypeName,
+	    SUM(hemu.TOTAL_ENERGY_USAGE_QTY) AS usageQty,
+	    SUM(hemu.TOTAL_ENERGY_CHARGE_AMT) AS chargeAmt
+	  FROM HOUSEHOLD_ENERGY_MONTHLY_USAGE hemu
+	  LEFT JOIN COMMON_CODE ec
+	    ON ec.CODE_GROUP = 'ENEG'
+	   AND ec.CODE_VALUE = hemu.ENEG_TYPE
+	  WHERE hemu.UNIT_ID = #{unitId}
+	    AND hemu.DUM_MONTH IN
+	    <foreach item="month" collection="months" open="(" separator="," close=")">
+	      #{month}
+	    </foreach>
+	  GROUP BY hemu.DUM_MONTH, ec.CODE_NAME
+	  ORDER BY hemu.DUM_MONTH, ec.CODE_NAME
+  </select>
+  
+  <select id="selectMonthlyCharges" resultType="map">
+	  SELECT
+	    imf.INT_MAN_FEE_CD         AS feeCode,
+	    cd.CODE_NAME               AS feeName,
+	    cd.DESCRIPTION             AS description,
+	    imf.INTG_FEE_AMOUNT        AS amount
+	  FROM INTEGRATED_MANAGEMENT_FEE imf
+	  LEFT JOIN COMMON_CODE cd
+	    ON cd.CODE_GROUP = 'INTMF'
+	   AND cd.CODE_VALUE = imf.INT_MAN_FEE_CD
+	  WHERE imf.UNIT_ID = #{unitId}
+	    AND imf.INTG_FEE_ID = #{month}
+	  ORDER BY imf.INT_MAN_FEE_CD
+	</select>
+	
+	<select id="selectEnergySummary" resultType="map">
+	 SELECT
+		  hemu.DUM_MONTH                     AS chargeMonth,
+		  ec.CODE_NAME                      AS energyTypeName,
+		  SUM(hemu.TOTAL_ENERGY_USAGE_QTY) AS usageQty,
+		  SUM(hemu.TOTAL_ENERGY_CHARGE_AMT)AS chargeAmt
+		FROM HOUSEHOLD_ENERGY_MONTHLY_USAGE hemu
+		LEFT JOIN COMMON_CODE ec
+		  ON ec.CODE_GROUP = 'ENEG'
+		 AND ec.CODE_VALUE = hemu.ENEG_TYPE
+		WHERE hemu.UNIT_ID = #{unitId}
+		  AND hemu.DUM_MONTH IN
+		  <foreach item="month" collection="months" open="(" separator="," close=")">
+		    #{month}
+		  </foreach>
+		GROUP BY hemu.DUM_MONTH, ec.CODE_NAME
+		ORDER BY hemu.DUM_MONTH, ec.CODE_NAME
+	</select>
+	
+  
+
+
+
+
+
+
+<!-- 	 <select id="selectChargeBillForMonths" resultType="ChargeBillVO"> -->
+<!-- 		   SELECT  -->
+<!-- 	        CHGBILL_ID AS chgbillId, -->
+<!-- 	        RENTAL_PTY_ID AS rentalPtyId, -->
+<!-- 	        UNIT_ID AS unitId, -->
+<!-- 	        BLDG_ID AS bldgId, -->
+<!-- 	        CHGBILL_CHARGE_MONTH AS chgbillChargeMonth, -->
+<!-- 	        CHGBILL_AMOUNT AS chgbillAmount, -->
+<!-- 	        CHGBILL_STATUS AS chgbillStatus, -->
+<!-- 	        CHGBILL_STATUS_GRP_CD AS chgbillStatusGrpCd, -->
+<!-- 	        CHGBILL_DUE_DATE AS chgbillDueDate, -->
+<!-- 	        CHGBILL_PAID_DATE AS chgbillPaidDate, -->
+<!-- 	        CHGBILL_DESC AS chgbillDesc -->
+<!-- 	    FROM CHARGE_BILL -->
+<!-- 	    WHERE UNIT_ID = #{unitId} -->
+<!-- 	    AND CHGBILL_CHARGE_MONTH IN (#{previousMonth}, #{beforeLastMonth}) -->
+<!-- 	   </select> -->
+	   
+<!-- 	<select id="selectChargeBillDetail" resultType="ChargeBillVO"> -->
+<!-- 	  SELECT -->
+<!-- 	    imf.INTG_FEE_ID               AS intgFeeId, -->
+<!-- 	    imf.INTG_FEE_AMOUNT           AS intgFeeAmount, -->
+<!-- 	    cb.CHGBILL_ID                 AS chgbillId, -->
+<!-- 	    cb.CHGBILL_AMOUNT             AS chgbillAmount, -->
+<!-- 	    cb.CHGBILL_STATUS             AS chgbillStatus, -->
+<!-- 	    statusCode.CODE_NAME          AS chgbillStatusName, -->
+<!-- 	    cb.CHGBILL_DUE_DATE           AS chgbillDueDate, -->
+	
+<!-- 	    hemu.TOTAL_ENERGY_USAGE_QTY   AS energyUsageQty, -->
+<!-- 	    hemu.TOTAL_ENERGY_CHARGE_AMT  AS energyChargeAmount, -->
+<!-- 	    ec.CODE_NAME                  AS energyTypeName, -->
+	
+<!-- 	    residentMember.MBR_NM         AS residentName, -->
+<!-- 	    rentalPartyMember.MBR_NM      AS rentalPartyName, -->
+<!-- 	    b.BLDG_NM                     AS buildingName -->
+	
+<!-- 	  FROM INTEGRATED_MANAGEMENT_FEE imf -->
+	
+<!-- 	  INNER JOIN CHARGE_BILL cb -->
+<!-- 	    ON cb.UNIT_ID         = imf.UNIT_ID -->
+<!-- 	   AND cb.BLDG_ID         = imf.BLDG_ID -->
+<!-- 	   AND cb.RENTAL_PTY_ID   = imf.RENTAL_PTY_ID -->
+<!-- 	   AND cb.CHGBILL_CHARGE_MONTH = imf.INTG_FEE_ID  ✨ INTG_FEE_ID가 yyyymm이라서 -->
+	
+<!-- 	  LEFT JOIN COMMON_CODE statusCode -->
+<!-- 	    ON statusCode.CODE_GROUP = 'IFSTA' -->
+<!-- 	   AND statusCode.CODE_VALUE = cb.CHGBILL_STATUS -->
+	
+<!-- 	  LEFT JOIN HOUSEHOLD_ENERGY_MONTHLY_USAGE hemu -->
+<!-- 	    ON hemu.UNIT_ID  = imf.UNIT_ID -->
+<!-- 	   AND hemu.BLDG_ID  = imf.BLDG_ID -->
+<!-- 	   AND hemu.DUM_MONTH = imf.INTG_FEE_ID -->
+	
+<!-- 	  LEFT JOIN COMMON_CODE ec -->
+<!-- 	    ON ec.CODE_GROUP = 'ENEG' -->
+<!-- 	   AND ec.CODE_VALUE = hemu.ENEG_TYPE -->
+	
+<!-- 	  LEFT JOIN UNIT_RESIDENT ur -->
+<!-- 	    ON ur.UNIT_ID = imf.UNIT_ID -->
+	
+<!-- 	  LEFT JOIN MEMBER residentMember -->
+<!-- 	    ON residentMember.MBR_CD = ur.MBR_CD -->
+	
+<!-- 	  LEFT JOIN TENANCY t -->
+<!-- 	    ON t.RENTAL_PTY_ID = imf.RENTAL_PTY_ID -->
+	
+<!-- 	  LEFT JOIN MEMBER rentalPartyMember -->
+<!-- 	    ON rentalPartyMember.MBR_CD = t.MBR_CD -->
+	
+<!-- 	  LEFT JOIN BUILDING b -->
+<!-- 	    ON b.BLDG_ID = imf.BLDG_ID -->
+	
+<!-- 	  WHERE imf.UNIT_ID      = #{unitId} -->
+<!-- 	    AND imf.INTG_FEE_ID  = #{chargeMonth}   🧠 chargeMonth가 yyyymm -->
+<!-- 	</select> -->
 
 </mapper>

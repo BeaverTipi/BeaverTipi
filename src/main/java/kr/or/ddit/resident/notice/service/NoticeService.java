@@ -29,7 +29,10 @@ public interface NoticeService {
 	
 	public void registerNotice(NoticeVO notice);
 
+	public void  updateBoardBuilding(String noticeNo,String bldgId);
 	
+	public void updateBoardContent(NoticeVO notice);
+
 //	
 //	public List<ResidentBoardVO> getDeletedBoardList(PaginationInfo paging);
 //	

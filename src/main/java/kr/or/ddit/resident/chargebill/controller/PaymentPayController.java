@@ -12,15 +12,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.or.ddit.admin.code.service.CommonCodeService;
 import kr.or.ddit.resident.chargebill.dto.ChargeComparisonDto;
 import kr.or.ddit.resident.chargebill.service.PaymentService;
 import kr.or.ddit.resident.unitResident.service.UnitResidentService;
 import kr.or.ddit.util.page.SimpleSearch;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.PaymentTosspamentsRawVO;
+import kr.or.ddit.vo.SolutionVO;
 import kr.or.ddit.vo.UnitResidentVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +44,9 @@ public class PaymentPayController {
     @Autowired
     private UnitResidentService unitResidentService;
 
+    @Autowired
+    private CommonCodeService service;
+    
     @GetMapping
     public String paymentList(
             Model model,
@@ -80,7 +90,9 @@ public class PaymentPayController {
         Map<String, Map<String, Object>> energySummary =
                 paymentService.getEnergyUsageSummary(unitId, currentMonth, previousMonth);
 
-
+        List<CommonCodeVO> payment = service.readCommonCodeList("PAY");
+        
+        model.addAttribute("payment", payment);
         model.addAttribute("unitList", units);
         model.addAttribute("selectedBldgId", selectedBldgId);
         model.addAttribute("bldgIdParam", bldgIdParam);
@@ -101,4 +113,5 @@ public class PaymentPayController {
     private String getPreviousMonth() {
         return LocalDate.now().minusMonths(1).format(DateTimeFormatter.ofPattern("yyyyMM"));
     }
+
 }

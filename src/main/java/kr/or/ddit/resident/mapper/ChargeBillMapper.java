@@ -7,13 +7,13 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface ChargeBillMapper {
-   
-   public List<Map<String, Object>> selectChargeBillComparisonDetail(
-           @Param("unitId") String unitId,
-           @Param("months") List<String> months
+	
+	public List<Map<String, Object>> selectChargeBillComparisonDetail(
+	        @Param("unitId") String unitId,
+	        @Param("months") List<String> months
 
-       );
-    // 에너지 사용량 요약 (월별 총량)
+	    );
+	 // 에너지 사용량 요약 (월별 총량)
     public List<Map<String, Object>> selectEnergyUsageSummary(
         @Param("unitId") String unitId,
         @Param("months") List<String> months
@@ -29,5 +29,5 @@ public interface ChargeBillMapper {
             @Param("month") String month
         );
 
-   
+	
 }

@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import kr.or.ddit.resident.chargebill.dto.ChargeComparisonDto;
 import kr.or.ddit.resident.checkPage.dto.CheckComparisonDto;
 import kr.or.ddit.resident.mapper.ChargeBillMapper;
 import lombok.extern.slf4j.Slf4j;

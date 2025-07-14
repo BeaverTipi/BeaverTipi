@@ -55,11 +55,11 @@
 
 <!-- tosspayments -->
 <script src="https://js.tosspayments.com/v1/payment"></script>
-<script src="${pageContext.request.contextPath}/app/js/main/payments.js"></script>
+
 
 <!-- pdf -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="${pageContext.request.contextPath}/app/js/main/payments.js"></script>
+<%-- <script src="${pageContext.request.contextPath}/app/js/main/payments.js"></script> --%>
 
 
   

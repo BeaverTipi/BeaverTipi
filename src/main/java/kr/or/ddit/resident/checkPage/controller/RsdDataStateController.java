@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import kr.or.ddit.resident.chargebill.dto.ChargeComparisonDto;
-import kr.or.ddit.resident.chargebill.service.PaymentService;
 import kr.or.ddit.resident.checkPage.dto.CheckComparisonDto;
 import kr.or.ddit.resident.checkPage.service.PaymentCheckService;
 import kr.or.ddit.resident.unitResident.service.UnitResidentService;

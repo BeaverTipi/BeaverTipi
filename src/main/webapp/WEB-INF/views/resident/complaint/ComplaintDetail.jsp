@@ -44,5 +44,7 @@
   </form>
 
   <a class="btn btn-primary" href="${pageContext.request.contextPath}/resident/complaint?bldgIdParam=${complaint.bldgId}">목록</a>
+
+<script src="${pageContext.request.contextPath}/app/js/building/move-in/residentList.js"></script>
 </body>
 </html>
