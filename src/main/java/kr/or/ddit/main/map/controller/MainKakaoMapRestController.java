@@ -35,13 +35,20 @@ public class MainKakaoMapRestController {
 			@RequestParam(required = false) List<Integer> typeCode2List,
 			@RequestParam(required = false) List<Integer> saleTypeList,
 			@RequestParam(required = false) List<String> facilityOptionList,
-			@RequestParam(required = false) String mbrCd
+			@RequestParam(required = false) String mbrCd,
+			@RequestParam(required = false) String parkingYn,
+			@RequestParam(required = false) Integer minFloor,
+			@RequestParam(required = false) Integer maxFloor,
+			@RequestParam(required = false) Integer minArea,
+			@RequestParam(required = false) Integer maxArea
 	) {
 		List<ListingVO> result = service.selectLatLngMarkList(
-				swLat, swLng, neLat, neLng,
-				category, keyword,
-				typeCode1List, typeCode2List, saleTypeList,
-				facilityOptionList, mbrCd);
+			swLat, swLng, neLat, neLng,
+			category, keyword,
+			typeCode1List, typeCode2List, saleTypeList,
+			facilityOptionList, mbrCd,
+			parkingYn, minFloor, maxFloor, minArea, maxArea
+		);
 		
 		return ResponseEntity.ok(result == null ? Collections.emptyList() : result);
 	}
@@ -60,7 +67,7 @@ public class MainKakaoMapRestController {
 		List<ListingVO> detailList = service.selectListingDetailList(lstgId);
 
 		if (detailList == null || detailList.isEmpty()) {
-			return ResponseEntity.noContent().build(); // 204 → JS에서 catch 블럭으로 감
+			return ResponseEntity.noContent().build();
 		}
 
 		return ResponseEntity.ok(detailList.get(0));

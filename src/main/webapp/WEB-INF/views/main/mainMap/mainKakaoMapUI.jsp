@@ -24,105 +24,102 @@
 		<div class="map-container">
 			<div class="filter-bar">
 				<div class="filter-group">
-					<div class="modal-filter" id="modal-saleType">
-					  <div class="modal-content">
-					    <div class="modal-header">
-					      <span>거래유형</span>
-					      <button class="close-btn" onclick="closeFilterModal('saleType')">×</button>
-					    </div>
-					    <div class="modal-body">
-					      <button class="modal-option" data-type="saleType" data-value="">전체</button>
-					      <button class="modal-option" data-type="saleType" data-value="1">월세</button>
-					      <button class="modal-option" data-type="saleType" data-value="2">전세</button>
-					      <button class="modal-option" data-type="saleType" data-value="3">매매</button>
-					    </div>
-					  </div>
-					</div>
-					<div class="modal-filter" id="modal-listingType">
-					  <div class="modal-content">
-					    <div class="modal-header">
-					      <span>매물유형</span>
-					      <button class="close-btn" onclick="closeFilterModal('listingType')">×</button>
-					    </div>
-					    <div class="modal-body">
-					      <button class="modal-option" data-type="listingType" data-value="">전체</button>
-					      <button class="modal-option" data-type="listingType" data-value="1">아파트</button>
-					      <button class="modal-option" data-type="listingType" data-value="2">빌라</button>
-					      <button class="modal-option" data-type="listingType" data-value="3">오피스텔</button>
-					      <button class="modal-option" data-type="listingType" data-value="4">단독주택</button>
-					      <button class="modal-option" data-type="listingType" data-value="5">상가주택</button>
-					      <button class="modal-option" data-type="listingType" data-value="6">상가</button>
-					      <button class="modal-option" data-type="listingType" data-value="7">오피스빌딩/사무실</button>
-					      <button class="modal-option" data-type="listingType" data-value="8">기타</button>
-					    </div>
-					  </div>
-					</div>
-					<div class="modal-filter" id="modal-saleDetailType">
-					  <div class="modal-content">
-					    <div class="modal-header">
-					      <span>매물상세유형</span>
-					      <button class="close-btn" onclick="closeFilterModal('saleDetailType')">×</button>
-					    </div>
-					    <div class="modal-body">
-					      <button class="modal-option" data-type="saleDetailType" data-value="">전체</button>
-					      <button class="modal-option" data-type="saleDetailType" data-value="1">원룸/투룸/다세대</button>
-					      <button class="modal-option" data-type="saleDetailType" data-value="2">단독주택</button>
-					      <button class="modal-option" data-type="saleDetailType" data-value="3">다가구주택</button>
-					      <button class="modal-option" data-type="saleDetailType" data-value="4">상가주택</button>
-					    </div>
-					  </div>
-					</div>
-					<div class="modal-filter" id="modal-area">
-					  <div class="modal-content">
-					    <div class="modal-header">
-					      <span>방크기</span>
-					      <button class="close-btn" onclick="closeFilterModal('area')">×</button>
-					    </div>
-					    <div class="modal-body">
-					      <button class="modal-option" data-type="area" data-value="">전체</button>
-					      <button class="modal-option" data-type="area" data-value="1">10평 이하</button>
-					      <button class="modal-option" data-type="area" data-value="2">10~20평</button>
-					      <button class="modal-option" data-type="area" data-value="3">20~30평</button>
-					      <button class="modal-option" data-type="area" data-value="4">30평 이상</button>
-					    </div>
-					  </div>
-					</div>
-					<input type="text" id="keywordFilter" placeholder="키워드 검색" /> 
-					<button type="submit" onclick="applyFilters()">검색하기</button>
-					
-					<button id="openAdvancedFilter" class="filter-toggle">추가필터</button>
-				</div>
-			</div>
-			
-				<div id="filterModal" class="filter-modal">
-					<div class="filter-modal-content">
-						<div class="modal-header">
-							<h5>추가 필터</h5>
-							<button id="closeFilterModal" class="close-btn">×</button>
+				<button class="filter-toggle-btn" onclick="toggleFilterPopup('saleType', this)">거래유형</button>
+					<div class="filter-popup" id="popup-saleType">
+						  <div class="popup-header">
+						    거래유형
+						    <button class="close-btn" onclick="closeFilterPopup('saleType')">×</button>
+						  </div>
+						  <div class="popup-body">
+						    <button class="popup-option" data-type="saleType" data-value="">전체</button>
+						    <button class="popup-option" data-type="saleType" data-value="1">월세</button>
+						    <button class="popup-option" data-type="saleType" data-value="2">전세</button>
+						    <button class="popup-option" data-type="saleType" data-value="3">매매</button>
+						  </div>
 						</div>
-		
-						<div class="modal-body">
-							<label><input type="checkbox" id="parkingYn"> 주차 가능</label>
-							<div class="floor-range">
-								<label>층수</label>
-								<input type="number" id="minFloor" placeholder="최소 층수" min="1">
-								~
-								<input type="number" id="maxFloor" placeholder="최대 층수" min="1">
+					<input type="hidden" id="saleTypeFilter" />
+				<button class="filter-toggle-btn" onclick="toggleFilterPopup('listingType', this)">매물유형</button>
+					<div class="filter-popup" id="popup-listingType">
+						  <div class="popup-header">
+						    매물유형
+						    <button class="close-btn" onclick="closeFilterPopup('listingType')">×</button>
+						  </div>
+						  <div class="popup-body">
+						    <button class="popup-option" data-type="listingType" data-value="">전체</button>
+						    <button class="popup-option" data-type="listingType" data-value="1">아파트</button>
+						    <button class="popup-option" data-type="listingType" data-value="2">빌라</button>
+						    <button class="popup-option" data-type="listingType" data-value="3">오피스텔</button>
+						    <button class="popup-option" data-type="listingType" data-value="4">단독주택</button>
+						    <button class="popup-option" data-type="listingType" data-value="5">상가주택</button>
+						    <button class="popup-option" data-type="listingType" data-value="6">상가</button>
+						    <button class="popup-option" data-type="listingType" data-value="7">오피스빌딩/사무실</button>
+						    <button class="popup-option" data-type="listingType" data-value="8">기타</button>
+						  </div>
+						</div>
+					<input type="hidden" id="listingTypeFilter" />
+				<button class="filter-toggle-btn" onclick="toggleFilterPopup('saleDetailType', this)">매물상세유형</button>
+					<div class="filter-popup" id="popup-saleDetailType">
+						  <div class="popup-header">
+						    매물상세유형
+						    <button class="close-btn" onclick="closeFilterPopup('saleDetailType')">×</button>
+						  </div>
+						  <div class="popup-body">
+						    <button class="popup-option" data-type="saleDetailType" data-value="">전체</button>
+						    <button class="popup-option" data-type="saleDetailType" data-value="1">원룸/투룸/다세대</button>
+						    <button class="popup-option" data-type="saleDetailType" data-value="2">단독주택</button>
+						    <button class="popup-option" data-type="saleDetailType" data-value="3">다가구주택</button>
+						    <button class="popup-option" data-type="saleDetailType" data-value="4">상가주택</button>
+						  </div>
+						</div>
+					<input type="hidden" id="saleDetailTypeFilter" />
+				<button class="filter-toggle-btn" onclick="toggleFilterPopup('area', this)">방크기</button>
+					<div class="filter-popup" id="popup-area">
+						  <div class="popup-header">
+						    방크기
+						    <button class="close-btn" onclick="closeFilterPopup('area')">×</button>
+						  </div>
+						  <div class="popup-body">
+						    <button class="popup-option" data-type="area" data-value="">전체</button>
+						    <button class="popup-option" data-type="area" data-value="1">10평 이하</button>
+						    <button class="popup-option" data-type="area" data-value="2">10~20평</button>
+						    <button class="popup-option" data-type="area" data-value="3">20~30평</button>
+						    <button class="popup-option" data-type="area" data-value="4">30평 이상</button>
+						  </div>
+						</div>
+					<input type="hidden" id="areaFilter" />
+				<button class="filter-toggle-btn" onclick="toggleFilterPopup('addfilter', this)">추가옵션</button>
+					<div class="filter-popup" id="popup-addfilter">
+						  <div class="popup-header">
+						    추가옵션
+						    <button class="close-btn" onclick="closeFilterPopup('addfilter')">×</button>
+						  </div>
+						  <div class="popup-body">
+						  	<div class="popup-section">
+								<span class="popup-label">주차 가능</span>
+								<label><input type="checkbox" id="parkingYn"> 가능</label>
 							</div>
-							<div class="facility-options">
-								<label>시설 옵션</label><br/>
+							<div class="popup-section">
+								<span class="popup-label">층수</span>
+								<input type="number" id="minFloor" placeholder="최소" min="1" style="width: 70px;">
+								~
+								<input type="number" id="maxFloor" placeholder="최대" min="1" style="width: 70px;">
+							</div>
+						    <div class="popup-section">
+								<span class="popup-label">시설 옵션</span><br>
 								<label><input type="checkbox" class="facilityOpt" value="1"> 엘리베이터</label>
 								<label><input type="checkbox" class="facilityOpt" value="2"> CCTV</label>
 								<label><input type="checkbox" class="facilityOpt" value="3"> 가스레인지</label>
 							</div>
-						</div>
-		
-						<div class="modal-footer">
-							<button id="resetFilters" class="btn btn-secondary">초기화</button>
+						    <div style="margin-top: 10px; text-align: right;">
+								<button id="resetFilters" class="btn btn-sm btn-secondary">초기화</button>
+							</div>
 						</div>
 					</div>
+					<input type="text" id="keywordFilter" placeholder="키워드 검색" /> 
+					<button id="keywordSearchBtn">검색하기</button>
 				</div>
-		
+			</div>
+			
 			<!-- 2. 리스트 -->
 			<div class="main-section">
 				<div class="list-panel">

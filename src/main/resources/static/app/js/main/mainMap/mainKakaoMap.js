@@ -13,11 +13,15 @@ document.addEventListener("DOMContentLoaded", () => {
 		setupMapControls(map);
 
 		setupModalCloseBtn();
-		setupAutoFilterTrigger(map, clusterer);
+		setupManualFilterTrigger(map, clusterer);
 		setupCategoryButtonHandler(map, clusterer);
+		setupKeywordSearch(map, clusterer);
 		setupIdleEvent(map, clusterer);
-		setupFilterOptionClick(map, clusterer);
+		setupPopupOptionClick(map, clusterer); 
 		initCategoryFromParam(map, clusterer);
+		
+		setupClusterClick(map, clusterer);
+		setDefaultFilterValues();
 	});
 });
 
