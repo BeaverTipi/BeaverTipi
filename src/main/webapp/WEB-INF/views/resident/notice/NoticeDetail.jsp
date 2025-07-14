@@ -25,6 +25,30 @@
       <pre><c:out value="${notice.brdCont}"/></pre>
     </div>
 
+    <!-- 권한 기반 수정/삭제 버튼 -->
+  <!-- 권한 체크 -->
+		<c:set var="isAdmin" value="false"/>
+		<c:set var="isAuthor" value="${notice.mbrCd == mbrCd}" />
+		
+		<c:forEach var="role" items="${memRoleList}">
+		  <c:if test="${role.userRoleId == 'ADMIN'}">
+		    <c:set var="isAdmin" value="true"/>
+		  </c:if>
+		</c:forEach>
+		
+    <c:if test="${isAdmin or isAuthor}">
+      <div class="action-buttons">
+        <!-- 수정 버튼 -->
+        <c:url var="formUrl" value="/resident/notice/form">
+		  <c:param name="noticeNo"     value="${notice.noticeNo}" />
+		  <c:param name="bldgIdParam"  value="${bldgIdParam}"  />
+		  <c:param name="page"         value="${page}"         />
+		  <c:param name="noticeType"   value="${noticeType}"   />
+		  <c:param name="searchType"   value="${searchType}"   />
+		  <c:param name="searchWord"   value="${searchWord}"   />
+		</c:url>
+		<a href="${formUrl}" class="btn btn-primary">수정</a>
+
     <!-- 목록으로 -->
     <c:url var="listUrl" value="/resident/notice">
 	  <c:param name="bldgIdParam" value="${bldgIdParam}"/>
