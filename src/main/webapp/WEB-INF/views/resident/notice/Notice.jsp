@@ -42,7 +42,7 @@
 <form method="get" action="/resident/notice" id="noticeSearchForm">
 	<input type="hidden" name="page" value="${pagingInfo.currentPageNo}">
   <!-- 🔽 건물 선택 -->
-  <select name="bldgIdParam" onchange="saveBuildingAndSubmit(this)">
+  <select name="bldgIdParam" onchange="this.form.submit()">
     <c:forEach var="unit" items="${unitList}">
       <option value="${unit.bldgId}" <c:if test="${selectedBldgId eq unit.bldgId}">selected</c:if>>
         ${unit.building.bldgNm}
@@ -101,7 +101,8 @@
         <c:param name="searchWord"    value="${simpleSearch.searchWord}" />
       </c:url>
 
-      <tr class="clickable-row <c:if test='${notice.noticeType=="002" || notice.noticeType=="003" || notice.noticeType=="004"}'>pinned-row</c:if>'" data-href="${detailUrl}">
+		<tr class="clickable-row ${notice.noticeType == '002' || notice.noticeType == '003' || notice.noticeType == '004' ? 'pinned-row' : ''}" 
+    		data-href="${detailUrl}">
         <td>
           <c:choose>
             <c:when test="${notice.noticeType=='002' || notice.noticeType=='003' || notice.noticeType=='004'}">
@@ -154,30 +155,26 @@
 </div>
 
 <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.clickable-row').forEach(row => {
+      row.addEventListener('click', function () {
+        const targetUrl = row.dataset.href;
+        if (targetUrl) {
+          window.location.href = targetUrl;
+        }
+      });
+    });
+  });
+</script>
+
+<script>
   function fnPaging(pageNo) {
     const form = document.getElementById('noticeSearchForm');
     form.page.value = pageNo;
     form.submit();
   }
 </script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.clickable-row').forEach(row => {
-      row.addEventListener('click', () => {
-        const url = row.dataset.href;
-        if (url) window.location.href = url;
-      });
-    });
-  });
-</script>
-<script>
-	function saveBuildingAndSubmit(select) {
-	    localStorage.setItem("selectedBuildingId", select.value);
-	    document.getElementById("noticeSearchForm").submit();
-	  }
-</script>
-
+<script src="${pageContext.request.contextPath}/app/js/building/move-in/residentList.js"></script>
 
 
 </body>

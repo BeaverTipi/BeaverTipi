@@ -20,6 +20,7 @@
     <result property="brdVwCnt" column="BRD_VW_CNT"/>
     <result property="brdModDtm" column="BRD_MOD_DTM"/>
     <result property="brdDelYn" column="BRD_DEL_YN"/>
+    <result property="bldgId"    column="BLDG_ID"/>
     <association property="member" javaType="MemberVO">
       <result property="mbrCd" column="MBR_CD"/>
       <result property="mbrNnm" column="MBR_NNM"/>
@@ -67,10 +68,9 @@
       <where>
         N.NOTICE_DEL_YN = 'N'
         AND (N.NOTICE_END_DTM IS NULL OR N.NOTICE_END_DTM >= SYSDATE)
-        AND (B.BLDG_ID = #{simpleSearch.bldgId} OR B.BLDG_ID IS NULL)
         AND B.BRD_CODE  = #{simpleSearch.brdCode}
-        <if test="simpleSearch.noticeType != null and simpleSearch.noticeType != ''">
-          AND N.NOTICE_TYPE = #{simpleSearch.noticeType}
+        <if test="simpleSearch.bldgId != null and simpleSearch.bldgId != 'ALL'">
+          AND (B.BLDG_ID = #{simpleSearch.bldgId} OR B.BLDG_ID IS NULL)
         </if>
         <if test="simpleSearch.searchWord != null and simpleSearch.searchWord.trim() != ''">
           <choose>
@@ -112,10 +112,9 @@
     <where>
       N.NOTICE_DEL_YN = 'N'
       AND (N.NOTICE_END_DTM IS NULL OR N.NOTICE_END_DTM >= SYSDATE)
-      AND (B.BLDG_ID = #{simpleSearch.bldgId} OR B.BLDG_ID IS NULL)
       AND B.BRD_CODE = #{simpleSearch.brdCode}
-      <if test="simpleSearch.noticeType != null and simpleSearch.noticeType != ''">
-        AND N.NOTICE_TYPE = #{simpleSearch.noticeType}
+      <if test="simpleSearch.bldgId != null and simpleSearch.bldgId != 'ALL'">
+        AND (B.BLDG_ID = #{simpleSearch.bldgId} OR B.BLDG_ID IS NULL)
       </if>
       <if test="simpleSearch.searchWord != null and simpleSearch.searchWord != ''">
         <choose>
@@ -141,6 +140,8 @@
       SELECT
       N.NOTICE_NO,
       B.BRD_NO,
+      B.BLDG_ID,
+      B.MBR_CD,
       B.BRD_TITL_NM,
       B.BRD_CONT,
       B.BRD_PBLS_DTM,
@@ -197,5 +198,19 @@
        SET brd_vw_cnt = brd_vw_cnt + 1
      WHERE brd_no = #{noticeNo}
   </update>
+  
+  <update id="updateBoardBuilding" parameterType="map">
+	  UPDATE BOARD
+	     SET BLDG_ID = #{bldgId}
+	   WHERE BRD_NO = #{noticeNo}
+	</update>
+  <update id="updateBoardContent" parameterType="NoticeVO">
+	  UPDATE BOARD
+	     SET BRD_TITL_NM = #{brdTitlNm},
+	         BRD_CONT    = #{brdCont},
+	         BRD_MOD_DTM = SYSDATE
+	   WHERE BRD_NO = #{noticeNo}
+	</update>
+  
 
 </mapper>

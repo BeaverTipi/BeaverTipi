@@ -37,6 +37,9 @@ public interface NoticeResidentMapper {
     
     public String getNextNoticeNo();
     
+    public int updateBoardBuilding(String noticeNo, String bldgId);
+    
+    public int updateBoardContent(NoticeVO notice);
 //	public List<ResidentBoardVO> selectDeletedNoticeList(PaginationInfo paging);
 
 //	public int selectDeletedTotalCount(PaginationInfo paging);

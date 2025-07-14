@@ -78,6 +78,11 @@ public class NoticeServiceImpl implements NoticeService {
         mapper.insertNotice(notice);
     }
 
+	public void updateBoardBuilding(String noticeNo, String bldgId) {
+	     mapper.updateBoardBuilding(noticeNo, bldgId);
+	}
+
+	
 //	
 //
 //	@Override
@@ -108,6 +113,12 @@ public class NoticeServiceImpl implements NoticeService {
 	public void insertBoard(NoticeVO boardVO) {
 
 		mapper.insertBoard(boardVO);
+	}
+
+	@Override
+	public void updateBoardContent(NoticeVO notice) {
+
+		mapper.updateBoardContent(notice);
 	}
 
 }
