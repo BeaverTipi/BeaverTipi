@@ -3,16 +3,38 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>입주 상세정보</title>
+  <title>입주 관리 대시보드</title>
   <link rel="stylesheet" href="/app/css/building/main.css">
-  
   <style>
     body {
       font-family: 'Noto Sans KR', sans-serif;
-      font-size: 14px;
       background: #f4f6f9;
       padding: 2rem;
     }
+    .tab-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1rem;
+    }
+    .tab-buttons button {
+      padding: 8px 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #fff;
+      cursor: pointer;
+    }
+    .tab-buttons button.active {
+      background: #3a5dfb;
+      color: #fff;
+      border-color: #3a5dfb;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -47,11 +69,7 @@
     button:hover {
       background: #f0f0f0;
     }
-    .icon {
-      font-size: 16px;
-    }
 
-    /* 모달 */
     #idSearchModal {
       display: none;
       position: fixed; top: 0; left: 0;
@@ -82,7 +100,8 @@
 </head>
 <body>
 
-<h3>입주 상세정보</h3>
+<h2>입주 관리 대시보드</h2>
+
 <div class="filter-bar" style="margin-bottom: 1rem;">
   <label for="buildingFilter">건물 선택:</label>
   <select id="buildingFilter">
@@ -91,58 +110,77 @@
     <option value="B">B 건물</option>
     <option value="C">C 건물</option>
   </select>
-  <button>수정</button>
-  <button>삭제</button>
 </div>
 
-<table>
-  <thead>
-    <tr>
-      <th><input type="checkbox" id="selectAll"></th>
-      <th>NO</th>
-      <th>입주민</th>
-      <th>ID</th>
-      <th>입주일<br>확인</th>
-      <th>입주민<br>페이지 접근</th>
-      <th>공실 여부</th>
-      <th>조작</th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- 입주 중 -->
-    <tr>
-      <td><input type="checkbox" class="rowCheckbox"></td>
-      <td>1</td>
-      <td>이주민</td>
-      <td>A001</td>
-      <td>확인</td>
-      <td>허가</td>
-      <td><input type="checkbox" disabled checked title="입주 중"></td>
-      <td>
-        <div class="action-buttons">
-          <button>수정</button>
-          <button>삭제</button>
-        </div>
-      </td>
-    </tr>
 
-    <!-- 공실 -->
-    <tr>
-      <td><input type="checkbox" class="rowCheckbox"></td>
-      <td>2</td>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
-      <td><input type="checkbox" disabled title="공실"></td>
-      <td>
-        <div class="action-buttons">
-          <button class="add-btn" data-room="102호">추가</button>
-        </div>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<!-- 탭 버튼 -->
+<div class="tab-buttons">
+  <button class="tab-btn active" data-tab="detail">입주 상세정보</button>
+  <button class="tab-btn" data-tab="graph">그래프 보기</button>
+  <button class="tab-btn" data-tab="chart">차트 보기</button>
+</div>
+
+<!-- 탭1: 입주 상세정보 -->
+<div id="tab-detail" class="tab-content active">
+  <table>
+    <thead>
+      <tr>
+        <th><input type="checkbox" id="selectAll"></th>
+        <th>NO</th>
+        <th>입주민</th>
+        <th>ID</th>
+        <th>입주일</th>
+        <th>호실정보</th>
+        <th>공실 여부</th>
+        <th>조작</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- 입주 중 -->
+      <tr>
+        <td><input type="checkbox" class="rowCheckbox"></td>
+        <td>1</td>
+        <td>이주민</td>
+        <td>A001</td>
+        <td>2024-01-15</td>
+        <td>101호</td>
+        <td><input type="checkbox" checked disabled></td>
+        <td>
+          <div class="action-buttons">
+            <button class="edit-btn">수정</button>
+            <button class="delete-btn">삭제</button>
+          </div>
+        </td>
+      </tr>
+      <!-- 공실 -->
+      <tr>
+        <td><input type="checkbox" class="rowCheckbox"></td>
+        <td>2</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>102호</td>
+        <td><input type="checkbox" disabled></td>
+        <td>
+          <div class="action-buttons">
+            <button class="add-btn">추가</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 탭2: 그래프 보기 -->
+<div id="tab-graph" class="tab-content">
+  <h3>그래프 보기</h3>
+  <canvas id="vacancyChart" width="300" height="300"></canvas>
+</div>
+
+<!-- 탭3: 차트 보기 -->
+<div id="tab-chart" class="tab-content">
+  <h3>차트 보기</h3>
+</div>
 
 <!-- ID 검색 모달 -->
 <div id="idSearchModal">
@@ -150,26 +188,62 @@
     <h4>입주자 ID 검색</h4>
     <input type="text" placeholder="ID 또는 이름 검색">
     <div class="modal-actions">
-      <button onclick="closeModal()" style="background: #ccc;">닫기</button>
-      <button style="background: #3a5dfb; color: white;">선택</button>
-    </div>
-  </div>
-</div>
-<!-- ✅ ID 검색 모달 -->
-<div id="idSearchModal" style="display:none; position: fixed; top: 0; left: 0;
-  width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1000;">
-  <div style="background: #fff; width: 400px; margin: 100px auto; padding: 1.5rem; border-radius: 12px; position: relative;">
-    <h3 style="margin-bottom: 1rem;">입주자 ID 검색</h3>
-    <input type="text" placeholder="ID 또는 이름 검색" style="width: 100%; padding: 8px; margin-bottom: 1rem;">
-    <div style="text-align: right;">
-      <button onclick="closeModal()" style="background: #ccc; color: #000;">닫기</button>
+      <button onclick="closeModal()">닫기</button>
       <button style="background: #3a5dfb; color: white;">선택</button>
     </div>
   </div>
 </div>
 
-<!-- ✅ 자바스크립트 파일 연결 (항상 맨 마지막에) -->
-<script src="/app/js/building/move-in/moveInDashBoard.js"></script>
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const tabBtns = document.querySelectorAll(".tab-btn");
+  const tabContents = document.querySelectorAll(".tab-content");
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      tabBtns.forEach(b => b.classList.remove("active"));
+      tabContents.forEach(tc => tc.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+    });
+  });
+
+  document.querySelectorAll(".add-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.getElementById("idSearchModal").style.display = "block";
+    });
+  });
+
+  document.querySelectorAll(".edit-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      alert("입주민 수정 모달 호출 예정");
+    });
+  });
+
+  function closeModal() {
+    document.getElementById("idSearchModal").style.display = "none";
+  }
+
+  // 차트 예시
+  const ctx = document.getElementById('vacancyChart').getContext('2d');
+  const vacancyChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['공실', '입주중'],
+      datasets: [{
+        data: [1, 4],
+        backgroundColor: ['#dc3545', '#28a745'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { position: 'bottom' }
+      }
+    }
+  });
+</script>
 
 </body>
 </html>

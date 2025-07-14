@@ -5,12 +5,41 @@
   <meta charset="UTF-8">
   <title>플랫폼 입점업체</title>
   <link rel="stylesheet" href="/app/css/building/managed/managedList.css">
+ <style>
+  .tab-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.tab-button {
+  padding: 6px 14px;
+  font-size: 14px;
+  background-color: #fff;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.tab-button.active {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+  </style>
+  
 </head>
 <body>
 
   <!-- 상단 메인 제목 -->
   <h2 style="margin-bottom: 30px;">플랫폼 입점업체</h2>
-
+		<div class="tab-buttons" style="margin-bottom: 20px;">
+	  <button class="tab-button active" onclick="filterByType('all', this)">전체</button>
+	  <button class="tab-button" onclick="filterByType('security', this)">보안</button>
+	  <button class="tab-button" onclick="filterByType('facility', this)">시설</button>
+	  <button class="tab-button" onclick="filterByType('construction', this)">공사</button>
+	  <button class="tab-button" onclick="filterByType('maintenance', this)">유지보수</button>
+	  <button class="tab-button" onclick="filterByType('elevator', this)">승강기</button>
+	</div>
   <!-- 🛡 보안 업체 -->
   <div class="building-section">
     <div class="building-info">
@@ -123,6 +152,21 @@
       </div>
     </div>
   </div>
+<script>
+  function filterByType(type, btn) {
+    document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
 
+    const sections = document.querySelectorAll('.building-section');
+    sections.forEach(sec => {
+      const secType = sec.dataset.type;
+      if (type === 'all' || secType === type) {
+        sec.style.display = 'block';
+      } else {
+        sec.style.display = 'none';
+      }
+    });
+  }
+</script>
 </body>
 </html>
