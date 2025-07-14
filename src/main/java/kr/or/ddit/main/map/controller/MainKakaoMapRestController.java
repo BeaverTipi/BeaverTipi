@@ -3,7 +3,6 @@ package kr.or.ddit.main.map.controller;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.or.ddit.main.map.service.MainKakaoMapService;
-import kr.or.ddit.util.file.service.FileService;
-import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.ListingVO;
 import lombok.RequiredArgsConstructor;
 
@@ -25,35 +22,34 @@ public class MainKakaoMapRestController {
 	
 	@GetMapping("/mark")
 	public ResponseEntity<List<ListingVO>> getAllMarkerData(
-			@RequestParam double swLat,
-			@RequestParam double swLng,
-			@RequestParam double neLat,
-			@RequestParam double neLng,
-			@RequestParam(required = false) Integer category,
-			@RequestParam(required = false) String keyword,
-			@RequestParam(required = false) List<Integer> typeCode1List,
-			@RequestParam(required = false) List<Integer> typeCode2List,
-			@RequestParam(required = false) List<Integer> saleTypeList,
-			@RequestParam(required = false) List<String> facilityOptionList,
-			@RequestParam(required = false) String mbrCd
+		@RequestParam double swLat,
+		@RequestParam double swLng,
+		@RequestParam double neLat,
+		@RequestParam double neLng,
+		@RequestParam(required = false) Integer category,
+		@RequestParam(required = false) String keyword,
+		@RequestParam(required = false) List<Integer> typeCode1List,
+		@RequestParam(required = false) List<Integer> typeCode2List,
+		@RequestParam(required = false) List<Integer> saleTypeList,
+		@RequestParam(required = false) List<String> facilityOptionList,
+		@RequestParam(required = false) String mbrCd,
+		@RequestParam(required = false) String parkingYn,
+		@RequestParam(required = false) Integer minFloor,
+		@RequestParam(required = false) Integer maxFloor,
+		@RequestParam(required = false) Double minArea,
+		@RequestParam(required = false) Double maxArea
 	) {
 		List<ListingVO> result = service.selectLatLngMarkList(
-				swLat, swLng, neLat, neLng,
-				category, keyword,
-				typeCode1List, typeCode2List, saleTypeList,
-				facilityOptionList, mbrCd);
-		
+			swLat, swLng, neLat, neLng,
+			category, keyword,
+			typeCode1List, typeCode2List, saleTypeList,
+			facilityOptionList, mbrCd,
+			parkingYn, minFloor, maxFloor, minArea, maxArea
+		);
+
 		return ResponseEntity.ok(result == null ? Collections.emptyList() : result);
 	}
-	
-	@GetMapping("/category")
-	public ResponseEntity<List<ListingVO>> getListingByCategory() {
-		List<ListingVO> categoryList = service.selectCategory();
-		
-		return categoryList == null || categoryList.isEmpty()
-			? ResponseEntity.noContent().build()
-			: ResponseEntity.ok(categoryList);
-	}
+
 	
 	@GetMapping("/detail")
 	public ResponseEntity<?> getListingDetalList(@RequestParam("lstgId") String lstgId){

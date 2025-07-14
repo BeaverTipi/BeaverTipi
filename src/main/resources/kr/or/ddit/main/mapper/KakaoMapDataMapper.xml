@@ -21,35 +21,45 @@
 </update>
 
 <select id="selectLatLngMarkList" resultType="kr.or.ddit.vo.ListingVO">
- 	SELECT
- 		LI.LSTG_ID,
- 		LI.MBR_CD,
- 		LI.LSTG_ADD,
- 		LI.LSTG_LAT,
- 		LI.LSTG_LNG,
- 		LI.LSTG_NM,
- 		LI.LSTG_EX_AREA,
- 		LI.LSTG_GR_AREA,
- 		LI.LSTG_TYPE_SALE,
- 		LI.LSTG_LEASE,
- 		LI.LSTG_LEASE_M,
- 		LI.LSTG_LEASE_AMT,
- 		LI.LSTG_FLOOR,
- 		LI.LSTG_PARK_YN,
- 		LI.LSTG_TYPE_CODE1,
- 		LI.LSTG_TYPE_CODE2,
- 		LI.LSTG_POSTAL,
-	 		(SELECT COUNT(*)
-	        FROM LISTING_WISHLIST W
-	        WHERE W.LSTG_ID = LI.LSTG_ID 
-	        AND W.MBR_CD = #{mbrCd}) AS wishCount
- 	FROM 
- 		LISTING LI
- 	WHERE
- 		LI.LSTG_LAT BETWEEN #{swLat} AND #{neLat}
- 		AND LI.LSTG_LNG BETWEEN #{swLng} AND #{neLng}
- 		
- 		<if test="typeCode1List != null and typeCode1List.size() > 0">
+	  SELECT
+	    LI.LSTG_ID,
+	    LI.MBR_CD,
+	    LI.LSTG_ADD,
+	    LI.LSTG_ADD2,
+	    LI.LSTG_LAT,
+	    LI.LSTG_LNG,
+	    LI.LSTG_NM,
+	    LI.LSTG_EX_AREA,
+	    LI.LSTG_GR_AREA,
+	    LI.LSTG_TYPE_SALE,
+	    LI.LSTG_LEASE,
+	    LI.LSTG_LEASE_M,
+	    LI.LSTG_LEASE_AMT,
+	    LI.LSTG_FLOOR,
+	    LI.LSTG_ROOM_CNT,
+	    LI.LSTG_PARK_YN,
+	    LI.LSTG_TYPE_CODE1,
+	    LI.LSTG_TYPE_CODE2,
+	    LI.LSTG_POSTAL,
+	    <choose>
+	      <when test="mbrCd != null and mbrCd != ''">
+	        (SELECT COUNT(*)
+	         FROM LISTING_WISHLIST W
+	         WHERE W.LSTG_ID = LI.LSTG_ID 
+	         AND W.MBR_CD = #{mbrCd}) AS wishCount
+	      </when>
+	      <otherwise>
+	        0 AS wishCount
+	      </otherwise>
+	    </choose>
+	  FROM 
+	    LISTING LI
+	    LEFT OUTER JOIN FILES F ON F.FILE_SOURCE_REF = 'LISTING'
+	  WHERE
+	    LI.LSTG_LAT BETWEEN #{swLat} AND #{neLat}
+	    AND LI.LSTG_LNG BETWEEN #{swLng} AND #{neLng}
+	    
+	    <if test="typeCode1List != null and typeCode1List.size() > 0">
 	      AND LI.LSTG_TYPE_CODE1 IN
 	      <foreach item="type" collection="typeCode1List" open="(" separator="," close=")">
 	        #{type}
@@ -69,21 +79,21 @@
 	        #{type}
 	      </foreach>
 	    </if>
- 		
-	 	<if test="category != null">
-	  		AND LI.lstg_type_code1 = #{category}
-		</if>
-		
-		<if test="keyword != null and keyword != ''">
-			AND (
-	            LI.LSTG_ADD LIKE CONCAT('%', #{keyword}, '%')
-	            OR LI.LSTG_ADD2 LIKE CONCAT('%', #{keyword}, '%')
-	            OR LI.LSTG_GR_AREA LIKE CONCAT('%',#{keyword}, '%')
-	            OR LI.LSTG_NM LIKE CONCAT('%', #{keyword}, '%')
-	        )
-		</if>
-		
-		 <if test="facilityOptionList != null and facilityOptionList.size() > 0">
+	    
+	    <if test="category != null">
+	      AND LI.LSTG_TYPE_CODE1 = #{category}
+	    </if>
+	
+	    <if test="keyword != null and keyword != ''">
+	      AND (
+	        LI.LSTG_ADD LIKE '%' || #{keyword} || '%'
+	        OR LI.LSTG_ADD2 LIKE '%' || #{keyword} || '%'
+	        OR TO_CHAR(LI.LSTG_GR_AREA) LIKE '%' || #{keyword} || '%'
+	        OR LI.LSTG_NM LIKE '%' || #{keyword} || '%'
+	      )
+	    </if>
+	
+	    <if test="facilityOptionList != null and facilityOptionList.size() > 0">
 	      AND EXISTS (
 	        SELECT 1
 	        FROM LISTING_OPTION LOP
@@ -94,23 +104,24 @@
 	        </foreach>
 	      )
 	    </if>
-</select>
-
-
-<select id="selectCategory" resultType="kr.or.ddit.vo.ListingVO">
-	SELECT
-		LSTG_ID,
-		MBR_CD,
-		LSTG_TYPE_CODE2,
-		LSTG_ADD,
-		LSTG_ADD2,
-		LSTG_NM,
-		LSTG_TYPE_CODE1,
-		RENTAL_PTY_ID
-	FROM
-		LISTING
-	WHERE
-		LSTG_TYPE_CODE1 = #{lstgTypeCode1}
+	
+	    <if test="parkingYn != null and parkingYn != ''">
+	      AND LI.LSTG_PARK_YN = #{parkingYn}
+	    </if>
+	
+	    <if test="minFloor != null">
+	      AND LI.LSTG_FLOOR &gt;= #{minFloor}
+	    </if>
+	    <if test="maxFloor != null">
+	      AND LI.LSTG_FLOOR &lt;= #{maxFloor}
+	    </if>
+	
+	    <if test="minArea != null">
+	      AND LI.LSTG_GR_AREA &gt;= #{minArea}
+	    </if>
+	    <if test="maxArea != null">
+	      AND LI.LSTG_GR_AREA &lt;= #{maxArea}
+	    </if>
 </select>
 
 <select id="selectListingDetailList" resultType="kr.or.ddit.vo.ListingVO">

@@ -20,8 +20,6 @@ window.setupCategoryButtonHandler = function(map, clusterer) {
 };
 
 window.setupIdleEvent = function(map, clusterer) {
-	let currentOverlay = null;
-
 	kakao.maps.event.addListener(map, 'idle', () => {
 
 		if (window._currentMarkerState.overlay) {
@@ -59,6 +57,21 @@ window.setupKeywordSearch = function(map, clusterer) {
 		fetch(url).then(res => res.json()).then(data => {
 			renderMarkers(data, map, clusterer);
 			renderListPage(data, map);
+		});
+	});
+};
+
+window.setupFacilityOptionListener = function(map, clusterer) {
+	document.querySelectorAll('.facilityOpt').forEach(checkbox => {
+		checkbox.addEventListener('change', () => {
+			const bounds = map.getBounds();
+			const url = buildUrl(bounds, window.currentCategory);
+			fetch(url)
+				.then(res => res.json())
+				.then(data => {
+					renderMarkers(data, map, clusterer);
+					renderListPage(data, map);
+				});
 		});
 	});
 };
@@ -157,6 +170,46 @@ window.toggleFilterPopup = function(type, btn) {
 	}
 };
 
+document.getElementById('resetFilters')?.addEventListener('click', () => {
+	// 1. 시설 옵션 체크박스 해제
+	document.querySelectorAll('.facilityOpt:checked').forEach(chk => chk.checked = false);
+
+	// 2. 숨겨진 input/select 초기화
+	const hiddenInputs = [
+		'#saleTypeFilter', '#listingTypeFilter', '#saleDetailTypeFilter', '#areaFilter',
+		'#minFloor', '#maxFloor', '#minArea', '#maxArea', '#parkingYn'
+	];
+	hiddenInputs.forEach(id => {
+		const el = document.querySelector(id);
+		if (el) el.value = '';
+	});
+
+	// 3. '전체' 버튼 활성화
+	if (typeof window.setDefaultFilterValues === 'function') {
+		window.setDefaultFilterValues();
+	}
+
+	// 4. 카테고리 버튼 초기화
+	window.currentCategory = null;
+	document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+
+	// ✅ 5. 마커 + 리스트 리프레시
+	if (window._map && window._map.getBounds && window._clusterer) {
+		const bounds = window._map.getBounds();
+		const url = buildUrl(bounds, null);
+
+		fetch(url)
+			.then(res => res.json())
+			.then(data => {
+				renderMarkers(data, window._map, window._clusterer);
+				renderListPage(data, window._map);
+			});
+	} else {
+		console.warn('window._map or window._clusterer not defined');
+	}
+});
+
+
 window.closeFilterPopup = function(type) {
 	const popup = document.getElementById('popup-' + type);
 	if (popup) popup.style.display = 'none';
@@ -164,7 +217,7 @@ window.closeFilterPopup = function(type) {
 
 window.setupPopupOptionClick = function(map, clusterer) {
 	document.querySelectorAll('.popup-option').forEach(btn => {
-		btn.addEventListener('click', (e) => {
+		btn.addEventListener('click', () => {
 			const type = btn.dataset.type;
 			const value = btn.dataset.value;
 
@@ -215,3 +268,21 @@ window.setDefaultFilterValues = function() {
 		if (hidden) hidden.value = "";  // 숨은 input 값도 초기화
 	});
 }
+
+const contextPath = document.body.getAttribute('data-context-path') || '';
+
+document.addEventListener('click', (e) => {
+	const heart = e.target;
+	if (heart.id === 'heartIcon') {
+		const isActive = heart.dataset.active === 'true';
+
+		// 이미지 경로 설정
+		const emptyHeart = `${contextPath}/volt/assets/img/heart-svgrepo-com.svg`;
+		const filledHeart = `${contextPath}/volt/assets/img/heart-filled.svg`;
+
+		// 토글
+		heart.src = isActive ? emptyHeart : filledHeart;
+		heart.dataset.active = (!isActive).toString();
+	}
+});
+

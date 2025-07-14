@@ -25,11 +25,6 @@ public class MainKakaoMapServiceImpl implements MainKakaoMapService {
 	}
 	
 	@Override
-	public List<ListingVO> selectCategory() {
-		return kakaoMapDataMapper.selectCategory();
-	}
-
-	@Override
 	public List<ListingVO> selectListingDetailList(String lstgId) {
 		return kakaoMapDataMapper.selectListingDetailList(lstgId);
 	}
@@ -39,10 +34,18 @@ public class MainKakaoMapServiceImpl implements MainKakaoMapService {
 			double swLat, double swLng, double neLat, double neLng,
 			Integer category, String keyword, 
 			List<Integer> typeCode1List, List<Integer> typeCode2List,
-			List<Integer> saleTypeList, List<String> facilityOptionList, String mbrCd) {
+			List<Integer> saleTypeList, List<String> facilityOptionList, String mbrCd,
+			String parkingYn, Integer minFloor, Integer maxFloor,
+			Double minArea, Double maxArea) {
+
 		return kakaoMapDataMapper.selectLatLngMarkList(
-				swLat, swLng, neLat, neLng, category, keyword, 
-				typeCode1List, typeCode2List, saleTypeList, facilityOptionList, mbrCd);
+			swLat, swLng, neLat, neLng,
+			category, keyword,
+			typeCode1List, typeCode2List,
+			saleTypeList, facilityOptionList,
+			mbrCd, parkingYn, minFloor, maxFloor, minArea, maxArea
+		);
 	}
+
 
 }

@@ -22,8 +22,12 @@ public interface KakaoMapDataMapper {
 	        @Param("typeCode2List") List<Integer> typeCode2List,
 	        @Param("saleTypeList") List<Integer> saleTypeList,
 	        @Param("facilityOptionList") List<String> facilityOptionList,
-	        @Param("mbrCd") String mbrCd
+	        @Param("mbrCd") String mbrCd,
+	        @Param("parkingYn") String parkingYn,
+	    	@Param("minFloor") Integer minFloor,
+	    	@Param("maxFloor") Integer maxFloor,
+	    	@Param("minArea") Double minArea,
+	    	@Param("maxArea") Double maxArea
 			);
-	public List<ListingVO> selectCategory();
 	public List<ListingVO> selectListingDetailList(String lstgId);
 }

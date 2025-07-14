@@ -14,14 +14,10 @@ window.renderMarkers = function(data, map, clusterer) {
 	};
 
 	const TYPE_CODE2_MAP = {
-		101: '오피스텔',
-		102: '원룸',
-		103: '투룸',
-		104: '쓰리룸',
-		105: '주택',
-		106: '빌라',
-		107: '아파트',
-		108: '신축분양'
+		1: '원룸/투룸/다세대',
+	  	2: '단독주택',
+	  	3: '다가구주택',
+	 	4: '상가주택'
 	};
 
 
@@ -57,7 +53,7 @@ window.renderMarkers = function(data, map, clusterer) {
 		const dealText = formatDeal(main);
 		const saleType = SALE_TYPE_MAP[main.lstgTypeSale] || '';
 		const itemType = TYPE_CODE2_MAP[main.lstgTypeCode2] || '';
-		const roomCnt = main.lstgRoomCnt ? `${main.lstgRoomCnt}룸` : '';
+		const roomCnt = main.lstgRoomCnt ? `방 개수: ${main.lstgRoomCnt} 개` : '';
 
 		let html = `
 		<div class="overlaybox">
@@ -83,7 +79,7 @@ window.renderMarkers = function(data, map, clusterer) {
 				<span class="desc">
 				  ${SALE_TYPE_MAP[item.lstgTypeSale] || '-'} /
 				  ${TYPE_CODE2_MAP[item.lstgTypeCode2] || '-'} /
-				  ${item.lstgRoomCnt != null ? `${item.lstgRoomCnt} room` : '-'}
+				  ${item.lstgRoomCnt != null ? `방 개수: ${item.lstgRoomCnt} 개` : '-'}
 				</span>
 			</li>`;
 		});

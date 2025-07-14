@@ -58,3 +58,16 @@ window.getFilterParams = function() {
 
 	return params;
 };
+
+window.toURLParams = function(params){
+	const searchParams = new URLSearchParams();
+	for (const key in params) {
+		const value = params[key];
+		if (Array.isArray(value)) {
+			value.forEach(v => searchParams.append(key, v)); // ✅ 배열은 append로 각각 추가
+		} else {
+			searchParams.append(key, value);
+		}
+	}
+	return searchParams.toString();
+}
