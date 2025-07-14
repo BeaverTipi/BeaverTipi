@@ -1,6 +1,7 @@
 package kr.or.ddit.vo;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,8 +9,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(of="crId")
 public class BrokerChatroomVO implements Serializable{
 	private String crId;
-	private String mbrCd;
+	private String inquirerCd;
+	private String sellerCd;
 	private String crTitl;
-	private String crCreDtm;
+	private LocalDateTime crCreDtm;
 	private String lstgId;
+	private String crStatus;
 }

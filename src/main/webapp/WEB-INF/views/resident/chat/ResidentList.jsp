@@ -46,182 +46,151 @@
   </form>
 
   <script>
+    let mode = "create";
+    let bldgId = null;
+    let residentChatRoomId = null;
+    let residentData = [];
+
     window.addEventListener("load", () => {
-    	const urlParams = new URLSearchParams(window.location.search);
-    	const mode = urlParams.get("mode") ?? "create";
+      const urlParams = new URLSearchParams(window.location.search);
+      mode = urlParams.get("mode") ?? "create";
 
-    	console.log("🧭 mode:", mode);
+      document.getElementById("pageTitle").textContent =
+        mode === "invite" ? "🏢 입주민 초대" : "🏢 입주민 선택";
 
-    	document.getElementById("pageTitle").textContent =
-    	  mode === "invite" ? "🏢 입주민 초대" : "🏢 입주민 선택";
-
-    	if (mode === "create") {
-    	  const bldgId = urlParams.get("bldgId");
-    	  console.log("📦 bldgId:", bldgId);
-
-    	  if (!bldgId) {
-    	    alert("건물 ID가 전달되지 않았습니다.");
-    	    return;
-    	  }
-
-    	  fetchResidents(bldgId);
-    	} else if (mode === "invite") {
-    	  const residentChatRoomId = urlParams.get("residentChatRoomId");
-    	  console.log("💬 residentChatRoomId:", residentChatRoomId);
-
-    	  if (!residentChatRoomId) {
-    	    alert("채팅방 ID가 전달되지 않았습니다.");
-    	    return;
-    	  }
-
-    	  fetchInviteResidents(residentChatRoomId);
-    	}
-	
-      function fetchResidents(urlOrBldgId) {
-        const url = urlOrBldgId.startsWith("/resident/")
-          ? urlOrBldgId
-          : "/resident/chat/getResidentList?bldgId=" + urlOrBldgId;
-
-        console.log("📡 요청 URL:", url);
-
-        fetch(url)
-          .then(res => {
-            if (!res.ok) throw new Error("입주민 목록 요청 실패");
-            return res.json();
-          })
-          .then(data => {
-            console.log("📥 받은 데이터:", data);
-            renderResidents(data);
-          })
-          .catch(err => {
-            console.error("❌ 입주민 목록 로딩 실패:", err);
-            alert("입주민 목록을 불러오는 중 오류가 발생했습니다.");
-          });
-      }
-      function fetchInviteResidents(residentChatRoomId) {
-    	  const url = "/resident/chat/room/invite/residentList?residentChatRoomId=" + residentChatRoomId;
-    	  console.log("📡 초대 모드 요청 URL:", url);
-
-    	  fetch(url)
-    	    .then(res => res.json())
-    	    .then(data => {
-    	      console.log("📥 초대 모드 받은 데이터:", data);
-    	      renderResidents(data);
-    	    })
-    	    .catch(err => {
-    	      console.error("❌ 초대 모드 입주민 목록 실패:", err);
-    	      alert("입주민 목록을 불러오는 중 오류가 발생했습니다.");
-    	    });
-    	}
-      
-      
-      
-      function searchResidents() {
-        const searchType = document.querySelector("#searchType").value;
-        const keyword = document.querySelector("#searchKeyword").value.trim();
-
-        if (!keyword) {
-          fetchResidents(bldgId);
+      if (mode === "create") {
+        bldgId = urlParams.get("bldgId");
+        if (!bldgId) {
+          alert("건물 ID가 전달되지 않았습니다.");
           return;
         }
-
-        fetch("/resident/chat/getResidentList?bldgId=" + bldgId)
-          .then(res => res.json())
-          .then(data => {
-            const filtered = data.filter(r => {
-              const unitRoom = r.unit?.unitRoom ?? "";
-              const mbrNnm = r.member?.mbrNnm ?? "";
-
-              if (searchType === "unitRoom") {
-                return unitRoom === keyword;
-              } else if (searchType === "mbrNnm") {
-                return mbrNnm.includes(keyword);
-              }
-              return false;
-            });
-
-            renderResidents(filtered);
-          })
-          .catch(err => {
-            console.error("❌ 검색 실패:", err);
-            alert("검색 중 오류가 발생했습니다.");
-          });
-      }
-
-      function renderResidents(data) {
-        const tbody = document.querySelector("#residentTableBody");
-        tbody.innerHTML = "";
-
-        if (!Array.isArray(data) || data.length === 0) {
-          tbody.innerHTML = "<tr><td colspan='3'>검색 결과가 없습니다.</td></tr>";
+        fetchResidents("/resident/chat/getResidentList?bldgId=" + bldgId);
+      } else if (mode === "invite") {
+        residentChatRoomId = urlParams.get("residentChatRoomId");
+        if (!residentChatRoomId) {
+          alert("채팅방 ID가 전달되지 않았습니다.");
           return;
         }
-
-        data
-          .slice()
-          .sort((a, b) => {
-            const roomA = parseInt(a.unit?.unitRoom ?? "0", 10);
-            const roomB = parseInt(b.unit?.unitRoom ?? "0", 10);
-            return roomA - roomB;
-          })
-          .forEach((r, i) => {
-            const mbrCd = r.mbrCd ?? "";
-            const mbrNnm = r.member?.mbrNnm != null ? String(r.member.mbrNnm) : "(닉네임 없음)";
-            const unitRoom = r.unit?.unitRoom != null ? String(r.unit.unitRoom) : "(호실 없음)";
-
-            const row = document.createElement("tr");
-
-            const tdRoom = document.createElement("td");
-            tdRoom.textContent = unitRoom;
-
-            const tdName = document.createElement("td");
-            tdName.textContent = mbrNnm;
-
-            const tdCheck = document.createElement("td");
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.value = mbrCd;
-            checkbox.dataset.name = mbrNnm;
-            checkbox.dataset.unitRoom = unitRoom; // ✅ 추가됨
-            tdCheck.appendChild(checkbox);
-
-            row.appendChild(tdRoom);
-            row.appendChild(tdName);
-            row.appendChild(tdCheck);
-
-            tbody.appendChild(row);
-          });
+        fetchResidents("/resident/chat/room/invite/residentList?residentChatRoomId=" + residentChatRoomId);
       }
-
-      function confirmSelection() {
-        const checked = Array.from(document.querySelectorAll("input[type='checkbox']:checked"));
-        const members = checked.map(chk => ({
-          mbrCd: chk.value,
-          name: chk.dataset.name,
-          unitRoom: chk.dataset.unitRoom // ✅ 추가됨
-        }));
-
-        handleSelectionByMode(members); // ✅ mode에 따라 함수 분기 호출
-        window.close();
-      }
-
-      // ✅ mode 분기 처리용 함수 추가
-      function handleSelectionByMode(members) {
-        if (mode === "invite") {
-          if (window.opener && typeof window.opener.receiveInviteTargets === "function") {
-            window.opener.receiveInviteTargets(members);
-          }
-        } else {
-          if (window.opener && typeof window.opener.receiveSelectedMembers === "function") {
-            window.opener.receiveSelectedMembers(members);
-          }
-        }
-      }
-
-      // 전역 함수로 노출
-      window.searchResidents = searchResidents;
-      window.confirmSelection = confirmSelection;
     });
+
+    function fetchResidents(url) {
+      fetch(url)
+        .then(res => {
+          if (!res.ok) throw new Error("입주민 목록 요청 실패");
+          return res.json();
+        })
+        .then(data => {
+          residentData = data;
+          renderResidents(data);
+        })
+        .catch(err => {
+          console.error("❌ 입주민 목록 로딩 실패:", err);
+          alert("입주민 목록을 불러오는 중 오류가 발생했습니다.");
+        });
+    }
+
+    function searchResidents() {
+      const searchType = document.querySelector("#searchType").value;
+      const keyword = document.querySelector("#searchKeyword").value.trim().toLowerCase();
+
+      if (!Array.isArray(residentData) || residentData.length === 0) {
+        alert("입주민 데이터가 없습니다.");
+        return;
+      }
+
+      if (!keyword) {
+        renderResidents(residentData);
+        return;
+      }
+
+      const filtered = residentData.filter(r => {
+        const unitRoom = String(r.unit?.unitRoom ?? "").toLowerCase();
+        const mbrNnm = String(r.member?.mbrNnm ?? "").toLowerCase();
+
+        if (searchType === "unitRoom") {
+          return unitRoom === keyword;
+        }
+        if (searchType === "mbrNnm") {
+          return mbrNnm.includes(keyword);
+        }
+        return false;
+      });
+
+      renderResidents(filtered);
+    }
+
+    function renderResidents(data) {
+      const tbody = document.querySelector("#residentTableBody");
+      tbody.innerHTML = "";
+
+      if (!Array.isArray(data) || data.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='3'>검색 결과가 없습니다.</td></tr>";
+        return;
+      }
+
+      data
+        .slice()
+        .sort((a, b) => {
+          const roomA = parseInt(a.unit?.unitRoom ?? "0", 10);
+          const roomB = parseInt(b.unit?.unitRoom ?? "0", 10);
+          return roomA - roomB;
+        })
+        .forEach(r => {
+          const mbrCd = r.mbrCd ?? "";
+          const mbrNnm = r.member?.mbrNnm ?? "(닉네임 없음)";
+          const unitRoom = r.unit?.unitRoom ?? "(호실 없음)";
+
+          const row = document.createElement("tr");
+
+          const tdRoom = document.createElement("td");
+          tdRoom.textContent = unitRoom;
+
+          const tdName = document.createElement("td");
+          tdName.textContent = mbrNnm;
+
+          const tdCheck = document.createElement("td");
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.value = mbrCd;
+          checkbox.dataset.name = mbrNnm;
+          checkbox.dataset.unitRoom = unitRoom;
+          tdCheck.appendChild(checkbox);
+
+          row.appendChild(tdRoom);
+          row.appendChild(tdName);
+          row.appendChild(tdCheck);
+          tbody.appendChild(row);
+        });
+    }
+
+    function confirmSelection() {
+      const checked = Array.from(document.querySelectorAll("input[type='checkbox']:checked"));
+      const members = checked.map(chk => ({
+        mbrCd: chk.value,
+        name: chk.dataset.name,
+        unitRoom: chk.dataset.unitRoom
+      }));
+
+      handleSelectionByMode(members);
+      window.close();
+    }
+
+    function handleSelectionByMode(members) {
+      if (mode === "invite") {
+        if (window.opener && typeof window.opener.receiveInviteTargets === "function") {
+          window.opener.receiveInviteTargets(members);
+        }
+      } else {
+        if (window.opener && typeof window.opener.receiveSelectedMembers === "function") {
+          window.opener.receiveSelectedMembers(members);
+        }
+      }
+    }
+
+    window.searchResidents = searchResidents;
+    window.confirmSelection = confirmSelection;
   </script>
 </body>
 </html>
