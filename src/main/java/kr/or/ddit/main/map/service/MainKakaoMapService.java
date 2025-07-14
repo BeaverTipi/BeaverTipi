@@ -14,17 +14,12 @@ public interface MainKakaoMapService {
 			double neLng, 
 			Integer category, 
 			String keyword,
-			List<Integer> typeCode1List,      // 대분류 필터
-			List<Integer> typeCode2List,      // 소분류 필터
-			List<Integer> saleTypeList,       // 거래 유형
-			List<String> facilityOptionList,  // 시설 옵션
-			String mbrCd,                     // 찜 여부 확인용
-			String parkingYn,                 // 주차 가능 여부
-			Integer minFloor,                 // 최소 층수
-			Integer maxFloor,                 // 최대 층수
-			Integer minArea,                  // 최소 공급면적(m²)
-			Integer maxArea                   // 최대 공급면적(m²)
-		);
+			List<Integer> typeCode1List, // 대분류 필터
+			List<Integer> typeCode2List, // 소분류 필터
+			List<Integer> saleTypeList,   // 월세/전세/매매 등
+			List<String> facilityOptionList, // 옵션 필터 (엘리베이터 등)
+			String mbrCd // 찜 확인용
+	);
 	public List<ListingVO> selectCategory();
 	public List<ListingVO> selectListingDetailList(String lstgId);
 }

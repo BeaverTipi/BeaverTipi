@@ -1,10 +1,6 @@
 @charset "UTF-8";
 
-/* ========================== */
-/* 글로벌 변수 (색상 & 크기)  */
-/* ========================== */
 :root {
-  /* 색상 */
   --color-text: #212529;
   --color-muted: #888;
   --color-bg-light: #f9f9f9;
@@ -12,11 +8,9 @@
   --color-bg-hover: #e7f1ff;
   --color-border: #ddd;
 
-  /* 테이블 */
   --color-table-header-bg: #343a40;
   --color-table-header-text: #fff;
 
-  /* 버튼 색상 */
   --color-btn-primary: #007bff;
   --color-btn-secondary: #6c757d;
   --color-btn-success: #28a745;
@@ -25,157 +19,210 @@
   --color-btn-dark: #1f2d3d;
   --color-btn-outline-info: #17a2b8;
 
-  /* 승인/거절 강조 */
   --color-approve: #1565c0;
   --color-reject: #c62828;
 
-  /* 폰트 사이즈 */
   --font-base: 14px;
   --font-large: 16px;
   --font-title: 1.8em;
 
-  /* 간격 */
   --spacing-sm: 10px;
   --spacing-md: 20px;
 }
-
-/* ========================== */
-/* 기본 레이아웃 설정         */
-/* ========================== */
 
 body {
   font-size: var(--font-base);
   color: var(--color-text);
 }
 
-.container {
-  width: 90%;
-  margin: var(--spacing-md) auto;
-  padding: var(--spacing-md);
+.container-wrapper {
+  background-color: #ffffff;
   border: 1px solid var(--color-border);
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  margin: 0 auto 40px;
+  width: 95%;
+  max-width: 1400px;
 }
 
-h2 {
-  text-align: center;
-  margin: var(--spacing-md) 0;
-  color: var(--color-text);
+main.container {
+  width: 95%;
+  max-width: 1400px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.board-title {
+  max-width: 1400px;
+  width: 95%;
+  margin: 0 auto 20px auto;
+  padding-left: 0;
   font-size: var(--font-title);
+  color: var(--color-text);
 }
-
-/* ========================== */
-/* 검색 영역                  */
-/* ========================== */
 
 .search-area {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  padding: 14px;
   background-color: var(--color-bg-light);
   border: 1px solid var(--color-border);
-  padding: var(--spacing-md);
-  border-radius: 5px;
-  margin-bottom: var(--spacing-md);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
+  border-radius: 6px;
+  margin-bottom: 24px;
 }
 
-.search-row {
+.search-form {
+  display: contents;
+}
+
+.search-conditions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-sm);
+  gap: 6px 8px;
+  flex: 1 1 auto;
 }
 
 .search-item {
-  flex: 1 1 300px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex: 1 1 1;
+  min-width: 240px;
+  box-sizing: border-box;
 }
 
-.search-item label {
-  font-weight: bold;
-  min-width: 70px;
-  color: var(--color-text);
-}
-
+/* ===== 📌 FORM 요소 정리 ===== */
 .input-field,
 .select-field,
-.form-control,
-.form-select {
-  padding: 8px 10px;
-  border: 1px solid #ccc;
+input[type="date"],
+.search-item select {
+  display: inline-block;
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #bbb;
   border-radius: 4px;
-  font-size: var(--font-base);
-  width: 100%;
+  background-color: #fff;
+  box-sizing: border-box;
+  flex: none;
 }
 
-.date-range-group {
+/* 📏 input-field: 200px */
+.input-field {
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+/* 📏 select-field, date: 150px */
+.select-field,
+input[type="date"],
+.search-item select {
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
+  margin-right : 50px;
+}
+
+/* 🎯 select 내부 가운데 정렬 */
+.search-item select {
+  text-align: center;
+  text-align-last: center;
+  -moz-text-align-last: center;
+}
+
+/* 🧭 label 정렬 */
+.search-item label {
+  font-weight: bold;
+  width: 100px;
+  text-align: right;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+/* 🔘 radio 버튼 정렬 */
+.radio-group {
   display: flex;
   align-items: center;
-  gap: 5px;
 }
 
-.search-buttons-in-row {
-  justify-content: flex-end;
+.radio-group span {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 40px; /* 라벨 간 간격 */
 }
 
-.search-buttons-in-row button {
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: var(--font-base);
-  border: none;
+.radio-group input[type="radio"] {
+	margin-right: 5px; /* ● 와 텍스트 사이 간격 */
+  transform: scale(1.1);
   cursor: pointer;
 }
 
-.search-buttons-in-row button[type="submit"] {
-  background-color: var(--color-btn-primary);
-  color: white;
+
+/* ✨ 포커스 효과 */
+.input-field:focus,
+.select-field:focus,
+input[type="date"]:focus,
+.search-item select:focus {
+  outline: none;
+  border-color: var(--color-btn-dark);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
-.search-buttons-in-row .reset-button {
-  background-color: var(--color-btn-secondary);
-  color: white;
+/* ===== 🔍 검색 버튼 ===== */
+.search-button-area {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding-top: 12px;
+  margin-top: auto;
 }
 
-/* ========================== */
-/* 버튼 스타일                */
-/* ========================== */
-
-.btn-warning {
-  background-color: var(--color-btn-warning);
-  color: #000;
+.search-button-area button {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: var(--font-base);
+  height: 40px;
+  min-width: 90px;
 }
 
-.btn-dark {
+.search-button-area button[type="submit"] {
   background-color: var(--color-btn-dark);
   color: #fff;
 }
 
-.btn-success {
-  background-color: var(--color-btn-success);
-  color: #fff;
+.search-button-area button[type="reset"] {
+  background-color: var(--color-btn-warning);
+  color: #000;
 }
 
-.btn-danger {
-  background-color: var(--color-btn-danger);
-  color: #fff;
+.search-button-area button:hover {
+  opacity: 0.9;
 }
 
-.btn-outline-info {
-  border: 1px solid var(--color-btn-outline-info);
-  color: var(--color-btn-outline-info);
-  background-color: transparent;
+.search-button-area.dynamic-margin {
+  margin-top: 0;
 }
 
-.btn-outline-info:hover {
-  background-color: var(--color-btn-outline-info);
-  color: white;
+/* ===== ✅ 승인/거절 텍스트 강조 ===== */
+.strong-approved {
+  color: var(--color-approve);
+  font-weight: bold;
+  font-size: var(--font-large);
 }
 
-/* ========================== */
-/* 테이블 스타일              */
-/* ========================== */
+.strong-rejected {
+  color: var(--color-reject);
+  font-weight: bold;
+  font-size: var(--font-large);
+}
 
+/* ===== 📋 테이블 ===== */
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -190,6 +237,13 @@ h2 {
   padding: 10px;
   text-align: center;
   vertical-align: middle;
+}
+.table .btn-outline-info {
+  padding: 3px !important;          /* ✅ 버튼 안쪽 여백 제거 */
+  line-height: 1 !important;      /* ✅ 텍스트 세로 간격 최소화 */
+  height: 100%;                   /* 버튼이 td 내부를 꽉 채우지 않게 제한 */
+  box-sizing: border-box;
+  font-size: 13px;                /* (선택) 텍스트 줄이기 */
 }
 
 .table th {
@@ -213,26 +267,7 @@ h2 {
   font-style: italic;
 }
 
-/* ========================== */
-/* 승인 상태 강조 스타일      */
-/* ========================== */
-
-.strong-approved {
-  color: var(--color-approve);
-  font-weight: bold;
-  font-size: var(--font-large);
-}
-
-.strong-rejected {
-  color: var(--color-reject);
-  font-weight: bold;
-  font-size: var(--font-large);
-}
-
-/* ========================== */
-/* 페이지네이션               */
-/* ========================== */
-
+/* ===== ⏩ 페이지네이션 ===== */
 .pagination-wrapper {
   text-align: center;
   margin-top: var(--spacing-md);
@@ -260,4 +295,31 @@ h2 {
 .pagination-wrapper a:hover {
   background-color: #f0f0f0;
   color: #000;
+}
+
+/* ===== ✍ 작성 버튼 ===== */
+.write-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.write-buttons button {
+  padding: 10px 20px;
+  font-size: var(--font-base);
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.write-buttons .btn-success {
+  background-color: var(--color-btn-success);
+  color: #fff;
+}
+
+.write-buttons .btn-danger {
+  background-color: var(--color-btn-danger);
+  color: #fff;
 }

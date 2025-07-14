@@ -19,10 +19,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 검색 초기화 버튼
   resetBtn.addEventListener("click", () => {
+    const radios = searchForm.querySelectorAll('input[name="hasFile"]');
     searchForm.reset();
+    radios.forEach(radio => {
+    	radio.checked = false;
+  	});
     searchForm.querySelectorAll('input[type="text"], input[type="hidden"]').forEach(i => i.value = '');
     searchForm.querySelectorAll('select').forEach(s => s.value = '');
     searchForm.querySelector('input[name="page"]').value = 1;
+ 	
     searchForm.requestSubmit();
   });
 
@@ -32,24 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
     searchForm.requestSubmit();
   };
 
-  // 상세 팝업
-  window.openDetailPopup = function(userId) {
-    window.open(`/admin/business/detail/${userId}`, "_blank", "width=600,height=600");
-  };
-
-  // 단일 승인
-  window.submitApproval = function(mbrCd, userType) {
-    showConfirm('정말 승인하시겠습니까?', 'question', '#28a745', () => {
-      postAction(`/admin/business/approve/${userType}/${mbrCd}`);
-    });
-  };
-
-  // 단일 거절
-  window.submitRejection = function(mbrCd, userType) {
-    showConfirm('정말 거절하시겠습니까?', 'warning', '#dc3545', () => {
-      postAction(`/admin/business/reject/${userType}/${mbrCd}`);
-    });
-  };
 
   // 일괄 승인/거절 처리
   const bulkForm = document.querySelector("#bulkForm");
@@ -109,9 +96,40 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // 파일 팝업 열기
-  window.openFilePopup = function(mbrCd, userType) {
-    window.open(`/admin/business/filePopup/${userType}/${mbrCd}`, "_blank", "width=900,height=700");
-  };
+// 파일 팝업 열기 + 체크박스 활성화 + 다시 열 수 없게
+window.openFilePopup = function(mbrCd, userType) {
+  const popupUrl = `/admin/business/filePopup/${userType}/${mbrCd}`;
+  const popupKey = `popupOpened_${userType}_${mbrCd}`;
+
+  // 이미 열람한 경우: 다시 못 엶
+  if (sessionStorage.getItem(popupKey)) {
+    Swal.fire("안내", "이미 첨부파일을 확인하셨습니다.", "info");
+    return;
+  }
+
+  // 팝업 열기
+  const popup = window.open(popupUrl, "_blank", "width=900,height=700");
+
+  // 대상 체크박스 및 버튼 요소 찾기
+  const checkbox = document.querySelector(`.row-check[data-usertype="${userType}"][value="${mbrCd}"]`);
+  const fileBtn = document.querySelector(`#fileBtn_${userType}_${mbrCd}`);
+
+  const checkInterval = setInterval(() => {
+    if (popup.closed) {
+      clearInterval(checkInterval);
+
+      // 체크박스 활성화
+      if (checkbox) checkbox.disabled = false;
+
+      // 버튼 다시 못 누르게 비활성화
+      if (fileBtn) fileBtn.disabled = true;
+
+      // 열람 여부 기록
+      sessionStorage.setItem(popupKey, "true");
+    }
+  }, 500);
+};
+
 
   // 공통 Confirm 팝업
   function showConfirm(title, icon, btnColor, callback) {

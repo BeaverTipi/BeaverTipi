@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
 import kr.or.ddit.broker.service.BrokerContractService;
-import kr.or.ddit.util.crypto.AES256Util;
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
@@ -46,8 +45,6 @@ public class RestBrokerContractNewController {
 	BrokerAuthUnpackingService authService;
 	@Autowired
 	BrokerContractService contService;
-	@Autowired
-	AES256Util aes256Util;
 	
 	@GetMapping("/listing")
 	public List<ListingVO> lstgListForContract(Principal principal) {

@@ -178,10 +178,10 @@ public class SpringSecurityConfig {
 		handler.setInvalidateHttpSession(true);
 		return handler;		
 	}
-	@Bean
-	public HttpSessionEventPublisher httpSessionEventPublisher() {
-	    return new HttpSessionEventPublisher();
-	}
+//	@Bean
+//	public HttpSessionEventPublisher httpSessionEventPublisher() {
+//	    return new HttpSessionEventPublisher();
+//	}
 	
 	@Bean
 	@Order(2)

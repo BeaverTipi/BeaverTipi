@@ -1,14 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%
-  String year = request.getParameter("year");
-  String month = request.getParameter("month");
-
-  if (year == null || month == null) {
-      java.util.Calendar cal = java.util.Calendar.getInstance();
-      year = String.valueOf(cal.get(java.util.Calendar.YEAR));
-      month = String.valueOf(cal.get(java.util.Calendar.MONTH) + 1);
-  }
-%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -27,6 +17,11 @@
     .month-header:hover {
       text-decoration: underline;
       color: #4aacc5;
+    }
+    #monthPicker {
+      display: none;
+      margin: 0 auto;
+      font-size: 14px;
     }
     .filter-box {
       display: flex;
@@ -72,78 +67,14 @@
     th.sortable:hover {
       background-color: #f2f2f2;
     }
-
-    /* 모달 스타일 */
-   #monthModal {
-	  display: none;
-	  position: fixed;
-	  top: 50%;
-	  left: 50%;
-	  transform: translate(-50%, -50%);
-	  background: #fff;
-	  border-radius: 12px;
-	  padding: 30px 20px;
-	  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-	  z-index: 999;
-	  width: 300px;
-	  text-align: center;
-	}
-	
-	#monthModal h3 {
-	  margin-bottom: 15px;
-	  font-size: 18px;
-	  color: #333;
-	}
-	
-	#monthModal input[type="month"] {
-	  padding: 8px 12px;
-	  font-size: 14px;
-	  width: 100%;
-	  border: 1px solid #ccc;
-	  border-radius: 6px;
-	}
-	
-	#monthModal button {
-	  margin: 15px 5px 0;
-	  padding: 8px 16px;
-	  font-size: 14px;
-	  border: none;
-	  border-radius: 6px;
-	  cursor: pointer;
-	  transition: background 0.2s ease-in-out;
-	}
-	
-	#monthModal button:first-of-type {
-	  background-color: #4aacc5;
-	  color: #fff;
-	}
-	#monthModal button:first-of-type:hover {
-	  background-color: #3a90a5;
-	}
-	
-	#monthModal button:last-of-type {
-	  background-color: #ccc;
-	}
-	#monthModal button:last-of-type:hover {
-	  background-color: #aaa;
-	}
   </style>
 </head>
 <body>
 
 <h2>납부데이터 통합관리</h2>
 
-<div class="month-header" id="monthHeader">📅 <%=year%>년 <%=month%>월 납부현황</div>
-
-<!-- 모달 및 오버레이 -->
-<div id="overlay" onclick="closeModal()"></div>
-<div id="monthModal">
-  <h3>월 선택</h3>
-  <input type="month" id="modalMonth" />
-  <br><br>
-  <button onclick="submitMonth()">확인</button>
-  <button onclick="closeModal()">취소</button>
-</div>
+<div class="month-header" id="monthHeader">📅 2025년 6월 납부현황</div>
+<input type="month" id="monthPicker" />
 
 <div class="filter-box">
   <div>
@@ -211,33 +142,16 @@
 </table>
 
 <script>
-  // 모달 로직
-  const monthHeader = document.getElementById("monthHeader");
-  const monthModal = document.getElementById("monthModal");
-  const overlay = document.getElementById("overlay");
-  const modalMonth = document.getElementById("modalMonth");
-
-  monthHeader.addEventListener("click", () => {
-    monthModal.style.display = "block";
-    overlay.style.display = "block";
+  // 월 선택기 연결
+  const monthHeader = document.getElementById('monthHeader');
+  const monthPicker = document.getElementById('monthPicker');
+  monthHeader.addEventListener('click', () => {
+    monthPicker.click();
   });
-
-  function closeModal() {
-    monthModal.style.display = "none";
-    overlay.style.display = "none";
-  }
-
-  function submitMonth() {
-    const val = modalMonth.value;
-    if (!val) return;
-
-    const [year, month] = val.split("-");
-    const url = new URL(window.location.href);
-    url.searchParams.set("year", year);
-    url.searchParams.set("month", month);
-    window.location.href = url.toString();
-  }
-
+  monthPicker.addEventListener('change', function () {
+	  const [year, month] = this.value.split('-');
+	  monthHeader.innerText = '📅 ' + year + '년 ' + Number(month) + '월 납부현황';
+	});
   // 필터링
   document.getElementById('buildingFilter').addEventListener('change', filterRows);
   document.getElementById('statusFilter').addEventListener('change', filterRows);

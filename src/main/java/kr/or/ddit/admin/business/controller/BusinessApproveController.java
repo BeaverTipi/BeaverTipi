@@ -79,6 +79,10 @@ public class BusinessApproveController {
 				List<CommonCodeVO> roleList = commonService.readCommonCodeList("SOL");
 				List<CommonCodeVO> statusCodeList = commonService.readCommonCodeList("APST");
 				List<CommonCodeVO> fileCodeList = commonService.readCommonCodeList("FILE");
+				if (search.getHasFile() == null) {
+				    search.setHasFile("");  // 기본값 '전체'
+				}
+
 				// 5. 모델 바인딩
 				model.addAttribute("approveList", approveList);
 				model.addAttribute("pagingHTML", pagingHTML);

@@ -8,8 +8,6 @@ import java.util.Map;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -28,8 +26,6 @@ public class AES256Util {
     @Value("${crypto.iv}")
     private String iv; // 16자
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    
     private SecretKeySpec keySpec;
     private IvParameterSpec ivSpec;
 
@@ -103,39 +99,6 @@ public class AES256Util {
         } catch (Exception e) {
             log.error("[AES256] 동적 IV 복호화 실패", e);
             throw new RuntimeException("복호화 실패");
-        }
-    }
-    
-    /**
-     * 암호화된 요청을 복호화하여 Map<String, Object>로 반환
-     */
-    public Map<String, Object> decryptPayloadToMap(Map<String, String> payload) {
-        String iv = payload.get("iv");
-        String encrypted = payload.get("encrypted");
-
-        if (iv == null || encrypted == null) {
-            throw new IllegalArgumentException("iv 또는 encrypted 필드가 누락되었습니다.");
-        }
-
-        try {
-            String decryptedJson = decryptWithDynamicIV(encrypted, iv);
-            return objectMapper.readValue(decryptedJson, new TypeReference<>() {});
-        } catch (Exception e) {
-            log.error("[AES256] 요청 복호화 또는 JSON 파싱 실패", e);
-            throw new RuntimeException("복호화된 요청 파싱 실패", e);
-        }
-    }
-
-    /**
-     * 객체를 JSON 직렬화 후 암호화하여 Map<String, String> 반환
-     */
-    public Map<String, String> encryptObjectToPayload(Object data) {
-        try {
-            String json = objectMapper.writeValueAsString(data);
-            return encryptWithDynamicIV(json);
-        } catch (Exception e) {
-            log.error("[AES256] 응답 직렬화 또는 암호화 실패", e);
-            throw new RuntimeException("응답 암호화 실패", e);
         }
     }
 }

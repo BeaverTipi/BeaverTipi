@@ -1,138 +1,147 @@
 @charset "UTF-8";
 
 /* 새로운 상태 select 박스 크기 조절 */
-#newMbrStatus {
-    height: auto; /* 부모 요소의 높이에 맞추기 위해 auto 사용. 100%는 flex 컨테이너가 아니면 예상대로 작동 안 할 수 있음 */
-    min-height: 38px; /* Bootstrap form-control 기본 높이와 유사하게 설정 */
-}
-
-#newLtsgDel {
-    height: auto; /* 부모 요소의 높이에 맞추기 위해 auto 사용 */
-    min-height: 38px; /* Bootstrap form-control 기본 높이와 유사하게 설정 */
-}
+    #newMbrStatus {
+        height: 100%; /* 부모 요소의 전체 너비를 차지하도록 */
+    }
+    
+    #newLtsgDel {
+        height: 100%; /* 부모 요소의 전체 너비를 차지하도록 */
+    }
 
 /* 검색 버튼 그룹 정렬 시작 */
 /* .search-row.bottom-row 내부의 .search-item search-buttons-in-row 요소를 오른쪽 끝으로 정렬 */
 .search-item.search-buttons-in-row {
-    margin-left: auto; /* 이 요소를 남은 공간의 오른쪽 끝으로 밀어냅니다. */
+    margin-left: auto; /* ⭐ 이 요소를 남은 공간의 오른쪽 끝으로 밀어냅니다. ⭐ */
     display: flex; /* 내부 버튼들을 Flex 컨테이너로 만듭니다. (버튼 간 간격 및 정렬 위함) */
     gap: 10px; /* 버튼들 사이에 10px 간격을 줍니다. */
 }
 
-/* ⭐ 저장하기 버튼 정렬 개선 ⭐ */
-/* .search-actions는 .save-button을 감싸는 부모 div입니다. */
-/* 이 부모를 flex 컨테이너로 만들고 오른쪽으로 정렬하는 것이 더 안정적입니다. */
-.search-actions {
-    display: flex;
-    justify-content: flex-end; /* 자식 요소인 save-button을 오른쪽 끝으로 정렬 */
-    margin-top: 20px; /* 상단 여백 추가 (필요시 조정) */
+/* 페이징 스타일 시작 (userList.jsp 용) */
+
+.paging-area { /* 최상위 컨테이너 클래스명: paging-area */
+    margin-top: 30px;
+    text-align: center; /* 전체 페이징 영역을 중앙 정렬 */
 }
 
-/* .save-button 자체에는 이제 margin-left: auto가 필요 없습니다. */
-/* 만약 .save-button에 직접 스타일을 적용하려면 다음과 같이 할 수 있습니다. */
-/* .save-button { */
-/* // background-color, color 등 필요한 스타일 추가 (common_admin.css에 정의되어 있다면 여기서는 불필요) */
-/* } */
-
-
-.date-range-group .input-field {
-    /* calc(50% - 20px)는 span의 너비와 gap을 고려하여 조정 필요 */
-    /* 현재 common_admin.css에 .date-range-group gap: 5px이므로 넉넉하게 calc(50% - 10px) 또는 필요시 조정 */
-    width: calc(50% - 20px); /* 양쪽 input이 50%씩 차지하고, 가운데 span과의 gap 5px을 고려 */
+/* 페이징 내부의 span과 a 태그에 대한 기본 스타일 */
+.paging-area span,
+.paging-area a {
+    color: #333; /* 기본 텍스트 색상 */
+    padding: 8px 16px; /* 버튼 내부 여백 */
+    text-decoration: none; /* 밑줄 제거 */
+    border: 1px solid #ddd; /* 테두리 */
+    margin: 0 -1px 0 0; /* 버튼 간 경계선 겹치기 (깔끔하게 연결) */
+    transition: background-color .3s, color .3s, border-color .3s; /* 호버 효과 부드럽게 */
+    min-width: 40px; /* 최소 너비 지정으로 균일하게 */
+    text-align: center;
+    line-height: 20px; /* 텍스트 세로 중앙 정렬 */
+    box-sizing: border-box; /* 패딩과 보더를 너비에 포함 */
 }
 
-/* Bootstrap의 .bg-primary를 덮어씁니다. */
-/* common_admin.css에서 이미 .pagination-wrapper span.bg-primary를 정의하고 있으므로, */
-/* Bootstrap의 다른 .bg-primary에 영향을 미치지 않도록 주의합니다. */
-/* 특정 요소에만 적용하려면 선택자를 구체화하는 것이 좋습니다. */
-/* 여기서는 pagination-wrapper 내부의 bg-primary만 검은색으로 변경하는 것으로 가정합니다. */
-.pagination-wrapper span.bg-primary {
-	background-color: var(--color-btn-dark) !important; /* common_admin.css의 변수 사용, 우선순위를 위해 !important 유지 */
+/* 첫 번째 버튼의rgb(0, 0, 0)0, 0, 0)모서리 둥글게 */
+.paging-area span:first-child,
+.paging-area a:first-of-type {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
 }
 
-/* common_admin.css에 이미 .search-buttons-in-row button, .reset-button, .btn-warning 등이 정의되어 있습니다. */
-/* 이 CSS 파일이 common_admin.css 뒤에 로드되므로, 여기서 재정의하면 덮어씁니다. */
-/* common_admin.css에서 변수를 사용했으니, 여기서는 Bootstrap 클래스를 직접 덮어쓰거나, */
-/* common_admin.css의 스타일을 유지하는 것이 좋습니다. */
-/* Bootstrap 버튼 색상 문제 해결을 위해 common_admin.css에서 .btn-primary, .btn-secondary 등을 덮어쓰는 것이 더 근본적입니다. */
-/* 여기서는 명시적으로 지정합니다. */
-#resetButton { /* ID 선택자는 클래스보다 우선순위가 높습니다. */
-	background-color: var(--color-btn-warning); /* common_admin.css의 변수 사용 */
- 	color: #000;
-    border: none; /* Bootstrap 기본 border 제거 */
+/* 마지막 버튼의 오른쪽 모서리 둥글게 */
+.paging-area span:last-child,
+.paging-area a:last-of-type {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
-#searchButton { /* ID 선택자는 클래스보다 우선순위가 높습니다. */
-	background-color: var(--color-btn-dark); /* common_admin.css의 변수 사용 */
- 	color: white;
-    border: none; /* Bootstrap 기본 border 제거 */
+/* 현재 활성화된 페이지 (bg-primary 클래스를 가짐) */
+.paging-area span.bg-primary {
+    background-color: blue; /* Bootstrap primary color */
+    color: white;
+    border: 1px solid #0055FF;
+    cursor: default; /* 클릭 불가능하도록 커서 변경 */
+    font-weight: bold; /* 활성 페이지는 텍스트를 더 굵게 */
+    z-index: 2; /* 겹치는 테두리 위로 오도록 */
 }
+
+/* 페이지 링크 호버 시 */
+.paging-area a:hover:not(.bg-primary) { /* .bg-primary가 적용된 span에는 호버 효과 적용 안함 */
+    background-color: #e9ecef; /* 약간 어두운 회색 배경 */
+    color: #0056b3; /* 텍스트 색상 변경 */
+    border-color: #adadad; /* 테두리 색상 변경 */
+    cursor: pointer;
+    z-index: 1; /* 호버 시 z-index를 높여 테두리 겹침 방지 */
+}
+
+/* 이전/다음 페이지 버튼에 대한 추가 스타일 (텍스트만 있는 경우) */
+.paging-area a[onclick*="fn_paging"] {
+    font-weight: bold; /* 이전, 다음 텍스트는 굵게 */
+}
+
+/* float 해제 */
+.paging-area::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* 페이징 스타일 끝 */
 
 .report-title {
-    cursor: pointer;
-    color: #007bff; /* 링크 색상 */
-    text-decoration: underline; /* 밑줄 */
-}
+            cursor: pointer;
+            color: #007bff; /* 링크 색상 */
+            text-decoration: underline; /* 밑줄 */
+        }
+        .modal-body img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .modal-body .file-link {
+            display: block;
+            margin-bottom: 5px;
+            color: #28a745;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .modal-body .file-link:hover {
+            text-decoration: underline;
+        }
+        #attachFilesSection {
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        #attachFilesSection h5 {
+            margin-bottom: 10px;
+            color: #343a40;
+        }
+        .modal-dialog.modal-lg .modal-body {
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+        .alert-secondary {
+            white-space: pre-wrap;
+            word-break: break-all; /* 긴 문자열이 있을 때 넘치지 않도록 강제 줄바꿈 */
+        }
 
-.modal-body img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.modal-body .file-link {
-    display: block;
-    margin-bottom: 5px;
-    color: #28a745;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.modal-body .file-link:hover {
-    text-decoration: underline;
-}
-
-#attachFilesSection {
-    margin-top: 15px;
-    border-top: 1px solid #eee;
-    padding-top: 15px;
-}
-
-#attachFilesSection h5 {
-    margin-bottom: 10px;
-    color: #343a40;
-}
-
-.modal-dialog.modal-lg .modal-body {
-    max-height: calc(100vh - 200px);
-    overflow-y: auto;
-}
-
-.alert-secondary {
-    white-space: pre-wrap;
-    word-break: break-all; /* 긴 문자열이 있을 때 넘치지 않도록 강제 줄바꿈 */
-}
-
-/* 탭 스타일 추가 */
-.nav-tabs .nav-item .nav-link {
-    cursor: pointer;
-    border: 1px solid transparent;
-    border-top-left-radius: .25rem;
-    border-top-right-radius: .25rem;
-    padding: .5rem 1rem;
-    color: #495057;
-}
-
-.nav-tabs .nav-item .nav-link.active {
-    color: #495057;
-    background-color: #fff;
-    border-color: #dee2e6 #dee2e6 #fff;
-}
-
-.nav-tabs {
-    border-bottom: 1px solid #dee2e6;
-    margin-bottom: 20px;
-}
+        /* 탭 스타일 추가 */
+        .nav-tabs .nav-item .nav-link {
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-top-left-radius: .25rem;
+            border-top-right-radius: .25rem;
+            padding: .5rem 1rem;
+            color: #495057;
+        }
+        .nav-tabs .nav-item .nav-link.active {
+            color: #495057;
+            background-color: #fff;
+            border-color: #dee2e6 #dee2e6 #fff;
+        }
+        .nav-tabs {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 20px;
+        }

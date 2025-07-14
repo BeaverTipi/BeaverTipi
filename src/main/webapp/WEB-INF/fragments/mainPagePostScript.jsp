@@ -51,6 +51,7 @@
 <script src="${pageContext.request.contextPath}/volt/assets/js/customAxios.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/main/login.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/chat/chatPopup.js" defer></script>
+<script src="${pageContext.request.contextPath}/app/js/main/mainPage.js"></script>
 
 <!-- tosspayments -->
 <script src="https://js.tosspayments.com/v1/payment"></script>
@@ -59,3 +60,8 @@
 <!-- pdf -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/main/payments.js"></script>
+
+
+  
+
+

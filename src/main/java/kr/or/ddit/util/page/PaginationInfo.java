@@ -3,7 +3,6 @@ package kr.or.ddit.util.page;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 import kr.or.ddit.vo.BoardVO; // ⭐ BoardVO import 포함 ⭐
 import kr.or.ddit.vo.BusinessApproveSearchVO;
@@ -37,8 +36,6 @@ public class PaginationInfo<T> {
 	
 	private int firstRecordIndex;
 	private int lastRecordIndex;
-	
-	private List<T> dataList; // 페이지네이션된 데이터를 담을 필드
 	
 	// totalRecordCount에 대한 setter. 이 메서드 호출 시 모든 페이징 관련 값을 계산합니다.
 	public void setTotalRecordCount(int totalRecordCount) {

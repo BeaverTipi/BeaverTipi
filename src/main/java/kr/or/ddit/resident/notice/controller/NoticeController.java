@@ -87,36 +87,13 @@ public class NoticeController {
         paging.setTotalRecordCount(totalRecord);
 
         List<NoticeVO> boardList = noticeService.getNoticeList(paging);
-        List<String> residentBldgIds = units.stream()
-        			.map(UnitResidentVO::getBldgId)
-        			.distinct()
-        			.toList();
-        final String targetBldgId = selectedBldgId;
-        List<NoticeVO> filteredList = boardList.stream()
-        		  .filter(notice -> {
-        		    if (notice.getBldgId() == null) {
-        		      List<String> ownerBldgIds = unitResidentService.getUnitsByMember(notice.getMbrCd())
-        		                                        .stream()
-        		                                        .map(UnitResidentVO::getBldgId)
-        		                                        .distinct()
-        		                                        .toList();
-        		      log.info("📌 전체공지 판단: noticeNo={}, 등록자={}, 등록자건물={}, 입주민건물={}",
-        		                notice.getNoticeNo(), notice.getMbrCd(), ownerBldgIds, residentBldgIds);
-        		      return ownerBldgIds.contains(targetBldgId);
-        		    } else {
-        		      return residentBldgIds.contains(notice.getBldgId());
-        		    }
-        		  })
-        		  .distinct()
-        		  .toList();
-        
         String pagingHTML = new DefaultPaginationRenderer()
                                  .renderPagination(paging, "fnPaging");
         
         // 5) 모델에 데이터 바인딩
         model.addAttribute("unitList", units);
         model.addAttribute("selectedBldgId", selectedBldgId);
-        model.addAttribute("boardList", filteredList);
+        model.addAttribute("boardList", boardList);
         model.addAttribute("pagingHTML", pagingHTML);
         model.addAttribute("pagingInfo", paging);
 

@@ -9,6 +9,7 @@ import kr.or.ddit.vo.MemberVO;
 public interface MemberMapper {
 	
 	public MemberVO selectMemberByUsername(@Param("username")String username);
+	public MemberVO selectMember(@Param("username")String username);
 	
 	public MemberVO selectMemberByMail(@Param("mail") String mail);
 	

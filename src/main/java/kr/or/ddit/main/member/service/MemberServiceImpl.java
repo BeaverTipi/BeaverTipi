@@ -83,4 +83,10 @@ public class MemberServiceImpl implements MemberService {
 		context.setAuthentication(newAuthentication);
 	}
 
+	@Override
+	public MemberVO readMemberByAll(String username) {
+		// TODO Auto-generated method stub
+		return mapper.selectMember(username);
+	}
+
 }

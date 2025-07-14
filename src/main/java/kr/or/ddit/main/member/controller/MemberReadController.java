@@ -27,7 +27,7 @@ public class MemberReadController {
 		Object principal = auth.getPrincipal();
 		String username = auth.getName();
 		String logInfo = "LOCAL";
-		MemberVO member = service.readMember(username);
+		MemberVO member = service.readMemberByAll(username);
 		List<SolutionSubscriptionVO> solSub = subService.checkedSolutionSubscriptionList(member.getMbrCd());
 		if(solSub !=null) {
 			model.addAttribute("solutionSubscriptionList", solSub);

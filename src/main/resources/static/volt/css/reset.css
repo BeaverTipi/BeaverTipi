@@ -31,47 +31,44 @@
   --color-google-hover: var(--color-gray-300);
 
   /* ===== 폰트, 패딩, 크기 ===== */
-  --font-default: 'Segoe UI', sans-serif;
-  --radius-full: 999px;
-  --radius-medium: 10px;
-  --radius-small: 0.5rem;
-  --padding-small: 10px;
-  --padding-medium: 12px 20px;
-  --font-size-small: 14px;
-  --font-size-base: 16px;
-  --font-size-large: 18px;
-  --font-size-xlarge: 28px;
+  --font-default: 'Inter', sans-serif;
+  --radius-full: 9999px;
+  --radius-medium: 0.75rem;
+  --radius-small: 0.375rem;
+  --padding-small: 0.5rem;
+  --padding-medium: 0.75rem 1.25rem;
+  --font-size-small: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-large: 1.125rem;
+  --font-size-xlarge: 2rem;
 }
 
-/* ===== Base ===== */
 body {
   font-family: var(--font-default);
-  background-color: var(--color-white);
-  color: var(--color-gray-900);
 }
 
-/* ===== Header ===== */
 .navbar {
   border-bottom: 1px solid var(--color-border-light);
 }
+
 .navbar-brand img {
   height: 32px;
 }
+
 .navbar-nav .nav-link {
-  color: var(--color-black) !important;
   font-weight: 500;
 }
 
-/* ===== Search Section ===== */
 .search-section {
-  padding: 40px 20px;
-  background-color: var(--color-gray-200);
+  padding: 2.5rem 1.25rem;
 }
+
 .search-box {
   display: flex;
   justify-content: center;
-  margin-bottom: 30px;
+  margin-bottom: 2rem;
 }
+
 .search-input {
   width: 100%;
   max-width: 600px;
@@ -79,31 +76,28 @@ body {
   font-size: var(--font-size-base);
   border: none;
   border-radius: var(--radius-full);
-  background-color: var(--color-white);
-  box-shadow: 0 0 0 1px var(--color-border);
 }
 
-/* ===== Category & Banner ===== */
 .category-banner {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 30px;
+  gap: 1.875rem;
   align-items: flex-start;
 }
+
 .categories {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
+  gap: 1rem;
 }
+
 .category-btn {
   width: 140px;
   height: 100px;
   font-size: var(--font-size-base);
   font-weight: bold;
-  border: 2px solid var(--color-gray-900);
   border-radius: var(--radius-medium);
-  background-color: var(--color-white);
   text-align: center;
   line-height: 1.4;
   display: flex;
@@ -111,10 +105,12 @@ body {
   align-items: center;
   flex-direction: column;
 }
+
 .category-btn i {
-  font-size: 24px;
-  margin-top: 5px;
+  font-size: 1.5rem;
+  margin-top: 0.3rem;
 }
+
 .banner img {
   width: 320px;
   max-width: 100%;
@@ -123,119 +119,130 @@ body {
   object-fit: contain;
 }
 
-/* ===== Tag Buttons ===== */
 .tag-box {
   text-align: center;
-  margin: 48px 0;
+  margin: 3rem 0;
 }
+
 .tag-btn {
   font-size: var(--font-size-base);
   font-weight: bold;
-  border: none;
-  background: var(--color-gray-300);
-  border-radius: 20px;
-  padding: 8px 20px;
-  margin: 8px 10px;
+  border-radius: 1.25rem;
+  padding: 0.5rem 1.25rem;
+  margin: 0.5rem;
 }
 
-/* ===== Room Carousel ===== */
 #roomCarousel .carousel-inner {
   height: auto !important;
   display: flex;
   flex-direction: column;
 }
+
 .carousel-item {
   display: none;
 }
+
 .carousel-item.active {
   display: block;
 }
+
 .room-card {
   border: none;
   background-color: transparent;
 }
+
 .room-image {
   height: 200px;
   object-fit: cover;
   border-radius: var(--radius-small);
 }
+
 .room-card .card-body {
   text-align: left;
-  padding: 20px 15px;
+  padding: 1.25rem 1rem;
   white-space: normal;
   word-break: keep-all;
 }
+
 .room-title {
   font-size: var(--font-size-base);
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
 }
+
 .room-card p {
   margin: 0;
   font-size: var(--font-size-small);
   line-height: 1.5;
 }
 
-/* ===== Ad Slider ===== */
 .ad-section-title {
-  margin-top: 80px; /* 또는 60px */
-  margin-bottom: 20px;
+  margin-top: 5rem;
+  margin-bottom: 1.25rem;
 }
 
 #adSlider {
-  margin-top: 60px;
-  margin-bottom: 40px;
+  margin-top: 3.75rem;
+  margin-bottom: 2.5rem;
 }
+
 #adSlider .carousel-inner {
   height: auto !important;
   display: flex;
   flex-direction: column;
 }
+
 #adSlider .carousel-item {
   display: none;
 }
+
 #adSlider .carousel-item.active {
   display: block;
 }
+
 .ad-slide-box {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 50px;
+  gap: 3.125rem;
   flex-wrap: wrap;
   max-width: 100%;
 }
+
 .ad-left-box {
   flex: 1 1 300px;
   max-width: 400px;
   text-align: center;
   word-break: keep-all;
 }
+
 .ad-right-box {
   flex: 2 1 500px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .ad-logo {
   width: 220px;
   height: auto;
 }
+
 .ad-title {
   font-size: var(--font-size-xlarge);
   font-weight: bold;
-  color: var(--color-blue);
-  margin-top: 20px;
+  margin-top: 1.25rem;
   white-space: nowrap;
 }
+
 .ad-desc {
   font-size: var(--font-size-large);
-  color: var(--color-gray-900);
-  margin-top: 12px;
+  margin-top: 0.75rem;
   line-height: 1.6;
   word-break: keep-all;
   white-space: normal;
 }
+
 .ad-image {
   width: 100%;
   max-width: 700px;
@@ -243,7 +250,6 @@ body {
   object-fit: contain;
 }
 
-/* ===== Carousel Buttons ===== */
 .carousel-control-prev,
 .carousel-control-next {
   top: 50%;
@@ -251,38 +257,37 @@ body {
   width: 5%;
 }
 
-/* ===== Footer ===== */
 .footer {
-  background-color: var(--color-gray-100);
-  padding: 40px 0;
+  padding: 2.5rem 0;
   font-size: var(--font-size-small);
-  color: var(--color-gray-900);
   width: 100%;
 }
+
 .footer h6 {
   font-weight: bold;
-  margin-bottom: 15px;
+  margin-bottom: 0.9375rem;
 }
+
 .footer ul {
   padding-left: 0;
   list-style: none;
 }
+
 .footer li {
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
 }
+
 .small-link-group .small-link {
-  color: var(--color-gray-700);
   font-size: 0.9rem;
-  margin: 0 5px;
+  margin: 0 0.3125rem;
   text-decoration: none;
   transition: color 0.2s ease;
 }
+
 .small-link:hover {
-  color: var(--color-hover-text);
   text-decoration: underline;
 }
 
-/* ===== Social Buttons ===== */
 .social-btn {
   display: flex;
   align-items: center;
@@ -290,28 +295,403 @@ body {
   font-weight: 500;
   font-size: 1rem;
   padding: var(--padding-small);
-  border-radius: 8px;
+  border-radius: 0.5rem;
   text-decoration: none;
 }
 
-/* Google 스타일 */
 .google-btn {
-  background-color: var(--color-white);
-  border: 1px solid var(--color-google-border);
-  color: var(--color-google-text);
-}
-.google-btn:hover {
-  background-color: var(--color-google-hover);
-  border-color: var(--color-border-hover);
+  border-width: 1px;
 }
 
-/* Kakao 스타일 */
 .kakao-btn {
-  background-color: var(--color-kakao);
-  color: #3c1e1e;
   border: none;
 }
-.kakao-btn:hover {
-  background-color: var(--color-kakao-hover);
+
+/* 🔔 알림 드롭다운 스타일 정리 */
+.dropdown-menu.dropdown-menu-lg {
+  width: 360px;
+  padding: 0;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
+
+.dropdown-menu .list-group {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.dropdown-menu .list-group-item {
+  display: flex;
+  padding: 0.75rem 1rem;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.dropdown-menu .list-group-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-menu .list-group-item img {
+  width: 48px;
+  height: 48px;
+  border-radius: 0.5rem;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.dropdown-menu .list-group-item .col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 1rem;
+  min-width: 0;
+}
+
+.dropdown-menu .list-group-item .d-flex {
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dropdown-menu .list-group-item h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-gray-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-menu .list-group-item small {
+  font-size: 0.75rem;
+  color: var(--color-gray-600);
+  white-space: nowrap;
+}
+
+.dropdown-menu .list-group-item p {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--color-gray-800);
+  line-height: 1.4;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.dropdown-item.text-center.fw-bold {
+  padding: 0.75rem 0;
+  font-size: 0.9rem;
+  color: var(--color-blue);
+  background-color: var(--color-gray-100);
+  border-top: 1px solid var(--color-border-light);
+}
+
+/* View all 버튼 정렬 및 크기 조절 */
+.dropdown-menu .dropdown-item.text-center.fw-bold {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  background-color: var(--color-gray-100);
+  border-top: 1px solid var(--color-border-light);
+  overflow: hidden;
+}
+
+/* 아이콘 크기 제한 */
+.dropdown-menu .dropdown-item svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  fill: var(--color-gray-600);
+}
+/* 알림 드롭다운 높이 조정 */
+.dropdown-menu.dropdown-menu-lg {
+  max-height: 450px;      /* 현재 스크린샷과 유사한 높이 */
+  overflow-y: auto;
+  width: 360px;           /* 넉넉한 너비, 필요 시 조정 */
+  padding: 0;
+  border: 1px solid var(--color-border-light);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+}.dropdown-menu.dropdown-menu-lg::-webkit-scrollbar {
+  width: 6px;
+}
+.dropdown-menu.dropdown-menu-lg::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray-300);
+  border-radius: 4px;
+}
+.dropdown-menu.dropdown-menu-lg::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+/* 알림 목록 전체 보이도록 스크롤 제거 */
+.dropdown-menu .list-group {
+  max-height: none;   /* 또는 제거 */
+  overflow-y: visible;
+}
+/* 드롭다운 전체 메뉴 박스 높이 자동 조절 */
+.dropdown-menu.dropdown-menu-lg {
+  max-height: none;     /* 제한 제거 */
+  overflow-y: visible;  /* 스크롤 제거 */
+}
+
+/* 알림 리스트 높이 제한 해제 */
+.dropdown-menu .list-group {
+  max-height: none;
+  overflow-y: visible;
+}
+/* 사용자 드롭다운 메뉴 기본 */
+#userDropdown + .dropdown-menu {
+  min-width: 200px;
+  padding: 0.5rem 0;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-size: 0.95rem;
+}
+
+/* 드롭다운 내부 항목 */
+#userDropdown + .dropdown-menu .dropdown-item {
+  padding: 0.6rem 1rem;
+  color: #333;
+  transition: background-color 0.2s ease;
+}
+
+/* hover 효과 */
+#userDropdown + .dropdown-menu .dropdown-item:hover {
+  background-color: #f5f5f5;
+}
+
+/* 구분선 */
+#userDropdown + .dropdown-menu .dropdown-divider {
+  margin: 0.5rem 0;
+}
+
+/* 로그아웃 버튼 강조 */
+#userDropdown + .dropdown-menu .dropdown-item.text-danger {
+  color: #e74c3c;
+  font-weight: 500;
+}
+
+#userDropdown + .dropdown-menu .dropdown-item.text-danger:hover {
+  background-color: #ffeaea;
+}
+/* 사용자 드롭다운 메뉴 스타일 */
+.dropdown-menu {
+  border: none !important; /* 테두리 제거 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 그림자 부여 */
+  border-radius: 0.5rem !important; /* 모서리 둥글게 */
+  padding: 0.5rem 0;
+  min-width: 200px;
+  font-size: 0.95rem;
+}
+
+/* 항목 간격 및 hover 효과 */
+.dropdown-menu .dropdown-item {
+  padding: 0.75rem 1rem;
+  font-weight: 500;
+  color: #333;
+  transition: background-color 0.2s;
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: #f5f5f5;
+  color: #000;
+}
+
+/* 로그아웃 항목은 붉은 색 강조 */
+.dropdown-menu .dropdown-item.text-danger {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+/* 구분선 스타일 */
+.dropdown-menu .dropdown-divider {
+  margin: 0.3rem 0;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* 기본적으로 모든 dropdown-toggle의 after 화살표 제거 */
+.navbar-nav .dropdown-toggle::after {
+  display: none !important;
+  content: '' !important;
+}
+
+/* ✅ userDropdown에는 화살표 다시 활성화 */
+#userDropdown.dropdown-toggle::after {
+  display: inline-block !important;
+  content: '' !important;
+  margin-left: 0.255em;
+  vertical-align: 0.255em;
+  border-top: 0.3em solid;
+  border-right: 0.3em solid transparent;
+  border-bottom: 0;
+  border-left: 0.3em solid transparent;
+}
+/* 알림 아이콘 빨간 점 */
+.notification-bell {
+  position: relative !important;
+}
+
+.notification-bell.unread::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 6px !important;
+  right: 6px !important;
+  width: 8px !important;
+  height: 8px !important;
+  background-color: red !important;
+  border-radius: 50% !important;
+  z-index: 10 !important;
+}
+
+/* 드롭다운 메뉴 스타일 */
+.dropdown-menu-lg {
+  min-width: 22rem;
+}
+
+.dropdown-menu {
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+}
+
+.list-group {
+  display: flex;
+  flex-direction: column;
+  padding-left: 0;
+  margin-bottom: 0;
+  border-radius: 0.5rem;
+}
+
+.list-group-item {
+  position: relative;
+  display: block;
+  padding: 1rem 1.25rem;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-left: 0;
+  border-right: 0;
+}
+
+.list-group-item:first-child {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  border-top: 0;
+}
+
+.list-group-item:last-child {
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.avatar-md {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.font-small {
+  font-size: 0.875rem;
+}
+
+.text-small {
+  font-size: 0.875rem;
+}
+
+.text-end {
+  text-align: end;
+}
+
+.border-bottom {
+  border-bottom: 1px solid #dee2e6 !important;
+}
+
+.text-primary {
+  color: #007bff !important;
+}
+
+.fw-bold {
+  font-weight: 700 !important;
+}
+
+/* 알림 항목 전체 정렬 */
+.notification-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+}
+
+/* 사용자 이미지 (아바타) */
+.notification-item img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* 텍스트 박스 */
+.notification-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 사용자 이름 + 시간 */
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* 메시지 텍스트 */
+.notification-message {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* View All */
+.notification-view-all {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  gap: 8px;
+  border-top: 1px solid #eee;
+  font-weight: 500;
+  color: #333;
+}
+
+.notification-view-all svg {
+  width: 24px;
+  height: 24px;
+}
+
+.notification-bell {
+  position: relative !important;
+  display: inline-block; /* 아이콘 정렬 안정화 */
+}
+
+.notification-bell.unread::before {
+  content: "";
+  position: absolute;
+  top: 2px; /* ← 더 위로 올릴 수 있음 */
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  background-color: red;
+  border-radius: 50%;
+  z-index: 10; /* 아이콘보다 확실히 위 */
+}
+.search-section {
+  background-color: var(--color-gray-100); /* 또는 #f9f9f9 */
+  padding: 2.5rem 1.25rem; /* 기존 값 유지 */
+  border-radius: var(--radius-medium);     /* 테두리 둥글게 */
+}
+
 

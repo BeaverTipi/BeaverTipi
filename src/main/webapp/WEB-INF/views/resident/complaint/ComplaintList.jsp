@@ -25,7 +25,7 @@
 	<input type="hidden" name="search.brdCode" value="M0001"/>
     <!-- 건물 선택 -->
     <label>건물
-      <select name="search.bldgId" onchange="this.form.submit()">
+      <select name="search.bldgId">
         <c:forEach var="unit" items="${unitList}">
 		  <option value="${unit.bldgId}"
 		    ${unit.bldgId == selectedBldgId ? 'selected' : ''}>

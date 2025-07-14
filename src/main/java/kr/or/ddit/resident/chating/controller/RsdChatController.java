@@ -1,7 +1,6 @@
 package kr.or.ddit.resident.chating.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.or.ddit.resident.chating.dto.ChatMessageDTO;
-import kr.or.ddit.resident.chating.dto.LastMessageDTO;
 import kr.or.ddit.resident.chating.dto.ParticipantDTO;
 import kr.or.ddit.resident.chating.service.RsdChatServiceImpl;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
@@ -34,12 +32,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/resident")
 public class RsdChatController {
 
-	@Autowired 
-	RsdChatServiceImpl service; 
+	@Autowired
+	RsdChatServiceImpl service;
 //  채팅 팝업
-	@GetMapping("/chat") 
+	@GetMapping("/chat")
 	public String residentChat() {
-		 
+
 	    return "resident/chat/Chat";
 	}
 	
@@ -67,7 +65,7 @@ public class RsdChatController {
 	            ChatRoomInVO vo = new ChatRoomInVO();
 	            vo.setMbrCd(mbrCd);
 	            return vo;
-	        }) 
+	        })
 	        .toList();
 
 	    service.createChatRoom(crVO, criVO, residentList);
@@ -108,7 +106,7 @@ public class RsdChatController {
 	) {
 		String mbrCd = principal.getRealUser().getMbrCd();
 		String bldgId = service.getResidentChatRoomInfo(residentChatRoomId).getBldgId();
-	    List<ChatMessageDTO> messages = service.getMessages(residentChatRoomId,mbrCd);
+	    List<ChatMessageDTO> messages = service.getMessages(residentChatRoomId);
 	    model.addAttribute("messages", messages);
 	    model.addAttribute("residentChatRoomId", residentChatRoomId);
 	    model.addAttribute("mbrCd", mbrCd);
@@ -177,20 +175,7 @@ public class RsdChatController {
 		return service.getResidentBuildingList(mbrCd);
 	}
 	
-	@GetMapping("/chat/lastMessage")
-	@ResponseBody
-	public LastMessageDTO getLastMessage(@RequestParam("residentChatRoomId") String residentChatRoomId) {
-		return Optional.ofNullable(service.getLastMessage(residentChatRoomId))
-				.orElseGet(() -> {
-					LastMessageDTO empty = new LastMessageDTO();
-					empty.setResidentChatRoomId(residentChatRoomId);
-					empty.setMbrNnm("");
-					empty.setRcmCont("");
-					empty.setUnitRoom("");
-					empty.getRcmTime();
-					return empty;
-				});
-	}
+
 	
 	
 }

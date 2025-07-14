@@ -8,6 +8,7 @@ public interface MemberService {
 	public void createMember(MemberVO member);
 	public List<MemberVO> readMemberList();
 	public MemberVO readMember(String username);
+	public MemberVO readMemberByAll(String username);
 	public void modifyMember(MemberVO member);
 	public void removeMember(String username, String password);
 }

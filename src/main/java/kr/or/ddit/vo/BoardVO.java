@@ -37,7 +37,7 @@ public class BoardVO implements Serializable{
 	private String brdDelYn;
 	
 	private List<NoticeVO> notice;
-	private BoardCartegoryVO boardCartegory;	
+	private BoardCartegoryVO boardCartegory;
 	private List<FAQVO> faq;
 	private List<QnAVO> qna;
 	
@@ -59,9 +59,9 @@ public class BoardVO implements Serializable{
     private String searchTitle;     // 제목 검색
     private String searchWriter;    // 작성자 ID (MBR_CD) 검색
     private String searchRptStatusCode; // 신고 처리 상태 검색
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime brdPblsDtmFrom; // 게시글 게시일시 (신고일자로 사용) 시작
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime brdPblsDtmTo;   // 게시글 게시일시 (신고일자로 사용) 종료
     
     private MemberVO member;

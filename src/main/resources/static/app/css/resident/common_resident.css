@@ -1,0 +1,226 @@
+@charset "UTF-8";
+
+:root {
+  --color-text: #212529;
+  --color-muted: #888;
+  --color-border: #e0e0e0;
+  --font-base: 14px;
+  --font-title: 1.8em;
+}
+
+/* 기본 레이아웃 */
+body {
+  font-size: var(--font-base);
+  color: var(--color-text);
+}
+
+main.container {
+  width: 95%;
+  max-width: 1400px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.board-title {
+  max-width: 1400px;
+  width: 95%;
+  margin: 0 auto 20px auto;
+  padding-left: 0;
+  font-size: var(--font-title);
+  color: var(--color-text);
+}
+
+.container-wrapper {
+  background-color: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  margin: 0 auto 40px;
+  width: 95%;
+  max-width: 1400px;
+}
+
+/* 🔍 검색 영역 */
+.search-area {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: end;
+  padding: 14px;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 24px;
+}
+
+.search-form {
+  display: contents;
+}
+
+.search-conditions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+}
+
+.search-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1 200px;
+  min-width: 240px;
+  box-sizing: border-box;
+  /* ✅ 수직 정렬 보정 */
+  align-self: start;
+}
+
+.search-item label {
+  font-weight: bold;
+  width: 60px;
+  text-align: right;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.input-field,
+.select-field,
+input[type="date"] {
+  display: inline-block;
+  width: 200px;
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  background-color: #fff;
+  box-sizing: border-box;
+  flex: none;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+.select-field option {
+  white-space: nowrap;
+}
+
+.date-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 🔘 검색 버튼 영역 */
+.search-button-area {
+  display: flex;
+  align-items: flex-end;
+}
+
+.search-button-area button {
+  background-color: #555;
+  color: #fff;
+  padding: 9px 18px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  height: 40px;
+}
+
+.search-button-area button:hover {
+  background-color: #777;
+}
+
+/* 📋 게시판 테이블 */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  font-size: var(--font-base);
+  color: var(--color-text);
+}
+
+.table th,
+.table td {
+  border: 1px solid var(--color-border);
+  padding: 10px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.table th {
+  background-color: #777777;
+  color: #ffffff;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #fdfdfd;
+}
+
+.table tbody tr:hover {
+  background-color: #f2f2f2;
+  transition: 0.2s;
+}
+
+.no-data-center {
+  text-align: center;
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+/* 📄 페이지네이션 */
+.pagination-wrapper {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.pagination-wrapper a,
+.pagination-wrapper span.bg-primary {
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 0 6px;
+  border-radius: 6px;
+  font-size: var(--font-base);
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.pagination-wrapper span.bg-primary {
+  background-color: #777777;
+  color: #fff;
+}
+
+/* ✏️ 글쓰기/휴지통 버튼 */
+.btn-success {
+  background-color: #28a745;
+  color: white;
+  padding: 9px 18px;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.btn-dark {
+  background-color: #1f2d3d;
+  color: white;
+  padding: 9px 18px;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.write-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+/* ✅ 날짜 필드가 2칸 분량 차지하게 설정 */
+.search-item.double-width {
+  flex: 2 1 420px;
+  min-width: 420px;
+}
+
+/* ✅ 날짜 input 사이 여백 최소화 */
+.date-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;  /* 시작일 ~ 종료일 간 간격 */
+}

@@ -76,20 +76,6 @@
       margin-bottom: 10px;
       font-size: 14px;
     }
-    .btn-red-small {
-	  float: right;
-	  font-size: 12px;
-	  padding: 4px 10px;
-	  background-color: #dc3545;
-	  color: white;
-	  border: none;
-	  border-radius: 3px;
-	  cursor: pointer;
-	  margin-left: 10px;
-	}
-	.btn-red-small:hover {
-	  background-color: #c82333;
-	}
   </style>
 </head>
 <body>
@@ -101,15 +87,7 @@
     <p>② 동일한 가상계좌는 결제기관(웰컴페이먼츠)에서 위탁발급됩니다.</p>
     <p>③ 승인 후 가상계좌 관리자페이지(<a href="https://with.welcomefn.com/with" target="_blank">https://with.welcomefn.com/with</a>)에 로그인 가능합니다. (사전 비밀번호는 ID와 동일)</p>
     <p>④ 가상계좌 삭제 시 유의 : 가상계좌 문서체크 실패, 테스트 이외로 마감으로 인한 자동해제, 건물 연동 해제, 임의마감 등으로 종료</p>
-	<div class="notice">
-  <button class="btn btn-red-small" onclick="openModal()">가상계좌 신청하기</button>
-  <p>① 등록 절차 : 출금계좌 등록 → 가상계좌 신청 → 결제정보 심사 → 가상계좌 사용 승인 → 건물 연동</p>
-  ...
-</div>
-
   </div>
-
-  
 
   <div class="count-text">출금계좌 등록: <strong>0</strong>개 출금계좌 승인 완료</div>
 
@@ -136,64 +114,6 @@
       </tr>
     </tbody>
   </table>
-<!-- 가상계좌 신청 모달 -->
-<div id="accountModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.4); z-index:999;">
-  <div style="background:white; width:400px; margin:100px auto; padding:20px; border-radius:8px; position:relative;">
-    <h3>가상계좌 은행 선택</h3>
-    <p style="font-size: 13px; color: #666;">※ 가상계좌는 선택한 은행 명의로 발급되며, 추후 수정이 불가합니다.</p>
-    <select id="bankSelect" style="width:100%; padding:8px; font-size:14px; margin:10px 0;">
-      <option value="">은행을 선택하세요</option>
-      <option>우리은행</option>
-      <option>국민은행</option>
-      <option>신한은행</option>
-      <option>기업은행</option>
-      <option>농협</option>
-      <option>우체국</option>
-      <option>제일은행</option>
-      <option>하나은행</option>
-      <option>수협은행</option>
-      <option>외환은행</option>
-    </select>
-
-    <div style="text-align:right; margin-top:20px;">
-      <button onclick="submitBank()" class="btn btn-blue">신청</button>
-      <button onclick="closeModal()" class="btn btn-outline">취소</button>
-    </div>
-  </div>
-</div>
-<script>
-  function openModal() {
-    document.getElementById("accountModal").style.display = "block";
-  }
-
-  function closeModal() {
-    document.getElementById("accountModal").style.display = "none";
-  }
-
-  function submitBank() {
-    const bank = document.getElementById("bankSelect").value;
-    if (!bank) {
-      alert("은행을 선택해주세요.");
-      return;
-    }
-
-    // 테이블 행 생성
-    const tbody = document.querySelector("tbody");
-    tbody.innerHTML = `
-      <tr>
-        <td>${bank}<br>(출금)</td>
-        <td>123-4567-8901</td>
-        <td>홍길동</td>
-        <td>123-45-67890</td>
-        <td>승인대기</td>
-        <td>testAdmin</td>
-        <td><button class="btn btn-blue" style="font-size:12px;">발송</button></td>
-      </tr>
-    `;
-
-    closeModal();
-  }
-</script>
 
 </body>
 </html>

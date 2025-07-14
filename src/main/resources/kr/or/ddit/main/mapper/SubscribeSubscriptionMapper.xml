@@ -94,7 +94,6 @@
 			, SUBS_EXPIRATION_DATE
 			, SUBS_UPDATED_DATE
 			, SUBS_STARTED_AT
-			, SUBS_APPROVAL_YN
 			, SOL_ID
 			, MBR_CD
 			, SOL_NAME
@@ -122,7 +121,6 @@
 			, SUBS_EXPIRATION_DATE
 			, SUBS_UPDATED_DATE
 			, SUBS_STARTED_AT
-			, SUBS_APPROVAL_YN
 			, SOL_ID
 			, MBR_CD
 			, SOL_NAME
@@ -162,7 +160,6 @@
 		, SUBS_REVOKED_AT
 		, SUBS_STATUS_GRP_CD
 		, SUBS_AUTO_RENEW_GRP_CD
-		, SUBS_APPROVAL_YN
 	) VALUES(
 		TRIM('S')||TRIM(TO_CHAR(SEQ_SUBS_ID.NEXTVAL,'00000'))
 		, #{mbrCd}
@@ -175,7 +172,6 @@
 		, #{subsRevokedAt}
 		, #{subsStatusGrpCd}
 		, #{subsAutoRenewGrpCd}
-		, 'N'
 	)
 </insert>
 

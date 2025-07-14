@@ -77,8 +77,7 @@
 			resultType="int">
 		SELECT COUNT(*)
 		FROM MEMBER MBR
-		<include refid="memberSearchCondition"/>
-	</select>
+		<include refid="memberSearchCondition" /> </select>
 
 	<update id="updateMemberStatus" parameterType="kr.or.ddit.vo.MemberVO">
 		UPDATE MEMBER

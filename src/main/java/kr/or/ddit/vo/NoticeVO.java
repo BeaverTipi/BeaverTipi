@@ -6,12 +6,8 @@ import java.time.format.DateTimeFormatter;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
-@Getter
-@Setter
 @EqualsAndHashCode(of="noticeNo")
 public class NoticeVO extends BoardVO implements Serializable{
 	private String noticeNo;

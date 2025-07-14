@@ -6,12 +6,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(of= {"intgFeeId","intManFeeCd","unitId","bldgId","rentalPtyId"})
+@EqualsAndHashCode(of= {"intgFeeId"})
 public class IntegratedManagementFeeVO implements Serializable{
 	private String intgFeeId;
 	private String unitId;
 	private String bldgId;
 	private String rentalPtyId;
+	private String intgFeeMonth;
 	private Integer intgFeeAmount;
 	private String intgFeeStatus;
 	private String intgFeeStatusGrpCd;
@@ -19,7 +20,4 @@ public class IntegratedManagementFeeVO implements Serializable{
 	private String intgFeePaidDate;
 	private String intgFeeIssueDate;
 	private String intgFeeDesc;
-	private String intManFeeCd;
-	private String intManFeeCdGrpCd;
-
 }
