@@ -1,5 +1,6 @@
 package kr.or.ddit.util.websocket;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,7 +84,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
         	    msg.getResidentChatRoomId(),
         	    senderInfo.getMbrNnm(),
         	    msg.getRcmCont(),
-        	    senderInfo.getUnitRoom() // ✅ 추가됨
+        	    senderInfo.getUnitRoom(),
+        	    LocalDateTime.now().toString()
         	);
     }
 

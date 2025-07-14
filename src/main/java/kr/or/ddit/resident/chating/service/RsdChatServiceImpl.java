@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.resident.chating.dto.ChatMessageDTO;
+import kr.or.ddit.resident.chating.dto.LastMessageDTO;
 import kr.or.ddit.resident.chating.dto.ParticipantDTO;
 import kr.or.ddit.resident.mapper.RsdChatMapper;
 import kr.or.ddit.util.websocket.ChatListSocketHandler;
@@ -76,10 +77,10 @@ public class RsdChatServiceImpl implements RsdChatServcie {
     }
 
     @Override
-    public List<ChatMessageDTO> getMessages(String residentChatRoomId) {
-        return mapper.selectMessages(residentChatRoomId);
+    public List<ChatMessageDTO> getMessages(String residentChatRoomId, String mbrCd) {
+        return mapper.selectMessages(residentChatRoomId, mbrCd);
     }
-
+    
     @Override
     public void createMessage(ResidentChatMessageVO rcmVO) {
         mapper.insertChatMessage(rcmVO);
@@ -116,4 +117,11 @@ public class RsdChatServiceImpl implements RsdChatServcie {
     public List<UnitResidentVO> getNotInChatRoomResidentList(String residentChatRoomId) {
         return mapper.selectNotInChatRoomResidentList(residentChatRoomId);
     }
+
+	@Override
+	public LastMessageDTO getLastMessage(String residentChatRoomId) {
+		return mapper.selectLastMessage(residentChatRoomId);
+	}
+
+
 }

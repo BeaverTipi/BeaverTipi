@@ -18,38 +18,43 @@ import kr.or.ddit.vo.UnitResidentVO;
 @Mapper
 public interface RsdChatMapper {
 	
-	List<BuildingVO> selectResidentBuildingList(String mbrCd);
+	public List<BuildingVO> selectResidentBuildingList(String mbrCd);
 	
-	List<ChatRoomInVO> selectBuildingChatList(
+	public List<ChatRoomInVO> selectBuildingChatList(
 			@Param("mbrCd") String mbrCd,
 			@Param("bldgId") String bldgId
 			);
 	
-	int insertChatRoom(ResidentChatRoomVO rsdChatRoomVO);
+	public int insertChatRoom(ResidentChatRoomVO rsdChatRoomVO);
 	
-	List<UnitResidentVO> selectResidentList(UnitResidentVO uriVO); 
+	public List<UnitResidentVO> selectResidentList(UnitResidentVO uriVO); 
 	
-	List<UnitResidentVO> selectNotInChatRoomResidentList(String residentChatRoomId); 
+	public List<UnitResidentVO> selectNotInChatRoomResidentList(String residentChatRoomId); 
 	
-	int insertChatRoomIn(ChatRoomInVO criVO);
+	public int insertChatRoomIn(ChatRoomInVO criVO);
 	
-	List<ChatMessageDTO> selectMessages(String residentChatRoomId);
-	
-	int insertChatMessage(ResidentChatMessageVO rcmVO);
-	
-	ChatMessageDTO selectWhoIsSender(
-			@Param("mbrCd") String mbrCd,
-			@Param("residentChatRoomId") String residentChatRoomId
-			); 
-	List<ParticipantDTO> selectChatParticipantList(String residentChatRoomId);
-	
-	int updateLeaveChatRoom(ChatRoomInVO criVO);
-	
-	ResidentChatRoomVO selectResidentChatRoomInfo(String residentChatRoomId);
-	
-	int inviteChatRoom(
+	public List<ChatMessageDTO> selectMessages(
 			  @Param("residentChatRoomId") String residentChatRoomId,
 			  @Param("mbrCd") String mbrCd 
 			);
-	LastMessageDTO selectLastMessage(String residentChatRoomId);
+	
+	public int insertChatMessage(ResidentChatMessageVO rcmVO);
+	
+	public ChatMessageDTO selectWhoIsSender(
+			@Param("mbrCd") String mbrCd,
+			@Param("residentChatRoomId") String residentChatRoomId
+			); 
+	public List<ParticipantDTO> selectChatParticipantList(String residentChatRoomId);
+	
+	public int updateLeaveChatRoom(ChatRoomInVO criVO);
+	
+	public ResidentChatRoomVO selectResidentChatRoomInfo(String residentChatRoomId);
+	
+	public int inviteChatRoom(
+			  @Param("residentChatRoomId") String residentChatRoomId,
+			  @Param("mbrCd") String mbrCd 
+			);
+	public LastMessageDTO selectLastMessage(String residentChatRoomId);
+	
+	
 }

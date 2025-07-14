@@ -1,6 +1,7 @@
 package kr.or.ddit.resident.chating.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.or.ddit.resident.chating.dto.ChatMessageDTO;
+import kr.or.ddit.resident.chating.dto.LastMessageDTO;
 import kr.or.ddit.resident.chating.dto.ParticipantDTO;
 import kr.or.ddit.resident.chating.service.RsdChatServiceImpl;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
@@ -106,7 +108,7 @@ public class RsdChatController {
 	) {
 		String mbrCd = principal.getRealUser().getMbrCd();
 		String bldgId = service.getResidentChatRoomInfo(residentChatRoomId).getBldgId();
-	    List<ChatMessageDTO> messages = service.getMessages(residentChatRoomId);
+	    List<ChatMessageDTO> messages = service.getMessages(residentChatRoomId,mbrCd);
 	    model.addAttribute("messages", messages);
 	    model.addAttribute("residentChatRoomId", residentChatRoomId);
 	    model.addAttribute("mbrCd", mbrCd);
@@ -175,7 +177,20 @@ public class RsdChatController {
 		return service.getResidentBuildingList(mbrCd);
 	}
 	
-
+	@GetMapping("/chat/lastMessage")
+	@ResponseBody
+	public LastMessageDTO getLastMessage(@RequestParam("residentChatRoomId") String residentChatRoomId) {
+		return Optional.ofNullable(service.getLastMessage(residentChatRoomId))
+				.orElseGet(() -> {
+					LastMessageDTO empty = new LastMessageDTO();
+					empty.setResidentChatRoomId(residentChatRoomId);
+					empty.setMbrNnm("");
+					empty.setRcmCont("");
+					empty.setUnitRoom("");
+					empty.getRcmTime();
+					return empty;
+				});
+	}
 	
 	
 }

@@ -24,7 +24,6 @@ public class ChatListSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         chatListSessions.add(session);
-        log.info("🔌 채팅 목록 WebSocket 연결됨 → sessionId={}", session.getId());
     }
 
     @Override
@@ -33,32 +32,32 @@ public class ChatListSocketHandler extends TextWebSocketHandler {
         if ("ping".equalsIgnoreCase(payload)) {
             session.sendMessage(new TextMessage("pong"));
         }
-        log.info("📩 목록 WebSocket 메시지 수신: {}", payload);
+
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         chatListSessions.remove(session);
-        log.info("❌ 목록 WebSocket 연결 종료 → sessionId={}, 상태={}", session.getId(), status);
     }
 
-    public void broadcastMessageUpdate(String roomId, String sender, String content, String unitRoom) {
+    public void broadcastMessageUpdate(String roomId, String mbrNnm, String rcmCont, String unitRoom, String rcmTime ) {
         Map<String, Object> payload = Map.of(
             "type", "messagePreview",
             "residentChatRoomId", roomId,
-            "sender", sender,
-            "content", content,
-            "unitRoom", unitRoom // ✅ 새로 추가됨
+            "rcmCont", rcmCont,           
+            "rcmTime", rcmTime, 
+            "unitRoom", unitRoom,
+            "mbrNnm", mbrNnm              
         );
 
         sendToAll(payload);
-        log.info("🚀 메시지 프리뷰 갱신 브로드캐스트 완료 → roomId={}", roomId);
+       
     }
 
     public void broadcastNewChatRoom(Map<String, Object> newRoomInfo) {
         newRoomInfo.put("type", "newRoom");
         sendToAll(newRoomInfo);
-        log.info("📡 새 채팅방 생성 정보 브로드캐스트 완료");
+
     }
 
     private void sendToAll(Map<String, Object> payload) {
@@ -70,7 +69,7 @@ public class ChatListSocketHandler extends TextWebSocketHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("❌ WebSocket 목록 브로드캐스트 실패:", e);
+
         }
     }
 }
