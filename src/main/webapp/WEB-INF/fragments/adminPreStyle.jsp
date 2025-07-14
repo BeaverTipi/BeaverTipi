@@ -19,4 +19,5 @@
 <!-- Volt CSS -->
 <link type="text/css" href="${pageContext.request.contextPath}/volt/css/admin_volt.css" rel="stylesheet">
 <link type="text/css" href="${pageContext.request.contextPath}/app/css/modal.css" rel="stylesheet">
-
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">

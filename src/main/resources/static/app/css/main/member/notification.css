@@ -1,0 +1,63 @@
+@charset "UTF-8";
+
+:root {
+  --color-text: #4b3621;               /* 진한 브라운 (텍스트) */
+  --color-muted: #a78b71;              /* 따뜻한 중간 브라운 */
+  --color-bg-light: #fdfaf6;           /* 크림색 배경 */
+  --color-bg-lighter: #fefefe;
+  --color-bg-hover: #f4e8d4;           /* 밝은 베이지 hover */
+  --color-border: #d8c3ab;
+
+  --color-table-header-bg: #7a5c3d;    /* 짙은 브라운 */
+  --color-table-header-text: #fff;
+
+  --color-btn-primary: #a47148;        /* 연한 캐러멜 브라운 */
+  --color-btn-secondary: #b9a089;
+  --color-btn-success: #8a6e4b;
+  --color-btn-danger: #a23e2f;
+  --color-btn-warning: #e6c28b;
+  --color-btn-dark: #5c3a21;           /* 진한 밤색 */
+  --color-btn-outline-info: #d9bfa3;
+
+  --color-approve: #6e442d;            /* 나무 느낌의 브라운 */
+  --color-reject: #a74a3f;
+
+  --font-base: 14px;
+  --font-large: 16px;
+  --font-title: 1.8em;
+
+  --spacing-sm: 10px;
+  --spacing-md: 20px;
+}
+
+/* pagination 기본 레이아웃 */
+.pagination-wrapper {
+  text-align: center;
+  margin-top: var(--spacing-md);
+}
+
+.pagination-wrapper a,
+.pagination-wrapper span.bg-primary,
+.pagination-wrapper strong {
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 0 6px;
+  border-radius: 6px;
+  font-size: var(--font-base);
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: all 0.2s;
+}
+
+.pagination-wrapper span.bg-primary,
+.pagination-wrapper strong {
+  background-color: var(--color-btn-dark) !important;/* 강조색: 진밤색 */
+  color: #fff;
+  font-weight: bold;
+}
+
+.pagination-wrapper a:hover {
+  background-color: var(--color-bg-hover) !important; /* 밝은 베이지 */
+  color: #000;
+}

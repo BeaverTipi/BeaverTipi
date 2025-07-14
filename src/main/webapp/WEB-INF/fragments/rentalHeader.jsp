@@ -59,7 +59,7 @@
 					</c:forEach>
 				</c:when>
 				<c:otherwise>
-					<div class="text-center py-3 text-muted">알림이 없습니다.</div>
+					<div class="text-center py-3 border-bottom border-light ">알림이 없습니다.</div>
 				</c:otherwise>
 			</c:choose>
 

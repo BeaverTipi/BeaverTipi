@@ -6279,16 +6279,6 @@ textarea.form-control-lg {
     white-space: nowrap;
 }
 
-.dropdown-toggle::after {
-    display: inline-block;
-    margin-left: 0.255em;
-    vertical-align: 0.255em;
-    content: "";
-    border-top: 0.3em solid;
-    border-right: 0.3em solid transparent;
-    border-bottom: 0;
-    border-left: 0.3em solid transparent;
-}
 
 .dropdown-toggle:empty::after {
     margin-left: 0;
@@ -28757,6 +28747,10 @@ article .h1, article .h2, article .h3, article .h4, article .h5, article .h6 {
 .datepicker-dropdown {
     z-index: 9999;
 }
+.dropdown-toggle::after {
+    display: none;
+}
+
 /*# sourceMappingURL=volt.css.map */
 /* ✅ userDropdown에는 화살표 다시 활성화 */
 #userDropdown.dropdown-toggle::after {

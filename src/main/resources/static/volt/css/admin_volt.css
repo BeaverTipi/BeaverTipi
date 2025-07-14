@@ -1235,8 +1235,8 @@ sup {
 }
 
 a {
-    color: #1F2937;
-    text-decoration: none;
+    color: #1F2937 !important;
+    text-decoration: none !important;
 }
 
 a:hover {
@@ -6279,16 +6279,6 @@ textarea.form-control-lg {
     white-space: nowrap;
 }
 
-.dropdown-toggle::after {
-    display: inline-block;
-    margin-left: 0.255em;
-    vertical-align: 0.255em;
-    content: "";
-    border-top: 0.3em solid;
-    border-right: 0.3em solid transparent;
-    border-bottom: 0;
-    border-left: 0.3em solid transparent;
-}
 
 .dropdown-toggle:empty::after {
     margin-left: 0;
@@ -6535,7 +6525,7 @@ textarea.form-control-lg {
     padding: 0.25rem 1rem;
     clear: both;
     font-weight: 400;
-    color: #111827;
+    color: #1F2937;
     text-align: inherit;
     white-space: nowrap;
     background-color: transparent;
@@ -22298,7 +22288,7 @@ textarea.form-control-lg {
 }
 
 .navbar-dark > .nav-item:hover > .nav-link {
-    color: #1F2937;
+    color: #545454;
 }
 
 .navbar-light:not(.headroom--not-top) .btn-outline-soft {
@@ -22526,7 +22516,7 @@ textarea.form-control-lg {
 }
 
 .navbar-theme-primary:not(.headroom) {
-    background-color: #1F2937;
+    background-color: #3D3D3D;
 }
 
 /**
@@ -22867,7 +22857,7 @@ textarea.form-control-lg {
 
 .sidebar .nav-item.active > .nav-link {
     color: #F2F4F6;
-    background-color: #374151;
+    background-color: #545454;
 }
 
 .sidebar .nav-item .nav-link {
@@ -22877,7 +22867,7 @@ textarea.form-control-lg {
 
 .sidebar .nav-item .nav-link:hover {
     color: #F2F4F6;
-    background-color: #374151;
+    background-color: #545454;
 }
 
 .sidebar .nav-link + .multi-level {
@@ -22893,7 +22883,7 @@ textarea.form-control-lg {
 
 .sidebar .nav-link .sidebar-icon {
     margin-right: 0.5rem;
-    color:rgb(225, 227, 232);
+    color: rgb(225, 227, 232);
 }
 
 .sidebar .nav-link .link-arrow {
@@ -28757,7 +28747,11 @@ article .h1, article .h2, article .h3, article .h4, article .h5, article .h6 {
 .datepicker-dropdown {
     z-index: 9999;
 }
+/*# sourceMappingURL=volt.css.map */
 /* ✅ userDropdown에는 화살표 다시 활성화 */
+.dropdown-toggle::after {
+    display: none !important;
+}
 #userDropdown.dropdown-toggle::after {
   display: inline-block !important;
   content: '' !important;
@@ -28767,5 +28761,87 @@ article .h1, article .h2, article .h3, article .h4, article .h5, article .h6 {
   border-right: 0.3em solid transparent;
   border-bottom: 0;
   border-left: 0.3em solid transparent;
+}
+
+/* 🔽 드롭다운 메뉴 큰 사이즈 및 위치 */
+.dropdown-menu-center {
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+.dropdown-menu-lg {
+  width: 360px;
+  padding: 0;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-menu-lg-end {
+  right: 0;
+  left: auto;
+}
+
+.dropdown-menu-lg-end[data-bs-popper] {
+  right: 0;
+  left: auto;
+}
+
+.dropdown-menu-lg-start {
+  left: 0;
+  right: auto;
+}
+
+/* 🔽 드롭다운 리스트 그룹 */
+.dropdown-menu .list-group {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.dropdown-menu .list-group-item {
+  display: flex;
+  padding: 0.75rem 1rem;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.dropdown-menu .list-group-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-menu .list-group-item img {
+  width: 48px;
+  height: 48px;
+  border-radius: 0.5rem;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.dropdown-menu .list-group-item .col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 1rem;
+  min-width: 0;
+}
+
+.dropdown-menu .list-group-item .d-flex {
+  justify-content: space-between;
+  align-items: center;
+}
+.text-notification {
+  color: #1f2937 !important; /* 회색 계열 원하는 색상 */
+  text-decoration: none;
+}
+.border-silver{
+	border-bottom :0.0625rem solid #E5E7EB;
+}
+.dropdown-divider {
+    height: 0;
+    margin: 0.5rem 0;
+    overflow: hidden;
+    border-top: 1px solid #E5E7EB !important;
+}
+.sidebar-text{
+	color : #f1f1f1;
 }
 

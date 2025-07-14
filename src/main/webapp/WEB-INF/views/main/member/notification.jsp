@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
+<link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/main/member/notification.css">
 <div id="notificationListFragment">
   <c:choose>
     <c:when test="${not empty notifications}">
@@ -34,7 +34,7 @@
     </c:otherwise>
   </c:choose>
 
-  <div class="mt-3 text-center">
+  <div class="mt-3 text-center pagination-wrapper">
     ${pagingHTML}
   </div>
 </div>
