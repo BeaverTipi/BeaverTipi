@@ -25,43 +25,61 @@
 				</li>
 
 				<!-- 🔔 알림 -->
-				<li class="nav-item dropdown">
-					<a class="nav-link text-dark notification-bell unread dropdown-toggle" id="notificationDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-  <span class="position-relative d-inline-block">
-    <svg class="icon icon-sm text-dark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20">
-      <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
-    </svg>
-  </span>
-</a>
+				<!-- 🔔 알림 -->
+<li class="nav-item dropdown">
+	<a class="nav-link text-dark notification-bell dropdown-toggle" id="notificationDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+		<span class="position-relative d-inline-block">
+			<svg class="icon icon-sm text-dark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20">
+				<path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
+			</svg>
+			<c:if test="${unreadCount > 0}">
+				<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+					${unreadCount}
+				</span>
+			</c:if>
+		</span>
+	</a>
 
-					<div class="dropdown-menu dropdown-menu-lg dropdown-menu-end mt-2 py-0">
-						<div class="list-group list-group-flush">
-							<a href="#" class="text-center text-primary fw-bold border-bottom border-light py-3">Notifications</a>
-							<c:forEach var="i" begin="1" end="5">
-								<a href="#" class="list-group-item list-group-item-action border-bottom">
-									<div class="row align-items-center">
-										<div class="col-auto">
-											<img src="${pageContext.request.contextPath}/volt/assets/img/team/profile-picture-${i}.jpg" class="avatar-md rounded" alt="알림">
-										</div>
-										<div class="col ps-0 ms-2">
-											<div class="d-flex justify-content-between align-items-center">
-												<h4 class="h6 mb-0 text-small">User ${i}</h4>
-												<small class="text-muted">${i} hrs ago</small>
-											</div>
-											<p class="font-small mt-1 mb-0">메시지 예시 ${i}</p>
-										</div>
+	<div class="dropdown-menu dropdown-menu-lg dropdown-menu-end mt-2 py-0">
+		<div class="list-group list-group-flush">
+			<a href="#" class="text-center text-primary fw-bold border-bottom border-light py-3">Notifications</a>
+
+			<c:choose>
+				<c:when test="${not empty notifications}">
+					<c:forEach var="notification" items="${notifications}">
+						<a href="${notification.url}" class="list-group-item list-group-item-action border-bottom">
+							<div class="row align-items-center">
+								<div class="col-auto">
+									<img src="${pageContext.request.contextPath}/volt/assets/img/team/profile-picture-1.jpg" class="avatar-md rounded" alt="알림">
+								</div>
+								<div class="col ps-0 ms-2">
+									<div class="d-flex justify-content-between align-items-center">
+										<h4 class="h6 mb-0 text-small">${notification.title}</h4>
+										<small class="text-muted">${notification.createdAt}</small>
 									</div>
-								</a>
-							</c:forEach>
-							<a href="#" class="dropdown-item text-center fw-bold rounded-bottom py-3">
-								<svg class="icon icon-xxs text-gray-400 me-1" fill="currentColor" viewBox="0 0 20 20">
-									<path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-									<path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-								</svg> View all
-							</a>
-						</div>
-					</div>
-				</li>
+									<p class="font-small mt-1 mb-0">${notification.message}</p>
+								</div>
+							</div>
+						</a>
+					</c:forEach>
+				</c:when>
+				<c:otherwise>
+					<div class="text-center py-3 text-muted">알림이 없습니다.</div>
+				</c:otherwise>
+			</c:choose>
+
+			<a href="#" class="dropdown-item text-center fw-bold rounded-bottom py-3"
+			   data-bs-toggle="modal" data-bs-target="#notificationModal">
+				<svg class="icon icon-xxs text-gray-400 me-1" fill="currentColor" viewBox="0 0 20 20">
+					<path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+					<path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+				</svg>
+				전체 알림 보기
+			</a>
+		</div>
+	</div>
+</li>
+
 
 				<!-- 👤 사용자 드롭다운 -->
 				<li class="nav-item dropdown">
@@ -179,3 +197,20 @@
 		</div>
 	</div>
 </div>
+<!-- 🔔 전체 알림 모달 -->
+<!-- ✅ 전체 알림 모달 with AJAX 페이징 -->
+<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="notificationModalLabel">전체 알림</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+      </div>
+      <div class="modal-body" id="notificationModalContent">
+        <!-- 알림 목록이 AJAX로 로드됩니다. -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ JS는 별도 파일(notification-modal.js)로 분리됨 -->

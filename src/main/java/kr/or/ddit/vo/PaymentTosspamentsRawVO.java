@@ -1,8 +1,11 @@
 package kr.or.ddit.vo;
 import java.io.Serializable;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 @Data
 @EqualsAndHashCode(of= {"paymentKey"})
 public class PaymentTosspamentsRawVO implements Serializable{
@@ -26,5 +29,6 @@ public class PaymentTosspamentsRawVO implements Serializable{
 	private String customerName;
 	private String successUrl;
 	private String failUrl;
-	
+	@Value("${tosspayments.client-key}")
+	private String clientKey;
 }

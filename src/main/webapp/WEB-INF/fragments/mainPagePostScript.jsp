@@ -38,8 +38,7 @@
 
 <!-- Github buttons --> 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-<!-- axios -->
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 <!-- Daum 우편번호 서비스 -->
 <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>

@@ -2,7 +2,6 @@
  * 
  */
 function requestPayment() {
-	const tossPayments = TossPayments("test_ck_DLJOpm5QrlxRJLBQ0xqLrPNdxbWn"); // 토스에서 받은 clientKey로 교체
 	const solId = document.querySelector('input[name="solution"]:checked').value.trim();
 	const currentUrl = window.location.href;
 const payMethod = document.querySelector('input[name="paymentMethod"]:checked');
@@ -28,6 +27,8 @@ const payMethod = document.querySelector('input[name="paymentMethod"]:checked');
 	})
 		.then(response => response.json())
 		.then(data => {
+			const clientId = data.clientKey;
+			const tossPayments = TossPayments(clientKey); // 토스에서 받은 clientKey로 교체
 			return tossPayments.requestPayment(payMethod.value.trim(), {
 				amount: data.amount,
 				orderId: data.orderId,

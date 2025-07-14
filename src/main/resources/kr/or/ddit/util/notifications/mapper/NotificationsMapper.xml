@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="kr.or.ddit.util.notifications.mapper.NotificationsMapper">
+	
+<select id="selectNotificationList">
+  SELECT NOTIF_ID
+		  , MBR_CD
+		  , NOTIF_TITLE
+		  , NOTIF_MSG
+		  , NOTIF_DT
+		  , NOTIF_TYPE_CD
+		  , NOTIF_TYPE_GROUP_CD
+		  , NOTIF_REF_URL
+		  , NOTIF_READ_YN
+		  , NOTIF_DEL_YN
+  FROM NOTIFICATIONS
+  WHERE MBR_CD = #{username}
+</select>
+<select id="selectNotificationListPaging">
+  SELECT *
+  FROM (
+    SELECT A.*, ROWNUM RNUM
+    FROM (
+      SELECT *
+      FROM (
+		  SELECT NOTIF_ID
+				  , MBR_CD
+				  , NOTIF_TITLE
+				  , NOTIF_MSG
+				  , NOTIF_DT
+				  , NOTIF_TYPE_CD
+				  , NOTIF_TYPE_GROUP_CD
+				  , NOTIF_REF_URL
+				  , NOTIF_READ_YN
+				  , NOTIF_DEL_YN
+		  FROM NOTIFICATIONS
+		  WHERE MBR_CD = #{username}
+		  )
+      ORDER BY NOTIF_DT DESC
+    ) A
+    <![CDATA[
+    WHERE ROWNUM <= #{lastRecordIndex}
+  )
+  WHERE RNUM >= #{firstRecordIndex}
+    ]]>
+</select>
+<select id="selectTotalNotificationCount">
+  SELECT COUNT(NOTIF_ID)
+  FROM NOTIFICATIONS
+  WHERE MBR_CD = #{username}
+</select>
+<update id="updateReadYn">
+  UPDATE NOTIFICATIONS
+  SET NOTIF_READ_YN = 'Y'
+  WHERE NOTIF_ID = #{notifId}
+</update>
+
+<select id="selectNotification">
+  SELECT NOTIF_ID
+		  , MBR_CD
+		  , NOTIF_TITLE
+		  , NOTIF_MSG
+		  , NOTIF_DT
+		  , NOTIF_TYPE_CD
+		  , NOTIF_TYPE_GROUP_CD
+		  , NOTIF_REF_URL
+		  , NOTIF_READ_YN
+		  , NOTIF_DEL_YN
+  FROM NOTIFICATIONS
+  WHERE NOTIF_ID = #{notifId}
+</select>
+<insert id="insertNotificationApprove">
+INSERT INTO NOTIFICATIONS(
+	NOTIF_ID
+	, MBR_CD
+	, NOTIF_TITLE
+	, NOTIF_MSG
+	, NOTIF_DT
+	, NOTIF_TYPE_CD
+	, NOTIF_TYPE_GROUP_CD
+	, NOTIF_REF_URL
+	, NOTIF_READ_YN
+	, NOTIF_DEL_YN
+) VALUES (
+	#{notifId}
+	, #{mbrCd}
+	, #{notifTitle}
+	, #{notifMsg}
+	, SYSDATE
+	, 'NTFS'
+	, '001'
+	, #{notifRefUrl}
+	, 'N'
+	, 'N'
+)
+</insert>
+<insert id="insertNotificationReject">
+INSERT INTO NOTIFICATIONS(
+	NOTIF_ID
+	, MBR_CD
+	, NOTIF_TITLE
+	, NOTIF_MSG
+	, NOTIF_DT
+	, NOTIF_TYPE_CD
+	, NOTIF_TYPE_GROUP_CD
+	, NOTIF_REF_URL
+	, NOTIF_READ_YN
+	, NOTIF_DEL_YN
+) VALUES (
+	#{notifId}
+	, #{mbrCd}
+	, #{notifTitle}
+	, #{notifMsg}
+	, SYSDATE
+	, 'NTFS'
+	, '002'
+	, #{notifRefUrl}
+	, 'N'
+	, 'N'
+)
+</insert>
+</mapper>

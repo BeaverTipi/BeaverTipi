@@ -16,6 +16,6 @@ public class NotificationVO implements Serializable{
 	private String notifTypeCd;
 	private String notifTypeGroupCd;
 	private String notifRefUrl;
-	private String notifReadYn;
-	private String notifDelYn;
+	private boolean notifReadYn;
+	private boolean notifDelYn;
 }

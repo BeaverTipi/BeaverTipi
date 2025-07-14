@@ -34,6 +34,8 @@
 <meta name="theme-color" content="#ffffff">
 
 <%@ include file="/WEB-INF/fragments/adminPreStyle.jsp"%>
+<!-- axios -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <!-- NOTICE: You can use the _analytics.html partial to include production code specific code & trackers -->
 <sitemesh:write property="head"/>
 <c:if test="${not empty message}">
@@ -54,14 +56,17 @@
 
 <body>
 <main class="content">
+<c:choose>
+		  <c:when test="${param.popup ne 'true'}">
 	<%@include file="/WEB-INF/fragments/adminSidebar.jsp"%>
 
 	<%@include file="/WEB-INF/fragments/adminHeader.jsp"%>
-	
+	 </c:when>
+		</c:choose>
 	<sitemesh:write property="body"/>
 	
 
-        </main>
+</main>
     <%@ include file="/WEB-INF/fragments/mainPagePostScript.jsp"%>
 </body>
 </html>

@@ -56,10 +56,13 @@
 
 <body>
 <main class="content">
+<c:choose>
+		  <c:when test="${param.popup ne 'true'}">
 	<%@include file="/WEB-INF/fragments/rentalOwnerSidebar.jsp"%>
 
 	<%@include file="/WEB-INF/fragments/rentalHeader.jsp"%>
-	
+	</c:when>
+	</c:choose>
 	<sitemesh:write property="body"/>
 	
 

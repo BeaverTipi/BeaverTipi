@@ -2,6 +2,7 @@ package kr.or.ddit.main.subscribe.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +20,6 @@ import kr.or.ddit.admin.code.service.CommonCodeService;
 import kr.or.ddit.main.subscribe.service.SubscribeSubsriptionService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.util.validate.BrokerInsertGroup;
-import kr.or.ddit.util.validate.InsertGroup;
 import kr.or.ddit.util.validate.TenancyInsertGroup;
 import kr.or.ddit.util.validate.exception.FileIOException;
 import kr.or.ddit.vo.BrokerVO;
@@ -40,7 +40,8 @@ public class SubscribeSubsriptionController {
 	private final String successURL = "http://localhost/account/read?success=true";
 	private final String TENANCY = "tenancy";
 	private final String BROKER = "broker";
-
+	
+	
 	@ModelAttribute(TENANCY)
 	public TenancyVO tenancy() {
 		return new TenancyVO();
