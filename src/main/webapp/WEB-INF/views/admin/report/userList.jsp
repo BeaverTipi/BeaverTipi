@@ -6,14 +6,13 @@
 <html>
 <head>
     <title>회원 & 매물 신고 관리</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="/app/css/admin/common_admin.css">
     <link rel="stylesheet" href="/app/css/admin/board/userList.css">
 </head>
 <body>
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script src="/app/js/admin/board/userList.js"></script>
 <h2>회원 & 매물 신고 관리</h2>
 
