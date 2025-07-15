@@ -313,7 +313,11 @@ input[type="date"]:focus,
   border-radius: 6px;
   cursor: pointer;
 }
-
+/* ✅ 날짜 필드가 2칸 분량 차지하게 설정 */
+.search-item.double-width {
+  flex: 2 1 420px;
+  min-width: 420px;
+}
 .write-buttons .btn-success {
   background-color: var(--color-btn-success);
   color: #fff;

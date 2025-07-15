@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import kr.or.ddit.vo.CommonCodeVO;
+import kr.or.ddit.vo.ContractVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
 import kr.or.ddit.vo.MemberVO;
@@ -41,5 +42,11 @@ public interface BrokerContractService {
 	public List<ListingWishlistVO> readLesseeVolunteerList(String lstgId);
 	
 	public Map<String, Object> readContractPartyInfo(Map<String, String> partyInfoParams);
+	
+	public List<ContractVO> readContractList(String mbrCd);
 
+	/**
+	 * @return 계약ID를 돌려줘서 그걸로 계약파일 이름을 짓는 게 낫지 않나
+	 */
+	public String createProceedingContract();
 }

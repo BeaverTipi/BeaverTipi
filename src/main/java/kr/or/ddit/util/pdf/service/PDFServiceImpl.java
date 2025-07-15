@@ -1,6 +1,8 @@
 package kr.or.ddit.util.pdf.service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -12,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.*;
 
 @Service
 public class PDFServiceImpl implements PDFService {
@@ -97,5 +101,51 @@ public class PDFServiceImpl implements PDFService {
                 100 + random.nextInt(900),
                 random.nextInt(100),
                 random.nextInt(100000));
+    }
+    
+    public File mergeToSinglePdf(java.util.List<MultipartFile> files) throws Exception {
+        Document document = new Document(PageSize.A4);
+        File mergedFile = File.createTempFile("merged-", ".pdf");
+        PdfCopy copy = new PdfCopy(document, new FileOutputStream(mergedFile));
+        document.open();
+
+        for (MultipartFile file : files) {
+            String contentType = file.getContentType();
+
+            if (contentType != null && contentType.startsWith("image/")) {
+                // 이미지 → PDF 페이지로 변환
+                Image img = Image.getInstance(file.getBytes());
+
+                // 비율 조정 (A4 크기에 맞춤)
+                img.scaleToFit(PageSize.A4.getWidth() - 40, PageSize.A4.getHeight() - 40);
+                img.setAlignment(Element.ALIGN_CENTER);
+
+                // 새 페이지에 이미지 추가
+                Document imgDoc = new Document(PageSize.A4);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                PdfWriter.getInstance(imgDoc, baos);
+                imgDoc.open();
+                imgDoc.add(img);
+                imgDoc.close();
+
+                // 이미지 페이지 PDF → 기존 문서에 추가
+                PdfReader imgReader = new PdfReader(baos.toByteArray());
+                for (int i = 1; i <= imgReader.getNumberOfPages(); i++) {
+                    copy.addPage(copy.getImportedPage(imgReader, i));
+                }
+                imgReader.close();
+
+            } else if (contentType != null && contentType.equals("application/pdf")) {
+                // PDF → 그대로 병합
+                PdfReader reader = new PdfReader(file.getInputStream());
+                for (int i = 1; i <= reader.getNumberOfPages(); i++) {
+                    copy.addPage(copy.getImportedPage(reader, i));
+                }
+                reader.close();
+            }
+        }
+
+        document.close();
+        return mergedFile;
     }
 }

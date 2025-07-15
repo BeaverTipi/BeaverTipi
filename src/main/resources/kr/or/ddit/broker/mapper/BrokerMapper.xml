@@ -139,4 +139,25 @@
 	  FROM COMMON_CODE
 	 WHERE CODE_GROUP = 'LSR'
 </select>
+<select id="selectContractList" parameterType="String" resultType="ContractVO">
+	SELECT *
+	  FROM CONTRACT
+	 WHERE MBR_CD = #{mbrCd}
+</select>
+<insert id="insertProceedingContract" parameterType="ContractVO">
+	INSERT INTO CONTRACT
+	VALUES(
+	    'CN' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(seq_contr_id.NEXTVAL, 3, '0')
+	    , #{mbrCd}
+	    , #{mbrCdBrok}
+	    , #{lstgId}
+	    , #{contTypeCode}
+	    , #{contDeposit}
+	    , #{contTaxAmount}
+	    , #{contStatCd}
+	    , SYSDATE
+	    , #{contTypeGroupCd}
+	    , 'CONTR'
+	)
+</insert>
 </mapper>

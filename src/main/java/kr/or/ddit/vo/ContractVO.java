@@ -2,11 +2,18 @@ package kr.or.ddit.vo;
 
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
+@SuppressWarnings("serial")
 @Data
 @EqualsAndHashCode(of= {"contId"})
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ContractVO implements Serializable{
 	private String contId;
 	private String mbrCd;
@@ -14,9 +21,9 @@ public class ContractVO implements Serializable{
 	private String lstgId;
 	private String contTypeCode;
 	private String contTypeGroupCd;
-	private Integer contDeposit;
-	private Integer contTaxAmount;
-	private Integer contAmount;
+	private Long contDeposit;
+	private Long contTaxAmount;
+	private Long contAmount;
 	private String contStatCd;
 	private String contDtm;
 }

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import kr.or.ddit.broker.mapper.BrokerMapper;
 import kr.or.ddit.broker.service.BrokerContractService;
+import kr.or.ddit.vo.ContractVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
 import lombok.RequiredArgsConstructor;
@@ -60,5 +61,22 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 		lesseeVolunteerList = mapper.selectWishlistForLessee(lstgId);
 		return lesseeVolunteerList;
 	}
+
+	/**
+	 *	@param principal 내에서 불러온 Broker의 mbrCd
+	 *	@return Broker가 가진 계약(CONTRACT)의 리스트
+	 */
+	@Override
+	public List<ContractVO> readContractList(String mbrCd) {
+		List<ContractVO> contractList = null;
+		
+		return contractList;
+	}
+	
+	@Override
+	public String createProceedingContract() {
+		String contractId = "";
+		return contractId;
+	};
 
 }

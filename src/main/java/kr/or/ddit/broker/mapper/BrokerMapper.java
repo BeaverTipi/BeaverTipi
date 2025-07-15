@@ -4,9 +4,9 @@
  *   
  *   수정일      			수정자           수정내용
  *  -----------   	-------------    ---------------------------
- * 2025. 7. 9.     			김찬영            최초 생성
- * 2025. 7. 11.     		김찬영            패키지 고침.
- *
+ * 2025. 7. 9.     			김찬영          최초 생성
+ * 2025. 7. 11.     		김찬영          패키지 고침.
+ * 2025. 7. 15.				김찬영			insert계약
  * </pre>
  */
 package kr.or.ddit.broker.mapper;
@@ -19,6 +19,7 @@ import org.apache.ibatis.annotations.Param;
 
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.CommonCodeVO;
+import kr.or.ddit.vo.ContractVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
 import kr.or.ddit.vo.MemberVO;
@@ -51,9 +52,23 @@ public interface BrokerMapper {
 	public ListingVO selectLstgDetails(Map<String, String> param);
 	public List<ListingWishlistVO> selectWishlistForLessee(String lstgId);
 	
+	/**
+	 * @param mbrCd: 중개인의 멤버코드
+	 * @return 중개인이 관리하는 계약의 기본정보 리스트
+	 */
+	public List<ContractVO> selectContractList(String mbrCd);
+	
+	/**
+	 * @param contract: [새 전자계약 진행]에서 정상적으로 등록한 계약 정보
+	 * @return 성공: 1, 실패: 0
+	 */
+	public int insertProceedingContract(ContractVO contract);
 	
 	public List<CommonCodeVO> selectBankList();
 	public List<CommonCodeVO> selectLesserTypeList();
     public List<CommonCodeVO> selectCommonCodeByGroup(@Param("codeGroup") String codeGroup);
+    
+    
+    
 
 }
