@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SubscribeSubsriptionController {
 	private final SubscribeSubsriptionService service;
 	private final CommonCodeService commonService;
-	private final String successURL = "http://localhost/account/read?success=true";
+	
 	private final String TENANCY = "tenancy";
 	private final String BROKER = "broker";
 	
@@ -53,15 +53,7 @@ public class SubscribeSubsriptionController {
 	}
 
 	@GetMapping("/subscribe/subscription")
-	public String formUI(Model model, @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
-		String username = principal.getRealUser().getMbrCd();
-		SolutionSubscriptionVO solutionSubscription = service.readSolutionSubscription(username);
-		List<SolutionVO> solutionList = service.readSolutionList();
-		List<CommonCodeVO> commonCodeList = commonService.readCommonCodeList("PAY");
-
-		model.addAttribute("solutionSubscription", solutionSubscription);
-		model.addAttribute("solutionList", solutionList);
-		model.addAttribute("commonCodeList", commonCodeList);
+	public String formUI() {
 		return "main/subscribe/subscribe";
 	}
 
@@ -157,18 +149,5 @@ public class SubscribeSubsriptionController {
 		return lvn;
 	}
 
-	@PostMapping("/ajax/payment/ready")
-	@ResponseBody
-	public PaymentTosspamentsRawVO formProcess(@RequestBody SolutionVO solution,
-			@AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
-		SolutionVO sol = service.readSolution(solution.getSolId());
-		String orderId = "ORD" + System.currentTimeMillis() + principal.getRealUser().getMbrCd();
-		PaymentTosspamentsRawVO toss = new PaymentTosspamentsRawVO();
-		toss.setOrderId(orderId);
-		toss.setAmount(sol.getSolPrice());
-		toss.setOrderName(sol.getSolName());
-		toss.setCustomerName(principal.getRealUser().getMbrNm());
-		toss.setSuccessUrl(successURL);
-		return toss;
-	}
+
 }

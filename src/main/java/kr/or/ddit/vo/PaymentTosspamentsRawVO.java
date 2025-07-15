@@ -29,6 +29,5 @@ public class PaymentTosspamentsRawVO implements Serializable{
 	private String customerName;
 	private String successUrl;
 	private String failUrl;
-	@Value("${tosspayments.client-key}")
 	private String clientKey;
 }

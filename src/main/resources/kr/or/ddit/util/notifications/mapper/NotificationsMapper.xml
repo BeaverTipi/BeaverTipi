@@ -88,8 +88,8 @@ INSERT INTO NOTIFICATIONS(
 	, #{notifTitle}
 	, #{notifMsg}
 	, SYSDATE
-	, 'NTFS'
 	, '001'
+	, 'NTFS'
 	, #{notifRefUrl}
 	, 'N'
 	, 'N'
@@ -113,8 +113,8 @@ INSERT INTO NOTIFICATIONS(
 	, #{notifTitle}
 	, #{notifMsg}
 	, SYSDATE
-	, 'NTFS'
 	, '002'
+	, 'NTFS'
 	, #{notifRefUrl}
 	, 'N'
 	, 'N'

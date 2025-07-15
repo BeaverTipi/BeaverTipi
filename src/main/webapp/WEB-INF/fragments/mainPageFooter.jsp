@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <footer class="footer mt-5 w-100">
-  <div class="container" style="background-color: #f9f9f9;">
+  <div class="container-fluid px-5" style="background-color: #f9f9f9;">
     <div class="row text-center justify-content-between px-5 py-4 mx-0">
       <div class="col-6 col-md-3 mb-4">
         <h6 class="fw-bold">상품검색</h6>

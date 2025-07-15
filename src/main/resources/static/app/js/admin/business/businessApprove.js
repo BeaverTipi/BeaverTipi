@@ -71,16 +71,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }).then(result => {
       if (result.isConfirmed) {
         // CSRF 토큰 가져오기
-        const csrfToken = document.querySelector("input[name='_csrf']").value;
+        const csrfInput = document.querySelector("input[name='_csrf']");
+        const csrfToken = csrfInput ? csrfInput.value : null;
+        const headers = {
+     	 'Content-Type': 'application/json'
+    	};
 
-        axios.post('/admin/business/bulkAction', {
+    if (csrfToken) {
+      headers['X-CSRF-TOKEN'] = csrfToken;
+    }
+
+        axios.post('/ajax/admin/business/bulkAction', {
           action: actionType,
           users: selectedUsers
         }, {
-          headers: {
-            'Content-Type': 'application/json',
-            ...(csrfToken && { 'X-CSRF-TOKEN': csrfToken })
-          }
+          headers: headers
         })
         .then(response => {
           Swal.fire('완료', '처리가 완료되었습니다.', 'success').then(() => {

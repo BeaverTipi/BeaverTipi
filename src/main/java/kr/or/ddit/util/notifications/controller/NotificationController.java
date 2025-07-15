@@ -3,6 +3,7 @@ package kr.or.ddit.util.notifications.controller;
 import java.util.List;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import kr.or.ddit.util.notifications.service.NotificationsService;
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.util.renderer.DefaultPaginationRenderer;
+import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.NotificationVO;
 import lombok.RequiredArgsConstructor;
 
@@ -37,9 +40,9 @@ public class NotificationController {
     public String readNotificationList(
             Model model,
             @RequestParam(defaultValue = "1") int page,
-            Authentication auth
+            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
     ) {
-        String mbrCd = auth.getName();
+        MemberVO member = principal.getRealUser();
 
         // 페이징 처리
         PaginationInfo<NotificationVO> paging = new PaginationInfo<>();
@@ -47,11 +50,11 @@ public class NotificationController {
         paging.setDetailSearch(new NotificationVO()); // 조건 없음
 
         // 전체 알림 수
-        int total = service.readTotalNotificationCount(mbrCd);
+        int total = service.readTotalNotificationCount(member.getMbrCd());
         paging.setTotalRecordCount(total);
 
         // 목록 조회
-        List<NotificationVO> list = service.readNotificationList(mbrCd, paging);
+        List<NotificationVO> list = service.readNotificationList(member.getMbrCd(), paging);
 
         // 페이징 HTML
         String pagingHTML = new DefaultPaginationRenderer().renderPagination(paging, "fnPaging");

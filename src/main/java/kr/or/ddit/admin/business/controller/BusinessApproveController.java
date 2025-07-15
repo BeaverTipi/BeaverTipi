@@ -38,7 +38,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
-@RequestMapping("/admin/business")
+@RequestMapping("")
 @RequiredArgsConstructor
 @Slf4j
 public class BusinessApproveController {
@@ -54,7 +54,7 @@ public class BusinessApproveController {
 	public BusinessApproveSearchVO search() {
 		return new BusinessApproveSearchVO();
 	}
-	@GetMapping("/approve")
+	@GetMapping("/admin/business/approve")
 	public String UI(
 			Model model
 			, @RequestParam(required = false, defaultValue = "1") int page
@@ -93,7 +93,7 @@ public class BusinessApproveController {
 				return "admin/business/businessApprove";
 		}
 	
-    @PostMapping("/approve/{userType}/{mbrCd}")
+    @PostMapping("/admin/business/approve/{userType}/{mbrCd}")
     public String formApprove(@PathVariable String mbrCd,@PathVariable String userType, RedirectAttributes redirectAttributes) {
         try {
         	        service.approveMember(mbrCd, userType);
@@ -106,7 +106,7 @@ public class BusinessApproveController {
         return "redirect:/admin/business/approve"; // 목록 페이지로 리다이렉트
     }
 
-    @PostMapping("/reject/{userType}/{mbrCd}")
+    @PostMapping("/admin/business/reject/{userType}/{mbrCd}")
     public String formReject(@PathVariable String mbrCd, @PathVariable String userType,RedirectAttributes redirectAttributes) {
         try {
             service.rejectMember(mbrCd,userType);
@@ -121,7 +121,7 @@ public class BusinessApproveController {
 
 
 
-	@GetMapping("/filePopup/{userType}/{mbrCd}")
+	@GetMapping("/admin/business/filePopup/{userType}/{mbrCd}")
 	public String showFilePopup(@PathVariable String mbrCd,
 	                            @PathVariable String userType,
 	                            Model model) throws JsonProcessingException {
@@ -137,7 +137,7 @@ public class BusinessApproveController {
 	    return "admin/business/filePopup";
 	}
 
-	@PostMapping("/bulkAction")
+	@PostMapping("/ajax/admin/business/bulkAction")
 	public ResponseEntity<String> bulkAction(@RequestBody Map<String, Object> bulkRequest) {
 	    try {
 	        String action = (String) bulkRequest.get("action");
@@ -170,7 +170,7 @@ public class BusinessApproveController {
 	}
 
 	
-	@GetMapping("/file/preview/{fileId}")
+	@GetMapping("/admin/business/file/preview/{fileId}")
 	public void previewFile(@PathVariable String fileId, HttpServletResponse response) {
 	    FileVO file = fileService.readFile(fileId);
 	    if (file == null) throw new FileIOException("파일이 존재하지 않습니다.");
@@ -186,7 +186,7 @@ public class BusinessApproveController {
 	}
 
     // ✅ Presigned URL 활용 (옵션)
-    @GetMapping("/presigned/{fileId}")
+    @GetMapping("/admin/business/presigned/{fileId}")
     public String generatePresignedUrl(@PathVariable String fileId,
                                        @RequestParam(defaultValue = "3") int expireMinutes) {
         return fileService.getPresignedUrl(fileId, expireMinutes); // 3분 유효한 URL

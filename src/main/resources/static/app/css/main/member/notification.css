@@ -61,3 +61,75 @@
   background-color: var(--color-bg-hover) !important; /* 밝은 베이지 */
   color: #000;
 }
+/* 기존 알림 텍스트 하단 간격 조정 */
+#notificationListFragment .list-group-item p {
+  font-size: 14px;
+  margin-top: 6px;
+  margin-bottom: 12px; /* 기존 0 → 여유 있게 조정 */
+  color: #333;
+  line-height: 1.5;
+}
+
+/* 타이틀과 뱃지 배치용 래퍼 */
+.notif-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* 타이틀과 배지 간격 */
+}
+
+/* 새로 도착 뱃지 */
+.notif-badge {
+  background-color: #e6f2ff;
+  color: #007bff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+/* 알림 한 항목당 세로 여백 추가 */
+#notificationListFragment .list-group-item {
+  padding: 20px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* 텍스트와 아이콘 사이 여백 */
+#notificationListFragment .row.align-items-center > .col {
+  padding-left: 12px;
+}
+#notificationListFragment .list-group-item:first-child {
+  padding-top: 0 !important;
+}
+/* 타이틀 영역 내부 정렬 */
+.notif-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* 타이틀과 배지 간격 */
+}
+
+/* 알림 메시지 여백 */
+#notificationListFragment .list-group-item p {
+  font-size: 14px;
+  margin-top: 6px;
+  margin-bottom: 14px;
+  color: #333;
+  line-height: 1.5;
+}
+
+/* 알림 배지 */
+.notif-badge {
+  background-color: #e6f2ff;
+  color: #007bff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+/* 모바일 대응 여백 축소 */
+@media (max-width: 768px) {
+  #notificationListFragment .list-group-item {
+    padding: 16px 12px;
+  }
+}

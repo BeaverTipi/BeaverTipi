@@ -46,20 +46,20 @@
 							<c:choose>
 								<c:when test="${not empty notifications}">
 									<c:forEach var="notification" items="${notifications}" varStatus="status" >
-										<a href="${notification.url}" class="list-group-item list-group-item-action border-bottom">
-											<div class="row align-items-center">
-												<div class="col-auto">
-													<img src="${pageContext.request.contextPath}/volt/assets/img/team/profile-picture-1.jpg" class="avatar-md rounded" alt="알림">
-												</div>
-												<div class="col ps-0 ms-2">
-													<div class="d-flex justify-content-between align-items-center">
-														<h4 class="h6 mb-0 text-small">${notification.title}</h4>
-														<small class="text-muted">${notification.createdAt}</small>
-													</div>
-													<p class="font-small mt-1 mb-0">${notification.message}</p>
-												</div>
-											</div>
-										</a>
+										<a href="/notification/read/${notifId}" class="list-group-item list-group-item-action border-bottom">
+							<div class="row align-items-center">
+								<div class="col-auto">
+									<img src="${pageContext.request.contextPath}/volt/assets/img/team/profile-picture-1.jpg" class="avatar-md rounded" alt="알림">
+								</div>
+								<div class="col ps-0 ms-2">
+									<div class="d-flex justify-content-between align-items-center">
+										<h4 class="h6 mb-0 text-small">${notification.notifTitle}</h4>
+										<small class="text-muted">${notification.notifDt}</small>
+									</div>
+									<p class="font-small mt-1 mb-0">${notification.notifMsg}</p>
+								</div>
+							</div>
+						</a>
 										    <c:if test="${status.last}">
 										        <!-- 🔽 마지막 알림 이후에만 보더 라인 추가 -->
 										        <div class="border-silver"></div>

@@ -37,13 +37,13 @@ public class BusinessApproveServiceImpl implements BusinessApproveService {
 			if(mapper.updateBrokerApprove(mbrCd)<1) {
 				throw new ApprovedException();
 			}
-			NotificationVO notification = notificationApprove(mbrCd);
+			NotificationVO notification = notificationApprove(mbrCd, "중개인","/broker");
 			service.createNotificationApprove(notification);
 		}else if ("TENANCY".equalsIgnoreCase(userType)){
 			if(mapper.updateTenancyApprove(mbrCd)<1) {
 				throw new ApprovedException();
 			}
-			NotificationVO notification = notificationApprove(mbrCd);
+			NotificationVO notification = notificationApprove(mbrCd,"임대인","/tenancy");
 			service.createNotificationApprove(notification);
 		}else {
 			throw new ApprovedException();
@@ -54,31 +54,31 @@ public class BusinessApproveServiceImpl implements BusinessApproveService {
 	public void rejectMember(String mbrCd, String userType) {
 		if ("BROKER".equalsIgnoreCase(userType)) {
 			if(mapper.updateBrokerReject(mbrCd)<1)throw new RejectedException();
-			NotificationVO notification = notificationReject(mbrCd);
+			NotificationVO notification = notificationReject(mbrCd,"중개인","/apply/broker");
 			service.createNotificationReject(notification);
 		}else if ("TENANCY".equalsIgnoreCase(userType)){
 			if(mapper.updateTenancyReject(mbrCd)<1)throw new RejectedException();
-			NotificationVO notification = notificationReject(mbrCd);
+			NotificationVO notification = notificationReject(mbrCd,"임대인","/apply/tenancy");
 			service.createNotificationReject(notification);
 		}else {
 			throw new RejectedException();
 		}
 	}
 	
-	private NotificationVO notificationApprove(String mbrCd) {
+	private NotificationVO notificationApprove(String mbrCd,String role, String url) {
 		NotificationVO notification = new NotificationVO();
 		notification.setMbrCd(mbrCd);
-		notification.setNotifMsg("승인 완료 되었습니다. 결제를 진행해주세요");
-		notification.setNotifTitle("승인 완료");
-		notification.setNotifRefUrl("/payment/bussiness");
+		notification.setNotifMsg(role + " 승인 완료 되었습니다. 결제를 진행해주세요");
+		notification.setNotifTitle(role + " 승인 완료");
+		notification.setNotifRefUrl("/payment/business" + url);
 		return notification;
 	}
-	private NotificationVO notificationReject(String mbrCd) {
+	private NotificationVO notificationReject(String mbrCd,String role, String url) {
 		NotificationVO notification = new NotificationVO();
 		notification.setMbrCd(mbrCd);
-		notification.setNotifMsg("승인 거절 되었습니다. 서류가 미비합니다. 다시 제출해주세요.");
-		notification.setNotifTitle("승인 거절");
-		notification.setNotifRefUrl("/subscribe/subscription");
+		notification.setNotifMsg(role + " 승인 거절 되었습니다. 서류가 미비합니다. 다시 제출해주세요.");
+		notification.setNotifTitle(role + " 승인 거절");
+		notification.setNotifRefUrl(url);
 		return notification;
 	}
 

@@ -109,7 +109,7 @@
 	NATURAL JOIN SOLUTION
 	WHERE SOL_CC_CD=#{solCcCd}
 	AND MBR_CD=#{username} 
-	AND SUBS_APPROVAL_YN = 'N'
+	AND SUBS_STATUS='004' 
 </select>
 <select id="checkedSolutionSubscriptionList" resultMap="solSubMap">
 	SELECT  SUBS_ID
@@ -167,11 +167,11 @@
 		, #{subsStartedAt}
 		, #{subsUpdatedDate}
 		, #{subsExpirationDate}
-		, #{subsStatus}
+		, '004'
 		, #{subsAutoRenewYn}
 		, #{subsRevokedAt}
-		, #{subsStatusGrpCd}
-		, #{subsAutoRenewGrpCd}
+		, 'SBSTA'
+		, 'RCPAY'
 	)
 </insert>
 

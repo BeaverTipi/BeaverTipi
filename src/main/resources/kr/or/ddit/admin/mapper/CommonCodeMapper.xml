@@ -19,7 +19,9 @@ SELECT CODE_GROUP
 	, PARENT_CODE_GROUP
 	, PARENT_CODE_VALUE
 FROM COMMON_CODE
-WHERE CODE_GROUP =#{codeGroup} AND CODE_VALUE=#{codeValue}
+WHERE PARENT_CODE_GROUP =#{parentCodeGroup} 
+AND PARENT_CODE_VALUE=#{parentCodeValue}
+AND CODE_GROUP = #{codeGroup}
 </select>
 
 </mapper>
