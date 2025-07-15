@@ -44,11 +44,15 @@ public class NoticeController {
             Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) String bldgIdParam,
-            SimpleSearch simpleSearch,
+            @ModelAttribute("simpleSearch") SimpleSearch simpleSearch,
             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
 
     	log.info("🔎 noticeType = {}", simpleSearch.getNoticeType());
+    	log.info("📅 searchStartDate = {}", simpleSearch.getSearchStartDate());
+    	log.info("📅 searchEndDate = {}", simpleSearch.getSearchEndDate());
 
+    	log.info("📅 searchStartDate = {}, searchEndDate = {}",
+    	        simpleSearch.getSearchStartDate(), simpleSearch.getSearchEndDate());
         // 1) 입주민의 유닛 정보 확인
         MemberVO member = principal.getRealUser();
         List<UnitResidentVO> units = unitResidentService.getUnitsByMember(member.getMbrCd());

@@ -16,6 +16,18 @@
     border-radius: 4px;
     cursor: pointer;
   }
+  .badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: white;
+}
+
+.badge-orange { background-color: #FF9800; }
+.badge-green  { background-color: #4CAF50; }
+.badge-gray   { background-color: #9E9E9E; }
+
 </style>
 	
 </head>
@@ -114,8 +126,25 @@
 		    <tr>
 		      <td>${vo.mbrNnm}</td>
 		      <td><c:out value="${vo.rsdBrdTitl}" /></td>
-		      <td>${vo.openYn}</td>
-		      <td>${vo.reqStatus}</td>
+		      <td>
+				  <c:choose>
+				    <c:when test="${vo.ynfg == 'Y'}"><span class="badge badge-blue">공개</span></c:when>
+				    <c:otherwise><span class="badge badge-dark">비공개</span></c:otherwise>
+				  </c:choose>
+				</td>
+		      <td>
+				  <c:choose>
+				    <c:when test="${vo.reqStatus == '001'}">
+				      <span class="badge badge-orange">처리중</span>
+				    </c:when>
+				    <c:when test="${vo.reqStatus == '002'}">
+				      <span class="badge badge-green">처리완료</span>
+				    </c:when>
+				    <c:otherwise>
+				      <span class="badge badge-gray">접수</span>
+				    </c:otherwise>
+				  </c:choose>
+			  </td>
 		      <td><fmt:formatDate value="${vo.rsdBrdPblsDate}" pattern="yyyy-MM-dd"/></td>
 		      <td>
 		        <form method="get" action="${pageContext.request.contextPath}/resident/complaint/view" style="display:inline;">

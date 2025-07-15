@@ -1,23 +1,21 @@
 package kr.or.ddit.resident.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import kr.or.ddit.util.page.PaginationInfo;
-import kr.or.ddit.util.page.SimpleSearch;
 import kr.or.ddit.vo.ResidentBoardVO;
 
 @Mapper
 public interface ComplaintMapper {
 	 /** 페이징 전 전체 건수 조회 */
-    public int selectComplaintTotalCount(SimpleSearch search);
+    public int selectComplaintTotalCount(Map<String , Object> param);
 
     /** 페이징 처리된 민원 목록 조회 */
     public List<ResidentBoardVO> selectComplaintList(
-        @Param("search") SimpleSearch search,
-        @Param("paging") PaginationInfo pagingInfo
+       Map<String, Object > param
     );
 
     /** 단건 상세 조회 */

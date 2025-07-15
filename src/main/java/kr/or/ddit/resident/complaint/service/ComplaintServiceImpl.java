@@ -11,7 +11,9 @@
 package kr.or.ddit.resident.complaint.service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,16 +37,6 @@ public class ComplaintServiceImpl implements ComplaintService {
 
 	@Autowired
 	private ComplaintMapper mapper;
-	
-	@Override
-	public int selectComplaintCount(SimpleSearch search) {
-		return mapper.selectComplaintTotalCount(search);
-	}
-
-	@Override
-	public List<ResidentBoardVO> selectComplaintList(SimpleSearch search, PaginationInfo pagingInfo) {
-		return mapper.selectComplaintList(search, pagingInfo);
-	}
 
 	@Override
 	public ResidentBoardVO selectComplaintById(String rsdBrdId) {
@@ -91,6 +83,18 @@ public class ComplaintServiceImpl implements ComplaintService {
 	public String getNextComplaintId() {
 		// TODO Auto-generated method stub
 		return mapper.getNextComplaintId();
+	}
+
+	@Override
+	public int selectComplaintCount(Map<String, Object> param) {
+		// TODO Auto-generated method stub
+		return mapper.selectComplaintTotalCount(param);
+	}
+
+	@Override
+	public List<ResidentBoardVO> selectComplaintList(Map<String, Object> param) {
+		// TODO Auto-generated method stub
+		return mapper.selectComplaintList(param);
 	}
 
 }

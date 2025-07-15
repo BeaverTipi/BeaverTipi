@@ -1,7 +1,9 @@
 package kr.or.ddit.resident.complaint.controller;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -66,19 +68,26 @@ public class ComplaintController {
 	                                     .orElse(units.get(0).getBldgId());
 	            }
 	            simpleSearch.setBldgId(selectedBldg);
+	            
+	            PaginationInfo<ResidentBoardVO> pagingInfo = new PaginationInfo<>();
+	            pagingInfo.setCurrentPageNo(page);
+	            pagingInfo.setPageSize(10);
+	            pagingInfo.setSimpleSearch(simpleSearch);
+	            
+	            Map<String, Object> paramMap = new HashMap<>();
+	            paramMap.put("search",simpleSearch);
+	            int totalCount = complaintService.selectComplaintCount(paramMap);
+	            
 	            // 1-3) 공통코드 (검색폼 드롭다운)
 	            List<CommonCodeVO> openYnList    = codeService.readCommonCodeList("OPEN_YN");
 	            List<CommonCodeVO> reqStatusList = codeService.readCommonCodeList("REQ_STATUS");
 	            model.addAttribute("openYnList",    openYnList);
 	            model.addAttribute("reqStatusList", reqStatusList);
-
-	            int totalCount = complaintService.selectComplaintCount(simpleSearch);
-	            // 1-4) 페이징 & 검색
-	            PaginationInfo pagingInfo = new PaginationInfo<>();
-	            pagingInfo.setCurrentPageNo(page);
-	            pagingInfo.setPageSize(10);
-	            pagingInfo.setSimpleSearch(simpleSearch);
+	            
 	            pagingInfo.setTotalRecordCount(totalCount);
+	            paramMap.put("paging", pagingInfo);
+	            
+	            // 1-4) 페이징 & 검색
 	            
 	            model.addAttribute("pagingInfo", pagingInfo);
 	            // 1-5) 페이징 HTML
@@ -88,7 +97,7 @@ public class ComplaintController {
 
 	            // 1-6) 데이터 조회
 	            List<ResidentBoardVO> list = 
-	                complaintService.selectComplaintList(simpleSearch, pagingInfo);
+	                complaintService.selectComplaintList(paramMap);
 	            
 	            model.addAttribute("boardList", list);
 	            model.addAttribute("unitList",   units);

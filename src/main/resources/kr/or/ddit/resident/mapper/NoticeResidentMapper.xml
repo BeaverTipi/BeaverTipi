@@ -69,6 +69,12 @@
         N.NOTICE_DEL_YN = 'N'
         AND (N.NOTICE_END_DTM IS NULL OR N.NOTICE_END_DTM >= SYSDATE)
         AND B.BRD_CODE  = #{simpleSearch.brdCode}
+       <if test="simpleSearch.searchStartDate != null and simpleSearch.searchStartDate != ''">
+		  AND B.BRD_PBLS_DTM &gt;= TO_DATE(#{simpleSearch.searchStartDate}, 'YYYY-MM-DD')
+		</if>
+		<if test="simpleSearch.searchEndDate != null and simpleSearch.searchEndDate != ''">
+		  AND B.BRD_PBLS_DTM &lt; TO_DATE(#{simpleSearch.searchEndDate}, 'YYYY-MM-DD') + 1
+		</if>
         <if test="simpleSearch.noticeType != null and simpleSearch.noticeType != ''">
 		  AND N.NOTICE_TYPE = #{simpleSearch.noticeType}
 		</if>
@@ -116,6 +122,12 @@
       N.NOTICE_DEL_YN = 'N'
       AND (N.NOTICE_END_DTM IS NULL OR N.NOTICE_END_DTM >= SYSDATE)
       AND B.BRD_CODE = #{simpleSearch.brdCode}
+     <if test="simpleSearch.searchStartDate != null and simpleSearch.searchStartDate != ''">
+	  AND B.BRD_PBLS_DTM &gt;= TO_DATE(#{simpleSearch.searchStartDate}, 'YYYY-MM-DD')
+	</if>
+	<if test="simpleSearch.searchEndDate != null and simpleSearch.searchEndDate != ''">
+	  AND B.BRD_PBLS_DTM &lt; TO_DATE(#{simpleSearch.searchEndDate}, 'YYYY-MM-DD') + 1
+	</if>
       <if test="simpleSearch.noticeType != null and simpleSearch.noticeType != ''">
 		  AND N.NOTICE_TYPE = #{simpleSearch.noticeType}
 		</if>

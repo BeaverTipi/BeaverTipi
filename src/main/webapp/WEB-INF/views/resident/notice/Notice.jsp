@@ -65,6 +65,15 @@
           </c:forEach>
         </select>
       </div>
+      
+      <div class="search-item">
+		  <label for="searchStartDate">검색일자</label>
+		  <input type="date" name="searchStartDate" id="searchStartDate" 
+		         value="${simpleSearch.searchStartDate}" class="input-field date-field" />
+		  <span>~</span>
+		  <input type="date" name="searchEndDate" id="searchEndDate" 
+		         value="${simpleSearch.searchEndDate}" class="input-field date-field" />
+		</div>
 
       <!-- 검색 조건 -->
       <div class="search-item">
@@ -148,7 +157,7 @@
 </c:forEach>
 
     <c:if test="${empty boardList}">
-      <tr><td colspan="6" class="no-data-center">등록된 공지사항이 없습니다.</td></tr>
+      <tr><td colspan="7" class="no-data-center">등록된 공지사항이 없습니다.</td></tr>
     </c:if>
   </tbody>
 </table>
