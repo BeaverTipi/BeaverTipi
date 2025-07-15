@@ -3,120 +3,125 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <title>회원 & 매물 신고 관리</title>
-    <link rel="stylesheet" href="/app/css/admin/common_admin.css">
-    <link rel="stylesheet" href="/app/css/admin/board/userList.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/common_admin.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/board/userList.css">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="/app/js/admin/board/userList.js"></script>
-<h2>회원 & 매물 신고 관리</h2>
+    <script src="${pageContext.request.contextPath}/app/js/admin/board/userList.js"></script>
 
-<div class="container">
-    <form:form modelAttribute="detailSearch" action="/admin/report/userList" method="get" id="searchForm">
+<h2 class="board-title">회원 & 매물 신고 관리</h2>
+
+<div class="container-wrapper">
+  <main class="container">
+
+    <ul class="nav nav-tabs" id="reportTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link ${detailSearch.searchRptCode eq 'MEMB' ? 'active' : (empty detailSearch.searchRptCode ? 'active' : '')}"
+               id="memb-tab" data-toggle="tab" href="#memberReports" role="tab"
+               aria-controls="memberReports" aria-selected="${detailSearch.searchRptCode eq 'MEMB' ? 'true' : (empty detailSearch.searchRptCode ? 'true' : 'false')}"
+               data-rpt-code="MEMB">회원</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link ${detailSearch.searchRptCode eq 'LSTG' ? 'active' : ''}"
+               id="prod-tab" data-toggle="tab" href="#productReports" role="tab"
+               aria-controls="productReports" aria-selected="${detailSearch.searchRptCode eq 'LSTG' ? 'true' : 'false'}"
+               data-rpt-code="LSTG">매물</a>
+        </li>
+    </ul>
+
+    <div class="search-area">
+      <form:form modelAttribute="detailSearch" action="${pageContext.request.contextPath}/admin/report/userList" method="get" id="searchForm" class="search-form">
         <input type="hidden" name="page" value="${pagingVO.currentPageNo}" id="currentPageNoInput">
         <input type="hidden" name="searchRptCode" value="${detailSearch.searchRptCode}" id="searchRptCodeInput">
-        <ul class="nav nav-tabs" id="reportTabs" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link ${detailSearch.searchRptCode eq 'MEMB' ? 'active' : (empty detailSearch.searchRptCode ? 'active' : '')}"
-                   id="memb-tab" data-toggle="tab" href="#memberReports" role="tab"
-                   aria-controls="memberReports" aria-selected="${detailSearch.searchRptCode eq 'MEMB' ? 'true' : (empty detailSearch.searchRptCode ? 'true' : 'false')}"
-                   data-rpt-code="MEMB">회원</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link ${detailSearch.searchRptCode eq 'LSTG' ? 'active' : ''}"
-                   id="prod-tab" data-toggle="tab" href="#productReports" role="tab"
-                   aria-controls="productReports" aria-selected="${detailSearch.searchRptCode eq 'LSTG' ? 'true' : 'false'}"
-                   data-rpt-code="LSTG">매물</a>
-            </li>
-        </ul>
 
-        <div class="search-area">
-            <div class="search-row top-row">
-                <div class="search-item">
-                    <label for="searchTitle">제목</label>
-                    <form:input path="searchTitle" id="searchTitle" placeholder="제목" class="input-field"/>
-                </div>
-                <div class="search-item">
-                    <label for="searchWriter">작성자ID</label>
-                    <form:input path="searchWriter" id="searchWriter" placeholder="작성자ID" class="input-field"/>
-                </div>
-                <div class="search-item">
-                    <label>신고일자</label>
-                    <div class="date-range-group">
-                        <form:input type="date" path="brdPblsDtmFrom" id="brdPblsDtmFrom" class="input-field"/>
-                        <span>~</span>
-                        <form:input type="date" path="brdPblsDtmTo" id="brdPblsDtmTo" class="input-field"/>
-                    </div>
-                </div>
+        <div class="search-conditions">
+          <div class="search-item">
+            <label for="searchTitle">제목</label>
+            <form:input path="searchTitle" id="searchTitle" placeholder="제목" class="input-field"/>
+          </div>
+          <div class="search-item">
+            <label for="searchWriter">신고자ID</label>
+            <form:input path="searchWriter" id="searchWriter" placeholder="작성자ID" class="input-field"/>
+          </div>
+          <div class="search-item">
+            <label for="searchRptStatusCode">처리상태</label>
+            <form:select path="searchRptStatusCode" id="searchRptStatusCode" class="select-field">
+                <form:option value="">--전체--</form:option>
+                <form:option value="REG" label="등록"/>
+                <form:option value="PROC" label="접수처리중"/>
+                <form:option value="COMP" label="처리완료"/>
+            </form:select>
+          </div>
+          <div class="search-item">
+            <label>신고기간</label>
+            <div class="date-range-group">
+                <form:input type="date" path="brdPblsDtmFrom" id="brdPblsDtmFrom" class="input-field"/>
+                <span>~</span>
+                <form:input type="date" path="brdPblsDtmTo" id="brdPblsDtmTo" class="input-field"/>
             </div>
-            <div class="search-row bottom-row">
-                 <div class="search-item">
-                    <label for="searchRptStatusCode">처리상태</label>
-                    <form:select path="searchRptStatusCode" id="searchRptStatusCode" class="select-field">
-                        <form:option value="">--전체--</form:option>
-                        <form:option value="REG" label="등록"/>
-                        <form:option value="PROC" label="접수처리중"/>
-                        <form:option value="COMP" label="처리완료"/>
-                    </form:select>
-                </div>
-                <div class="search-item search-buttons-in-row">
-                    <button type="button" id="resetButton" class="reset-button">초기화</button>
-                    <button type="submit">검색</button>
-                </div>
-            </div>
-        </div>
-        <div class="search-actions">
-            <button type="button" id="saveButton" class="save-button">저장하기</button>
+          </div>
         </div>
 
-        <div class="table-container">
-            <table class="table" id="reportedUserTable">
-                <thead>
-                    <tr>
-                        <th>제목</th>
-                        <th>신고된 대상</th>
-                        <th>작성자ID</th>
-                        <th>신고일자</th>
-                        <th>신고처리</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:if test="${not empty reportedUserList}">
-                        <c:forEach items="${reportedUserList}" var="report" varStatus="status">
-                            <tr>
-                                <td><a href="#" class="report-title" data-report-id="${report.reportId}">${report.brdTitlNm}</a></td>
-                                <td>${report.rptTargetId}</td>
-                                <td>${report.mbrCd}</td>
-                                <td>${report.formattedBrdPblsDtm}</td>
-                                <td>
-                                    <select class="report-status-select" name="rptStatusUpdates[${status.index}].rptStatusCode" data-report-id="${report.reportId}" data-original-status="${report.rptStatusCode}">
-                                        <option value="REG" ${report.rptStatusCode eq 'REG' ? 'selected' : ''}>등록</option>
-                                        <option value="PROC" ${report.rptStatusCode eq 'PROC' ? 'selected' : ''}>접수처리중</option>
-                                        <option value="COMP" ${report.rptStatusCode eq 'COMP' ? 'selected' : ''}>처리완료</option>
-                                    </select>
-                                    <input type="hidden" name="rptStatusUpdates[${status.index}].reportId" value="${report.reportId}">
-                                </td>
-                            </tr>
-                        </c:forEach>
-                    </c:if>
-                    <c:if test="${empty reportedUserList }">
-                        <tr>
-                            <td colspan="5" class="no-data-center">신고된 게시글이 없습니다.</td>
+        <div class="search-button-area">
+          <button type="reset" id="resetBtn" class="btn-warning">초기화</button>
+          <button type="submit" id="searchBtn" class="btn-dark">검색</button>
+        </div>
+      </form:form>
+    </div>
+
+    <div class="table-container">
+        <table class="table" id="reportedUserTable">
+            <thead>
+                <tr>
+                	<th>번호</th>
+                    <th>제목</th>
+                    <th id="reportedTarget">신고된 대상</th>
+                    <th>신고자ID</th>
+                    <th>신고일자</th>
+                    <th>신고처리</th>
+                </tr>
+            </thead>
+            <tbody>
+                <c:if test="${not empty reportedUserList}">
+                    <c:forEach items="${reportedUserList}" var="report" varStatus="status">
+                        <tr class="report-row" data-report-id="${report.reportId}">
+                        	<td>${(pagingInfo.currentPageNo - 1) * pagingInfo.recordCountPerPage + status.index + 1}</td>
+                            <td>${report.brdTitlNm}</td>
+                            <td>${report.rptTargetId}</td>
+                            <td>${report.mbrCd}</td>
+                            <td>${report.formattedBrdPblsDtm}</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${report.rptStatusCode eq 'REG'}">등록</c:when>
+                                    <c:when test="${report.rptStatusCode eq 'PROC'}">접수처리중</c:when>
+                                    <c:when test="${report.rptStatusCode eq 'COMP'}">처리완료</c:when>
+                                    <c:otherwise>${report.rptStatusCode}</c:otherwise>
+                                </c:choose>
+                            </td>
                         </tr>
-                    </c:if>
-                </tbody>
-            </table>
-        </div>
-        <div class="paging-area">
-            ${pagingHTML}
-        </div>
-    </form:form>
+                    </c:forEach>
+                </c:if>
+                <c:if test="${empty reportedUserList }">
+                    <tr>
+                        <td colspan="6" class="no-data-center">신고된 게시글이 없습니다.</td>
+                    </tr>
+                </c:if>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination-wrapper">
+        ${pagingHTML}
+    </div>
+
+  </main>
 </div>
 
 <div class="modal fade" id="reportDetailModal" tabindex="-1" aria-labelledby="reportDetailModalLabel" aria-hidden="true">
@@ -129,85 +134,52 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p><strong>신고 ID:</strong> <span id="modalReportId"></span></p>
-                <p><strong>게시글 제목:</strong> <span id="modalBrdTitlNm"></span></p>
-                <p><strong>신고 내용:</strong></p>
-                <div id="modalBrdCont" class="alert alert-secondary"></div>
-
-                <p><strong id="modalTargetIdLabel">신고 대상 ID:</strong> <span id="modalRptTargetId"></span></p>
-
-                <div id="memberSpecificInfo">
-                    <p><strong id="modalMbrStatusLabel">신고 대상 회원 현재 상태:</strong> <span id="modalRptTargetMbrStatus"></span></p>
-                </div>
-                <div id="listingSpecificInfo" style="display: none;"> <p><strong>신고 대상 매물 현재 상태:</strong> <span id="modalLstgDel"></span></p>
-                </div>
-
+                <p><strong>신고 ID :</strong> <span id="modalReportId"></span></p>
+                <p><strong>게시글 제목 :</strong> <span id="modalBrdTitlNm"></span></p>
+                <p><strong id="modalTargetIdLabel"></strong><span id="modalRptTargetId"></span></p>
+                <p><strong>신고 내용 :</strong></p>
                 <div id="attachFilesSection" style="display: none;">
                     <h5>첨부 파일:</h5>
                     <div id="modalAttachFiles" class="d-flex flex-wrap">
                     </div>
                 </div>
+                <div id="modalBrdCont" class="alert alert-secondary"></div>
+
+
+                <div id="memberSpecificInfo" style="display: none;">
+                    <hr>
+                    <div class="form-group d-flex align-items-center">
+                        <label for="modalNewMbrStatus" class="mr-2 mb-0"><strong>피신고자 상태 :</strong></label>
+                        <select class="form-control" id="modalNewMbrStatus">
+                            <option value="ACTIVE">정상</option>
+                            <option value="INACTIVE">비활성</option>
+                            <option value="SUSPENDED">정지</option>
+                            <option value="WITHDRAWN">탈퇴</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="listingSpecificInfo" style="display: none;">
+                    <div class="form-group d-flex align-items-center">
+                        <label for="modalNewLtsgDel" class="mr-2 mb-0"><strong>피신고매물 삭제 상태 : </strong></label>
+                        <select class="form-control" id="modalNewLtsgDel">
+                            <option value="N">미삭제 (활성)</option>
+                            <option value="Y">삭제 (비활성)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group d-flex align-items-center">
+                    <label for="modalRptStatusCode" class="mr-2 mb-0"><strong>신고 처리 상태 :</strong></label>
+                    <select class="form-control" id="modalRptStatusCode">
+                        <option value="REG">등록</option>
+                        <option value="PROC">접수처리중</option>
+                        <option value="COMP">처리완료</option>
+                    </select>
+                </div>
+
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnProcessAllChanges">저장</button>
                 <button type="button" class="btn btn-secondary" id="closeReportDetailModalBtn">닫기</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="statusChangeModal" tabindex="-1" aria-labelledby="statusChangeModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="statusChangeModalLabel">회원 상태 변경</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>선택된 회원 ID: <strong id="selectedMbrCd"></strong></p>
-                <p>현재 상태: <strong id="currentMbrStatus"></strong></p>
-                <div class="form-group">
-                    <label for="newMbrStatus">변경할 상태:</label>
-                    <select class="form-control" id="newMbrStatus">
-                        <option value="ACTIVE">정상</option>
-                        <option value="INACTIVE">비활성</option>
-                        <option value="SUSPENDED">정지</option>
-                        <option value="WITHDRAWN">탈퇴</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="cancelStatusChangeModalBtn">취소</button>
-                <button type="button" class="btn btn-primary" id="btnUpdateMemberStatus">변경</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="listingStatusChangeModal" tabindex="-1" aria-labelledby="listingStatusChangeModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="listingStatusChangeModalLabel">매물 삭제 상태 변경</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>선택된 매물 ID: <strong id="selectedLstgId"></strong></p>
-                <p>현재 상태: <strong id="currentLstgDel"></strong></p>
-                <div class="form-group">
-                    <label for="newLtsgDel">변경할 상태:</label>
-                    <select class="form-control" id="newLtsgDel">
-                        <option value="N">미삭제 (활성)</option>
-                        <option value="Y">삭제 (비활성)</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="cancelListingStatusChangeModalBtn">취소</button>
-                <button type="button" class="btn btn-primary" id="btnUpdateListingDeleteStatus">변경</button>
             </div>
         </div>
     </div>

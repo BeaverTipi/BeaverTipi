@@ -1,144 +1,152 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const resetButton = document.getElementById('resetButton');
-    const saveButton = document.getElementById('saveButton');
-    const searchForm = document.getElementById('searchForm'); // searchForm 참조 추가
-    const memberTypeSelect = document.getElementById('memberTypeSelect');
-    const memberNameInput = document.getElementById('memberNameInput');
-    const mbrFrstRegDtFrom = document.getElementById('mbrFrstRegDtFrom');
-    const mbrFrstRegDtTo = document.getElementById('mbrFrstRegDtTo');
-    const memberStatusSelect = document.getElementById('memberStatusSelect');
-    const memberEmailInput = document.getElementById('memberEmailInput');
-    const currentPageNoInput = document.getElementById('currentPageNoInput'); // hidden input ID 변경
+    const resetButton = document.getElementById('resetBtn'); 
+    const searchBtn = document.getElementById('searchBtn'); // 검색 버튼 참조
+    const searchForm = document.getElementById('searchForm');
+    
+    // 🔍 검색 필드 요소 참조
+    const userRoleIdSelect = document.querySelector('[name="userRoleId"]'); 
+    const mbrIdInput = document.querySelector('[name="mbrId"]'); 
+    const mbrFrstRegDtFrom = document.querySelector('[name="mbrFrstRegDtFrom"]');
+    const mbrFrstRegDtTo = document.querySelector('[name="mbrFrstRegDtTo"]');
+    const mbrStatusCodeSelect = document.querySelector('[name="mbrStatusCode"]'); 
+    const mbrEmlAddrInput = document.querySelector('[name="mbrEmlAddr"]'); 
+    const memberNameSearchInput = document.getElementById('memberNameSearchInput');
+    const memberNicknameSearchInput = document.getElementById('memberNicknameSearchInput');
 
-    const changedMembers = new Set(); // 중복 방지를 위해 Set 사용
+    const currentPageNoInput = document.getElementById('currentPageNoInput'); 
 
-    // --- 페이징 처리 함수 ---
-    // PaginationRenderer에서 호출할 페이지 이동 함수
-    // 이 함수는 전역 스코프에 있어야 HTML에서 직접 호출할 수 있습니다.
-    window.fnPaging = function(pageNo) {
-        if (currentPageNoInput) {
-            currentPageNoInput.value = pageNo; // hidden input의 값 변경
-        }
-        searchForm.submit(); // 검색 폼 제출 (현재 검색 조건 유지하면서 페이지 이동)
-    };
-
-    if (resetButton) {
-        resetButton.addEventListener('click', function(event) {
-            // 1. 모든 검색 필드 값 초기화
-            memberNameInput.value = '';
-            mbrFrstRegDtFrom.value = '';
-            mbrFrstRegDtTo.value = '';
-            memberEmailInput.value = '';
-
-            // ⭐ memberTypeSelect (단일 선택) 옵션 초기화 ⭐
-            // 단일 선택 드롭다운은 value를 '' (첫 번째 "--선택--" 옵션의 값)으로 설정하면 됩니다.
-            // jQuery를 사용하고 있다면 $('#memberTypeSelect').val('');
-            memberTypeSelect.value = ''; // 또는 기본값이 있다면 그 값으로 설정 (예: 'USER')
-
-            // memberStatusSelect (단일 선택) 초기화 (첫 번째 빈 옵션 선택)
-            memberStatusSelect.value = '';
-
-            // 2. 일괄 저장을 위한 변경 내역 Set 초기화
-            changedMembers.clear();
-
-            // 3. 페이지 번호도 1로 초기화 (hidden input의 값 변경)
-            if (currentPageNoInput) {
-                currentPageNoInput.value = 1;
-            }
-
-            // 4. 검색 폼 제출
-            searchForm.submit();
-        });
-    }
-
-	// 검색 폼 자체에 submit 이벤트 리스너를 추가하여 페이지 번호를 초기화합니다.
-    // 주의: 이 로직은 "검색" 버튼을 눌렀을 때만 페이지 번호를 1로 초기화합니다.
-    // 리셋 버튼은 위에서 따로 처리하고 있으므로, 겹치지 않도록 주의합니다.
-    // 현재 `resetButton` 클릭 시에도 `searchForm.submit()`을 호출하고 있으므로,
-    // 이 `searchForm`의 `submit` 이벤트 리스너도 동작할 것입니다.
-    // 따라서 `resetButton` 로직에서 페이지를 1로 설정하는 것이 중복될 수 있습니다.
-    // 어느 한 곳에서만 페이지 초기화를 하거나, 명확히 구분해야 합니다.
-    // 현재는 `resetButton`에서 1로 설정하고, `searchForm` submit시에도 1로 설정하므로
-    // "검색" 버튼을 누르거나 (페이지 이동은 아님), 리셋 버튼을 누르면 무조건 1페이지로 갑니다.
-    if (searchForm) {
-        searchForm.addEventListener('submit', function(event) {
-            // 폼이 제출되기 전에 페이지 번호를 1로 설정
-            // (이미 resetButton에서 1로 설정된 경우 중복이지만, 안전하게 유지)
-            // 만약 '검색' 버튼만 눌렀을 때도 1페이지로 가길 원한다면 이 로직이 필요합니다.
-            if (currentPageNoInput) {
-                currentPageNoInput.value = 1;
-            }
-            // 폼의 기본 제출 동작은 유지 (return true; 와 동일)
-        });
-    }
-
-    document.querySelectorAll('.member-status-select').forEach(selectElement => {
-        selectElement.addEventListener('change', function() {
-            const row = this.closest('tr');
-            const mbrCd = row.dataset.mbrCd;
-            
-            // 변경된 회원 목록에 추가 (중복 방지)
-            changedMembers.add(mbrCd); 
-            
-            console.log(`회원 ${mbrCd}의 상태 변경이 감지되었습니다.`); 
+const closeButtons = document.querySelectorAll('[data-dismiss="modal"]');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            console.log('닫기 버튼 클릭됨!', this);
+            console.log('클릭된 버튼의 data-dismiss 값:', this.getAttribute('data-dismiss'));
+            // event.stopPropagation(); // 이 줄을 주석 처리하여 이벤트 버블링 확인
         });
     });
 
-    if (saveButton) {
-        saveButton.addEventListener('click', function() {
-            if (changedMembers.size === 0) {
-                alert('변경할 내용이 없습니다.');
-                return;
+    // --- 페이징 처리 함수 ---
+    window.fnPaging = function(pageNo) {
+        if (currentPageNoInput) {
+            currentPageNoInput.value = pageNo; 
+        }
+        searchForm.submit(); 
+    };
+
+    // --- 초기화 버튼 클릭 이벤트 ---
+    if (resetButton) {
+        resetButton.addEventListener('click', function(event) {
+            // 모든 검색 필드 값 초기화
+            if (mbrIdInput) mbrIdInput.value = '';
+            if (mbrFrstRegDtFrom) mbrFrstRegDtFrom.value = '';
+            if (mbrFrstRegDtTo) mbrFrstRegDtTo.value = '';
+            if (mbrEmlAddrInput) mbrEmlAddrInput.value = '';
+            if (memberNameSearchInput) memberNameSearchInput.value = '';
+            if (memberNicknameSearchInput) memberNicknameSearchInput.value = '';
+
+            // 드롭다운 초기화
+            if (userRoleIdSelect) userRoleIdSelect.value = ''; 
+            if (mbrStatusCodeSelect) mbrStatusCodeSelect.value = ''; 
+
+            // 페이지 번호도 1로 초기화 
+            if (currentPageNoInput) {
+                currentPageNoInput.value = 1;
             }
 
-            const membersToUpdate = [];
-            changedMembers.forEach(mbrCd => {
-                const row = document.querySelector(`tr[data-mbr-cd="${mbrCd}"]`);
-                if (row) {
-                    const selectElement = row.querySelector('.member-status-select');
-                    membersToUpdate.push({
-                        mbrCd: mbrCd,
-                        mbrStatusCode: selectElement.value 
-                    });
-                }
-            });
-
-            fetch('/admin/member/updateStatus', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Spring Security를 사용한다면 CSRF 토큰을 여기에 포함해야 합니다.
-                    // JSP에 <meta name="_csrf" content="${_csrf.token}"/> 와 같이 추가하고 가져올 수 있습니다.
-                    // 'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content')
-                },
-                body: JSON.stringify(membersToUpdate)
-            })
-            .then(response => {
-                if (response.ok) { // HTTP 상태 코드가 200-299 범위인 경우
-                    return response.text(); 
-                }
-                // 오류 응답의 경우, 본문 내용을 읽어 오류 메시지로 던집니다.
-                return response.text().then(text => { throw new Error(text) });
-            })
-            .then(data => {
-                alert('회원 상태가 성공적으로 업데이트되었습니다.');
-                console.log('서버 응답:', data);
-                
-                // 성공적으로 업데이트된 후, 각 select 박스의 원래 상태(data-original-status)를 현재 값으로 갱신
-                // 이렇게 하면 다시 변경사항이 없음을 정확히 판단할 수 있습니다.
-                changedMembers.forEach(mbrCd => {
-                    const row = document.querySelector(`tr[data-mbr-cd="${mbrCd}"]`);
-                    if (row) {
-                        const selectElement = row.querySelector('.member-status-select');
-                        selectElement.dataset.originalStatus = selectElement.value;
-                    }
-                });
-                changedMembers.clear(); // 변경 내역 초기화
-            })
-            .catch(error => {
-                console.error('업데이트 중 오류 발생:', error);
-                alert('회원 상태 업데이트 중 오류가 발생했습니다. 상세: ' + error.message);
-            });
+            searchForm.submit(); 
         });
     }
+
+	// --- 검색 폼 제출 이벤트 ---
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(event) {
+            // "검색" 버튼 클릭 시 페이지를 1로 초기화 (일반적인 검색 동작)
+            if (currentPageNoInput) {
+                currentPageNoInput.value = 1;
+            }
+        });
+    }
+
+    // --- ⭐ 회원 목록 행 클릭 이벤트 (상세 모달 띄우기) ⭐ ---
+    // document.querySelectorAll('.member-row-clickable') 대신 jQuery 사용 (JSP에 jQuery 포함되어 있으므로)
+    $(document).on('click', '.member-row-clickable', function() {
+        const mbrCd = $(this).data('mbr-cd'); // data-mbr-cd 속성 값 가져오기
+        console.log("회원 상세 조회 요청:", mbrCd);
+
+        // AJAX 요청으로 회원 상세 정보 가져오기
+        axios.get(`/admin/member/detail/${mbrCd}`) // 예시 URL, 실제 백엔드 URL에 맞춰 수정 필요
+            .then(response => {
+                const member = response.data;
+                console.log("회원 상세 데이터 수신:", member);
+
+                // 모달에 데이터 채우기
+                $('#modalMbrCd').val(member.mbrCd); // Hidden input에 회원 코드 저장
+                $('#modalMbrNm').text(member.mbrNm || 'null');
+                $('#modalMbrId').text(member.mbrId || 'null');
+                $('#modalMbrNnm').text(member.mbrNnm || 'null');
+                
+                // 회원 구분 (여러 개일 수 있으므로 쉼표로 연결)
+                let userRoleDisplay = 'null';
+                if (member.memRoleList && member.memRoleList.length > 0) {
+                    userRoleDisplay = member.memRoleList.map(role => {
+                        switch(role.userRoleId) {
+                            case 'USER': return '일반회원';
+                            case 'TENANCY': return '임대인';
+                            case 'BROKER': return '중개인';
+                            case 'ADMIN': return '관리자';
+                            default: return role.userRoleId;
+                        }
+                    }).join(', ');
+                }
+                $('#modalUserRoleIds').text(userRoleDisplay);
+
+                $('#modalMbrFrstRegDt').text(member.mbrFrstRegDt || 'null');
+                $('#modalMbrEmlAddr').text(member.mbrEmlAddr || 'null');
+                
+                // 회원 상태 드롭다운 선택
+                $('#modalMbrStatusCode').val(member.mbrStatusCode);
+
+                // 모달 띄우기
+                $('#memberDetailModal').modal('show');
+            })
+            .catch(error => {
+                console.error('회원 상세 정보 로드 실패:', error);
+                alert('회원 상세 정보를 불러오는 데 실패했습니다.');
+            });
+    });
+
+    // --- ⭐ 모달 내 '상태 변경' 버튼 클릭 이벤트 ⭐ ---
+    $('#updateMemberStatusBtn').on('click', function() {
+        const mbrCd = $('#modalMbrCd').val(); // hidden input에서 회원 코드 가져오기
+        const newMbrStatusCode = $('#modalMbrStatusCode').val();
+
+        if (!mbrCd || !newMbrStatusCode) {
+            alert('회원 정보가 불완전합니다.');
+            return;
+        }
+
+        if (confirm(`회원 ${mbrCd}의 상태를 '${newMbrStatusCode}'(으)로 변경하시겠습니까?`)) {
+            axios.post('/admin/member/updateStatusFromDetail', null, {
+                params: {
+                    mbrCd: mbrCd,
+                    mbrStatusCode: newMbrStatusCode
+                }
+            })
+            .then(response => {
+                if (response.data === 'SUCCESS') {
+                    alert('회원 상태가 성공적으로 변경되었습니다.');
+                    $('#memberDetailModal').modal('hide'); // 모달 닫기 -> 이거 왜 작동 안됨?
+                    window.location.reload(); // 페이지 새로고침하여 변경된 상태 반영
+                } else {
+                    alert('회원 상태 변경에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('회원 상태 변경 AJAX 오류:', error);
+                alert('회원 상태 변경 중 오류가 발생했습니다.');
+            });
+        }
+    });
+
+    // 기존의 일괄 저장 관련 코드는 제거 (더 이상 필요 없으므로)
+    // if (saveButton) { ... }
 });
