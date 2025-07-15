@@ -152,54 +152,54 @@
             </c:forEach>
           </select>
          <select name="yearSelect" onchange="document.getElementById('billSearchForm').submit();">
-		  <c:forEach var="y" begin="2022" end="2025">
-		    <option value="${y}" <c:if test="${yearSelect eq y}">selected</c:if>>${y}년</option>
-		  </c:forEach>
-		</select>
+        <c:forEach var="y" begin="2022" end="2025">
+          <option value="${y}" <c:if test="${yearSelect eq y}">selected</c:if>>${y}년</option>
+        </c:forEach>
+      </select>
           <select name="monthSelect" onchange="document.getElementById('billSearchForm').submit();">
-			  <c:forEach var="m" begin="1" end="12">
-			    <c:set var="mm" value="${m lt 10 ? '0' + m : m}" />
-			    <option value="${mm}" <c:if test="${monthSelect eq mm}">selected</c:if>>${m}월</option>
-			  </c:forEach>
-			</select>
+           <c:forEach var="m" begin="1" end="12">
+             <c:set var="mm" value="${m lt 10 ? '0' + m : m}" />
+             <option value="${mm}" <c:if test="${monthSelect eq mm}">selected</c:if>>${m}월</option>
+           </c:forEach>
+         </select>
         </form>
       </div>
     </div>
 
     <div class="main-section">
-    	 <c:if test="${empty chargeComparison and empty energyComparison[chargeMonth]}">
-		    <div style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border: 1px solid #ffeeba; border-radius: 6px; color: #856404;">
-		      선택하신 월에는 조회 가능한 공과금 및 에너지 내역이 없습니다.
-		    </div>
-		  </c:if>
+        <c:if test="${empty chargeComparison and empty energyComparison[chargeMonth]}">
+          <div style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border: 1px solid #ffeeba; border-radius: 6px; color: #856404;">
+            선택하신 월에는 조회 가능한 공과금 및 에너지 내역이 없습니다.
+          </div>
+        </c:if>
       <div class="bill-box">
         <h3>관리비 내역</h3>
         <c:forEach var="type" items="${energyComparison[chargeMonth]}">
-		  <c:set var="energyType" value="${type.key}" />
-		  <c:set var="data" value="${type.value}" />
-		  <c:if test="${not empty data}">
-		    <div class="summary-entry">
-		      <span>${energyType}</span>
-		      <span>
-		        사용량 :
-		        <fmt:formatNumber value="${data.usageQty}" type="number" groupingUsed="true" />
-		        <span class="unit-label">
-		          <c:choose>
-		            <c:when test="${energyType eq '전기'}">kWh</c:when>
-		            <c:when test="${energyType eq '가스'}">㎥</c:when>
-		            <c:when test="${energyType eq '수도'}">㎥</c:when>
-		          </c:choose>
-		        </span>
-		        <span class="price-item">
-		          <span class="won-symbol">₩</span>
-		          <span class="amount">
-		            <fmt:formatNumber value="${data.chargeAmt}" type="number" groupingUsed="true" />
-		          </span> 원
-		        </span>
-		      </span>
-		    </div>
-		  </c:if>
-		</c:forEach>
+        <c:set var="energyType" value="${type.key}" />
+        <c:set var="data" value="${type.value}" />
+        <c:if test="${not empty data}">
+          <div class="summary-entry">
+            <span>${energyType}</span>
+            <span>
+              사용량 :
+              <fmt:formatNumber value="${data.usageQty}" type="number" groupingUsed="true" />
+              <span class="unit-label">
+                <c:choose>
+                  <c:when test="${energyType eq '전기'}">kWh</c:when>
+                  <c:when test="${energyType eq '가스'}">㎥</c:when>
+                  <c:when test="${energyType eq '수도'}">㎥</c:when>
+                </c:choose>
+              </span>
+              <span class="price-item">
+                <span class="won-symbol">₩</span>
+                <span class="amount">
+                  <fmt:formatNumber value="${data.chargeAmt}" type="number" groupingUsed="true" />
+                </span> 원
+              </span>
+            </span>
+          </div>
+        </c:if>
+      </c:forEach>
         <c:forEach var="item" items="${chargeComparison}">
           <div class="summary-entry">
             <span>${item.feeName}</span>
@@ -212,10 +212,10 @@
           </div>
         </c:forEach>
       </div>
-      <div class="chart-box" style="margin-top: 2rem;">
-		  <h3>💡 관리비 + 에너지 비교 그래프</h3>
-		  <canvas id="chargeChart" style="width:100%"></canvas>
-		</div>
+      <div class="chart-box">
+        <h3>💡 공과금 + 관리비 전월 비교 그래프</h3>
+        <canvas id="chargeChart" style="width:100%"></canvas>
+      </div>
     </div>
     <div class="bottom-section">
       <h4>입주민 유의 사항</h4>
@@ -302,10 +302,10 @@ new Chart(document.getElementById('chargeChart'), {
     responsive: true,
     clip: false, // ✅ 전체 차트 기준 clip도 꺼줘야 확실함
     layout: {
-    	  padding: {
-    	    top: 8
-    	  }
-    	},
+         padding: {
+           top: 8
+         }
+       },
     elements: {
       point: {
         radius: 5,
@@ -338,6 +338,6 @@ new Chart(document.getElementById('chargeChart'), {
   }
 });
 </script>
-<script src="${pageContext.request.contextPath}/app/js/building/move-in/residentList.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
 </body>
 </html>

@@ -34,7 +34,11 @@
   <form:hidden path="rsdBrdId"/>
   <form:hidden path="mbrCd"/>
   <form:hidden path="brdCode" value="R0001"/>
-
+   <c:if test="${not empty error}">
+    <p style="color:red; font-weight:bold; margin-top:10px;">
+      ${error}
+    </p>
+  </c:if>
   <!-- ① bldgIdParam 히든 필드 추가 -->
 <%--   <form:hidden path="bldgIdParam" value="${selectedBldgId}"/> --%>
 <input type="hidden"
@@ -83,7 +87,7 @@
     </table>
 
     <div class="btn-group">
-	    <button type="submit">저장</button>
+	    <button type="submit" style="background: #ff6600; color:white;">저장</button>
 	    <!-- ② 취소 링크에도 bldgIdParam 붙이기 -->
 		    <a href="<c:url value='/resident/board'>
 		               <c:param name='bldgIdParam' value='${selectedBldgId}'/>
@@ -96,5 +100,23 @@
 
 
 <script src="${pageContext.request.contextPath}/app/js/building/move-in/residentList.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector("form");
+    const mode = "${mode}";
+    
+    if (mode !== 'edit') {
+      form.addEventListener("submit", function(e) {
+        const buildingSelect = document.querySelector("select[name='bldgId']");
+        if (buildingSelect && buildingSelect.value === "") {
+          alert("건물을 선택해주세요.");
+          e.preventDefault();
+        }
+      });
+    }
+  });
+</script>
+<script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
+
 </body>
 </html>

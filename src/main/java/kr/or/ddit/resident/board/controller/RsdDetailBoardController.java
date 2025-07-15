@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.or.ddit.resident.board.service.ResidentBoardService;
 import kr.or.ddit.resident.unitResident.service.UnitResidentService;
@@ -17,7 +18,9 @@ import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.ResidentBoardVO;
 import kr.or.ddit.vo.UnitResidentVO;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequestMapping("/resident")
 public class RsdDetailBoardController {
@@ -33,6 +36,7 @@ public class RsdDetailBoardController {
         @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
         @RequestParam("rsdBrdId") String rsdBrdId,
         @RequestParam(value="bldgIdParam", required=false) String bldgIdParam,
+        @RequestParam(value = "page",required = false,defaultValue = "1") int page,
         Model model
     ) {
         MemberVO member = principal.getRealUser();
@@ -40,7 +44,8 @@ public class RsdDetailBoardController {
         if(units == null || units.isEmpty()) {
             return "redirect:/";
         }
-
+        
+        
         // 파라미터가 있으면 그것을, 없으면 첫 유닛의 bldgId
         String bldgId = (bldgIdParam != null && !bldgIdParam.isBlank())
                         ? bldgIdParam
@@ -60,19 +65,42 @@ public class RsdDetailBoardController {
         // ▶ 이 줄을 꼭, bldgIdParam 이 아니라 bldgId 문자열로 넘겨야 합니다
         model.addAttribute("selectedBldgId", bldgId);
         model.addAttribute("board", board);
-
+        model.addAttribute("loginUser", member);
+        model.addAttribute("page", page);
         
         return "resident/Board/BoardDetail";
     }
     
     @PostMapping("/board/delete")
+    @ResponseBody
     public String deleteBoard(
     			@RequestParam("rsdBrdId") String rsdBrdId,
-    			@RequestParam("bldgIdParam") String bldgIdParam
+    			@RequestParam("bldgIdParam") String bldgIdParam,
+    			@AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
+    			Model model
     		) {
+    		MemberVO loginMember = principal.getRealUser();
+    		ResidentBoardVO board = service.getBoardById(rsdBrdId);
+    		
+    		if(board == null || !loginMember.getMbrCd().equals(board.getMbrCd())) {
+    			 return """
+    		               <script>
+    		                 alert('작성자 본인만 삭제할 수 있습니다.');
+    		                 history.back();
+    		               </script>
+    		               """;
+    		}
+    		
+    	
+    	
     	
     	service.softDeleteBoard(rsdBrdId);
-    	return "redirect:/resident/board?bldgIdParam=" + bldgIdParam;
+    	return """
+    	        <script>
+    	          alert('삭제되었습니다.');
+    	          location.href='/resident/board?bldgIdParam=%s';
+    	        </script>
+    	        """.formatted(bldgIdParam);
     }
 }
 

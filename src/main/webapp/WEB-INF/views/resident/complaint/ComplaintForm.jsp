@@ -81,6 +81,6 @@
 	    </a>
     </div>
   </form>
-  <script src="${pageContext.request.contextPath}/app/js/building/move-in/residentList.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
 </body>
 </html>

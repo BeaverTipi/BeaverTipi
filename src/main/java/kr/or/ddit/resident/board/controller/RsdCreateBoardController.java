@@ -56,42 +56,53 @@ public class RsdCreateBoardController {
         }
         return newBoard;
     }
-
-    
-
-
-
 	    /**
 	     * 등록/수정 폼 진입.
 	     * @param rsdBrdId 수정할 게시글 ID (optional)
 	     * @param principal 로그인 사용자 정보
 	     * @param model mode 전달용
 	     */
-	    @GetMapping("/board/form")
-	    public String showCreateForm(
-	    		@RequestParam(value = "rsdBrdId", required = false) String rsdBrdId,
-	    		@RequestParam(value = "bldgIdParam", required = false) String bldgIdParam,
-	    		@AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
-	            Model model) {
-	        String mode = (rsdBrdId != null && !rsdBrdId.isEmpty()) ? "edit" : "new";
-	        model.addAttribute("mode", mode);
-	        
-	        MemberVO member = principal.getRealUser();
-	        List<UnitResidentVO> units = unitResidentService.getUnitsByMember(member.getMbrCd());
-	        model.addAttribute("unitList", units);
-	        
-	        ResidentBoardVO board = (ResidentBoardVO) model.asMap().get("board");
-	        if(board!=null && board.getBldgId()!= null) {
-	        	for(UnitResidentVO unit : units) {
-	        		if(unit.getBldgId().equals(board.getBldgId())) {
-	        			model.addAttribute("buildingName",unit.getBuilding().getBldgNm());
-	        			break;
-	        		}
-	        	}
-	        }
-	        model.addAttribute("selectedBldgId", bldgIdParam);
-	        return "resident/Board/BoardForm";
-	    }
+    @GetMapping("/board/form")
+    public String showCreateForm(
+            @RequestParam(value = "rsdBrdId", required = false) String rsdBrdId,
+            @RequestParam(value = "bldgIdParam", required = false) String bldgIdParam,
+            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
+            Model model) {
+
+        String mode = (rsdBrdId != null && !rsdBrdId.isEmpty()) ? "edit" : "new";
+        model.addAttribute("mode", mode);
+
+        MemberVO member = principal.getRealUser();
+        List<UnitResidentVO> units = unitResidentService.getUnitsByMember(member.getMbrCd());
+        model.addAttribute("unitList", units);
+
+        ResidentBoardVO board = (ResidentBoardVO) model.asMap().get("board");
+
+        if ("edit".equals(mode)) {
+            ResidentBoardVO original = boardService.getBoardById(rsdBrdId);
+            if (original == null || !member.getMbrCd().equals(original.getMbrCd())) {
+                return """
+                    <script>
+                      alert('작성자 본인만 수정할 수 있습니다.');
+                      history.back();
+                    </script>
+                """;
+            }
+        }
+
+        if (board != null && board.getBldgId() != null) {
+            for (UnitResidentVO unit : units) {
+                if (unit.getBldgId().equals(board.getBldgId())) {
+                    model.addAttribute("buildingName", unit.getBuilding().getBldgNm());
+                    break;
+                }
+            }
+        }
+
+        model.addAttribute("selectedBldgId", bldgIdParam);
+        return "resident/Board/BoardForm";
+    }
+
 
 	    /**
 	     * 등록/수정 저장 처리.
@@ -128,7 +139,7 @@ public class RsdCreateBoardController {
 	        } else {
 	            boardService.updateBoard(board);
 	        }
-	        return "redirect:/resident/board?bldgIdParam=" + bldgIdParam;
+	        return "redirect:/resident/board/detail?rsdBrdId=" + board.getRsdBrdId() + "&bldgIdParam=" + bldgIdParam;
 	    }
 	    
 	    

@@ -74,6 +74,6 @@
     </c:url>
     <a href="${listUrl}" class="btn btn-default">목록으로</a>
   </div>
-<script src="${pageContext.request.contextPath}/app/js/building/move-in/residentList.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
 </body>
 </html>

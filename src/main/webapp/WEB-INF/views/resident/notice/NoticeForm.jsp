@@ -20,6 +20,24 @@
       border: none; border-radius: 4px;
     }
     .checkbox-group { margin-bottom: 1rem; }
+    .write-buttons {
+	  display: flex;
+	  gap: 10px;
+	  margin-top: 20px;
+	}
+	
+	.btn-dark {
+	  background-color: #6c757d;
+	  color: #fff;
+	  padding: 0.5rem 1rem;
+	  border: none;
+	  border-radius: 4px;
+	  text-decoration: none;
+	  display: inline-block;
+	}
+	.btn-dark:hover {
+	  background-color: #5a6268;
+	}
   </style>
 </head>
 <body>
@@ -94,14 +112,19 @@
   </div>
 
   <!-- ▶ 등록 버튼 -->
-  	<c:choose>
-	  <c:when test="${empty notice.noticeNo}">
-	    <button type="submit" class="btn-submit">등록</button>
-	  </c:when>
-	  <c:otherwise>
-	    <button type="submit" class="btn-submit">수정</button>
-	  </c:otherwise>
-	</c:choose>
+  
+  	<div class="write-buttons">
+	  <c:choose>
+	    <c:when test="${empty notice.noticeNo}">
+	      <button type="submit" class="btn-submit">등록</button>
+	    </c:when>
+	    <c:otherwise>
+	      <button type="submit" class="btn-submit">수정</button>
+	    </c:otherwise>
+	  </c:choose>
+	
+	  <a href="${pageContext.request.contextPath}/resident/notice" class="btn-dark">취소</a>
+	</div>
 
 
   <c:if test="${not empty notice.noticeType}">
@@ -170,6 +193,6 @@ function validateForm() {
   return true;
 }
 </script>
-<script src="${pageContext.request.contextPath}/app/js/building/move-in/residentList.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
 </body>
 </html>

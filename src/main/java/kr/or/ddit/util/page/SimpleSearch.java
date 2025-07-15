@@ -35,4 +35,7 @@ public class SimpleSearch {
 	
 	private String openYn;
 	private String reqStatus;
+	
+	private String searchStartDate;
+	private String searchEndDate;
 }

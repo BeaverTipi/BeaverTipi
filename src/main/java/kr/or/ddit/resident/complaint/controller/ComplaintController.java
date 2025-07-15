@@ -106,6 +106,10 @@ public class ComplaintController {
 			  ) {
 			    // (optional) 본인글 체크
 			    ResidentBoardVO vo = complaintService.selectComplaintById(rsdBrdId);
+			    
+			    MemberVO loginMember = principal.getRealUser();
+			    
+			    model.addAttribute("loginMember", loginMember);
 			    model.addAttribute("complaint", vo);
 			    model.addAttribute("bldgIdParam", bldgIdParam);
 			    return "resident/complaint/ComplaintDetail";

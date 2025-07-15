@@ -20,6 +20,7 @@
       max-width: 1200px;
       margin: 20px auto;
       padding: 10px;
+      box-sizing: border-box;
     }
     .header-bar {
       display: flex;
@@ -42,20 +43,30 @@
       padding: 5px 8px;
       font-size: 14px;
     }
-    .main-grid {
-      display: flex;
-      gap: 20px;
-      margin-top: 20px;
-    }
+   .main-grid {
+     display: flex;
+     gap: 20px;
+     margin-top: 20px;
+     flex-wrap: wrap;
+     overflow-x: hidden;
+     align-items: stretch; /* ✅ 높이 동일하게 맞춤 */
+   }
     .notice-grid {
-      flex: 2;
-    }
+  flex: 1 1 66%;
+  min-width: 0;
+  height: 100%; /* ✅ 추가 */
+}
     .giro-notice-card {
-      background: #fff;
-      border: 2px dashed #999;
-      border-radius: 6px;
-      padding: 20px;
-    }
+  background: #fff;
+  border: 2px dashed #999;
+  border-radius: 6px;
+  padding: 20px;
+  height: 100%; /* ✅ 추가 */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* 필요시 콘텐츠 배치 보정 */
+}
     .giro-notice-card h4 {
       color: #007bff;
       margin-top: 0;
@@ -68,15 +79,51 @@
       border: 1px dashed #ccc;
       border-radius: 6px;
     }
+    .energy-summary .energy-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border: 1px dashed #ccc;
+  border-radius: 6px;
+  background-color: #fcfcfc;
+}
+
+.energy-summary .energy-label {
+  font-weight: bold;
+  color: #007bff;
+  margin-bottom: 4px;
+}
+
+.energy-summary .energy-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  font-size: 13px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.energy-summary .value-item {
+  flex: 1;
+  min-width: 140px;
+}
+
+.energy-summary .diff {
+  font-weight: bold;
+}
     .diff.up { color: #e74c3c; font-weight: bold; }
     .diff.down { color: #2ecc71; font-weight: bold; }
     .diff.same { color: #999; }
 
     .ad-sidebar {
-      flex: 1;
+      flex: 0 0 320px;
       display: flex;
       flex-direction: column;
       gap: 16px;
+      box-sizing: border-box;
+       min-width: 0;
+       max-width: 320px;
     }
 
     .ad-sidebar-row {
@@ -85,26 +132,48 @@
       gap: 16px;
     }
 
-    .ad-box, .total-charge-box, .combined-paybox {
-      background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      padding: 15px;
-      font-size: 14px;
-      line-height: 1.4;
-      flex: 1;
-    }
-
+    .ad-box,
+   .total-charge-box,
+   .combined-paybox {
+     background: #fff;
+     border: 1px solid #dee2e6;
+     border-radius: 10px;
+     padding: 20px;
+     font-size: 14px;
+     line-height: 1.6;
+     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+     transition: all 0.2s ease;
+   }
+   .combined-paybox label {
+     margin-right: 12px;
+     font-size: 13px;
+   }
+   .ad-box h3,
+   .total-charge-box h3,
+   .combined-paybox h3 {
+     margin-top: 0;
+     font-size: 16px;
+     color: #343a40;
+     display: flex;
+     align-items: center;
+     gap: 6px;
+   }
+   
     .pay-button {
-      background: linear-gradient(to right, #007bff, #00c2ff);
-      color: #fff;
-      padding: 10px 20px;
-      font-size: 14px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
+     background: linear-gradient(to right, #00c6ff, #0072ff);
+     color: #fff;
+     padding: 10px 24px;
+     font-size: 14px;
+     border: none;
+     border-radius: 8px;
+     cursor: pointer;
+     display: block;
+     margin-top: 14px;
+     transition: background 0.3s ease;
+   }
+   .pay-button:hover {
+     background: linear-gradient(to right, #0072ff, #0056d2);
+   }
     .double-info-box {
       display: flex;
       background: #fff;
@@ -121,11 +190,115 @@
       padding-right: 15px;
     }
     .total-charge-amount {
-      font-size: 24px;
-      font-weight: bold;
-      color: #007bff;
-      margin-top: 10px;
-    }
+     font-size: 26px;
+     font-weight: bold;
+     color: #007bff;
+     margin: 12px 0 6px;
+   }
+   .total-charge-box p:last-child {
+     font-size: 13px;
+     color: #2ecc71;
+   }
+    .charge-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 13px;
+}
+.charge-table thead {
+  background-color: #f0f7ff;
+}
+.charge-table th {
+  padding: 10px 8px;
+  border-bottom: 2px solid #ddd;
+  color: #007bff;
+  text-align: left;
+}
+.charge-table td {
+  padding: 10px 8px;
+  border-bottom: 1px dashed #ccc;
+  vertical-align: middle;
+}
+.charge-table tr.even {
+  background-color: #fdfdfd;
+}
+.charge-table tr.odd {
+  background-color: #ffffff;
+}
+.charge-table td.amount{
+  text-align: center;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.charge-table td.diff, 
+.charge-table th.diff {
+  text-align: right !important;  /* ✅ 우측 정렬 고정 */
+  width: 100px;                   /* ✅ 셀 넓이 통일 */
+  white-space: nowrap;
+  padding-right: 8px;
+}
+.charge-table .label {
+  font-weight: bold;
+}
+.money-compare {
+  display: inline-block;
+  min-width: 140px;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+.info-box,
+.double-info-box {
+  box-sizing: border-box;
+  width: 100%;
+  overflow-wrap: break-word;
+}
+.info-box {
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  padding: 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-sizing: border-box;
+  width: 100%; /* ✅ 부모 너비에 맞춰 제한 */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: keep-all;
+}
+.ad-sidebar .info-box {
+  max-height: 255px;   /* 필요시 조정 가능 (예: 180px ~ 240px) */
+  overflow-y: auto;
+  padding-right: 10px; /* 스크롤 공간 확보 */
+}
+.info-box h3 {
+  margin-top: 0;
+  font-size: 16px;
+  color: #343a40;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.info-box ul {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 13px;
+  color: #333;
+}
+
+.info-box li {
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+
+.diff.up { color: #e74c3c; font-weight: bold; }
+.diff.down { color: #2ecc71; font-weight: bold; }
+.diff.same { color: #999; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -148,68 +321,117 @@
     </div>
     <div class="main-grid">
      <div class="notice-grid">
-	  <c:set var="totalIntegratedAmount" value="0" />
-	  <c:set var="totalSavedAmount" value="0" />
-	  <c:forEach var="item" items="${chargeBillComparisonList}">
-	    <c:set var="totalIntegratedAmount" value="${totalIntegratedAmount + item.currentAmount}" />
-	    <c:if test="${item.diffAmount < 0}">
-	      <c:set var="totalSavedAmount" value="${totalSavedAmount + (-item.diffAmount)}" />
-	    </c:if>
-	  </c:forEach>
+     <c:set var="totalIntegratedAmount" value="0" />
+     <c:set var="totalSavedAmount" value="0" />
+     <c:set var="energyChargeSum" value="0" />
+     <c:forEach var="item" items="${chargeBillComparisonList}">
+       <c:set var="totalIntegratedAmount" value="${totalIntegratedAmount + item.previousAmount}" />
+       <c:if test="${item.diffAmount < 0}">
+         <c:set var="totalSavedAmount" value="${totalSavedAmount + (-item.diffAmount)}" />
+       </c:if>
+     </c:forEach>
+     <c:forEach var="type" items="${energySummary[currentMonth]}">
+        <c:set var="energyType" value="${type.key}" />
+        <c:if test="${energyType eq '전기' || energyType eq '가스' || energyType eq '수도'}">
+          <c:set var="row" value="${type.value}" />
+          <c:set var="energyChargeSum" value="${energyChargeSum + row.chargeAmt}" />
+        </c:if>
+      </c:forEach>
+      <c:set var="totalIntegratedAmount" value="${totalIntegratedAmount + energyChargeSum}" />
         <div class="giro-notice-card">
           <h4><fmt:formatDate value="${prevDate}" pattern="yyyy년 MM월" /> 관리비 요약</h4>
-          <table style="width:100%; border-collapse:collapse; margin-top:12px;">
-            <thead>
-              <tr><th>항목</th><th style="text-align:right">금액</th><th style="text-align:right">변동</th></tr>
-            </thead>
-            <tbody>
-              <c:forEach var="item" items="${chargeBillComparisonList}">
-                <tr>
-                  <td>${item.feeName}</td>
-                  <td style="text-align:right"><fmt:formatNumber value="${item.previousAmount}" type="number" groupingUsed="true" />원</td>
-                  <td style="text-align:right">
-                    <c:choose>
-                      <c:when test="${item.diffAmount > 0}">
-                        <span class="diff up">▲ <fmt:formatNumber value="${item.diffAmount}" />원</span>
-                      </c:when>
-                      <c:when test="${item.diffAmount < 0}">
-                        <span class="diff down">▼ <fmt:formatNumber value="${-item.diffAmount}" />원</span>
-                      </c:when>
-                      <c:otherwise><span class="diff same">변화 없음</span></c:otherwise>
-                    </c:choose>
-                  </td>
-                </tr>
-              </c:forEach>
-            </tbody>
-          </table>
+          <table class="charge-table">
+  <thead>
+    <tr>
+      <th>항목</th>
+      <th style="text-align:center">금액</th>
+      <th class="diff">변동</th>
+    </tr>
+  </thead>
+  <tbody>
+    <c:forEach var="item" items="${chargeBillComparisonList}" varStatus="vs">
+      <tr class="${vs.index % 2 == 0 ? 'even' : 'odd'}">
+        <td class="label">${item.feeName}</td>
+      <td class="amount">
+      <span class="money-compare">
+        <fmt:formatNumber value="${item.currentAmount}" type="currency" />
+        →
+        <fmt:formatNumber value="${item.previousAmount}" type="currency" />
+        </span>
+      </td>
+        <td class="diff">
+          <c:choose>
+            <c:when test="${item.diffAmount > 0}">
+              <span class="diff up">▲ <fmt:formatNumber value="${item.diffAmount}" />원</span>
+            </c:when>
+            <c:when test="${item.diffAmount < 0}">
+              <span class="diff down">▼ <fmt:formatNumber value="${-item.diffAmount}" />원</span>
+            </c:when>
+            <c:otherwise><span class="diff same">변화 없음</span></c:otherwise>
+          </c:choose>
+        </td>
+      </tr>
+    </c:forEach>
+  </tbody>
+</table>
 
-          <div class="energy-summary">
-            <c:forEach var="type" items="${energySummary[currentMonth]}">
-              <c:set var="energyType" value="${type.key}" />
-              <c:if test="${energyType eq '전기' || energyType eq '가스' || energyType eq '수도'}">
-                <c:set var="currRow" value="${type.value}" />
-                <c:set var="prevRow" value="${energySummary[previousMonth][energyType]}" />
-                <c:set var="diffUsage" value="${currRow.usageQty - prevRow.usageQty}" />
-                <c:set var="diffCharge" value="${currRow.chargeAmt - prevRow.chargeAmt}" />
-                <p>
-                    🔹 ${energyType} 사용량:  
-                  						<fmt:formatNumber value="${prevRow.usageQty}" type="number" groupingUsed="true" /> ${prevRow.unitName} →
-        								<fmt:formatNumber value="${currRow.usageQty}" type="number" groupingUsed="true" /> ${currRow.unitName}
-                  <c:choose>
-                    <c:when test="${diffUsage > 0}"><span class="diff up">▲ <fmt:formatNumber value="${diffUsage}" type="number" groupingUsed="true" /></span></c:when>
-                    <c:when test="${diffUsage < 0}"><span class="diff down">▼ <fmt:formatNumber value="${-diffUsage}" type="number" groupingUsed="true" /></span></c:when>
-                    <c:otherwise><span class="diff same">변화 없음</span></c:otherwise>
-                  </c:choose>
-                  , 요금: <fmt:formatNumber value="${prevRow.chargeAmt}" type="currency" /> → <fmt:formatNumber value="${currRow.chargeAmt}" type="currency" />
-                  <c:choose>
-                    <c:when test="${diffCharge > 0}"><span class="diff up">▲ <fmt:formatNumber value="${diffCharge}" type="currency" /></span></c:when>
-                    <c:when test="${diffCharge < 0}"><span class="diff down">▼ <fmt:formatNumber value="${-diffCharge}" type="currency" /></span></c:when>
-                    <c:otherwise><span class="diff same">변화 없음</span></c:otherwise>
-                  </c:choose>
-                </p>
-              </c:if>
-            </c:forEach>
+         <div class="energy-summary">
+  <c:set var="electricCode" value="전기" />
+  <c:set var="gasCode" value="가스" />
+  <c:set var="waterCode" value="수도" />
+  <c:forEach var="type" items="${energySummary[currentMonth]}">
+    <c:set var="energyType" value="${type.key}" />
+    <c:if test="${energyType eq '전기' || energyType eq '가스' || energyType eq '수도'}">
+      <c:set var="currRow" value="${type.value}" />
+      <c:set var="prevRow" value="${energySummary[previousMonth][energyType]}" />
+      <c:set var="diffUsage" value="${currRow.usageQty - prevRow.usageQty}" />
+      <c:set var="diffCharge" value="${currRow.chargeAmt - prevRow.chargeAmt}" />
+      <c:set var="unitLabel" value="" />
+      <c:choose>
+        <c:when test="${energyType eq '전기'}"><c:set var="unitLabel" value="kWh"/></c:when>
+        <c:when test="${energyType eq '가스'}"><c:set var="unitLabel" value="㎥"/></c:when>
+        <c:when test="${energyType eq '수도'}"><c:set var="unitLabel" value="L"/></c:when>
+      </c:choose>
+
+      <div class="energy-row">
+        <div class="energy-label">🔹 ${energyType}</div>
+        <div class="energy-values">
+          <div class="value-item">
+          <span style="white-space:nowrap;">
+            사용량: 
+            <fmt:formatNumber value="${prevRow.usageQty}" type="number" groupingUsed="true"/>${unitLabel} → 
+            <fmt:formatNumber value="${currRow.usageQty}" type="number" groupingUsed="true"/>${unitLabel}
+            </span>
+            <c:choose>
+              <c:when test="${diffUsage > 0}">
+                <span class="diff up">▲ <fmt:formatNumber value="${diffUsage}" type="number" groupingUsed="true"/>${unitLabel}</span>
+              </c:when>
+              <c:when test="${diffUsage < 0}">
+                <span class="diff down">▼ <fmt:formatNumber value="${-diffUsage}" type="number" groupingUsed="true"/>${unitLabel}</span>
+              </c:when>
+              <c:otherwise><span class="diff same">변화 없음</span></c:otherwise>
+            </c:choose>
           </div>
+
+          <div class="value-item">
+            요금: 
+            <fmt:formatNumber value="${prevRow.chargeAmt}" type="currency" /> → 
+            <fmt:formatNumber value="${currRow.chargeAmt}" type="currency" />
+            <c:choose>
+              <c:when test="${diffCharge > 0}">
+                <span class="diff up">▲ <fmt:formatNumber value="${diffCharge}" type="currency" /></span>
+              </c:when>
+              <c:when test="${diffCharge < 0}">
+                <span class="diff down">▼ <fmt:formatNumber value="${-diffCharge}" type="currency" /></span>
+              </c:when>
+              <c:otherwise><span class="diff same">변화 없음</span></c:otherwise>
+            </c:choose>
+          </div>
+        </div>
+      </div>
+    </c:if>
+  </c:forEach>
+</div>
         </div>
       </div>
       <div class="ad-sidebar">
@@ -219,23 +441,31 @@
           <img src="/images/ad-banner.jpg" alt="광고 배너" style="width:100%; border-radius:6px; margin-top:10px;" />
         </div>
         <div class="total-charge-box">
-		  <h3>📦 총 관리비 내역</h3>
-		  <p class="total-charge-amount">
-		    <fmt:formatNumber value="${totalIntegratedAmount}" type="currency" />
-		  </p>
-		  <c:if test="${totalSavedAmount > 0}">
-		    <p style="font-size:13px; color:#2ecc71; margin-top:6px;">
-		      💚 전월 대비 <strong><fmt:formatNumber value="${totalSavedAmount}" type="currency" /></strong> 절감되었습니다
-		    </p>
-		  </c:if>
-		</div>
+        <h3>📦 총 관리비 내역</h3>
+        <p class="total-charge-amount">
+          <fmt:formatNumber value="${totalIntegratedAmount}" type="currency" />
+        </p>
+        <c:if test="${totalSavedAmount > 0}">
+          <p style="font-size:13px; color:#2ecc71; margin-top:6px;">
+            💚 전월 대비 <strong><fmt:formatNumber value="${totalSavedAmount}" type="currency" /></strong> 절감되었습니다
+          </p>
+        </c:if>
+      </div>
         <div class="combined-paybox">
           <h3>💳 결제 방식</h3>
           <c:forEach items="${payment}" var="pay">
           <label><input type="radio" name="payment_method" value="${pay.codeName}" checked>${pay.codeName}</label>
           </c:forEach>
-          <button class="pay-button"  data-name="<fmt:formatDate value='${prevDate}' pattern='MM' />월 총 관리비 금액" data-pay="${totalIntegratedAmount}">💸 납부하기</button>
         </div>
+    <div class="info-box">
+     <h3>📘 고객 안내사항</h3>
+     <ul style="margin:0; padding-left: 18px; font-size: 13px;">
+       <li>2025년 6월 관리비는 전월 대비 평균 <strong>5.8% 인상</strong>되었습니다.</li>
+       <li>공용 수도요금은 <strong>배관 정비공사</strong>로 인해 일시적으로 증가했습니다.</li>
+       <li>엘리베이터 보수공사가 <strong>7월 15일 ~ 18일</strong> 예정되어 있습니다.</li>
+       <li>관리사무소 운영시간은 <strong>09:00 ~ 18:00</strong>이며, 점심시간은 12:00 ~ 13:00입니다.</li>
+     </ul>
+   </div>
       </div>
     </div>
     <div class="double-info-box">
@@ -255,6 +485,6 @@
     </div>
   </div>
 <script src="https://js.tosspayments.com/v1"></script>
-<script src="${pageContext.request.contextPath}/app/js/building/move-in/residentList.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
 </body>
 </html>

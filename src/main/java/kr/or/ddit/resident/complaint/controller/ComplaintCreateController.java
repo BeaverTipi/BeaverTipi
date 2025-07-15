@@ -2,6 +2,7 @@ package kr.or.ddit.resident.complaint.controller;
 
 import java.util.List;
 
+import org.eclipse.tags.shaded.org.apache.xpath.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.or.ddit.admin.code.service.CommonCodeService;
 import kr.or.ddit.resident.complaint.service.ComplaintService;
@@ -80,29 +82,42 @@ public class ComplaintCreateController {
      * 2) 저장 처리 (등록 ↔ 수정 자동 분기)
      */
     @PostMapping("/save")
+    @ResponseBody
     public String save(
             @ModelAttribute("complaint") ResidentBoardVO complaint,
             @RequestParam(value = "bldgIdParam", required = false) String bldgIdParam,
-            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
+            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
+            Model model
     ) {
         // 작성자 설정 (인증된 사용자)
-        complaint.setMbrCd(principal.getRealUser().getMbrCd());
+//        complaint.setMbrCd(principal.getRealUser().getMbrCd());
+    	String loginMbrCd = principal.getRealUser().getMbrCd();
 
         // 신규 등록
         if (complaint.getRsdBrdId() == null || complaint.getRsdBrdId().isBlank()) {
             String nextId = complaintService.getNextComplaintId();
             complaint.setRsdBrdId(nextId);
             complaint.setBrdCode("M0001");
+            complaint.setMbrCd(loginMbrCd);
             complaintService.insertComplaint(complaint);
         }
         // 기존 글 수정
         else {
+        	ResidentBoardVO original = complaintService.selectComplaintById(complaint.getRsdBrdId());
+        	
+        	if (!original.getMbrCd().equals(loginMbrCd)) {
+				return "<script>alert('작성자 본인만 수정할 수 있습니다.'); history.back();</script>";
+			}
+        	
+        	complaint.setMbrCd(loginMbrCd);
             complaintService.updateComplaint(complaint);
         }
 
-        return "redirect:/resident/complaint?bldgIdParam=" + bldgIdParam;
+        return "<script>location.href='/resident/complaint/view?rsdBrdId=" 
+        + complaint.getRsdBrdId() + "&bldgIdParam=" + bldgIdParam + "';</script>";
     }
     @PostMapping("/delete")
+    @ResponseBody
     public String delete(
         @RequestParam("rsdBrdId") String rsdBrdId,
         @RequestParam(value = "bldgIdParam", required = false) String bldgIdParam,
@@ -111,10 +126,10 @@ public class ComplaintCreateController {
         // Optional: 본인 글 검증
         ResidentBoardVO vo = complaintService.selectComplaintById(rsdBrdId);
         if (!vo.getMbrCd().equals(principal.getRealUser().getMbrCd())) {
-            return "redirect:/accessDenied";
+            return "<script>alert('작성자 본인만 삭제할 수 있습니다.'); history.back();</script>";
         }
         complaintService.deleteComplaint(rsdBrdId);
-        return "redirect:/resident/complaint?bldgIdParam=" + bldgIdParam;
+        return "<script>location.href='/resident/complaint?bldgIdParam=" + bldgIdParam + "';</script>";
     }
 
     

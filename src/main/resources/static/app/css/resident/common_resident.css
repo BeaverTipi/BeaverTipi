@@ -1,5 +1,3 @@
-@charset "UTF-8";
-
 :root {
   --color-text: #212529;
   --color-muted: #888;
@@ -8,7 +6,7 @@
   --font-title: 1.8em;
 }
 
-/* 기본 레이아웃 */
+/* ✅ 기본 */
 body {
   font-size: var(--font-base);
   color: var(--color-text);
@@ -22,35 +20,34 @@ main.container {
 }
 
 .board-title {
-  max-width: 1400px;
-  width: 95%;
-  margin: 0 auto 20px auto;
-  padding-left: 0;
   font-size: var(--font-title);
+  margin: 0 auto 20px;
   color: var(--color-text);
+  width: 95%;
+  max-width: 1400px;
 }
 
+/* ✅ 검색 영역 */
 .container-wrapper {
-  background-color: #ffffff;
+  background-color: #fff;
   border: 1px solid var(--color-border);
   border-radius: 10px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
   margin: 0 auto 40px;
+  padding: 15px;
   width: 95%;
   max-width: 1400px;
 }
 
-/* 🔍 검색 영역 */
 .search-area {
-  display: grid;
-  grid-template-columns: 1fr auto;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
-  align-items: end;
-  padding: 14px;
-  background-color: #f5f5f5;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 8px;
 }
 
 .search-form {
@@ -60,76 +57,127 @@ main.container {
 .search-conditions {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 8px;
+  gap: 12px 16px;
+  align-items: flex-end;
 }
 
 .search-item {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  flex: 1 1 200px;
-  min-width: 240px;
-  box-sizing: border-box;
-  /* ✅ 수직 정렬 보정 */
-  align-self: start;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 4px;
+  flex: none;
+}
+
+.search-item.double-width {
+  flex: 2 1 360px;
+  min-width: 300px;
+  max-width: 420px;
 }
 
 .search-item label {
   font-weight: bold;
-  width: 60px;
-  text-align: right;
-  flex-shrink: 0;
-  margin: 0;
-}
-
-.input-field,
-.select-field,
-input[type="date"] {
-  display: inline-block;
-  width: 200px;
-  padding: 6px 10px;
   font-size: 14px;
-  border: 1px solid #bbb;
-  border-radius: 4px;
-  background-color: #fff;
-  box-sizing: border-box;
-  flex: none;
-  min-width: 200px;
-  max-width: 200px;
+  color: #333;
+  margin-bottom: 4px;
 }
 
-.select-field option {
-  white-space: nowrap;
+.search-item.row-type {
+  flex-direction: column;
+  align-items: flex-start;     /* ✅ 왼쪽 정렬 */
+  gap: 4px;                    /* ✅ label과 select 간격 */
+  min-width: 120px;
+  max-width: 160px;            /* ✅ 텍스트가 잘리지 않게 충분한 너비 */
 }
 
+.search-item.row-type label {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 2px;
+  text-align: left;
+  white-space: nowrap;          /* ✅ 줄바꿈 방지 */
+}
+
+
+.search-item.select-cond {
+  /* 조건 항목도 동일한 넓이 기준으로 통일 */
+  flex: 0 0 auto;
+  min-width: unset;
+  width: auto;
+  max-width: 100px;
+}
+
+.date-range-wrapper,
 .date-wrapper {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-wrap: nowrap;
 }
 
-/* 🔘 검색 버튼 영역 */
-.search-button-area {
+.date-range-wrapper input[type="date"] {
+  flex: 1 1 auto;
+  min-width: 120px;
+}
+
+input[type="date"],
+.search-item input,
+.search-item select,
+.input-field {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.search-word {
+  width: 200px;
+  margin-right: 8px;
+}
+
+.select-type {
+  width: auto !important;
+  max-width: 100px;
+}
+
+.search-item-group {
   display: flex;
+  flex: 1 1 300px;
+  gap: 8px;
   align-items: flex-end;
+  max-width: 420px;
 }
 
-.search-button-area button {
-  background-color: #555;
-  color: #fff;
-  padding: 9px 18px;
-  border-radius: 6px;
+.search-item-group .input-field {
+  flex-grow: 1;
+  height: 38px;
+  box-sizing: border-box;
+}
+
+.search-item-group .search-button {
+  height: 38px;
+  padding: 0 16px;
   border: none;
+  border-radius: 4px;
+  background-color: #1f2d3d;
+  color: white;
   cursor: pointer;
-  font-weight: 500;
-  height: 40px;
+  font-size: 14px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.search-button-area button:hover {
-  background-color: #777;
+.search-item-group .search-button:hover {
+  background-color: #444;
 }
 
-/* 📋 게시판 테이블 */
+/* ✅ 테이블 */
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -147,8 +195,8 @@ input[type="date"] {
 }
 
 .table th {
-  background-color: #777777;
-  color: #ffffff;
+  background-color: #777;
+  color: #fff;
 }
 
 .table tbody tr:nth-child(even) {
@@ -166,7 +214,7 @@ input[type="date"] {
   font-style: italic;
 }
 
-/* 📄 페이지네이션 */
+/* ✅ 페이징 */
 .pagination-wrapper {
   text-align: center;
   margin-top: 20px;
@@ -185,11 +233,18 @@ input[type="date"] {
 }
 
 .pagination-wrapper span.bg-primary {
-  background-color: #777777;
+  background-color: #777;
   color: #fff;
 }
 
-/* ✏️ 글쓰기/휴지통 버튼 */
+/* ✅ 하단 버튼 */
+.write-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
 .btn-success {
   background-color: #28a745;
   color: white;
@@ -206,21 +261,10 @@ input[type="date"] {
   text-decoration: none;
 }
 
-.write-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
-}
-/* ✅ 날짜 필드가 2칸 분량 차지하게 설정 */
-.search-item.double-width {
-  flex: 2 1 420px;
-  min-width: 420px;
-}
-
-/* ✅ 날짜 input 사이 여백 최소화 */
-.date-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 6px;  /* 시작일 ~ 종료일 간 간격 */
+/* ✅ 반응형 */
+@media screen and (max-width: 768px) {
+  .search-item,
+  .search-item-group {
+    flex: 1 1 100%;
+  }
 }
