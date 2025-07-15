@@ -41,7 +41,8 @@
             LSTG_DEL,
             LSTG_REG_DATE,
             LSTG_PROD_STAT,
-            LSTG_POSTAL
+            LSTG_POSTAL,
+            LSTG_FEE
         ) VALUES (
             'L' || TO_CHAR(SYSDATE, 'YYMM')|| LPAD(seq_LSTG_ID.NEXTVAL, 6, '0'),
             #{mbrCd},
@@ -67,7 +68,8 @@
             #{lstgDel},
             SYSDATE,
             #{lstgProdStat},
-            #{lstgPostal}
+            #{lstgPostal},
+            #{lstgFee}
         )
     </insert>
 
@@ -141,7 +143,8 @@
             LSTG_LAT          = #{lstgLat},
             LSTG_LNG          = #{lstgLng},
             LSTG_DEL          = #{lstgDel},
-            LSTG_PROD_STAT    = #{lstgProdStat}
+            LSTG_PROD_STAT    = #{lstgProdStat},
+            LSTG_FEE          = #{lstgFee}
         WHERE LSTG_ID = #{lstgId}
     </update>
 
@@ -162,6 +165,16 @@
             FAC_TYPE_GROUP_CD
         FROM FACILITY_OPTION
         ORDER BY FAC_TYPE_GROUP_CD, FAC_OPT_NM
+    </select>
+    
+    <select id="commonCodeLstg1List" resultType="kr.or.ddit.vo.CommonCodeVO">
+    	select * from common_code
+		where code_group = 'LSTG1'
+    </select>
+    
+    <select id="commonCodeLstg2List" resultType="kr.or.ddit.vo.CommonCodeVO">
+    	select * from common_code
+		where code_group = 'LSTG2'
     </select>
 
 </mapper>

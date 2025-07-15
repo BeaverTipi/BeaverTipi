@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import kr.or.ddit.vo.BuildingVO;
+import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.TenancyAccountVO;
 
 
@@ -30,6 +31,10 @@ public interface BuildingManagedMapper {
     //계좌연동할거얌 ㅋ
     
     List<TenancyAccountVO> selectAccountsByRentalPtyId(String rentalPtyId);
-
+    
+    //매물에서 가져와볼거얌....
+    public List<ListingVO> selectListingsByRentalPtyId(String rentalPtyId);
+    
+    public ListingVO selectListingById(String lstgId);
 }
 

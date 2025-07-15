@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingVO;
 
@@ -27,4 +28,7 @@ public interface RentalOwnerProductMapper {
     
     // 시설 옵션 전체 조회
 	List<FacilityOptionVO> selectAllFacilityOptions();
+
+	List<CommonCodeVO> commonCodeLstg1List();
+	List<CommonCodeVO> commonCodeLstg2List();
 }

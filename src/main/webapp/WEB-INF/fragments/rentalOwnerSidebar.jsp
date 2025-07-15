@@ -186,15 +186,11 @@
           role="list" id="submenu-app" aria-expanded="false">
           <ul class="flex-column nav">
             <li class="nav-item ">
-              <a class="nav-link" href="${pageContext.request.contextPath}/building/moveIn">
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/move-in/detail">
                 <span class="sidebar-text">입주 정보</span>
               </a>
             </li>
-            <li class="nav-item ">
-              <a class="nav-link" href="${pageContext.request.contextPath}/building/resident/read">
-                <span class="sidebar-text">입주민 설정</span>
-              </a>
-            </li>
+            
           </ul>
         </div>
       </li>

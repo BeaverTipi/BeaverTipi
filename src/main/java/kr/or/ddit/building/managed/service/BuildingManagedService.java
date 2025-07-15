@@ -4,6 +4,7 @@ package kr.or.ddit.building.managed.service;
 import java.util.List;
 
 import kr.or.ddit.vo.BuildingVO;
+import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.TenancyAccountVO;
 
 
@@ -30,6 +31,9 @@ public interface BuildingManagedService {
     //계좌정보 연동
     List<TenancyAccountVO> selectAccountsByRentalPtyId(String rentalPtyId);
     
-
+    //매물서 꺼내오긩
+    public List<ListingVO> selectListingsByRentalPtyId(String rentalPtyId);
+    
+    public ListingVO selectListingById(String lstgId);
 }
 

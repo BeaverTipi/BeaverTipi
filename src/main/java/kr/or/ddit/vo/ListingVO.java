@@ -30,10 +30,10 @@ public class ListingVO implements Serializable {
     private String rentalPtyId;
 
     @NotNull
-    private Integer lstgTypeCode1; // 대분류
+    private String lstgTypeCode1; // 대분류
 
     @NotNull
-    private Integer lstgTypeCode2; // 소분류
+    private String lstgTypeCode2; // 소분류
 
     @NotBlank
     @Size(max = 100)
@@ -62,7 +62,7 @@ public class ListingVO implements Serializable {
     private String lstgDst;
 
     @NotNull
-    private Integer lstgTypeSale; // 거래종류 (1=전세, 2=월세, 3=매매)
+    private String lstgTypeSale; // 거래종류 (1=전세, 2=월세, 3=매매)
 
     @PositiveOrZero
     private Long lstgLease;
@@ -89,11 +89,14 @@ public class ListingVO implements Serializable {
 
     private LocalDateTime lstgRegDate;
 
-    private Integer lstgProdStat = 1;
+    private String lstgProdStat = "001";
     
     @NotNull
     @Size(max = 10)
     private String lstgPostal;
+    
+    @Size(max = 13)
+    private String lstgFee;
 
     // 시설 옵션
     private List<FacilityOptionVO> facOptions;

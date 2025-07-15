@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.building.mapper.RentalOwnerProductMapper;
+import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingVO;
 
@@ -44,4 +45,14 @@ public class RentalOwnerProductServiceImpl implements RentalOwnerProductService 
     public List<FacilityOptionVO> selectAllFacilityOptions() {
         return productMapper.selectAllFacilityOptions();
     }
+
+	@Override
+	public List<CommonCodeVO> commonCodeLstg1List() {
+		return productMapper.commonCodeLstg1List();
+	}
+	
+	@Override
+	public List<CommonCodeVO> commonCodeLstg2List() {
+		return productMapper.commonCodeLstg2List();
+	}
 }

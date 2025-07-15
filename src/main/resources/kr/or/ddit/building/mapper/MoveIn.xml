@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.ddit.building.mapper.UnitResidentMapper">
+
+  <!-- 등록 -->
+  <insert id="insertResident" parameterType="UnitResidentVO">
+    INSERT INTO UNIT_RESIDENT (
+      UNIT_ID, BLDG_ID, RENTAL_PTY_ID,
+      MOVE_IN_DT, MBR_CD, UNIT_DEL_YN
+    ) VALUES (
+      #{unitId}, #{bldgId}, #{rentalPtyId},
+      #{moveInDt}, #{mbrCd}, 'N'
+    )
+  </insert>
+
+  <!-- 수정 -->
+  <update id="updateResident" parameterType="UnitResidentVO">
+    UPDATE UNIT_RESIDENT
+    SET MOVE_IN_DT = #{moveInDt},
+        MOVE_OUT_DT = #{moveOutDt}
+    WHERE UNIT_ID = #{unitId}
+      AND BLDG_ID = #{bldgId}
+      AND RENTAL_PTY_ID = #{rentalPtyId}
+      AND MBR_CD = #{mbrCd}
+  </update>
+
+  <!-- 삭제 이건 Y,N 처리얌 -->
+  <update id="deleteResident" parameterType="UnitResidentVO">
+    UPDATE UNIT_RESIDENT
+    SET UNIT_DEL_YN = 'Y'
+    WHERE UNIT_ID = #{unitId}
+      AND BLDG_ID = #{bldgId}
+      AND RENTAL_PTY_ID = #{rentalPtyId}
+      AND MBR_CD = #{mbrCd}
+  </update>
+
+  <!-- 목록 조회 -->
+  <select id="selectResidentsByBldgId" resultType="UnitResidentVO">
+    SELECT
+      UNIT_ID, BLDG_ID, RENTAL_PTY_ID,
+      MOVE_IN_DT, MOVE_OUT_DT, MBR_CD, UNIT_DEL_YN
+    FROM UNIT_RESIDENT
+    WHERE BLDG_ID = #{bldgId}
+      AND UNIT_DEL_YN = 'N'
+    ORDER BY UNIT_ID
+  </select>
+
+  <!-- 모달용 검색 (ID 또는 이름) -->
+  <select id="searchMemberByKeyword" resultType="MemberVO">
+    SELECT
+      MBR_CD, MBR_ID, MBR_NM, MBR_TELNO
+    FROM MEMBER
+    WHERE MBR_STATUS_CODE = 'ACTIVE'
+      AND (
+        MBR_ID LIKE '%' || #{keyword} || '%' OR
+        MBR_NM LIKE '%' || #{keyword} || '%'
+      )
+  </select>
+
+</mapper>

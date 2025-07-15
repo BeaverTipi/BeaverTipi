@@ -140,4 +140,48 @@
     AND RENTAL_PTY_ID = #{rentalPtyId}
 </update>
 
+<!-- 매물에서 끌고와보자 -->
+
+<select id="selectListingsByRentalPtyId" resultType="ListingVO" parameterType="string">
+    SELECT 
+        LSTG_ID,
+        LSTG_NM,
+        LSTG_ADD,
+        LSTG_ADD2,
+        LSTG_POSTAL,
+        LSTG_GR_AREA,
+        LSTG_ROOM_CNT,
+        LSTG_ROOM_NUM,
+        LSTG_FLOOR
+    FROM LISTING
+    WHERE RENTAL_PTY_ID = #{rentalPtyId}
+    AND LSTG_DEL = 'N'
+</select>
+
+<select id="selectListingById" parameterType="string" resultType="ListingVO">
+    SELECT 
+        LSTG_ID,
+        MBR_CD,
+        RENTAL_PTY_ID,
+        LSTG_TYPE_CODE1,
+        LSTG_TYPE_CODE2,
+        LSTG_ADD,
+        LSTG_ADD2,
+        LSTG_POSTAL,
+        LSTG_ROOM_NUM,
+        LSTG_GR_AREA,
+        LSTG_LEASE,
+        LSTG_LEASE_M,
+        LSTG_LEASE_AMT,
+        LSTG_TYPE_SALE,
+        LSTG_ROOM_CNT,
+        LSTG_FLOOR,
+        LSTG_PARK_YN,
+        LSTG_NM,
+        LSTG_DST,
+        LSTG_DTL_DESC
+    FROM LISTING
+    WHERE LSTG_ID = #{lstgId}
+</select>
+
 </mapper>

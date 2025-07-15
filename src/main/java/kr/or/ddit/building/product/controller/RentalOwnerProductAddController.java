@@ -1,10 +1,13 @@
 package kr.or.ddit.building.product.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import kr.or.ddit.building.product.service.RentalOwnerProductService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.MemberVO;
@@ -89,4 +93,41 @@ public class RentalOwnerProductAddController {
 
         return "redirect:/building/product/list";
     }
+    
+    // 매물등록 시, 매물유형 목록 가져오기
+    @GetMapping("/selectLstg1List")
+    public ResponseEntity<Map<String, Object>> commonCodeLstg1List(){
+    	Map<String, Object> resultMap = new HashMap<String, Object>();
+    	List<CommonCodeVO> lstg1List = service.commonCodeLstg1List();
+    	
+    	resultMap.put("status", HttpStatus.OK);
+    	resultMap.put("data", lstg1List);
+    	return ResponseEntity.ok(resultMap);
+    }
+    
+    // 매물등록 시, 소분류 목록 가져오기
+    @GetMapping("/selectLstg2List")
+    public ResponseEntity<Map<String, Object>> commonCodeLstg2List(){
+    	Map<String, Object> resultMap = new HashMap<String, Object>();
+    	List<CommonCodeVO> lstg2List = service.commonCodeLstg2List();
+    	
+    	resultMap.put("status", HttpStatus.OK);
+    	resultMap.put("data", lstg2List);
+    	return ResponseEntity.ok(resultMap);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

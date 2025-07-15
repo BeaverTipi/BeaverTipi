@@ -115,7 +115,24 @@
             <label for="bldgNm">건물 이름</label>
             <form:input path="bldgNm" id="bldgNm" placeholder="입력해주세요" />
           </div>
-
+		<c:if test="${not empty buildingVO.rentalPtyId}">
+		  <div class="form-group row mt-3">
+		    <label class="col-sm-2 col-form-label">내 매물에서 불러오기</label>
+		    <div class="col-sm-6">
+		      <select class="form-select" id="listingSelectBox">
+		        <option value="">선택</option>
+		        <c:forEach var="listing" items="${listingList}">
+		          <option value="${listing.lstgId}">
+		            ${listing.lstgNm} - ${listing.lstgAdd} ${listing.lstgAdd2}
+		          </option>
+		        </c:forEach>
+		      </select>
+		    </div>
+		    <div class="col-sm-2">
+		      <button type="button" class="btn btn-outline-secondary" onclick="fillListingInfo()">불러오기</button>
+		    </div>
+		  </div>
+		</c:if>
           <div class="form-row">
             <label for="bldgZipNo">우편번호</label>
             <div class="zipcode-box">
