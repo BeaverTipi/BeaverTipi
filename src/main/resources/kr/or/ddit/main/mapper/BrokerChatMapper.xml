@@ -1,10 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.main.mapper.BrokerChatMapper">
+	<resultMap type ="ChatMessageVO" id="chatMessageMap">
+		<id property="cmId" column="CM_ID"/>
+		
+		<association property="member" javaType ="MemberVO">
+		<result property = "mbrNnm" column ="MBR_NNM"/>
+		</association>
+	
+	</resultMap>
+	
+	
+	<insert id="insertChatRoom" parameterType="BrokerChatroomVO">
+	<selectKey keyProperty="crId" resultType="string" order="BEFORE">
+	  SELECT 'CR' || LPAD(SEQ_CHAT_ROOM_ID.NEXTVAL, 8, '0') FROM DUAL
+	</selectKey>
+		INSERT INTO BROKER_CHATROOM (
+		CR_ID
+		,INQUIRER_CD
+		,SELLER_CD
+		,LSTG_ID
+		,CR_TITLE
+		)VALUES (
+		#{crId}
+		,#{inquirerCd}
+		,#{sellerCd}
+		,#{lstgId}
+		,#{crTitle}
+		)
+		
+	</insert>
+	
+	<insert id="insertChatParticipant">
+	INSERT INTO BROKER_CHAT_PARTICIPANT(CR_ID,MBR_CD)
+	VALUES (#{crId},#{mbrCd});
+	
+	</insert>
+	
+	
+	<select id="selectChatRoomList" resultType = "BrokerChatParticipantVO">
+	SELECT *
+	FROM BROKER_CHAT_PARTICIPANT
+	WHERE MBR_CD = #{mbrCd}
+	AND BCP_STATUS = 'JOIN'
+		
+	</select>
+	
+	<select id="selectListingInfo" resultType = "ListingVO">
+	SELECT *
+	FROM LISTING
+	WHERE LSTG_ID = #{lstgId}
+	</select>
 
-
-
-
-
-
+	<select id="selectMessages" resultMap = "chatMessageMap">
+	SELECT A.*, COALESCE(B.MBR_NNM,B.MBR_NM) AS MBR_NNM
+	FROM CHAT_MESSAGE A
+	INNER JOIN MEMBER B ON (A.MBR_CD = B.MBR_CD)
+	WHERE CR_ID = #{crId}
+	</select>
+	
+	<insert id="insertMessage" parameterType="ChatMessageVO">
+	<selectKey keyProperty="cmId" resultType="string" order="BEFORE">
+	  SELECT 'CM' || LPAD(SEQ_CHAT_MESSAGE_ID.NEXTVAL, 8, '0') FROM DUAL
+	</selectKey>
+	INSERT INTO CHAT_MESSAGE(
+	CM_ID
+	,CR_ID
+	,MBR_CD
+	,CM_CONT
+	,CM_IMG
+	)VALUES (
+	#{cmId}
+	,#{crId}
+	,#{mbrCd}
+	,#{cmCont}
+	,#{cmImg})
+	</insert>
+	
+	<update id="updateLeaveChat" parameterType="string">
+	UPDATE BROKER_CHAT_PARTICIPANT
+	SET BCP_STATUS = 'LEAVE'
+	AND BCP_LEAVED_AT = SYSDATE
+	WHERE CR_ID = #{crId}
+	and MBR_CD = #{mbrCd}	
+	</update>
+	
+	<update id="updateJoinChat" parameterType="string">
+	UPDATE BROKER_CHAT_PARTICIPANT
+	SET BCP_STATUS = 'JOIN'
+	AND BCP_LEAVED_AT = SYSDATE
+	WHERE CR_ID = #{crId}
+	and MBR_CD = #{mbrCd}	
+	</update>
+	
+	<select id="selectCheckChatRoom" resultType ="boolean">
+	SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END AS EXISTS_FLAG
+	FROM BROKER_CHATROOM
+	WHERE INQUIRER_CD = #{inquirerCd} AND LSTG_ID = #{lstgId};	
+	</select>
 </mapper>

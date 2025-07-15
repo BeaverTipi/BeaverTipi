@@ -11,7 +11,7 @@ public class BrokerChatroomVO implements Serializable{
 	private String crId;
 	private String inquirerCd;
 	private String sellerCd;
-	private String crTitl;
+	private String crTitle;
 	private LocalDateTime crCreDtm;
 	private String lstgId;
 	private String crStatus;
