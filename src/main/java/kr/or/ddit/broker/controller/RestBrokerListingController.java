@@ -61,6 +61,7 @@ public class RestBrokerListingController {
 		
 		String username = principal.getName();
 		log.error("Handler::lstgDetails() -> username: {}", username);
+		@SuppressWarnings("unused")
 		String mbrCd = authUnpack.getMbrCd(username);
 		
 //		Map<String, String> lstgDetailsParams = Map.of("mbrCd", mbrCd, "lstgId", lstgId);

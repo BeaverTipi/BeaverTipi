@@ -104,7 +104,7 @@
 </select>
 <select id="selectLstgListForContract" parameterType="String" resultMap="ListingMap">
 	<include refid="selectLstgList" />
-	   AND L.LSTG_PROD_STAT = '1'
+	   AND L.LSTG_PROD_STAT = '001'
 	   AND L.LSTG_DEL = 'N'
 	 ORDER BY L.LSTG_ID ASC
 </select>

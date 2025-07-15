@@ -204,6 +204,12 @@
     		<artifactId>commons-text</artifactId>
     		<version>1.10.0</version>
     	</dependency>
+		<!-- LocalTime 객체를 Jackson으로 직렬화/역직렬화 -->    	
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

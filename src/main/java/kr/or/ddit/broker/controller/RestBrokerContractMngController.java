@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.or.ddit.broker.mapper.BrokerAuthUnpackingMapper;
 import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
 import kr.or.ddit.broker.service.BrokerContractService;
 import kr.or.ddit.util.crypto.AES256Util;

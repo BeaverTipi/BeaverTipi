@@ -33,7 +33,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
 import kr.or.ddit.broker.service.BrokerContractService;
@@ -78,6 +81,30 @@ public class RestBrokerContractNewController {
 		return lstgList;
 	}
 	
+	@PostMapping("/listing")
+	public Map<String, String> listingList(
+			Principal principal
+			, @RequestBody Map<String, String> payload
+
+	) {
+		String iv = payload.get("iv");
+		BrokerVO broker = authService.getRealUser(principal);
+		List<ListingVO> lstgList = contService.readLstgListForContract(broker.getMbrCd());
+		
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+		
+		try {
+	        String resultJson = mapper.writeValueAsString(lstgList);
+	        Map<String, String> encryptedResponse = aes256Util.encryptWithDynamicIV(resultJson);
+	        return encryptedResponse;
+	    } catch (Exception e) {
+	        throw new RuntimeException("응답 암호화 실패", e);
+	    }
+	}
+	
 	@PostMapping("/lessee")
 	public List<ListingWishlistVO> lesseeForContract(
 		@RequestBody Map<String, String> requestBody
@@ -89,21 +116,32 @@ public class RestBrokerContractNewController {
 		return wishlist;
 	}
 	
+	@SuppressWarnings({ "unused", "unchecked" })
 	@PostMapping("/submit")
 	public ResponseEntity<?> handleContractSubmit(
 			Principal principal
 			, @RequestBody Map<String, Object> payload
 	) {
-		
+//		log.debug("====+>>> payload: {}", payload);
 	    try {
 	        List<Map<String, String>> base64Files = (List<Map<String, String>>) payload.get("base64Files");
 	        Map<String, Object> contractInfo = (Map<String, Object>) payload.get("contract");
+	        ObjectMapper mapper = new ObjectMapper();
+	        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+	        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+	        mapper.registerModule(new JavaTimeModule());
+	        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+			ListingVO listing = mapper.convertValue(contractInfo.get("listing"), ListingVO.class);
+	        
 	        ContractVO.builder()
 	        		  .mbrCd(String.valueOf(contractInfo.get("lesseeCd")))
 	        		  .mbrCdBrok(authUnpack.getMbrCd(principal.getName()))
 	        		  .lstgId(String.valueOf(contractInfo.get("listingId")))
 	        		  .contTypeCode(String.valueOf(contractInfo.get("listingContTypeCode1")))
-	        		  .contDeposit(Long.parseLong((String)contractInfo.get("")))
+//	        		  .contDeposit(Long.parseLong((String)contractInfo.get("deposit")))
+//	        		  .contAmount(Long.parseLong((String)contractInfo.get("depositM")))
+//	        		  .contStatCd(String.valueOf(contractInfo.get("")))
 	        		  .build();
 	        List<MultipartFile> multipartFiles = new ArrayList<>();
 
@@ -131,7 +169,6 @@ public class RestBrokerContractNewController {
 	        FileVO result = fileService.uploadAndSave(multipartMerged, "contract", "CONTR", "contractId", "CONTRACT_DOC");
 	        
 	     // 병합된 파일을 디버깅용 디렉토리로 복사
-//	        File debugCopy = new File("D:/eGovFrameDev-4.3.1-64bit/workspace-egov/BeaverTipi-React/public/merged-" + System.currentTimeMillis() + ".pdf");
 	        File debugCopy = new File("D:/debug/merged-" + System.currentTimeMillis() + ".pdf");
 	        Files.copy(merged.toPath(), debugCopy.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
@@ -142,6 +179,7 @@ public class RestBrokerContractNewController {
 	            "debugPath", debugCopy.getAbsolutePath()
 	        ));
 	    } catch (Exception e) {
+	        e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	            .body(Map.of("success", false, "error", e.getMessage()));
 	    }
