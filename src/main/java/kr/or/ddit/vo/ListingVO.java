@@ -96,7 +96,7 @@ public class ListingVO implements Serializable {
     private String lstgPostal;
     
     @Size(max = 13)
-    private String lstgFee;
+    private Integer lstgFee;
 
     // 시설 옵션
     private List<FacilityOptionVO> facOptions;

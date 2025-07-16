@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.building.mapper.MoveInMapper;
-
+import kr.or.ddit.vo.BuildingVO;
+import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.UnitResidentVO;
 
@@ -40,4 +41,9 @@ public class MoveInServiceImpl implements MoveInService {
     public List<MemberVO> searchMember(String keyword) {
         return mapper.searchMemberByKeyword(keyword);
     }
+    @Override
+    public List<BuildingVO> getBuildingsByRentalPtyId(String rentalPtyId) {
+        return mapper.selectBuildingsByRentalPtyId(rentalPtyId);
+    }
+  
 }

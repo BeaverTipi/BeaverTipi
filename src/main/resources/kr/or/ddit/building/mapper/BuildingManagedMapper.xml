@@ -18,6 +18,27 @@
     
     <result property="lsrTypeGroupCd" column="LSR_TYPE_GROUP_CD"/>
   </resultMap>
+  
+	  <resultMap id="listingResultMap" type="kr.or.ddit.vo.ListingVO">
+		  <id property="lstgId" column="LSTG_ID"/>
+		  <result property="mbrCd" column="MBR_CD"/>
+		  <result property="rentalPtyId" column="RENTAL_PTY_ID"/>
+		  <result property="lstgTypeCode1" column="LSTG_TYPE_CODE1"/>
+		  <result property="lstgTypeCode2" column="LSTG_TYPE_CODE2"/>
+		  <result property="lstgAdd" column="LSTG_ADD"/>
+		  <result property="lstgAdd2" column="LSTG_ADD2"/>
+		  <result property="lstgPostal" column="LSTG_POSTAL"/>
+		  <result property="lstgRoomNum" column="LSTG_ROOM_NUM"/>
+		  <result property="lstgGrArea" column="LSTG_GR_AREA"/>
+		  <result property="lstgLease" column="LSTG_LEASE"/>
+		  <result property="lstgLeaseM" column="LSTG_LEASE_M"/>
+		  <result property="lstgLeaseAmt" column="LSTG_LEASE_AMT"/>
+		  <result property="lstgTypeSale" column="LSTG_TYPE_SALE"/>
+		  <result property="lstgRoomCnt" column="LSTG_ROOM_CNT"/>
+		  <result property="lstgFloor" column="LSTG_FLOOR"/>
+		  <result property="lstgParkYn" column="LSTG_PARK_YN"/>
+		  <result property="lstgNm" column="LSTG_NM"/>
+	</resultMap>
 
   <!-- 단건 + 목록에 사용할 BUILDING + TENANCY 정보 -->
   <resultMap id="buildingResultMap" type="kr.or.ddit.vo.BuildingVO">
@@ -158,30 +179,29 @@
     AND LSTG_DEL = 'N'
 </select>
 
-<select id="selectListingById" parameterType="string" resultType="ListingVO">
-    SELECT 
-        LSTG_ID,
-        MBR_CD,
-        RENTAL_PTY_ID,
-        LSTG_TYPE_CODE1,
-        LSTG_TYPE_CODE2,
-        LSTG_ADD,
-        LSTG_ADD2,
-        LSTG_POSTAL,
-        LSTG_ROOM_NUM,
-        LSTG_GR_AREA,
-        LSTG_LEASE,
-        LSTG_LEASE_M,
-        LSTG_LEASE_AMT,
-        LSTG_TYPE_SALE,
-        LSTG_ROOM_CNT,
-        LSTG_FLOOR,
-        LSTG_PARK_YN,
-        LSTG_NM,
-        LSTG_DST,
-        LSTG_DTL_DESC
-    FROM LISTING
-    WHERE LSTG_ID = #{lstgId}
+<select id="selectListingById" parameterType="string" resultMap="listingResultMap">
+  SELECT 
+      LSTG_ID,
+      MBR_CD,
+      RENTAL_PTY_ID,
+      LSTG_TYPE_CODE1,
+      LSTG_TYPE_CODE2,
+      LSTG_ADD,
+      LSTG_ADD2,
+      LSTG_POSTAL,
+      LSTG_ROOM_NUM,
+      LSTG_GR_AREA,
+      LSTG_LEASE,
+      LSTG_LEASE_M,
+      LSTG_LEASE_AMT,
+      LSTG_TYPE_SALE,
+      LSTG_ROOM_CNT,
+      LSTG_FLOOR,
+      LSTG_PARK_YN,
+      LSTG_NM
+  FROM LISTING
+  WHERE LSTG_ID = #{lstgId}
 </select>
+
 
 </mapper>

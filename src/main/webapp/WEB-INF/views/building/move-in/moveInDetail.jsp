@@ -105,12 +105,10 @@
 
 <div class="filter-bar" style="margin-bottom: 1rem;">
   <label for="buildingFilter">건물 선택:</label>
-  <select id="buildingFilter">
-    <option value="">전체</option>
-    <option value="A">A 건물</option>
-    <option value="B">B 건물</option>
-    <option value="C">C 건물</option>
-  </select>
+ <select id="buildingFilter">
+  
+  <option value="">전체</option>
+</select>
 </div>
 
 <!-- 탭 버튼 -->
@@ -184,7 +182,7 @@
 
 <!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="/static/app/js/building/move-in/moveInDetail.js"></script>
+<script src="/app/js/building/move-in/moveInDetail.js"></script>
 
 </body>
 </html>

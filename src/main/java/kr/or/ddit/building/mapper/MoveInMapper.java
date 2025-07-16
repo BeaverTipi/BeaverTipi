@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import kr.or.ddit.vo.BuildingVO;
+
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.UnitResidentVO;
 
@@ -24,5 +26,10 @@ public interface MoveInMapper {
 
     // 모달검색 ID  이름
     public List<MemberVO> searchMemberByKeyword(String keyword);
+    
+    //셀렉트게 건물 달아주긔
+    List<BuildingVO> selectBuildingsByRentalPtyId(String rentalPtyId);
+    
+ 
 
 }

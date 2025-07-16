@@ -20,8 +20,8 @@
     </div>
   </div>
 
-  <form> 
-
+  <form method="post" action="/building/product/add" enctype="multipart/form-data"> 
+	<input type="hidden" name="rentalPtyId" value="${listingVO.rentalPtyId}">
     <!-- 매물정보 -->
     <div class="col-md-12 mt-3">
       <div class="card">
@@ -42,11 +42,11 @@
             <div id="lstgType2ListArea"></div>
           </div>
           <div class="form-group row mt-3">
-            <label class="col-sm-1 col-form-label">주소 검색</label>
+            <label class="col-sm-1 col-form-label">주소검색</label>
             <div class="col-sm-3">
               <input type="text" class="form-control" id="postcode" name="lstgPostal" placeholder="우편번호" value="${listingVO.lstgPostal}" readonly>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-5">
               <input type="text" class="form-control" name="lstgAdd" id="address" placeholder="예) 번동 10-1, 강북구 번동" value="${listingVO.lstgAdd}" readonly>
             </div>
             <div class="col-sm-2">
@@ -54,8 +54,8 @@
             </div>
           </div>
           <div class="form-group row mt-3">
-            <label class="col-sm-1 col-form-label">상세 주소</label>
-            <div class="col-sm-8">
+            <label class="col-sm-1 col-form-label">상세주소</label>
+            <div class="col-sm-6">
               <input type="text" class="form-control" id="detailAddress" name="lstgAdd2" placeholder="상세 주소 입력" value="${listingVO.lstgAdd2}">
             </div>
             <div class="col-sm-3">
@@ -91,7 +91,7 @@
 			      <label class="col-sm-2 col-form-label">전세</label>
 			      <div class="col-sm-5 d-flex gap-2">
 			        <input type="number" class="form-control" name="lstgLease" placeholder="전세가" value="${listingVO.lstgLease}">
-			        <input type="number" class="form-control" name="lstgLeaseAmt" placeholder="보증금" value="${listingVO.lstgLeaseAmt}">
+			        <input type="number" class="form-control" name="lstgFee" placeholder="보증금" value="${listingVO.lstgFee}">
 			      </div>
 			    </div>
 			
@@ -100,7 +100,7 @@
 				  <label class="col-sm-2 col-form-label">월세</label>
 				  <div class="col-sm-5 d-flex gap-2">
 				    <input type="number" class="form-control" name="lstgLeaseM" placeholder="월세" value="${listingVO.lstgLeaseM}">
-				    <input type="number" class="form-control" name="lstgLeaseAmt" placeholder="보증금" value="${listingVO.lstgLeaseAmt}">
+				    <input type="number" class="form-control" name="lstgFee" placeholder="보증금" value="${listingVO.lstgFee}">
 				  </div>
 				</div>
 			
@@ -108,7 +108,7 @@
 			    <div class="form-group row mt-3" id="salePriceField" style="display: none;">
 			      <label class="col-sm-2 col-form-label">&nbsp; 매매가</label>
 			      <div class="col-sm-4">
-			        <input type="number" class="form-control" name="lstgSaleAmt" placeholder="매매가" value="${listingVO.lstgSaleAmt}">
+			        <input type="number" class="form-control" name="meme" placeholder="매매가">
 			      </div>
 			    </div>
 			  </div>
@@ -306,7 +306,8 @@
       </div>
       <div class="mb-3">
         <label for="description" class="form-label">상세설명</label>
-        <textarea class="form-control" name="lstgDtlDesc" id="lstgDst" rows="6" maxlength="1000">${listingVO.lstgDst}</textarea>
+        <textarea class="form-control" name="lstgDtlDst" id="lstgDst" rows="6" maxlength="1000">${listingVO.lstgDst}</textarea>
+        
       </div>
     </fieldset>
 

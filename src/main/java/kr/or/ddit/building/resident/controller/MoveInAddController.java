@@ -10,16 +10,21 @@
  */
 package kr.or.ddit.building.resident.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import kr.or.ddit.building.resident.service.MoveInService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.UnitResidentVO;
 import lombok.extern.slf4j.Slf4j;
@@ -53,4 +58,6 @@ public class MoveInAddController {
         int result = moveInService.registerResident(vo);
         return ResponseEntity.ok(result > 0 ? "SUCCESS" : "FAIL");
     }
+    
+   
 }

@@ -95,5 +95,27 @@ document.getElementById("editSaveBtn").addEventListener("click", function() {
       }
     });
 });
+// 건물 목록 불러오기
+function loadBuildingList() {
+  fetch("/building/move-in/buildingList")
+    .then(res => res.json())
+    .then(data => {
+      const buildingFilter = document.getElementById("buildingFilter");
+      buildingFilter.innerHTML = `<option value="">전체</option>`; // 초기화
+
+      data.forEach(bldg => {
+        const option = document.createElement("option");
+        option.value = bldg.bldgId;
+        option.textContent = bldg.bldgNm;
+        buildingFilter.appendChild(option);
+      });
+    })
+    .catch(err => console.error("건물 리스트 로딩 오류:", err));
+}
+
+// DOM 로드 후 실행
+document.addEventListener("DOMContentLoaded", function () {
+  loadBuildingList(); // 여기서 호출
+});
 
 
