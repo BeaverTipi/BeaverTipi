@@ -26,6 +26,16 @@
 
             <div class="search-conditions">
                 <div class="search-item">
+                    <label>회원구분</label>
+                    <form:select path="userRoleId" id="memberTypeSelect" cssClass="select-field">
+                        <form:option value="">--전체--</form:option>
+                        <form:option value="USER" label="일반회원"/>
+                        <form:option value="TENANCY" label="임대인"/>
+                        <form:option value="BROKER" label="중개인"/>
+                        <form:option value="ADMIN" label="관리자"/> 
+                    </form:select>
+                </div>
+                <div class="search-item">
                     <label>회원아이디</label>
                     <form:input path="mbrId" id="memberNameInput" cssClass="input-field" placeholder="회원아이디를 입력해주세요"/>
                 </div>
@@ -38,20 +48,6 @@
 	                <form:input path="mbrNnm" id="memberNicknameSearchInput" cssClass="input-field" placeholder="닉네임을 입력해주세요"/>
 	            </div>
                 <div class="search-item">
-                    <label>이메일</label>
-                    <form:input path="mbrEmlAddr" id="memberEmailInput" cssClass="input-field" placeholder="이메일을 입력해주세요"/>
-                </div>
-                <div class="search-item">
-                    <label>회원구분</label>
-                    <form:select path="userRoleId" id="memberTypeSelect" cssClass="select-field">
-                        <form:option value="">--전체--</form:option>
-                        <form:option value="USER" label="일반회원"/>
-                        <form:option value="TENANCY" label="임대인"/>
-                        <form:option value="BROKER" label="중개인"/>
-                        <form:option value="ADMIN" label="관리자"/> 
-                    </form:select>
-                </div>
-                <div class="search-item">
                     <label>회원상태</label>
                     <form:select path="mbrStatusCode" id="memberStatusSelect" cssClass="select-field">
                         <form:option value="">--전체--</form:option>
@@ -60,6 +56,10 @@
                         <form:option value="SUSPENDED" label="정지"/>
                         <form:option value="WITHDRAWN" label="탈퇴"/>
                     </form:select>
+                </div>
+                <div class="search-item">
+                    <label>이메일</label>
+                    <form:input path="mbrEmlAddr" id="memberEmailInput" cssClass="input-field" placeholder="이메일을 입력해주세요"/>
                 </div>
                 <div class="search-item">
                     <label>가입기간</label> 

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 @Data
-@EqualsAndHashCode(of= {""})
+@EqualsAndHashCode(of= {"rptId"})
 public class ReportVO implements Serializable {
 	private String rptId;
 	private String brdNo;

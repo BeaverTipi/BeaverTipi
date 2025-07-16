@@ -1,5 +1,13 @@
 package kr.or.ddit.admin.businessads.service;
 
-public interface BusinessAdsService {
+import java.util.List;
 
+import kr.or.ddit.util.page.PaginationInfo;
+import kr.or.ddit.vo.BoardVO;
+
+public interface BusinessAdsService {
+	
+	public List<BoardVO> selectBusinessAdsList(PaginationInfo<BoardVO> pagingVO);
+	
+	public int selectBusinessAdsCount(PaginationInfo<BoardVO> pagingVO);
 }

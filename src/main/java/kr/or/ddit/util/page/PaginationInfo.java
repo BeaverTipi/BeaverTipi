@@ -102,15 +102,31 @@ public class PaginationInfo<T> {
 					if (boardVO.getSearchWriter() != null && !boardVO.getSearchWriter().isEmpty()) {
 						sb.append("&detailSearch.searchWriter=").append(URLEncoder.encode(boardVO.getSearchWriter(), StandardCharsets.UTF_8.toString()));
 					}
+					if (boardVO.getSearchReportedTargetId() != null && !boardVO.getSearchReportedTargetId().isEmpty()) {
+						sb.append("&detailSearch.searchReportedTargetId=").append(URLEncoder.encode(boardVO.getSearchReportedTargetId(), StandardCharsets.UTF_8.toString()));
+					}
 					if (boardVO.getSearchRptStatusCode() != null && !boardVO.getSearchRptStatusCode().isEmpty()) {
 						sb.append("&detailSearch.searchRptStatusCode=").append(URLEncoder.encode(boardVO.getSearchRptStatusCode(), StandardCharsets.UTF_8.toString()));
 					}
 					if (boardVO.getBrdPblsDtmFrom() != null) {
-						sb.append("&detailSearch.brdPblsDtmFrom=").append(URLEncoder.encode(boardVO.getBrdPblsDtmFrom().toLocalDate().toString(), StandardCharsets.UTF_8.toString()));
+						sb.append("&detailSearch.brdPblsDtmFrom=").append(URLEncoder.encode(boardVO.getBrdPblsDtmFrom().toString(), StandardCharsets.UTF_8.toString()));
 					}
 					if (boardVO.getBrdPblsDtmTo() != null) {
-						sb.append("&detailSearch.brdPblsDtmTo=").append(URLEncoder.encode(boardVO.getBrdPblsDtmTo().toLocalDate().toString(), StandardCharsets.UTF_8.toString()));
+						sb.append("&detailSearch.brdPblsDtmTo=").append(URLEncoder.encode(boardVO.getBrdPblsDtmTo().toString(), StandardCharsets.UTF_8.toString()));
 					}
+					// 여기부터 광고
+					if (boardVO.getSearchAdsStatusCode() != null && !boardVO.getSearchAdsStatusCode().isEmpty()) {
+			            sb.append("&detailSearch.searchAdsStatusCode=").append(URLEncoder.encode(boardVO.getSearchAdsStatusCode(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (boardVO.getSearchAdsBp() != null && !boardVO.getSearchAdsBp().isEmpty()) {
+			            sb.append("&detailSearch.searchAdsBp=").append(URLEncoder.encode(boardVO.getSearchAdsBp(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (boardVO.getSearchAdsPic() != null && !boardVO.getSearchAdsPic().isEmpty()) {
+			            sb.append("&detailSearch.searchAdsPic=").append(URLEncoder.encode(boardVO.getSearchAdsPic(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (boardVO.getSearchAdsPicTelno() != null && !boardVO.getSearchAdsPicTelno().isEmpty()) {
+			            sb.append("&detailSearch.searchAdsPicTelno=").append(URLEncoder.encode(boardVO.getSearchAdsPicTelno(), StandardCharsets.UTF_8.toString()));
+			        }
 				} catch (UnsupportedEncodingException e) {
 					System.err.println("URL Encoding failed for BoardVO: " + e.getMessage());
 				}

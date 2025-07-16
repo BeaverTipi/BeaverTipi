@@ -1,6 +1,7 @@
 package kr.or.ddit.vo;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -55,14 +56,15 @@ public class BoardVO implements Serializable{
     private String rptDelYn;        	// 신고 삭제 여부
     private String lstgDel;				// 매물 삭제 여부 필드
 
-    // 검색 조건을 위한 필드
+    // 신고 검색 조건을 위한 필드
     private String searchTitle;     // 제목 검색
     private String searchWriter;    // 작성자 ID (MBR_CD) 검색
+    private String searchReportedTargetId;	// 피신고자 id 검색
     private String searchRptStatusCode; // 신고 처리 상태 검색
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime brdPblsDtmFrom; // 게시글 게시일시 (신고일자로 사용) 시작
+    private LocalDate brdPblsDtmFrom; // 게시글 게시일시 (신고일자로 사용) 시작
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime brdPblsDtmTo;   // 게시글 게시일시 (신고일자로 사용) 종료
+    private LocalDate brdPblsDtmTo;   // 게시글 게시일시 (신고일자로 사용) 종료
     
     private MemberVO member;
     
@@ -77,4 +79,17 @@ public class BoardVO implements Serializable{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         return this.brdPblsDtm.format(formatter);
     }
+    
+    private AdsClientVO adsClient;	// BoardVO에 AdsClientVO 객체를 포함시켜주는 필드
+    
+    // 광고 검색 조건을 위한 필드
+    private String searchAdsStatusCode; // 광고 상태 코드 검색
+    private String searchAdsBp;         // 사업장명(회사명) 검색
+    private String searchAdsPic;        // 담당자명 검색
+    private String searchAdsPicTelno;   // 담당자 연락처 검색
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate adsReqPblsStartDtFrom; // 광고 요청 게재 시작날짜 From
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate adsReqPblsEndDtTo;     // 광고 요청 게재 종료날짜 To
 }

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.admin.mapper.BusinessAdsController">
+
+    <resultMap type="kr.or.ddit.vo.BoardVO" id="BusinessAdsMap">
+        <id property="brdNo" column="BRD_NO"/>
+        <result property="brdTitlNm" column="BRD_TITL_NM"/>
+        <result property="brdCont" column="BRD_CONT"/>
+        <result property="mbrCd" column="MBR_CD"/>
+        <result property="brdPblsDtm" column="BRD_PBLS_DTM"/>
+        <result property="brdVwCnt" column="BRD_VW_CNT"/>
+
+        <association property="adsClient" javaType="kr.or.ddit.vo.AdsClientVO">
+            <id property="adsId" column="ADS_ID"/>
+            <result property="adsStatusCode" column="ADS_STATUS_CODE"/>
+            <result property="adsBp" column="ADS_BP"/>
+            <result property="adsPic" column="ADS_PIC"/>
+            <result property="adsPicTelno" column="ADS_PIC_TELNO"/>
+            <result property="adsReqPblsStartDt" column="ADS_REQ_PBLS_START_DT"/>
+            <result property="adsReqPblsEndDt" column="ADS_REQ_PBLS_END_DT"/>
+        </association>
+
+    </resultMap>
+
+    <select id="selectBusinessAdsList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultMap="BusinessAdsMap">
+        SELECT
+            A_PAGING.BRD_NO,
+            A_PAGING.BRD_TITL_NM,
+            A_PAGING.BRD_CONT,
+            A_PAGING.MBR_CD,
+            A_PAGING.BRD_PBLS_DTM,
+            A_PAGING.BRD_VW_CNT,
+            A_PAGING.ADS_ID,
+            A_PAGING.ADS_BRD_NO,
+            A_PAGING.ADS_STATUS_CODE,
+            A_PAGING.ADS_BP,
+            A_PAGING.ADS_PIC,
+            A_PAGING.ADS_PIC_TELNO,
+            A_PAGING.ADS_REQ_PBLS_START_DT,
+            A_PAGING.ADS_REQ_PBLS_END_DT
+        FROM (
+	        SELECT
+	        	ROW_NUMBER() OVER (ORDER BY B.BRD_PBLS_DTM DESC) AS RNUM,
+	            B.BRD_NO
+	            ,B.BRD_TITL_NM
+	            ,B.BRD_CONT
+	            ,B.MBR_CD
+	            ,B.BRD_PBLS_DTM
+	            ,B.BRD_VW_CNT
+	            ,A.ADS_ID
+	            ,A.BRD_NO AS ADS_BRD_NO
+	            ,A.ADS_STATUS_CODE
+	            ,A.ADS_BP
+	            ,A.ADS_PIC
+	            ,A.ADS_PIC_TELNO
+	            ,A.ADS_REQ_PBLS_START_DT
+	            ,A.ADS_REQ_PBLS_END_DT
+	        FROM
+	            BOARD B
+	        LEFT JOIN
+	            ADS A ON B.BRD_NO = A.BRD_NO
+	        WHERE
+	            1=1
+	        <if test="detailSearch != null">
+	        	<if test="detailSearch.searchTitle != null and detailSearch.searchTitle != ''">
+	                AND B.BRD_TITL_NM LIKE '%' || #{detailSearch.searchTitle} || '%'
+	            </if>
+	            <if test="detailSearch.searchWriter != null and detailSearch.searchWriter != ''">
+	                AND B.MBR_CD LIKE '%' || #{detailSearch.searchWriter} || '%'
+	            </if>
+	            <if test="detailSearch.searchAdsStatusCode != null and detailSearch.searchAdsStatusCode != ''">
+	                AND A.ADS_STATUS_CODE = #{detailSearch.searchAdsStatusCode}
+	            </if>
+	            <if test="detailSearch.searchAdsBp != null and detailSearch.searchAdsBp != ''">
+	                AND A.ADS_BP LIKE '%' || #{detailSearch.searchAdsBp} || '%'
+	            </if>
+	            <if test="detailSearch.searchAdsPic != null and detailSearch.searchAdsPic != ''">
+	                AND A.ADS_PIC LIKE '%' || #{detailSearch.searchAdsPic} || '%'
+	            </if>
+	            <if test="detailSearch.searchAdsPicTelno != null and detailSearch.searchAdsPicTelno != ''">
+	                AND A.ADS_PIC_TELNO LIKE '%' || #{detailSearch.searchAdsPicTelno} || '%'
+	            </if>
+	        </if>
+	        ) A_PAGING
+	        WHERE RNUM BETWEEN #{firstRecordIndex} AND #{lastRecordIndex}
+    </select>
+    
+    <select id="selectBusinessAdsCount" parameterType="kr.or.ddit.util.page.PaginationInfo" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            BOARD B
+        LEFT JOIN
+            ADS A ON B.BRD_NO = A.BRD_NO
+        WHERE
+            1=1
+            <if test="detailSearch != null">
+                <if test="detailSearch.searchTitle != null and detailSearch.searchTitle != ''">
+                    AND B.BRD_TITL_NM LIKE '%' || #{detailSearch.searchTitle} || '%'
+                </if>
+                <if test="detailSearch.searchWriter != null and detailSearch.searchWriter != ''">
+                    AND B.MBR_CD LIKE '%' || #{detailSearch.searchWriter} || '%'
+                </if>
+                <if test="detailSearch.searchAdsStatusCode != null and detailSearch.searchAdsStatusCode != ''">
+                    AND A.ADS_STATUS_CODE = #{detailSearch.searchAdsStatusCode}
+                </if>
+                <if test="detailSearch.searchAdsBp != null and detailSearch.searchAdsBp != ''">
+                    AND A.ADS_BP LIKE '%' || #{detailSearch.adsBp} || '%'
+                </if>
+                <if test="detailSearch.searchAdsPic != null and detailSearch.searchAdsPic != ''">
+                    AND A.ADS_PIC LIKE '%' || #{detailSearch.adsPic} || '%'
+                </if>
+                <if test="detailSearch.searchAdsPicTelno != null and detailSearch.searchAdsPicTelno != ''">
+                    AND A.ADS_PIC_TELNO LIKE '%' || #{detailSearch.adsPicTelno} || '%'
+                </if>
+            </if>
+    </select>
+
+</mapper>

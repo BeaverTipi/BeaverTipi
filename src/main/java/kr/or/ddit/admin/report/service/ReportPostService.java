@@ -9,11 +9,9 @@ public interface ReportPostService {
 
     public List<BoardVO> selectReportedPostList(PaginationInfo<BoardVO> pagingVO);
 
-    public int updateReportStatus(BoardVO boardVO);
-    
     public int selectReportedPostCount(PaginationInfo<BoardVO> pagingVO);
-
-    public int processReport(BoardVO reportVO);
+    
+    public int updateReportStatus(BoardVO boardVO);
     
     public BoardVO selectReportDetail(String reportId);	// 신고 상세 정보를 조회
     

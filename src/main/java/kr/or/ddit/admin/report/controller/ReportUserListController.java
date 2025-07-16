@@ -1,5 +1,6 @@
 package kr.or.ddit.admin.report.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -36,20 +37,30 @@ public class ReportUserListController {
         @ModelAttribute("simpleSearch") SimpleSearch simpleSearch, // SimpleSearch를 사용하지 않는다면 제거
         Model model) {
 
-        log.info("detailSearch: {}", detailSearch); // ⭐ searchRptCode 값이 여기에 찍히는지 확인 ⭐
-        log.info("simpleSearch: {}", simpleSearch); // SimpleSearch 사용하지 않는다면 이 로그 제거
-
-        PaginationInfo<BoardVO> pagingVO = new PaginationInfo<>();
-        pagingVO.setCurrentPageNo(currentPage);
-
+	        log.info("detailSearch: {}", detailSearch); // searchRptCode 값이 여기에 찍히는지 확인
+	        log.info("simpleSearch: {}", simpleSearch); // SimpleSearch 사용하지 않는다면 이 로그 제거
+	      
+	        PaginationInfo<BoardVO> pagingVO = new PaginationInfo<>();
+	        pagingVO.setCurrentPageNo(currentPage);
+	
+	        // JSP에 보여줄 원본 brdPblsDtmTo 값을 저장
+	        LocalDate originalBrdPblsDtmTo = null;
+	        if (detailSearch.getBrdPblsDtmTo() != null) {
+	            originalBrdPblsDtmTo = detailSearch.getBrdPblsDtmTo(); // 원본 값 백업
+	            // 검색 쿼리에 사용될 값만 하루 더합니다.
+	            detailSearch.setBrdPblsDtmTo(detailSearch.getBrdPblsDtmTo().plusDays(1));
+        }
+        
         pagingVO.setDetailSearch(detailSearch);
         pagingVO.setSimpleSearch(simpleSearch); // SimpleSearch 사용하지 않는다면 이 라인 제거
+       
 
-        List<BoardVO> reportedUserList = reportPostService.selectReportedPostList(pagingVO);
-
-        // ⭐ 페이징을 위한 전체 레코드 수 조회 및 설정 ⭐
+        // 페이징을 위한 전체 레코드 수 조회 및 설정
         int totalCount = reportPostService.selectReportedPostCount(pagingVO);
         pagingVO.setTotalRecordCount(totalCount);
+        
+        // 목록 조회
+        List<BoardVO> reportedUserList = reportPostService.selectReportedPostList(pagingVO);
 
         model.addAttribute("reportedUserList", reportedUserList);
         model.addAttribute("pagingVO", pagingVO);
@@ -59,8 +70,11 @@ public class ReportUserListController {
         String pagingHTML = renderer.renderPagination(pagingVO, "fn_paging");
         model.addAttribute("pagingHTML", pagingHTML);
 
-        // ⭐ detailSearch 객체를 다시 Model에 추가하여 JSP 폼에 값 유지 ⭐
-        // form:form modelAttribute="detailSearch" 를 사용하므로 이 부분이 중요합니다.
+        // 백업해둔 원본 값을 detailSearch 객체에 다시 설정하여 JSP로 보냄
+        if (originalBrdPblsDtmTo != null) {
+            detailSearch.setBrdPblsDtmTo(originalBrdPblsDtmTo);
+        }
+        // detailSearch 객체를 다시 Model에 추가하여 JSP 폼에 값 유지
         model.addAttribute("detailSearch", detailSearch);
 
         return "admin/report/userList";
@@ -88,8 +102,10 @@ public class ReportUserListController {
     @GetMapping("/detail/{reportId}")
     @ResponseBody // JSON 응답을 위해 추가
     public BoardVO getReportDetail(@PathVariable String reportId) {
-        log.info("getReportDetail called with reportId: " + reportId);
+        log.info("신고 상세 조회 요청. reportId: {}" + reportId);
+        
         BoardVO reportDetail = reportPostService.selectReportDetail(reportId);
+        
         if (reportDetail != null) {
             log.info("Report Detail fetched: {}", reportDetail);
             if (reportDetail.getAttachFiles() != null) {

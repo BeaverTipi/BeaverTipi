@@ -3,9 +3,42 @@
 document.addEventListener('DOMContentLoaded', function() {
     const searchForm = document.getElementById('searchForm');
     const resetButton = document.getElementById('resetBtn');
-    const searchButton = document.getElementById('searchBtn');
     const currentPageNoInput = document.getElementById('currentPageNoInput');
     const searchRptCodeInput = document.getElementById('searchRptCodeInput');
+
+    const labelReportedTargetId = document.getElementById('labelReportedTargetId');
+    const searchReportedTargetIdInput = document.getElementById('searchReportedTargetId');
+    const reportedTargetHeader = document.getElementById('reportedTarget');
+
+    // --- 유틸리티 함수 ---
+    // 피신고 대상 라벨, 플레이스홀더, 테이블 헤더 텍스트를 업데이트하는 함수
+    function updateReportedTargetLabels(rptCode) {
+        let labelText = '피신고 ID';
+        let placeholderText = '피신고 ID';
+        let thText = '신고된 대상';
+
+        if (rptCode === 'MEMB') {
+            labelText = '피신고자ID';
+            placeholderText = '피신고자ID';
+            thText = '피신고자 ID';
+        } else if (rptCode === 'LSTG') {
+            labelText = '피신고매물 ID';
+            placeholderText = '피신고매물 ID';
+            thText = '피신고매물 ID';
+        }
+
+        if (labelReportedTargetId) {
+            labelReportedTargetId.textContent = labelText;
+        }
+        if (searchReportedTargetIdInput) {
+            searchReportedTargetIdInput.placeholder = placeholderText;
+        }
+        if (reportedTargetHeader) {
+            reportedTargetHeader.textContent = thText;
+        }
+    }
+
+    // --- 이벤트 리스너 설정 ---
 
     // 페이지 이동 함수 (페이징 관련)
     window.fn_paging = function(pageNo) {
@@ -15,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
         searchForm.submit();
     };
 
-    // 검색 폼 제출 이벤트 (현재는 아무 동작 없음)
+    // 검색 폼 제출 이벤트 (현재는 추가 동작 없음)
     if (searchForm) {
         searchForm.addEventListener('submit', function(event) {
             // 필요하다면 여기에 추가적인 제출 전 로직을 넣을 수 있습니다.
@@ -27,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
         resetButton.addEventListener('click', function() {
             document.getElementById('searchTitle').value = '';
             document.getElementById('searchWriter').value = '';
+            document.getElementById('searchReportedTargetId').value = '';
             document.getElementById('brdPblsDtmFrom').value = '';
             document.getElementById('brdPblsDtmTo').value = '';
             document.getElementById('searchRptStatusCode').value = '';
@@ -34,45 +68,38 @@ document.addEventListener('DOMContentLoaded', function() {
             if (currentPageNoInput) {
                 currentPageNoInput.value = 1;
             }
+
+            // 초기화 시 현재 활성화된 탭의 rptCode를 가져와 라벨 초기화
+            const activeTab = document.querySelector('#reportTabs .nav-link.active');
+            const currentRptCode = activeTab ? activeTab.dataset.rptCode : 'MEMB'; // 기본값 MEMB
+            updateReportedTargetLabels(currentRptCode);
+
             searchForm.submit();
         });
     }
 
-    // 탭 클릭 이벤트 처리
-    $('#reportTabs .nav-link').on('click', function(e) {
-        e.preventDefault();
+    // 탭 클릭 이벤트 처리 (Bootstrap shown.bs.tab 이벤트 사용)
+    // jQuery 사용 필수: <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    // <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    $('#reportTabs .nav-link').on('shown.bs.tab', function(e) {
         const rptCode = $(this).data('rpt-code');
         searchRptCodeInput.value = rptCode;
-        currentPageNoInput.value = 1;
+        currentPageNoInput.value = 1; // 탭 변경 시 페이지 1로 리셋
 
-        // 테이블 헤더 텍스트 변경
-        const reportedTargetHeader = $('#reportedTarget'); // <th>의 ID
-        if (rptCode === 'MEMB') {
-            reportedTargetHeader.text('피신고자 ID');
-        } else if (rptCode === 'LSTG') {
-            reportedTargetHeader.text('피신고매물 ID');
-        }
+        updateReportedTargetLabels(rptCode); // 라벨 및 플레이스홀더, 테이블 헤더 업데이트
 
+        // 탭 변경 시 자동으로 검색 폼 제출
         searchForm.submit();
     });
 
-    // 페이지 로드 시 초기 탭에 맞춰 <th> 텍스트 설정
-    const initialRptCode = $('#reportTabs .nav-link.active').data('rpt-code');
-    if (initialRptCode) {
-        const reportedTargetHeader = $('#reportedTarget');
-        if (initialRptCode === 'MEMB') {
-            reportedTargetHeader.text('피신고자 ID');
-        } else if (initialRptCode === 'LSTG') {
-            reportedTargetHeader.text('피신고매물 ID');
-        }
-    } else {
-        // 기본값 (페이지 로드 시 처음 보여지는 탭이 회원 탭이거나 searchRptCode가 없는 경우)
-        // 이 경우, 초기 'active' 탭이 MEMB이므로 기본값을 '피신고자 ID'로 설정
-        $('#reportedTarget').text('피신고자 ID');
-    }
+    // 페이지 로드 시 초기 탭에 맞춰 라벨 설정
+    // 현재 활성화된 탭의 data-rpt-code 값을 가져와 라벨을 업데이트합니다.
+    const initialActiveTab = document.querySelector('#reportTabs .nav-link.active');
+    const initialRptCode = initialActiveTab ? initialActiveTab.dataset.rptCode : 'MEMB'; // 기본값 MEMB
+    updateReportedTargetLabels(initialRptCode);
 
 
-    // 신고 상세 모달 열기 및 데이터 로드 (매물/회원/신고 상태 반영)
+    // 신고 상세 모달 열기 및 데이터 로드
     $(document).on('click', '.report-row', function(e) {
         // select 박스나 다른 버튼 클릭 시 행 클릭 이벤트 방지
         if ($(e.target).closest('button, select').length) {
@@ -100,12 +127,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // 회원 상태 관리 섹션
                 const $memberSpecificInfo = $('#memberSpecificInfo');
-                // const $modalRptTargetMbrCurrentStatus = $('#modalRptTargetMbrCurrentStatus'); // ⭐ 제거됨
                 const $modalNewMbrStatus = $('#modalNewMbrStatus');
 
                 // 매물 상태 관리 섹션
                 const $listingSpecificInfo = $('#listingSpecificInfo');
-                // const $modalCurrentLstgDel = $('#modalCurrentLstgDel'); // ⭐ 제거됨
                 const $modalNewLtsgDel = $('#modalNewLtsgDel');
 
                 // 초기화: 둘 다 숨김
@@ -115,8 +140,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 신고 유형에 따른 회원/매물 UI 활성화 및 데이터 설정
                 if (isListingReport) { // 매물 신고
                     $listingSpecificInfo.show();
-                    // $('#listingSpecificInfo strong').first().text('피신고매물 삭제 상태 : '); // ⭐ 이 라인은 이제 필요 없습니다 (label에 직접 텍스트 있음)
-                    // $modalCurrentLstgDel.text(data.lstgDel === 'Y' ? '삭제됨' : '활성'); // ⭐ 이 라인 제거
                     $modalNewLtsgDel.val(data.lstgDel);
 
                     // data 속성 저장 (초기 값과 변경된 값 비교용)
@@ -128,8 +151,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 } else { // 회원 신고 (MEMB)
                     $memberSpecificInfo.show();
-                    // $('#memberSpecificInfo strong').first().text('피신고자 상태 : '); // ⭐ 이 라인은 이제 필요 없습니다 (label에 직접 텍스트 있음)
-                    // $modalRptTargetMbrCurrentStatus.text(data.rptTargetMbrStatus || '정보 없음'); // ⭐ 이 라인 제거
                     $modalNewMbrStatus.val(data.rptTargetMbrStatus);
 
                     // data 속성 저장 (초기 값과 변경된 값 비교용)
@@ -266,8 +287,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 })
                 .catch(error => {
-                    console.error('매물 삭제 상태 변경 AJAX 오류:', error);
-                    errorMessages.push(`매물 (${lstgId}) 삭제 상태 변경 중 오류가 발생했습니다.`);
+                        console.error('매물 삭제 상태 변경 AJAX 오류:', error);
+                        errorMessages.push(`매물 (${lstgId}) 삭제 상태 변경 중 오류가 발생했습니다.`);
                 })
             );
         }

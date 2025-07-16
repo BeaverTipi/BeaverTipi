@@ -47,8 +47,12 @@
             <form:input path="searchTitle" id="searchTitle" placeholder="제목" class="input-field"/>
           </div>
           <div class="search-item">
+            <label for="searchReportedTargetId" id="labelReportedTargetId">피신고 ID</label>
+            <form:input path="searchReportedTargetId" id="searchReportedTargetId" placeholder="피신고자 ID" class="input-field"/>
+          </div>
+          <div class="search-item">
             <label for="searchWriter">신고자ID</label>
-            <form:input path="searchWriter" id="searchWriter" placeholder="작성자ID" class="input-field"/>
+            <form:input path="searchWriter" id="searchWriter" placeholder="신고자 ID" class="input-field"/>
           </div>
           <div class="search-item">
             <label for="searchRptStatusCode">처리상태</label>
@@ -83,9 +87,9 @@
                 	<th>번호</th>
                     <th>제목</th>
                     <th id="reportedTarget">신고된 대상</th>
-                    <th>신고자ID</th>
+                    <th>신고자 ID</th>
                     <th>신고일자</th>
-                    <th>신고처리</th>
+                    <th>처리상태</th>
                 </tr>
             </thead>
             <tbody>

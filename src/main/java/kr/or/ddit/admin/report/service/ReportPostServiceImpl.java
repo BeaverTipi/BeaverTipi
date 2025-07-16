@@ -27,19 +27,12 @@ public class ReportPostServiceImpl implements ReportPostService {
     
     @Override
     public List<BoardVO> selectReportedPostList(PaginationInfo<BoardVO> pagingVO) {
-    	int totalRecord = reportPostMapper.selectReportedPostCount(pagingVO);
-        pagingVO.setTotalRecordCount(totalRecord);
         return reportPostMapper.selectReportedPostList(pagingVO);
     }
 
     @Override
     public int selectReportedPostCount(PaginationInfo<BoardVO> pagingVO) {
         return reportPostMapper.selectReportedPostCount(pagingVO);
-    }
-
-    @Override
-    public int processReport(BoardVO reportVO) {
-        return reportPostMapper.updateReportStatus(reportVO);
     }
 
 	@Override

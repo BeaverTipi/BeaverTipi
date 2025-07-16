@@ -107,17 +107,18 @@ input[type="date"],
   flex: none;
 }
 
-/* 📏 input-field: 200px */
-.input-field {
+/* 📏 input-field, select-field, search-item select : 200px */
+.input-field,
+.select-field,
+.search-item select {
   width: 200px;
   min-width: 200px;
   max-width: 200px;
 }
 
-/* 📏 select-field, date: 150px */
-.select-field,
-input[type="date"],
-.search-item select {
+/* 📏 date: 150px */
+
+input[type="date"] {
   width: 150px;
   min-width: 150px;
   max-width: 150px;
@@ -149,7 +150,7 @@ input[type="date"],
 .radio-group span {
   display: inline-flex;
   align-items: center;
-  margin-right: 40px; /* 라벨 간 간격 */
+  margin-right: 30px; /* 라벨 간 간격 */
 }
 
 .radio-group input[type="radio"] {
@@ -287,7 +288,7 @@ input[type="date"]:focus,
 }
 
 .pagination-wrapper span.bg-primary {
-  background-color: var(--color-btn-dark);
+  background-color: var(--color-btn-dark) !important;
   color: #fff;
   font-weight: bold;
 }
