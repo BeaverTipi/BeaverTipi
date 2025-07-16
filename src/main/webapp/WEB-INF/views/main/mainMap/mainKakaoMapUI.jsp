@@ -31,9 +31,9 @@
 						  </div>
 						  <div class="popup-body">
 						    <button class="popup-option" data-type="saleType" data-value="">전체</button>
-						    <button class="popup-option" data-type="saleType" data-value="1">월세</button>
-						    <button class="popup-option" data-type="saleType" data-value="2">전세</button>
-						    <button class="popup-option" data-type="saleType" data-value="3">매매</button>
+						    <button class="popup-option" data-type="saleType" data-value="001">월세</button>
+						    <button class="popup-option" data-type="saleType" data-value="002">전세</button>
+						    <button class="popup-option" data-type="saleType" data-value="003">매매</button>
 						  </div>
 						</div>
 					<input type="hidden" id="saleTypeFilter" />
@@ -168,11 +168,6 @@
 						<button id="sideModalClose" class="modal-close-btn">×</button>
 					</div>
 					<div id="sideModalBody" class="side-modal-body"></div>
-					<button id="inquiryBtn">문의하기</button> 
-					<img id="heartIcon"
-					     src="${pageContext.request.contextPath}/volt/assets/img/heart-svgrepo-com.svg"
-					     data-active="false"
-					     style="width: 40px; cursor: pointer;" />
 				</div>
 		
 				<!-- 4. 지도 -->
@@ -185,13 +180,13 @@
 
 
 
-<!-- <script -->
-<!-- 	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=83437aacc12e4951bd2a5acb4a512ff0&libraries=services,clusterer,drawing"></script> -->
-<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=${jsApiKey}&libraries=services,clusterer,drawing"></script>
+ <script
+ 	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=83437aacc12e4951bd2a5acb4a512ff0&libraries=services,clusterer,drawing"></script>
+<%-- <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=${jsApiKey}&autoload=false&libraries=services,clusterer,drawing"></script> --%>
+
 <script src="${pageContext.request.contextPath }/app/js/main/mainMap/mapCore.js"></script>
 <script src="${pageContext.request.contextPath }/app/js/main/mainMap/filterUtils.js"></script>
 <script src="${pageContext.request.contextPath }/app/js/main/mainMap/markerRenderer.js"></script>
 <script src="${pageContext.request.contextPath }/app/js/main/mainMap/listRenderer.js"></script>
 <script src="${pageContext.request.contextPath }/app/js/main/mainMap/eventBinder.js"></script>
 <script src="${pageContext.request.contextPath }/app/js/main/mainMap/mainKakaoMap.js"></script>
-<script>const contextPath = '${pageContext.request.contextPath}';</script>

@@ -3,9 +3,9 @@ window.renderListPage = function(data, map, page = 1, perPage = 5) {
 	const paginationContainer = document.getElementById('pagination');
 	const getSaleTypeText = (code) => {
 		switch (code) {
-			case 1: return '전세';
-			case 2: return '월세';
-			case 3: return '매매';
+			case '001': return '전세';
+			case '002': return '월세';
+			case '003': return '매매';
 			default: return '기타';
 		}
 	};
@@ -16,11 +16,11 @@ window.renderListPage = function(data, map, page = 1, perPage = 5) {
 		const leaseM = item.lstgLeaseM || 0;
 
 		switch (type) {
-			case '1': // 전세
+			case '001': // 전세
 				return `전세금: ${lease}`;
-			case '2': // 월세
+			case '002': // 월세
 				return `보증금: ${lease} / 월세: ${leaseM}`;
-			case '3': // 매매
+			case '003': // 매매
 				return `매매가: ${lease}`;
 			default:
 				return '';
@@ -139,33 +139,88 @@ window.showDetailModal = function(data) {
 	const body = document.getElementById('sideModalBody');
 	modal.classList.add('active');
 
-	const getDealType = (code) => ({ 1: '전세', 2: '월세', 3: '매매' }[code] || '미정');
+	const getDealType = (code) => ({
+		'001': '전세',
+		'002': '월세',
+		'003': '매매'
+	}[code] || '미정');
 
-	window.getDepositText = function(item) {
-		const type = String(item.lstgTypeSale);
-		const lease = item.lstgLease || 0;
-		const leaseM = item.lstgLeaseM || 0;
+
+	const getDepositText = (item) => {
+		const type = String(item.LSTG_TYPE_SALE);
+		const lease = item.LSTG_LEASE || 0;
+		const leaseM = item.LSTG_LEASE_M || 0;
 
 		switch (type) {
-			case '1': return `전세금: ${lease}`;
-			case '2': return `보증금: ${lease} / 월세: ${leaseM}`;
-			case '3': return `매매가: ${lease}`;
+			case '001': return `전세금: ${lease}`;
+			case '002': return `보증금: ${lease} / 월세: ${leaseM}`;
+			case '003': return `매매가: ${lease}`;
 			default: return '-';
 		}
 	};
 
+	const renderFacilityOptions = (options = []) => {
+		if (!Array.isArray(options) || options.length === 0) return '<p>선택된 옵션 없음</p>';
+
+		return `
+	    <ul class="facility-options">
+	    ${options.map(opt => `
+	      <li><strong>${opt.facOptNm}</strong></li>
+	    `).join('')}
+	  </ul>
+ 	 `;
+	};
 
 	body.innerHTML = `
-    <h3>${data.lstgNm || '-'}</h3>
-	    <p><strong>주소:</strong> ${data.lstgAdd || ''} ${data.lstgAdd2 || ''}</p>
-	    <p><strong>면적:</strong> ${data.lstgExArea || '-'}㎡</p>
-	    <p><strong>방 개수:</strong> ${data.lstgRoomCnt || '-'}개</p>
-	    <p><strong>거래유형:</strong> ${getDealType(data.lstgTypeSale)}</p>
-	  	<p><strong>${getDepositText(data)}</strong></p>
-	    <p><strong>층수:</strong> ${data.lstgFloor || '-'}</p>
-	    <p><strong>주차 가능:</strong> ${data.lstgParkYn === 'Y' ? '가능' : '불가능'}</p>
-  `;
+	  <div class="detail-modal">
+	    <!-- 상단 헤더 -->
+	    <div class="header">
+	      <h2 class="listing-title">${data.LSTG_NM || '-'}</h2>
+	      <p class="listing-address">${data.LSTG_ADD || ''} ${data.LSTG_ADD2 || ''}</p>
+	    </div>
+	
+	    <!-- 📦 가격 정보 박스 -->
+	   <div class="deal-section">
+		  <h4>가격 정보</h4>
+		  <ul>
+		    <li><strong>거래유형:</strong> ${getDealType(data.LSTG_TYPE_SALE)}</li>
+		    <li><strong>${data.LSTG_TYPE_SALE === '002' ? '보증금:' : '전세금:'}</strong> ${getDepositText(data)}</li>
+		    ${data.LSTG_TYPE_SALE === '002' ? `<li><strong>월세:</strong> ${data.LSTG_MONTH_PRICE || 0}만원</li>` : ''}
+		    <li><strong>관리비:</strong> ${data.LSTG_MGMT_PRICE ? `${data.LSTG_MGMT_PRICE}만원` : '없음'}</li>
+		    <li><strong>면적:</strong> ${data.LSTG_EX_AREA}㎡ / ${data.LSTG_GR_AREA}㎡</li>
+		    <li><strong>방 개수:</strong> ${data.LSTG_ROOM_CNT}개</li>
+		    <li><strong>층수:</strong> ${data.LSTG_FLOOR}</li>
+		    <li><strong>주차:</strong> ${data.LSTG_PARK_YN === 'Y' ? '가능' : '불가능'}</li>
+		  </ul>
+		</div>
+	
+	    <!-- 중개사 정보 -->
+	    <div class="broker-section">
+	      <h4>중개사 정보</h4>
+	      <ul>
+	        <li><strong>중개사명:</strong> ${data.BROK_NM || '-'}</li>
+	        <li><strong>대표자명:</strong> ${data.REPR_NM || '-'}</li>
+	        <li><strong>연락처:</strong> ${data.REPR_TEL_NO || '-'}</li>
+	      </ul>
+	    </div>
+	
+	    <!-- 시설 옵션 -->
+	    <div class="option-section">
+	      <h4>시설 옵션</h4>
+	      ${renderFacilityOptions(data.facilityOptions)}
+	    </div>
+		
+		<div class="detail-actions">
+			<button id="inquiryBtn" data-lstg-id=${data.lstgId}>문의하기</button> 
+				<img id="heartIcon" src="/volt/assets/img/heart-svgrepo-com.svg"
+					data-active="false" style="cursor: pointer;"/>
+		</div>
+	</div>
+	`;
+
+
 };
+
 
 window.setupModalCloseBtn = function() {
 	document.getElementById('sideModalClose')?.addEventListener('click', () => {
