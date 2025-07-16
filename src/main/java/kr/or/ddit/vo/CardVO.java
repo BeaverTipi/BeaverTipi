@@ -30,4 +30,5 @@ public class CardVO implements Serializable{
     private String cardPassword;
     private String customerIdentityNumber;
     private String customerKey;
+    private String billingKey;
 }

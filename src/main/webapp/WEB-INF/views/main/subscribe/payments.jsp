@@ -130,7 +130,6 @@
 
   </form>
 </div>
-
 <!-- 모달 -->
 <div class="modal fade" id="billingModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -206,6 +205,8 @@
     </div>
   </div>
 </div>
+
+
 
 
 <script src="https://js.tosspayments.com/v1"></script>

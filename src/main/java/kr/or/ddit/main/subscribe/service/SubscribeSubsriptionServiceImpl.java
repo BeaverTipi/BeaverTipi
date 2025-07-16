@@ -3,6 +3,7 @@ package kr.or.ddit.main.subscribe.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.ddit.main.mapper.SubscribeSubscriptionMapper;
@@ -12,9 +13,11 @@ import kr.or.ddit.util.validate.exception.FileIOException;
 import kr.or.ddit.util.validate.exception.SubscriptionException;
 import kr.or.ddit.util.validate.exception.TenancyException;
 import kr.or.ddit.vo.BrokerVO;
-import kr.or.ddit.vo.FileVO;
+import kr.or.ddit.vo.RoleAchievedVO;
+import kr.or.ddit.vo.SolutionSubscriptionPaymentVO;
 import kr.or.ddit.vo.SolutionSubscriptionVO;
 import kr.or.ddit.vo.SolutionVO;
+import kr.or.ddit.vo.SolutionnSubscriptionAutopayMethodVO;
 import kr.or.ddit.vo.TenancyVO;
 import lombok.RequiredArgsConstructor;
 
@@ -125,6 +128,32 @@ public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionServ
 	public int checkedTenancyCount(String username) {
 		// TODO Auto-generated method stub
 		return mapper.selectTenancyCount(username);
+	}
+	
+	@Override
+	@Transactional
+	public void savePaymentResult(SolutionSubscriptionPaymentVO paymentVO,RoleAchievedVO roleAchievedVO) {
+		mapper.insertSubscriptionPayment(paymentVO);
+		mapper.insertRoleAchived(roleAchievedVO);
+	}
+	@Override
+	@Transactional
+	public void saveAutopayAndFirstPayment(SolutionnSubscriptionAutopayMethodVO methodVO, SolutionSubscriptionPaymentVO paymentVO,RoleAchievedVO roleAchievedVO) {
+	    mapper.insertSubscriptionBillingKey(methodVO);
+	    mapper.insertSubscriptionPayment(paymentVO);
+	    mapper.insertRoleAchived(roleAchievedVO);
+	}
+
+	@Override
+	public BrokerVO readBroker(String username) {
+		// TODO Auto-generated method stub
+		return mapper.selectBroker(username);
+	}
+
+	@Override
+	public TenancyVO readTenancy(String username) {
+		// TODO Auto-generated method stub
+		return mapper.selectTenancy(username);
 	}
 
 }

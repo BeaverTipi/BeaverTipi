@@ -119,3 +119,56 @@
 .btn-address-search:hover {
   background-color: var(--color-primary-hover);
 }
+.form-group-wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.form-group.full-width {
+  grid-column: span 2;
+}
+
+.zip-code-group {
+  display: flex;
+  gap: 8px;
+}
+
+.auth-code-input.hidden {
+  display: none;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d2a86c;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #444;
+  box-sizing: border-box;
+}
+#authCodeWrapper{
+	margin-top : 24px;
+}
+.phone-auth-pair {
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+.phone-auth-pair .half {
+  flex: 1;
+}
+
+.phone-auth-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}

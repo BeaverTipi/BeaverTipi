@@ -23,24 +23,11 @@ function requestPayment(selectedPayment) {
 			Swal.fire("안내", "등록된 카드 정보가 없습니다.", "warning");
 			return;
 		}
-
-		axios.post("/ajax/toss/billing", {
-			customerKey: customerKey,
-			billingKey: billingKey,
-			amount: solPrice,
-			orderId: "ORD-" + Date.now(),
-			orderName: solName
-		})
-			.then(() => {
-				Swal.fire("정기결제 완료", "결제가 정상 처리되었습니다.", "success");
-			})
-			.catch(err => {
-				console.error(err);
-				Swal.fire("결제 실패", "정기결제 처리 중 오류가 발생했습니다.", "error");
-			});
+		// 정기결제는 billing-key 등록 시 이미 Toss에서 처리됨
 	} else {
 		const solId = selectedSolution.value;
-
+		const currentPath = window.location.pathname;
+		const role = currentPath.split("/").pop().toUpperCase();
 		axios.post("/ajax/toss/ready", { solId })
 			.then(res => {
 				const data = res.data;
@@ -51,7 +38,7 @@ function requestPayment(selectedPayment) {
 					orderId: data.orderId,
 					orderName: solName,
 					customerName: data.customerName,
-					successUrl: data.successUrl,
+					successUrl: data.successUrl + "?role=" + role,
 					failUrl: currentUrl + "?fail=true"
 				});
 			})
@@ -92,16 +79,15 @@ function handlePayment() {
 		return;
 	}
 
-
 	const group = selectedPayment.dataset.group;
 
 	if (group === "BILLING") {
-		openBillingModal(); // 모달 텍스트 설정 + 모달 오픈
+		openBillingModal();
 	} else if (group === "NORMAL") {
 		requestPayment(selectedPayment);
 	}
-
 }
+
 function openBillingModal() {
 	const selectedSol = document.querySelector('input[name="solutionCode"]:checked');
 	if (!selectedSol) {
@@ -123,16 +109,13 @@ function openBillingModal() {
 	modal.show();
 }
 
-
 document.addEventListener("DOMContentLoaded", () => {
-	// ✅ 솔루션 초기 selected
 	const defaultSelectedSolution = document.querySelector("input[name='solutionCode']:checked");
 	if (defaultSelectedSolution) {
 		document.querySelectorAll(".solution-card").forEach(label => label.classList.remove("selected"));
 		defaultSelectedSolution.closest("label").classList.add("selected");
 	}
 
-	// ✅ 결제수단 초기 selected
 	const groups = ["billingMethod", "normalMethod"];
 	groups.forEach(name => {
 		const selected = document.querySelector(`input[name='${name}']:checked`);
@@ -144,7 +127,6 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	});
 
-	// ✅ 솔루션 선택
 	document.querySelectorAll("input[name='solutionCode']").forEach(radio => {
 		radio.addEventListener("change", () => {
 			document.querySelectorAll(".solution-card").forEach(label => label.classList.remove("selected"));
@@ -155,27 +137,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	updateSolutionSummary();
 
-	// ✅ 결제 수단 선택
 	groups.forEach(name => {
 		document.querySelectorAll(`input[name='${name}']`).forEach(radio => {
 			radio.addEventListener("change", e => {
 				const selected = e.target;
 				const group = selected.dataset.group;
 
-				// 현재 선택 라벨 selected 처리
 				document.querySelectorAll(`input[name='${name}']`).forEach(input => {
 					input.closest("label").classList.remove("selected");
 				});
 				selected.closest("label").classList.add("selected");
 
-				// ❗ 반대 그룹 비활성화 처리
 				const otherName = name === "billingMethod" ? "normalMethod" : "billingMethod";
 				document.querySelectorAll(`input[name='${otherName}']`).forEach(input => {
 					input.checked = false;
 					input.closest("label").classList.remove("selected");
 				});
 
-				// ❗ 반대 그룹에서 "선택 안 함" 자동 선택
 				const noneOption = document.querySelector(`input[name='${otherName}'][value='']`);
 				if (noneOption) {
 					noneOption.checked = true;
@@ -185,74 +163,81 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	});
 
-// ✅ 카드 등록
-const billingForm = document.querySelector("#billingForm");
+	const billingForm = document.querySelector("#billingForm");
 if (billingForm) {
-	billingForm.addEventListener("submit", async (e) => {
-		e.preventDefault();
-		const formData = new FormData(billingForm);
-		const cardData = Object.fromEntries(formData.entries());
+  billingForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(billingForm);
+    const cardData = Object.fromEntries(formData.entries());
 
-		try {
-			const res = await axios.post("/ajax/toss/billing-key", cardData);
-			const responseData = res.data;
+    try {
+      // 1. billingKey 발급
+      const res = await axios.post("/ajax/toss/billing-key", cardData);
+      const responseData = res.data;
 
-			const billingKey = responseData.billingKey;
-			const customerKey = cardData.customerKey;
+      const billingKey = responseData.billingKey;
+      const approvedAt = responseData.authenticatedAt;
+      const card = responseData.card || {};
+      const cardCompany = card.company;
+      const cardNumber = card.number;
+      const customerKey = responseData.customerKey;
 
-			if (!billingKey) throw new Error("billingKey 발급 실패");
+      if (!billingKey) throw new Error("billingKey 발급 실패");
+ console.log(responseData);
+      // 2. 라디오 버튼에 값 반영
+      const billingRadio = document.querySelector("input[name='billingMethod'][data-group='BILLING']");
+      if (billingRadio) {
+        billingRadio.dataset.billingKey = billingKey;
+        billingRadio.dataset.customerKey = customerKey;
+      }
 
-			const billingRadio = document.querySelector("input[name='billingMethod'][data-group='BILLING']");
-			if (billingRadio) {
-				billingRadio.dataset.billingKey = billingKey;
-				billingRadio.dataset.customerKey = customerKey;
-			}
+      // 3. 모달 닫기
+      const modal = bootstrap.Modal.getInstance(document.querySelector("#billingModal"));
+      modal.hide();
 
-			const modal = bootstrap.Modal.getInstance(document.querySelector("#billingModal"));
-			modal.hide();
+      // 4. role 추출
+      const currentPath = window.location.pathname;
+      const role = currentPath.split("/").pop().toUpperCase();  // ex: /payment/business/broker → BROKER
 
-			// ✅ 카드 등록 성공 후 즉시 정기결제 요청
-			const selectedSol = document.querySelector('input[name="solutionCode"]:checked');
-			const solName = selectedSol.dataset.name;
-			const solPrice = Number(selectedSol.dataset.price);
+      // 5. 서버에 저장 요청
+      const result = await axios.post("/ajax/toss/billing-success", {
+        billingKey,
+        approvedAt,
+        cardCompany,
+        cardNumber,
+        customerKey,
+        role
+      });
 
-			await axios.post("/ajax/toss/billing", {
-				customerKey,
-				billingKey,
-				amount: solPrice,
-				orderId: "ORD-" + Date.now(),
-				orderName: solName
-			});
+      // 6. 성공 처리
+      let redirectUrl = "/account/read?success=true";
+      if (result && result.data && result.data.redirectUrl) {
+        redirectUrl = result.data.redirectUrl;
+      }
 
-			// ✅ 결제 성공 안내 및 리다이렉트
-			Swal.fire({
-				icon: "success",
-				title: "정기결제 완료",
-				text: "카드 등록과 결제가 정상 처리되었습니다.",
-				confirmButtonText: "확인"
-			}).then(() => {
-				window.location.href = "/account/read?success=true";
-			});
+      Swal.fire({
+        icon: "success",
+        title: "정기결제 완료",
+        text: "카드 등록과 결제가 정상 처리되었습니다.",
+        confirmButtonText: "확인"
+      }).then(() => {
+        window.location.href = redirectUrl;
+      });
 
-		} catch (err) {
-			console.error(err);
-
-			// ✅ 카드 등록은 되었지만 결제 실패
-			if (err?.response?.status === 400 || err?.response?.status === 500) {
-				Swal.fire({
-					icon: "warning",
-					title: "결제 실패",
-					html: "카드는 정상 등록되었으나<br>정기결제 처리 중 오류가 발생했습니다.",
-					confirmButtonText: "확인"
-				}).then(() => {
-					window.location.href = "/account/read?fail=true";
-				});
-			} else {
-				// ✅ 카드 등록 실패
-				Swal.fire("등록 실패", "카드 등록 처리 중 오류가 발생했습니다.", "error");
-			}
-		}
-	});
+    } catch (err) {
+      console.error(err);
+      if (err && err.response && (err.response.status === 400 || err.response.status === 500)) {
+        Swal.fire({
+          icon: "warning",
+          title: "결제 실패",
+          html: "카드는 정상 등록되었으나<br>정기결제 처리 중 오류가 발생했습니다.",
+          confirmButtonText: "확인"
+        })
+      } else {
+        Swal.fire("등록 실패", "카드 등록 처리 중 오류가 발생했습니다.", "error");
+      }
+    }
+  });
 }
 
 });

@@ -16,6 +16,7 @@
 		  , NOTIF_DEL_YN
   FROM NOTIFICATIONS
   WHERE MBR_CD = #{username}
+  AND NOTIF_READ_YN ='N'
 </select>
 <select id="selectNotificationListPaging">
   SELECT *

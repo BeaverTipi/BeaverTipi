@@ -31,10 +31,14 @@ public class NotificationController {
     public String readNotification(@PathVariable("notifId") String notifId, RedirectAttributes redirectAttributes) {
         // 1. 알림 읽음 처리 (DB 업데이트)
         NotificationVO noti = service.readAndReturn(notifId);
-
-        // 2. 이동할 링크로 리다이렉트 (없으면 메인으로)
-        String targetUrl = noti.getNotifRefUrl();
-        return "redirect:" + (targetUrl != null ? targetUrl : "/");
+        
+        if(!noti.isNotifReadYn()) {
+	        // 2. 이동할 링크로 리다이렉트 (없으면 메인으로)
+	        String targetUrl = noti.getNotifRefUrl();
+	        return "redirect:" + (targetUrl != null ? targetUrl : "/");
+        }
+        redirectAttributes.addFlashAttribute("message", "이미 확인한 메시지 입니다.");
+        return "redirect:/";
     }
     @GetMapping("/ajax/notification/list")
     public String readNotificationList(

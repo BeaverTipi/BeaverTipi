@@ -30,4 +30,5 @@ public class PaymentTosspamentsRawVO implements Serializable{
 	private String successUrl;
 	private String failUrl;
 	private String clientKey;
+	private String customerKey;
 }

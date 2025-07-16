@@ -231,5 +231,97 @@
 		, 'APST'
 	)
 </insert>
+<insert id="insertSubscriptionBillingKey">
+INSERT INTO SOLUTION_SUBSCRIPTION_AUTOPAY_METHOD (
+    AUTOMETH_ID
+    , MBR_CD
+    , AUTOMETH_PAYTYPE
+    , AUTOMETH_PROVIDER
+    , AUTOMETH_BILLINGKEY
+    , AUTOMETH_VRTACCT
+    , AUTOMETH_STARTED_AT
+    , AUTOMETH_REVOKED_AT
+    , AUTOMETH_IS_ACTIVE
+    , AUTOMETH_PAYTYPE_GRP_CD
+    , AUTOMETH_IS_ACTIVE_GRP_CD
+) VALUES (
+    #{automethId}
+    , #{mbrCd}
+    , #{automethPaytype}
+    , #{automethProvider}
+    , #{automethBillingkey}
+    , #{automethVrtacct}
+    , #{automethStartedAt}
+    , #{automethRevokedAt}
+    , #{automethIsActive}
+    , #{automethPaytypeGrpCd}
+    , #{automethIsActiveGrpCd}
+)
 
+</insert>
+
+<insert id="insertSubscriptionPayment">
+INSERT INTO SOLUTION_SUBSCRIPTION_PAYMENT (
+SUBS_PAYMENT_ID
+, SUBS_ID
+, AUTOMETH_ID
+, BILLING_KEY
+, CUSTOMER_KEY
+, SUBS_PAYMENT_FAIL_MSG
+, CARD_ID
+, MBR_CD
+) VALUES (
+  #{subsPaymentId}
+, #{subsId}
+, #{automethId}
+, #{billingKey}
+, #{customerKey}
+, #{subsPaymentFailMsg}
+, #{cardId}
+, #{mbrCd}
+)
+
+</insert>
+<insert id="insertRoleAchived">
+INSERT INTO ROLE_ACHIEVED (
+    MBR_CD
+    , USER_ROLE_ID
+) VALUES (
+    #{mbrCd},
+    #{userRoleId}
+)
+</insert>
+<select id="selectTenancy">
+SELECT RENTAL_PTY_ID
+	, RENTAL_PTY_BIZ_REG_FILE_PATH
+	, RENTAL_PTY_REG_BLDG_CNT
+	, RENTAL_PTY_BIZ_REG_NO
+	, RENTAL_PTY_FILE
+	, RENTAL_PTY_FILE2
+	, LSR_YN_TYPE_CD
+	, MBR_CD
+	, LSR_TYPE_GROUP_CD
+	, AUTH_APPR_YN
+	, AUTH_GRP_CD
+	, AUTH_APPR_DT
+FROM TENANCY
+WHERE MBR_CD = #{mbrCd}
+</select>
+<select id="selectBroker">
+SELECT MBR_CD
+	, BROK_NM
+	, BROK_REG_NO
+	, CRTF_NO
+	, REPR_NM
+	, REPR_TEL_NO
+	, REG_DTM
+	, BROK_ADDR2
+	, BROK_ADDR1
+	, AUTH_APPR_YN
+	, BROK_ZIP
+	, AUTH_GRP_CD
+	, AUTH_APPR_DT
+FROM BROKER
+WHERE MBR_CD = #{mbrCd}
+</select>
 </mapper>

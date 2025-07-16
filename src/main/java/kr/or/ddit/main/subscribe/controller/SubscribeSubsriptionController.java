@@ -53,7 +53,15 @@ public class SubscribeSubsriptionController {
 	}
 
 	@GetMapping("/subscribe/subscription")
-	public String formUI() {
+	public String formUI(
+			@AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
+			Model model
+	) {
+		String username = principal.getRealUser().getMbrCd();
+		BrokerVO broker = service.readBroker(username);
+		TenancyVO tenancy = service.readTenancy(username);
+		model.addAttribute("rawTenancy", tenancy);
+		model.addAttribute("rawBroker", broker);
 		return "main/subscribe/subscribe";
 	}
 

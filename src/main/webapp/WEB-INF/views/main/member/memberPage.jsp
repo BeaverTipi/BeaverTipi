@@ -70,19 +70,41 @@
   </div>
  <table class="subscription-table">
   <tbody>
-    <tr>
-      <th>승인 여부</th>
-      <td>
-        <span class="${subscription.subsApprovalYn eq 'Y' ? 'text-success' : (subscription.subsApprovalYn eq 'N' ? 'text-danger' : 'text-muted')}">
+<tr>
+  <th>승인 여부</th>
+  <td>
+    <c:choose>
+      <c:when test="${subscription.solution.solCcCd eq '001'}">
+        <span class="${member.tenancy.authApprlYn eq 'Y' ? 'text-success' 
+                      : (member.tenancy.authApprYn eq 'N' ? 'text-danger' : 'text-muted')}">
           <c:choose>
-            <c:when test="${subscription.subsApprovalYn eq 'Y'}">승인됨</c:when>
-            <c:when test="${subscription.subsApprovalYn eq 'N'}">미승인</c:when>
+            <c:when test="${member.tenancy.authApprYn eq 'Y'}">승인</c:when>
+            <c:when test="${member.tenancy.authApprYn eq 'N'}">승인 거절</c:when>
+            <c:when test="${member.tenancy.authApprYn eq 'W'}">승인 대기</c:when>
             <c:otherwise>확인 불가</c:otherwise>
           </c:choose>
         </span>
-      </td>
-    </tr>
-    <tr>
+      </c:when>
+
+      <c:when test="${subscription.solution.solCcCd eq '002'}">
+        <span class="${member.broker.authApprYn eq 'Y' ? 'text-success' 
+                      : (member.broker.authApprYn eq 'N' ? 'text-danger' : 'text-muted')}">
+          <c:choose>
+            <c:when test="${member.broker.authApprYn eq 'Y'}">승인</c:when>
+            <c:when test="${member.broker.authApprYn eq 'N'}">승인 거절</c:when>
+            <c:when test="${member.broker.authApprYn eq 'W'}">승인 대기</c:when>
+            <c:otherwise>확인 불가</c:otherwise>
+          </c:choose>
+        </span>
+      </c:when>
+
+      <c:otherwise>
+        <span class="text-muted">해당 없음</span>
+      </c:otherwise>
+    </c:choose>
+  </td>
+</tr>
+
       <th>솔루션 활성 상태</th>
       <td>
         <c:choose>

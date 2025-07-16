@@ -163,7 +163,7 @@
 		ON(M.MBR_CD=T.MBR_CD)
 		LEFT OUTER JOIN UNIT_RESIDENT UR ON
 		(M.MBR_CD=UR.MBR_CD)
-		WHERE M.MBR_CD = #{username}
+		WHERE M.MBR_ID = #{username}
 
 	</select>
 
