@@ -1,17 +1,21 @@
 package kr.or.ddit.main.map.service;
 
 import java.util.List;
+import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.main.mapper.KakaoMapDataMapper;
+import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingVO;
+import kr.or.ddit.vo.ListingWishlistVO;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class MainKakaoMapServiceImpl implements MainKakaoMapService {
-	
+
 	private final KakaoMapDataMapper kakaoMapDataMapper;
 
 	@Override
@@ -23,29 +27,46 @@ public class MainKakaoMapServiceImpl implements MainKakaoMapService {
 	public int updateLatLng(ListingVO vo) {
 		return kakaoMapDataMapper.updateLatLng(vo);
 	}
-	
+
 	@Override
-	public List<ListingVO> selectListingDetailList(String lstgId) {
-		return kakaoMapDataMapper.selectListingDetailList(lstgId);
+	public List<Map<String, Object>> selectListingDetailList(String lstgId, String mbrCd) {
+		return kakaoMapDataMapper.selectListingDetailList(lstgId, mbrCd);
 	}
 
 	@Override
-	public List<ListingVO> selectLatLngMarkList(
-			double swLat, double swLng, double neLat, double neLng,
-			Integer category, String keyword, 
-			List<Integer> typeCode1List, List<Integer> typeCode2List,
-			List<Integer> saleTypeList, List<String> facilityOptionList, String mbrCd,
-			String parkingYn, Integer minFloor, Integer maxFloor,
-			Double minArea, Double maxArea) {
+	public List<ListingVO> selectLatLngMarkList(double swLat, double swLng, double neLat, double neLng,
+			Integer category, String keyword, List<String> typeCode1List, List<String> typeCode2List,
+			List<String> saleTypeList, List<String> facilityOptionList, String mbrCd, String parkingYn,
+			Integer minFloor, Integer maxFloor, Double minArea, Double maxArea) {
 
-		return kakaoMapDataMapper.selectLatLngMarkList(
-			swLat, swLng, neLat, neLng,
-			category, keyword,
-			typeCode1List, typeCode2List,
-			saleTypeList, facilityOptionList,
-			mbrCd, parkingYn, minFloor, maxFloor, minArea, maxArea
-		);
+		return kakaoMapDataMapper.selectLatLngMarkList(swLat, swLng, neLat, neLng, category, keyword, typeCode1List,
+				typeCode2List, saleTypeList, facilityOptionList, mbrCd, parkingYn, minFloor, maxFloor, minArea,
+				maxArea);
 	}
 
+	@Override
+	public List<FacilityOptionVO> selectFacilityOptionsByListingId(String lstgId) {
+		return kakaoMapDataMapper.selectFacilityOptionsByListingId(lstgId);
+	}
+
+	@Override
+	public int insertWishList(ListingWishlistVO vo) {
+		return kakaoMapDataMapper.insertWishList(vo);
+	}
+
+	@Override
+	public int deleteWishList(ListingWishlistVO vo) {
+		return kakaoMapDataMapper.deleteWishList(vo);
+	}
+
+	@Override
+	public boolean isWishlisted(String lstgId, String mbrCd) {
+		return kakaoMapDataMapper.isWishlisted(lstgId, mbrCd);
+	}
+
+	@Override
+	public int countWishListByLstgId(String lstgId) {
+		return kakaoMapDataMapper.countWishListByLstgId(lstgId);
+	}
 
 }

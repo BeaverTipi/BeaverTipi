@@ -124,34 +124,101 @@
 	    </if>
 </select>
 
-<select id="selectListingDetailList" resultType="kr.or.ddit.vo.ListingVO">
+<select id="selectListingDetailList" resultType="map" parameterType="string">
 	SELECT
-		LSTG_ID, 
-		MBR_CD, 
-		LSTG_TYPE_CODE2, 
-		LSTG_ADD, 
-		LSTG_ADD2, 
-		LSTG_EX_AREA, 
-		LSTG_GR_AREA, 
-		LSTG_ROOM_CNT, 
-		LSTG_ROOM_NUM, 
-		LSTG_DST, 
-		LSTG_TYPE_SALE, 
-		LSTG_LEASE, 
-		LSTG_LEASE_M, 
-		LSTG_LEASE_AMT, 
-		LSTG_FLOOR, 
-		LSTG_PARK_YN, 
-		LSTG_REG_DATE, 
-		LSTG_NM, 
-		LSTG_TYPE_CODE1, 
-		RENTAL_PTY_ID, 
-		LSTG_POSTAL
+		LI.LSTG_ID, 
+		LI.MBR_CD, 
+		LI.LSTG_TYPE_CODE2, 
+		LI.LSTG_ADD, 
+		LI.LSTG_ADD2, 
+		LI.LSTG_EX_AREA, 
+		LI.LSTG_GR_AREA, 
+		LI.LSTG_ROOM_CNT, 
+		LI.LSTG_ROOM_NUM, 
+		LI.LSTG_DST, 
+		LI.LSTG_TYPE_SALE, 
+		LI.LSTG_LEASE, 
+		LI.LSTG_LEASE_M, 
+		LI.LSTG_LEASE_AMT, 
+		LI.LSTG_FLOOR, 
+		LI.LSTG_PARK_YN, 
+		LI.LSTG_REG_DATE, 
+		LI.LSTG_NM, 
+		LI.LSTG_TYPE_CODE1, 
+		LI.RENTAL_PTY_ID, 
+		LI.LSTG_POSTAL,
+		B.BROK_NM,
+		B.REPR_NM,
+		B.REPR_TEL_NO,
+		<choose>
+			<when test="mbrCd != null and mbrCd != ''">
+				CASE 
+					WHEN EXISTS (
+						SELECT 1 
+						FROM LISTING_WISHLIST W
+						WHERE W.LSTG_ID = LI.LSTG_ID
+						  AND W.MBR_CD = #{mbrCd}
+					)
+					THEN 1 ELSE 0 
+				END AS IS_WISHLISTED
+			</when>
+			<otherwise>
+				0 AS IS_WISHLISTED
+			</otherwise>
+		</choose>
 	FROM
-		LISTING
+		LISTING LI
+		LEFT JOIN BROKER B ON B.MBR_CD = LI.MBR_CD
 	WHERE
+		LI.LSTG_ID = #{lstgId}
+  		AND LI.LSTG_DEL = 'N'
+</select>
+
+<select id="selectFacilityOptionsByListingId" resultType="kr.or.ddit.vo.FacilityOptionVO">
+	SELECT 
+		FO.FAC_OPT_ID, 
+		FO.FAC_OPT_TYPE_CD, 
+		FO.FAC_OPT_NM, 
+		FO.FAC_OPT_DESC, 
+		FO.FAC_TYPE_GROUP_CD
+	FROM 
+		LISTING_OPTION LOP
+		JOIN FACILITY_OPTION FO ON LOP.FAC_OPT_ID = FO.FAC_OPT_ID
+	WHERE 
+		LOP.LSTG_ID = #{lstgId}
+</select>
+
+<insert id="insertWishList" parameterType="kr.or.ddit.vo.ListingWishlistVO">
+	INSERT INTO LISTING_WISHLIST (
+		LSTG_ID,
+		MBR_CD,
+		WISH_DT
+	) VALUES (
+		#{lstgId},
+		#{mbrCd},
+		SYSDATE
+	)
+</insert>
+
+<delete id="deleteWishList" parameterType="kr.or.ddit.vo.ListingWishlistVO">
+	DELETE FROM 
+		LISTING_WISHLIST
+	WHERE 
 		LSTG_ID = #{lstgId}
-		AND LSTG_DEL ='N'
+	  	AND MBR_CD = #{mbrCd}
+</delete>
+
+<select id="countWishListByLstgId" resultType="int">
+	SELECT COUNT(*)
+	FROM LISTING_WISHLIST
+	WHERE LSTG_ID = #{lstgId}
+</select>
+
+<select id="isWishlisted" resultType="boolean">
+	SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+	FROM LISTING_WISHLIST
+	WHERE LSTG_ID = #{lstgId}
+	  AND MBR_CD = #{mbrCd}
 </select>
 
 </mapper>

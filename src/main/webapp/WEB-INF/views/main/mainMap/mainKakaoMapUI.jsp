@@ -31,8 +31,8 @@
 						  </div>
 						  <div class="popup-body">
 						    <button class="popup-option" data-type="saleType" data-value="">전체</button>
-						    <button class="popup-option" data-type="saleType" data-value="001">월세</button>
-						    <button class="popup-option" data-type="saleType" data-value="002">전세</button>
+						    <button class="popup-option" data-type="saleType" data-value="001">전세</button>
+						    <button class="popup-option" data-type="saleType" data-value="002">월세</button>
 						    <button class="popup-option" data-type="saleType" data-value="003">매매</button>
 						  </div>
 						</div>
@@ -45,14 +45,14 @@
 						  </div>
 						  <div class="popup-body">
 						    <button class="popup-option" data-type="listingType" data-value="">전체</button>
-						    <button class="popup-option" data-type="listingType" data-value="1">아파트</button>
-						    <button class="popup-option" data-type="listingType" data-value="2">빌라</button>
-						    <button class="popup-option" data-type="listingType" data-value="3">오피스텔</button>
-						    <button class="popup-option" data-type="listingType" data-value="4">단독주택</button>
-						    <button class="popup-option" data-type="listingType" data-value="5">상가주택</button>
-						    <button class="popup-option" data-type="listingType" data-value="6">상가</button>
-						    <button class="popup-option" data-type="listingType" data-value="7">오피스빌딩/사무실</button>
-						    <button class="popup-option" data-type="listingType" data-value="8">기타</button>
+						    <button class="popup-option" data-type="listingType" data-value="001">아파트</button>
+						    <button class="popup-option" data-type="listingType" data-value="002">빌라</button>
+						    <button class="popup-option" data-type="listingType" data-value="003">오피스텔</button>
+						    <button class="popup-option" data-type="listingType" data-value="004">단독주택</button>
+						    <button class="popup-option" data-type="listingType" data-value="005">상가주택</button>
+						    <button class="popup-option" data-type="listingType" data-value="006">상가</button>
+						    <button class="popup-option" data-type="listingType" data-value="007">오피스빌딩/사무실</button>
+						    <button class="popup-option" data-type="listingType" data-value="008">기타</button>
 						  </div>
 						</div>
 					<input type="hidden" id="listingTypeFilter" />
@@ -64,10 +64,10 @@
 						  </div>
 						  <div class="popup-body">
 						    <button class="popup-option" data-type="saleDetailType" data-value="">전체</button>
-						    <button class="popup-option" data-type="saleDetailType" data-value="1">원룸/투룸/다세대</button>
-						    <button class="popup-option" data-type="saleDetailType" data-value="2">단독주택</button>
-						    <button class="popup-option" data-type="saleDetailType" data-value="3">다가구주택</button>
-						    <button class="popup-option" data-type="saleDetailType" data-value="4">상가주택</button>
+						    <button class="popup-option" data-type="saleDetailType" data-value="001">원룸/투룸/다세대</button>
+						    <button class="popup-option" data-type="saleDetailType" data-value="002">단독주택</button>
+						    <button class="popup-option" data-type="saleDetailType" data-value="003">다가구주택</button>
+						    <button class="popup-option" data-type="saleDetailType" data-value="004">상가주택</button>
 						  </div>
 						</div>
 					<input type="hidden" id="saleDetailTypeFilter" />
@@ -190,3 +190,5 @@
 <script src="${pageContext.request.contextPath }/app/js/main/mainMap/listRenderer.js"></script>
 <script src="${pageContext.request.contextPath }/app/js/main/mainMap/eventBinder.js"></script>
 <script src="${pageContext.request.contextPath }/app/js/main/mainMap/mainKakaoMap.js"></script>
+
+<script src="${pageContext.request.contextPath }/app/js/main/chat/chatCreate.js"></script>

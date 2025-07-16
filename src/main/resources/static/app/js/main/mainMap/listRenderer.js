@@ -52,12 +52,13 @@ window.renderListPage = function(data, map, page = 1, perPage = 5) {
 
 		div.addEventListener('click', () => {
 			map.panTo(position);
-			fetch(`/map/api/detail?lstgId=${item.lstgId}`)
+			const mbrCdParam = window.loggedInUserId || '';
+			fetch(`/map/api/detail?lstgId=${item.lstgId}&mbrCd=${encodeURIComponent(mbrCdParam)}`)
 				.then(res => res.json())
 				.then(detail => showDetailModal(detail));
 		});
 
-		listContainer.appendChild(div);
+		listContainer.appendChild(div); showDetailModal
 	});
 
 	// ✅ 페이지네이션은 여기만!
@@ -171,7 +172,27 @@ window.showDetailModal = function(data) {
  	 `;
 	};
 
+	const renderImageSlider = () => {
+		const imageUrls = [
+			'/volt/assets/img/images/room1.png',
+			'/volt/assets/img/images/room2.png',
+			'/volt/assets/img/images/room3.png'
+		];
+
+		return `
+    <div class="image-slider">
+      ${imageUrls.map(url => `
+        <div class="image-item">
+          <img src="${url}" alt="매물 이미지" />
+        </div>
+      `).join('')}
+    </div>
+  `;
+	};
+
 	body.innerHTML = `
+	${renderImageSlider()}
+	
 	  <div class="detail-modal">
 	    <!-- 상단 헤더 -->
 	    <div class="header">
@@ -212,12 +233,36 @@ window.showDetailModal = function(data) {
 		
 		<div class="detail-actions">
 			<button id="inquiryBtn" data-lstg-id=${data.lstgId}>문의하기</button> 
-				<img id="heartIcon" src="/volt/assets/img/heart-svgrepo-com.svg"
-					data-active="false" style="cursor: pointer;"/>
+			<img id="heartIcon" src="/volt/assets/img/heart-svgrepo-com.svg"
+			data-active="false" style="cursor: pointer;"/>
 		</div>
+		<div id="wishlist-count-text"></div>
 	</div>
+	
+	<div id="galleryModal" class="gallery-modal" style="display: none;">
+	    <div class="gallery-overlay" onclick="closeGalleryModal()"></div>
+	    <div class="gallery-content">
+	      <span class="gallery-close" onclick="closeGalleryModal()">×</span>
+	      <img id="galleryImage" src="" alt="확대 이미지">
+	      <div class="gallery-nav">
+	        <button id="prevBtn" onclick="changeGalleryImage(-1)">〈</button>
+	        <button id="nextBtn" onclick="changeGalleryImage(1)">〉</button>
+	      </div>
+	    </div>
+	 </div>
 	`;
 
+	const heartIcon = document.getElementById("heartIcon");
+	if (heartIcon) {
+		heartIcon.dataset.active = data.isWishlisted ? 'true' : 'false';
+		heartIcon.src = data.isWishlisted
+			? "/volt/assets/img/heart-filled.svg"
+			: "/volt/assets/img/heart-svgrepo-com.svg";
+	}
+
+	setupGalleryViewer();
+	
+	setupHeartClickEvent();
 
 };
 

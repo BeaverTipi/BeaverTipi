@@ -1,11 +1,14 @@
 package kr.or.ddit.main.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingVO;
+import kr.or.ddit.vo.ListingWishlistVO;
 
 @Mapper
 public interface KakaoMapDataMapper {
@@ -18,9 +21,9 @@ public interface KakaoMapDataMapper {
 			@Param("neLng")double neLng, 
 			@Param("category")Integer category,
 			@Param("keyword")String Keyword,
-			@Param("typeCode1List") List<Integer> typeCode1List,
-	        @Param("typeCode2List") List<Integer> typeCode2List,
-	        @Param("saleTypeList") List<Integer> saleTypeList,
+			@Param("typeCode1List") List<String> typeCode1List,
+	        @Param("typeCode2List") List<String> typeCode2List,
+	        @Param("saleTypeList") List<String> saleTypeList,
 	        @Param("facilityOptionList") List<String> facilityOptionList,
 	        @Param("mbrCd") String mbrCd,
 	        @Param("parkingYn") String parkingYn,
@@ -29,5 +32,11 @@ public interface KakaoMapDataMapper {
 	    	@Param("minArea") Double minArea,
 	    	@Param("maxArea") Double maxArea
 			);
-	public List<ListingVO> selectListingDetailList(String lstgId);
+	public List<Map<String, Object>> selectListingDetailList(
+				@Param("lstgId") String lstgId,  @Param("mbrCd") String mbrCd);
+	public List<FacilityOptionVO> selectFacilityOptionsByListingId(@Param("lstgId") String lstgId);
+	public int insertWishList(ListingWishlistVO vo);
+	public int deleteWishList(ListingWishlistVO vo);
+	public boolean isWishlisted(@Param("lstgId") String lstgId, @Param("mbrCd") String mbrCd);
+	public int countWishListByLstgId(@Param("lstgId") String lstgId);
 }

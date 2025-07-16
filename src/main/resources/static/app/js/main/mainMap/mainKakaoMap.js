@@ -12,21 +12,37 @@ document.addEventListener("DOMContentLoaded", () => {
 		const clusterer = initClusterer(map);
 		setupMapControls(map);
 
+		// 👇 여기에 반드시 추가!
+		window._map = map;
+		window._clusterer = clusterer;
+
 		setupModalCloseBtn();
 		setupManualFilterTrigger(map, clusterer);
 		setupCategoryButtonHandler(map, clusterer);
 		setupKeywordSearch(map, clusterer);
 		setupPopupOptionClick(map, clusterer);
 		setupClusterClick(map, clusterer);
-
-		// init 함수나 initMap 안에서 호출
 		setupFacilityOptionListener(map, clusterer);
-
 		initCategoryFromParam(map, clusterer);
 		setupIdleEvent(map, clusterer);
 
-		setupIdleEvent(map, clusterer);
+		let firstLoaded = false;
+		kakao.maps.event.addListener(map, 'tilesloaded', () => {
+			if (firstLoaded) return;
+			firstLoaded = true;
+
+			const bounds = map.getBounds();
+			const url = buildUrl(bounds, window.currentCategory);
+			fetch(url)
+				.then(res => res.json())
+				.then(data => {
+					renderMarkers(data, map, clusterer);
+					renderListPage(data, map);
+				});
+		});
+
 		setDefaultFilterValues();
 	});
 });
+
 
