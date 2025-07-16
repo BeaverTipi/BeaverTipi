@@ -1,150 +1,211 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-  <title>공지사항 등록</title>
+  <meta charset="UTF-8">
+  <title>공지사항 ${empty notice.noticeNo ? '등록' : '수정'}</title>
+
+  <!-- ✅ Summernote CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/lang/summernote-ko-KR.min.js"></script>
+
   <style>
-    .form-group { margin-bottom: 1rem; }
-    label { display: block; font-weight: bold; margin-bottom: 0.5rem; }
-    input[type="text"], select, textarea {
-      width: 100%; padding: 0.5rem;
-      border: 1px solid #ccc; border-radius: 4px;
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: #f4f6f8;
+      padding: 40px;
+      color: #333;
     }
-    textarea { height: 200px; resize: vertical; }
-    .btn-submit {
-      padding: 0.5rem 1rem;
-      background-color: #007bff; color: white;
-      border: none; border-radius: 4px;
+
+    .form-wrapper {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+      padding: 30px;
     }
-    .checkbox-group { margin-bottom: 1rem; }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .checkbox-group label {
+      margin-right: 1.5rem;
+    }
+
     .write-buttons {
-	  display: flex;
-	  gap: 10px;
-	  margin-top: 20px;
-	}
-	
-	.btn-dark {
-	  background-color: #6c757d;
-	  color: #fff;
-	  padding: 0.5rem 1rem;
-	  border: none;
-	  border-radius: 4px;
-	  text-decoration: none;
-	  display: inline-block;
-	}
-	.btn-dark:hover {
-	  background-color: #5a6268;
-	}
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-orange {
+      background-color: #fd7e14;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn-gray {
+      background-color: #ccc;
+      color: black;
+      padding: 10px 16px;
+      text-decoration: none;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .info-box {
+      margin: 10px 0;
+      padding: 10px;
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+    }
+
+    .error-box {
+      margin-bottom: 10px;
+      color: red;
+      font-weight: bold;
+    }
+
+    .success-box {
+      margin-bottom: 15px;
+      padding: 10px;
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
 
-<h2>📢 공지사항 등록</h2>
+<div class="form-wrapper">
+  <h2>📢 공지사항 ${empty notice.noticeNo ? '등록' : '수정'}</h2>
 
-<c:if test="${not empty error}">
-  <div style="color: red;">${error}</div>
-</c:if>
+  <c:if test="${not empty error}">
+    <div class="error-box">${error}</div>
+  </c:if>
 
-<c:if test="${not empty success}">
-  <div style="margin-bottom: 15px; padding: 10px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px;">
-    ✅ ${success}
-  </div>
-</c:if>
+  <c:if test="${not empty success}">
+    <div class="success-box">✅ ${success}</div>
+  </c:if>
 
-<form method="post" action="/resident/notice/form" onsubmit="return validateForm();">
-	<c:if test="${not empty notice.noticeNo}">
-	  <input type="hidden" name="noticeNo" value="${notice.noticeNo}" />
-	</c:if>
-  <input type="hidden" name="bldgIdHidden" id="bldgIdHidden">
-  <sec:csrfInput/>
+  <form method="post" action="/resident/notice/form" onsubmit="return validateForm();">
+    <sec:csrfInput/>
+    <input type="hidden" name="bldgIdHidden" id="bldgIdHidden" />
+    <c:if test="${not empty notice.noticeNo}">
+      <input type="hidden" name="noticeNo" value="${notice.noticeNo}" />
+    </c:if>
 
-  <!-- 🏢 건물 선택 + 전체 공지 체크 -->
-  <div class="form-group">
-    <label for="bldgId">건물 선택</label>
-    <select name="bldgId" id="bldgSelector" required>
-      <option value="">-- 건물 선택 --</option>
-      <c:forEach var="unit" items="${unitList}">
-        <option value="${unit.bldgId}">${unit.building.bldgNm}</option>
-      </c:forEach>
-    </select>
-
-    <div class="checkbox-group">
-      <label>
-        <input type="checkbox" id="isAllNotice" /> 🏢 전체 건물 공지로 등록
+    <!-- 건물 선택 -->
+    <div class="form-group">
+      <label>건물 선택</label>
+      <select name="bldgId" id="bldgSelector">
+        <option value="">-- 건물 선택 --</option>
+        <c:forEach var="unit" items="${unitList}">
+          <option value="${unit.bldgId}">${unit.building.bldgNm}</option>
+        </c:forEach>
+      </select>
+      <label style="margin-top: 8px; display: block;">
+        <input type="checkbox" id="isAllNotice" /> 전체 건물 공지로 등록
       </label>
     </div>
 
-    <!-- 전체공지 안내문 (조건부 출력) -->
     <c:if test="${notice.bldgId == null}">
-      <div style="margin: 10px 0; padding: 10px; background-color: #fff3cd; border-left: 4px solid #ffc107;">
-        🏢 <strong>이 공지는 전체 공지로 등록되어 있습니다.</strong><br/>
-        건물 선택이 비활성화되며, 전체 입주민 대상입니다.
+      <div class="info-box">
+        🏢 <strong>전체 공지</strong>로 등록된 상태입니다.
       </div>
     </c:if>
-  </div>
 
-  <!-- 📋 공지 유형 체크박스 그룹 -->
-  <div class="form-group">
-    <label for="noticeType">공지 유형 선택</label>
-    <div class="checkbox-group">
-      <c:forEach var="code" items="${noticeTypeList}">
-        <label style="margin-right: 1rem;">
-          <input type="radio" name="noticeType" value="${code.codeValue}" 
-            <c:if test="${notice.noticeType eq code.codeValue}">checked</c:if>> ${code.codeName}
-        </label>
-      </c:forEach>
+    <!-- 공지 유형 -->
+    <div class="form-group">
+      <label>공지 유형</label>
+      <div class="checkbox-group">
+        <c:forEach var="code" items="${noticeTypeList}">
+          <label>
+            <input type="radio" name="noticeType" value="${code.codeValue}" 
+              <c:if test="${notice.noticeType eq code.codeValue}">checked</c:if> />
+            ${code.codeName}
+          </label>
+        </c:forEach>
+      </div>
     </div>
-  </div>
 
-  <!-- 📝 제목 -->
-  <div class="form-group">
-    <label for="brdTitlNm">제목</label>
-    <input type="text" name="brdTitlNm" value="${notice.brdTitlNm}" required />
-  </div>
-
-  <!-- 📄 내용 -->
-  <div class="form-group">
-    <label for="brdCont">내용</label>
-    <textarea name="brdCont" required>${notice.brdCont}</textarea>
-  </div>
-
-  <!-- ▶ 등록 버튼 -->
-  
-  	<div class="write-buttons">
-	  <c:choose>
-	    <c:when test="${empty notice.noticeNo}">
-	      <button type="submit" class="btn-submit">등록</button>
-	    </c:when>
-	    <c:otherwise>
-	      <button type="submit" class="btn-submit">수정</button>
-	    </c:otherwise>
-	  </c:choose>
-	
-	  <a href="${pageContext.request.contextPath}/resident/notice" class="btn-dark">취소</a>
-	</div>
-
-
-  <c:if test="${not empty notice.noticeType}">
-    <div style="margin-top: 1rem; padding: 8px; background-color: #f8f9fa; border-left: 4px solid #007bff;">
-      📌 안내: 이 글은 <strong>${codeMap[notice.noticeType]}</strong> 유형으로 등록됩니다.
+    <!-- 제목 -->
+    <div class="form-group">
+      <label>제목</label>
+      <input type="text" name="brdTitlNm" value="${notice.brdTitlNm}" required />
     </div>
-  </c:if>
-</form>
 
-<!-- 🧠 건물 자동 선택 스크립트 + 전체 체크 연동 -->
+    <!-- 내용 (Summernote 적용) -->
+    <div class="form-group">
+      <label>내용</label>
+      <textarea id="brdContEditor" name="brdCont" required>${notice.brdCont}</textarea>
+    </div>
+
+    <!-- 버튼 -->
+    <div class="write-buttons">
+      <button type="submit" class="btn-orange">${empty notice.noticeNo ? '등록' : '수정'}</button>
+      <a href="${pageContext.request.contextPath}/resident/notice" class="btn-gray">취소</a>
+    </div>
+
+    <c:if test="${not empty notice.noticeType}">
+      <div style="margin-top: 1rem; padding: 8px; background-color: #f8f9fa; border-left: 4px solid #007bff;">
+        📌 이 공지는 <strong>${codeMap[notice.noticeType]}</strong> 유형입니다.
+      </div>
+    </c:if>
+  </form>
+</div>
+
+<!-- Summernote 초기화 -->
+<script>
+  $(document).ready(function () {
+    $('#brdContEditor').summernote({
+      height: 250,
+      placeholder: '공지사항 내용을 입력하세요...',
+      lang: 'ko-KR'
+    });
+  });
+</script>
+
+<!-- 전체공지 체크 및 유효성 검사 -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const selector = document.getElementById("bldgSelector");
   const checkbox = document.getElementById("isAllNotice");
   const hiddenInput = document.getElementById("bldgIdHidden");
-  const bldgId = localStorage.getItem("selectedBuildingId");
+  const saved = localStorage.getItem("selectedBuildingId");
 
-  if (bldgId && selector && !checkbox.checked) {
-    selector.value = bldgId;
-    hiddenInput.value = bldgId;
+  if (saved && !checkbox.checked) {
+    selector.value = saved;
+    hiddenInput.value = saved;
   }
 
   checkbox.addEventListener("change", () => {
@@ -154,9 +215,9 @@ document.addEventListener('DOMContentLoaded', () => {
       hiddenInput.value = "ALL";
     } else {
       selector.disabled = false;
-      if (bldgId) {
-        selector.value = bldgId;
-        hiddenInput.value = bldgId;
+      if (saved) {
+        selector.value = saved;
+        hiddenInput.value = saved;
       }
     }
   });
@@ -165,34 +226,23 @@ document.addEventListener('DOMContentLoaded', () => {
     hiddenInput.value = selector.value;
   });
 });
-</script>
 
-<script>
 function validateForm() {
   const bldgIdHidden = document.getElementById("bldgIdHidden").value;
-  const noticeTypeRadios = document.getElementsByName("noticeType");
-  let noticeTypeSelected = false;
+  const types = document.getElementsByName("noticeType");
+  let checked = Array.from(types).some(r => r.checked);
 
-  for (let radio of noticeTypeRadios) {
-    if (radio.checked) {
-      noticeTypeSelected = true;
-      break;
-    }
-  }
-
-  if (!bldgIdHidden || bldgIdHidden.trim() === "") {
-    alert("📌 건물을 선택하거나 전체 공지로 체크해야 합니다.");
+  if (!bldgIdHidden) {
+    alert("📌 건물을 선택하거나 전체 공지를 체크하세요.");
     return false;
   }
-
-  if (!noticeTypeSelected) {
+  if (!checked) {
     alert("📌 공지 유형을 선택해 주세요.");
     return false;
   }
-
   return true;
 }
 </script>
-<script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
+
 </body>
 </html>

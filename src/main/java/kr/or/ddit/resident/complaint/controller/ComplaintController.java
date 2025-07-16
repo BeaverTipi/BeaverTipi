@@ -25,7 +25,9 @@ import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.ResidentBoardVO;
 import kr.or.ddit.vo.UnitResidentVO;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequestMapping("/resident/complaint")
 public class ComplaintController {
@@ -50,9 +52,15 @@ public class ComplaintController {
 		        @ModelAttribute("search") SimpleSearch simpleSearch,
 		        @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
 			) { 
-			simpleSearch.setBrdCode("M0001");
-		
 			MemberVO member = principal.getRealUser();
+			simpleSearch.setLoginMbrCd(member.getMbrCd());
+			
+			if (!"Y".equals(simpleSearch.getOpenYn()) && !"N".equals(simpleSearch.getOpenYn())) {
+			    simpleSearch.setOpenYn(null); // 필터링 제거
+			}
+			
+			
+			simpleSearch.setBrdCode("M0001");
 	        List<UnitResidentVO> units = 
 	                unitResidentService.getUnitsByMember(member.getMbrCd());
 	            if(units == null || units.isEmpty()) {
@@ -79,9 +87,9 @@ public class ComplaintController {
 	            int totalCount = complaintService.selectComplaintCount(paramMap);
 	            
 	            // 1-3) 공통코드 (검색폼 드롭다운)
-	            List<CommonCodeVO> openYnList    = codeService.readCommonCodeList("OPEN_YN");
-	            List<CommonCodeVO> reqStatusList = codeService.readCommonCodeList("REQ_STATUS");
-	            model.addAttribute("openYnList",    openYnList);
+	            List<CommonCodeVO> openYnList    = codeService.readCommonCodeList("OPYN");
+	            List<CommonCodeVO> reqStatusList = codeService.readCommonCodeList("PROC");
+	            model.addAttribute("openYnList", openYnList);
 	            model.addAttribute("reqStatusList", reqStatusList);
 	            
 	            pagingInfo.setTotalRecordCount(totalCount);
@@ -103,7 +111,9 @@ public class ComplaintController {
 	            model.addAttribute("unitList",   units);
 	            model.addAttribute("selectedBldgId", selectedBldg);
 	            model.addAttribute("search", simpleSearch);
-
+	            
+	            
+	            log.info("🔍 검색 조건: " , simpleSearch);
 	            return "resident/complaint/ComplaintList";
 	        }
 			@GetMapping("/view")
@@ -115,9 +125,14 @@ public class ComplaintController {
 			  ) {
 			    // (optional) 본인글 체크
 			    ResidentBoardVO vo = complaintService.selectComplaintById(rsdBrdId);
-			    
 			    MemberVO loginMember = principal.getRealUser();
-			    
+			    boolean isMine = vo.getMbrCd().equals(loginMember.getMbrCd());
+			    boolean isPublic = "Y".equals(vo.getOpenYn());
+
+			    if (!isMine && !isPublic) {
+			        return "redirect:/resident/complaint?unauthorized=true"; // 또는 에러 페이지
+			    }
+
 			    model.addAttribute("loginMember", loginMember);
 			    model.addAttribute("complaint", vo);
 			    model.addAttribute("bldgIdParam", bldgIdParam);

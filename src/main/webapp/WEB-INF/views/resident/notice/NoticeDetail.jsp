@@ -3,12 +3,13 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
   <meta charset="UTF-8"/>
   <title>공지사항 상세</title>
-  <link rel="stylesheet" href="<c:url value='/css/style.css'/>"/>
+  <!-- 외부 CSS 파일 로드 -->
   <link rel="stylesheet" href="<c:url value='/css/theme.css'/>"/>
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/resident/common_residentDetail.css" />
 </head>
 <body>
   <div class="container">
@@ -27,28 +28,27 @@
     </div>
 	
     <!-- 권한 기반 수정/삭제 버튼 -->
-  <!-- 권한 체크 -->
-		<c:set var="isAdmin" value="false"/>
-		<c:set var="isAuthor" value="${notice.mbrCd == mbrCd}" />
+    <c:set var="isAdmin" value="false"/>
+    <c:set var="isAuthor" value="${notice.mbrCd == mbrCd}" />
 		
-		<c:forEach var="role" items="${memRoleList}">
-		  <c:if test="${role.userRoleId == 'ADMIN'}">
-		    <c:set var="isAdmin" value="true"/>
-		  </c:if>
-		</c:forEach>
+    <c:forEach var="role" items="${memRoleList}">
+      <c:if test="${role.userRoleId == 'ADMIN'}">
+        <c:set var="isAdmin" value="true"/>
+      </c:if>
+    </c:forEach>
 		
     <c:if test="${isAdmin or isAuthor}">
       <div class="action-buttons">
         <!-- 수정 버튼 -->
         <c:url var="formUrl" value="/resident/notice/form">
-		  <c:param name="noticeNo"     value="${notice.noticeNo}" />
-		  <c:param name="bldgIdParam"  value="${bldgIdParam}"  />
-		  <c:param name="page"         value="${page}"         />
-		  <c:param name="noticeType"   value="${noticeType}"   />
-		  <c:param name="searchType"   value="${searchType}"   />
-		  <c:param name="searchWord"   value="${searchWord}"   />
-		</c:url>
-		<a href="${formUrl}" class="btn btn-primary">수정</a>
+          <c:param name="noticeNo"     value="${notice.noticeNo}" />
+          <c:param name="bldgIdParam"  value="${bldgIdParam}"  />
+          <c:param name="page"         value="${page}"         />
+          <c:param name="noticeType"   value="${noticeType}"   />
+          <c:param name="searchType"   value="${searchType}"   />
+          <c:param name="searchWord"   value="${searchWord}"   />
+        </c:url>
+        <a href="${formUrl}" class="btn btn-primary">수정</a>
 
         <!-- 삭제 버튼 -->
         <form method="post" action="<c:url value='/resident/notice/delete'/>"

@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,11 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.or.ddit.admin.code.service.CommonCodeService;
 import kr.or.ddit.resident.chargebill.dto.ChargeComparisonDto;
@@ -26,8 +24,6 @@ import kr.or.ddit.util.page.SimpleSearch;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.MemberVO;
-import kr.or.ddit.vo.PaymentTosspamentsRawVO;
-import kr.or.ddit.vo.SolutionVO;
 import kr.or.ddit.vo.UnitResidentVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -90,7 +86,12 @@ public class PaymentPayController {
         Map<String, Map<String, Object>> energySummary =
                 paymentService.getEnergyUsageSummary(unitId, currentMonth, previousMonth);
 
-        List<CommonCodeVO> payment = service.readCommonCodeList("PAY");
+        List<CommonCodeVO> payment = service.readCommonCodeList("PAY")
+        	    .stream()
+        	    .collect(Collectors.collectingAndThen(
+        	        Collectors.toMap(CommonCodeVO::getCodeName, c -> c, (a, b) -> a),
+        	        map -> map.values().stream().toList()
+        	    ));
         
         model.addAttribute("payment", payment);
         model.addAttribute("unitList", units);

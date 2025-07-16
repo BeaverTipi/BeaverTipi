@@ -63,9 +63,14 @@
 			<if test="search.brdCode != null and search.brdCode != ''">
 			  AND B.BRD_CODE = #{search.brdCode}
 			</if>
-			<if test="search.openYn != null and search.openYn != ''">
-			  AND R.OPEN_YN  = #{search.openYn}
-			</if>
+			  <choose>
+			    <when test="search.openYn == 'LOGIN_ONLY'">
+			      AND R.MBR_CD = #{search.loginMbrCd}
+			    </when>
+			    <when test="search.openYn != null and search.openYn != ''">
+			      AND R.OPEN_YN = #{search.openYn}
+			    </when>
+			  </choose>
 			<if test="search.reqStatus != null and search.reqStatus != ''">
 			  AND R.REQ_STATUS = #{search.reqStatus}
 			</if>
@@ -115,9 +120,14 @@
 <if test="search.searchEndDate != null and search.searchEndDate != ''">
   AND TO_CHAR(B.BRD_PBLS_DTM, 'YYYY-MM-DD') &lt;= #{search.searchEndDate}
 </if>
-<if test="search.openYn != null and search.openYn != ''">
-  AND R.OPEN_YN  = #{search.openYn}
-</if>
+ <choose>
+  <when test="search.openYn == 'LOGIN_ONLY'">
+    AND R.MBR_CD = #{search.loginMbrCd}
+  </when>
+  <when test="search.openYn != null and search.openYn != ''">
+    AND R.OPEN_YN = #{search.openYn}
+  </when>
+</choose>
 <if test="search.reqStatus != null and search.reqStatus != ''">
   AND R.REQ_STATUS = #{search.reqStatus}
 </if>

@@ -11,7 +11,6 @@
 package kr.or.ddit.resident.complaint.service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.or.ddit.resident.mapper.ComplaintMapper;
-import kr.or.ddit.util.page.PaginationInfo;
-import kr.or.ddit.util.page.SimpleSearch;
 import kr.or.ddit.vo.ResidentBoardVO;
 
 /**
@@ -55,7 +52,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         if (complaint.getOpenYn() == null || complaint.getOpenYn().isBlank()) {
             complaint.setOpenYn("Y");
         }
-        complaint.setReqStatus("PROC");
+        complaint.setReqStatus("001");
 
         // 3) BOARD + RESIDENT_BOARD 동시 INSERT
         mapper.insertComplaintBoard(complaint);

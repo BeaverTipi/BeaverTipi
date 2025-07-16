@@ -451,12 +451,24 @@
           </p>
         </c:if>
       </div>
-        <div class="combined-paybox">
-          <h3>💳 결제 방식</h3>
-          <c:forEach items="${payment}" var="pay">
-          <label><input type="radio" name="payment_method" value="${pay.codeName}" checked>${pay.codeName}</label>
-          </c:forEach>
-        </div>
+       <div class="combined-paybox">
+		  <h3>💳 결제 방식</h3>
+		  <c:forEach items="${payment}" var="pay">
+		    <label>
+		      <input type="radio" name="payment_method" value="${pay.codeName}" checked />
+		      ${pay.codeName}
+		    </label>
+		  </c:forEach>
+		  <!-- ✅ 납부 버튼 추가 -->
+		  <button
+			  type="button"
+			  class="pay-button"
+			  data-name="<fmt:formatDate value='${prevDate}' pattern='yyyy년 MM월 관리비'/>"
+			  data-pay="${totalIntegratedAmount}"
+			>
+			  💰 납부하기
+			</button>
+		</div>
     <div class="info-box">
      <h3>📘 고객 안내사항</h3>
      <ul style="margin:0; padding-left: 18px; font-size: 13px;">
@@ -486,5 +498,7 @@
   </div>
 <script src="https://js.tosspayments.com/v1"></script>
 <script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/building/move-in/residentList.js"></script>
+
 </body>
 </html>

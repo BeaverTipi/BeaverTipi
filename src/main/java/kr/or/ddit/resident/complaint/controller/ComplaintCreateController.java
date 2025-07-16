@@ -2,7 +2,6 @@ package kr.or.ddit.resident.complaint.controller;
 
 import java.util.List;
 
-import org.eclipse.tags.shaded.org.apache.xpath.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -18,6 +17,7 @@ import kr.or.ddit.admin.code.service.CommonCodeService;
 import kr.or.ddit.resident.complaint.service.ComplaintService;
 import kr.or.ddit.resident.unitResident.service.UnitResidentService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.ResidentBoardVO;
 import kr.or.ddit.vo.UnitResidentVO;
@@ -28,7 +28,8 @@ public class ComplaintCreateController {
 
     @Autowired
     private ComplaintService complaintService;
-
+    
+    
     @Autowired
     private CommonCodeService commonCodeService;
 
@@ -58,11 +59,13 @@ public class ComplaintCreateController {
                 ? bldgIdParam
                 : units.get(0).getBldgId();
 
+        List<CommonCodeVO> openYnList    = commonCodeService.readCommonCodeList("OPYN");
+        List<CommonCodeVO> reqStatusList = commonCodeService.readCommonCodeList("PROC");
         // 모델에 공통으로 필요한 데이터
         model.addAttribute("unitList", units);
         model.addAttribute("selectedBldgId", selectedBldg);
-        model.addAttribute("openYnList", commonCodeService.readCommonCodeList("OPEN_YN"));
-        model.addAttribute("reqStatusList", commonCodeService.readCommonCodeList("REQ_STATUS"));
+        model.addAttribute("openYnList", openYnList);
+        model.addAttribute("reqStatusList", reqStatusList);
 
         // 1-3) 수정 vs 등록 분기
         ResidentBoardVO vo;
@@ -99,6 +102,7 @@ public class ComplaintCreateController {
             complaint.setRsdBrdId(nextId);
             complaint.setBrdCode("M0001");
             complaint.setMbrCd(loginMbrCd);
+            complaint.setReqStatus("001");
             complaintService.insertComplaint(complaint);
         }
         // 기존 글 수정
