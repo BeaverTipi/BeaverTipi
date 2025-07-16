@@ -60,14 +60,17 @@
 <c:choose>
 	<c:when test="${param.popup ne 'true'}">
 	<%@include file="/WEB-INF/fragments/mainPageHeader.jsp"%>
-    <%@ include file="/WEB-INF/fragments/mainPageFooter.jsp" %>
 	</c:when>
 </c:choose>
 	<sitemesh:write property="body"/>
 	
 
         </main>
-
+<c:choose>
+	<c:when test="${param.popup ne 'true'}">
+    <%@ include file="/WEB-INF/fragments/mainPageFooter.jsp" %>
+    	</c:when>
+</c:choose>
     <%@ include file="/WEB-INF/fragments/mainPagePostScript.jsp"%>
 </body>
 </html>
