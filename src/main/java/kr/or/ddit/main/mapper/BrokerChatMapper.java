@@ -17,7 +17,7 @@ public interface BrokerChatMapper {
 
 	public int insertChatParticipant(@Param("crId") String crId, @Param("mbrCd") String mbrCd);
 	
-	public List<BrokerChatParticipantVO> selectChatRoomList(String mbrCd);
+	public List<BrokerChatroomVO> selectChatRoomList(String mbrCd);
 	
 	public ListingVO selectListingInfo(String lstgId);
 	
@@ -31,4 +31,9 @@ public interface BrokerChatMapper {
 	public int updateJoinChat(@Param("crId") String crId, @Param("mbrCd") String mbrCd);
 	
 	public boolean selectCheckChatRoom(@Param("lstgId") String lstgId, @Param("inquirerCd") String inquirerCd);
+	
+	public BrokerChatroomVO selectChatInfo(String crId);
+	
+	public BrokerChatroomVO selectChatInfoWithLstg(@Param("lstgId") String lstgId, @Param("inquirerCd") String inquirerCd);
+	
 }

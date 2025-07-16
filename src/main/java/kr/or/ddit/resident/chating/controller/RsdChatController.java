@@ -159,7 +159,7 @@ public class RsdChatController {
 //	참여중인 건물별 채팅 목록 조회
 	@GetMapping("/chat/list")
 	@ResponseBody
-	public List<ChatRoomInVO> getChatRoomList(
+	public List<ResidentChatRoomVO> getChatRoomList(
 	    @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
 	    @RequestParam("bldgId") String bldgId
 	) {

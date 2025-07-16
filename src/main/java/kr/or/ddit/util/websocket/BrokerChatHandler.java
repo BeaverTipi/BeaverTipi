@@ -27,9 +27,24 @@ public class BrokerChatHandler extends TextWebSocketHandler {
     private final List<WebSocketSession> sessionList = new ArrayList<>();
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
-        sessionList.add(session);
-        log.info("✅ 연결: {}", session.getId());
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        //  URI의 queryString 추출
+        String query = session.getUri().getQuery(); // 예: crId=CR000123
+
+        String crId = null;
+
+        //  query가 존재하고 crId 파라미터일 경우 → 값 추출
+        if (query != null && query.startsWith("crId=")) {
+            crId = query.substring("crId=".length());
+        }
+
+        //  crId가 유효한 경우 → 세션 속성에 저장 + 세션 등록
+        if (crId != null) {
+            session.getAttributes().put("crId", crId);
+            sessionList.add(session);
+        } else {
+            session.close(CloseStatus.BAD_DATA);
+        }
     }
 
     @Override
@@ -38,7 +53,10 @@ public class BrokerChatHandler extends TextWebSocketHandler {
         service.createMessage(msg); // 메시지 저장
 
         for (WebSocketSession s : sessionList) {
-            if (s.isOpen()) s.sendMessage(message); // 전송
+            // 현재 메시지를 보낸 사용자와 동일한 세션인지 비교
+            if (!s.getId().equals(session.getId()) && s.isOpen()) {
+                s.sendMessage(message); // 자기 제외한 세션에게만 전송
+            }
         }
     }
 

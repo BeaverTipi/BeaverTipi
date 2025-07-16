@@ -12,7 +12,7 @@ public interface BrokerChatService {
 	public void createChatRoom(BrokerChatroomVO bcVO);
 	
 	
-	public List<BrokerChatParticipantVO> getChatRoomList(String mbrCd);
+	public List<BrokerChatroomVO> getChatRoomList(String mbrCd);
 	
 	public ListingVO getListingInfo(String lstgId);
 	
@@ -25,4 +25,8 @@ public interface BrokerChatService {
 	public int editJoinChat(String crId,String mbrCd);
 	
 	public boolean getCheckChatRoom(String lstgId, String inquirerCd);
+	
+	public BrokerChatroomVO getChatInfo(String crId);
+	
+	public BrokerChatroomVO getChatInfoWithLstg(String lstgId, String inquirerCd);
 }

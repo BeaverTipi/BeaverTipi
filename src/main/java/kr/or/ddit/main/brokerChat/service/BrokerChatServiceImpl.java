@@ -25,7 +25,7 @@ public class BrokerChatServiceImpl implements BrokerChatService {
 	}
 
 	@Override
-	public List<BrokerChatParticipantVO> getChatRoomList(String mbrCd) {
+	public List<BrokerChatroomVO> getChatRoomList(String mbrCd) {
 		
 		return mapper.selectChatRoomList(mbrCd);
 	}
@@ -64,6 +64,18 @@ public class BrokerChatServiceImpl implements BrokerChatService {
 	public boolean getCheckChatRoom(String lstgId, String inquirerCd) {
 		// TODO Auto-generated method stub
 		return mapper.selectCheckChatRoom(lstgId, inquirerCd);
+	}
+
+	@Override
+	public BrokerChatroomVO getChatInfo(String crId) {
+		// TODO Auto-generated method stub
+		return mapper.selectChatInfo(crId);
+	}
+
+	@Override
+	public BrokerChatroomVO getChatInfoWithLstg(String lstgId, String inquirerCd) {
+		// TODO Auto-generated method stub
+		return mapper.selectChatInfoWithLstg(lstgId, inquirerCd);
 	}
 
 

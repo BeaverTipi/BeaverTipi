@@ -1,9 +1,8 @@
-let showingPublic = false;
 const chatRoomStates = [];
 
 document.addEventListener("DOMContentLoaded", () => {
   const createBtn = document.querySelector("#createChatBtn");
-  const toggleBtn = document.querySelector("#togglePublicBtn");
+  const toggleBtn = document.querySelector("#toggleBrokerBtn");
   const buildingSelect = document.querySelector("#buildingSelect");
 
   createBtn?.addEventListener("click", () => {
@@ -11,9 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   toggleBtn?.addEventListener("click", () => {
-    showingPublic = !showingPublic;
     updateToggleButton();
-    loadChatRooms();
+    loadBrokerChatRooms();
   });
 
   buildingSelect?.addEventListener("change", loadChatRooms);
@@ -25,51 +23,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function initializeSocket() {
   try {
-	const socket = new WebSocket("ws://" + location.host + "/ws/chatList");
+    const socket = new WebSocket("ws://" + location.host + "/ws/chatList");
 
-	socket.onmessage = (event) => {
-	  const msg = JSON.parse(event.data);
-	
-	  if (msg.type === "messagePreview") {
-	    const state = chatRoomStates.find(r => r.room.residentChatRoomId === msg.residentChatRoomId);
-	    if (state) {
-	      state.lastMessage = msg.rcmCont || "";
-	      state.rcmTime = msg.rcmTime || "";
-	      state.unitRoom = msg.unitRoom || "";
-	      state.mbrNnm = msg.mbrNnm || "";
-	      sortAndRenderChatRooms();
-	    }
-	  }
-	
-	  // ✅ 새로 추가된 부분
-	  if (msg.type === "newRoom") {
-	    console.log("🆕 새 채팅방 생성됨:", msg);
-	
-	    // chatRoomStates에 새 채팅방 push
-	    chatRoomStates.push({
-	      room: {
-	        residentChatRoomId: msg.residentChatRoomId,
-	        residentChatRoomTitle: msg.residentChatRoomTitle
-	      },
-	      lastMessage: "",
-	      rcmTime: "",
-	      unitRoom: "",
-	      mbrNnm: ""
-	    });
-	
-	    sortAndRenderChatRooms(); // ✅ 목록 다시 렌더링
-	  }
-	};
+    socket.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+
+      if (msg.type === "messagePreview") {
+        const state = chatRoomStates.find(
+          r => r.type === "resident" && r.room.residentChatRoomId === msg.residentChatRoomId
+        );
+        if (state) {
+          state.lastMessage = msg.rcmCont || "";
+          state.rcmTime = msg.rcmTime || "";
+          state.unitRoom = msg.unitRoom || "";
+          state.mbrNnm = msg.mbrNnm || "";
+          sortAndRenderChatRooms();
+        }
+      }
+
+      if (msg.type === "newRoom") {
+        chatRoomStates.push({
+          type: "resident",
+          room: {
+            residentChatRoomId: msg.residentChatRoomId,
+            residentChatRoomTitle: msg.residentChatRoomTitle
+          },
+          lastMessage: "",
+          rcmTime: "",
+          unitRoom: "",
+          mbrNnm: ""
+        });
+        sortAndRenderChatRooms();
+      }
+    };
   } catch (e) {
     console.warn("❌ WebSocket 연결 실패:", e);
   }
 }
 
 function updateToggleButton() {
-  const toggleBtn = document.querySelector("#togglePublicBtn");
-  toggleBtn.innerText = showingPublic
-    ? "👥 참여 중인 채팅방 보기"
-    : "🌐 공개 채팅방 보기";
+  const toggleBtn = document.querySelector("#toggleBrokerBtn");
+  toggleBtn.innerText = "🧑‍💼 중개 채팅방 보기";
 }
 
 function loadBuildingOptions() {
@@ -79,6 +73,11 @@ function loadBuildingOptions() {
       const buildingSelect = document.querySelector("#buildingSelect");
       buildingSelect.innerHTML = "";
 
+      const allOption = document.createElement("option");
+      allOption.value = "ALL";
+      allOption.textContent = "===건물 전체===";
+      buildingSelect.appendChild(allOption);
+
       buildings.forEach(bldg => {
         const option = document.createElement("option");
         option.value = bldg.bldgId;
@@ -86,11 +85,7 @@ function loadBuildingOptions() {
         buildingSelect.appendChild(option);
       });
 
-      if (buildings.length > 0) {
-        loadChatRooms();
-      } else {
-        renderEmptyMessage("입주 중인 건물이 없습니다.");
-      }
+      loadChatRooms();
     })
     .catch(err => {
       console.error("건물 목록 로딩 실패:", err);
@@ -114,25 +109,9 @@ function loadChatRooms() {
         fetch(`/resident/chat/lastMessage?residentChatRoomId=${room.residentChatRoomId}`)
           .then(res => res.text())
           .then(text => {
-            if (!text.trim()) {
-              return {
-                room,
-                lastMessage: "",
-                rcmTime: "",
-                unitRoom: "",
-                mbrNnm: ""
-              };
-            }
-
-            const msg = JSON.parse(text);
-            
-            console.log("메시지 응답 : ", {
-				title: room.residentChatRoomTitle,
-				rcmTime: msg.rcmTime,
-				parsedTime: new Date(msg.rcmTime).getTime()
-			});
-			
+            const msg = text.trim() ? JSON.parse(text) : {};
             return {
+              type: "resident",
               room,
               lastMessage: msg.rcmCont || "",
               rcmTime: msg.rcmTime || "",
@@ -140,33 +119,51 @@ function loadChatRooms() {
               mbrNnm: msg.mbrNnm || ""
             };
           })
-          .catch(err => {
-            console.warn("❌ 메시지 fetch 실패:", err);
-            return {
-              room,
-              lastMessage: "",
-              rcmTime: "",
-              unitRoom: "",
-              mbrNnm: ""
-            };
-          })
+          .catch(() => ({
+            type: "resident",
+            room,
+            lastMessage: "",
+            rcmTime: "",
+            unitRoom: "",
+            mbrNnm: ""
+          }))
       );
 
       Promise.all(fetches).then(results => {
-        const sorted = results.sort((a, b) => {
-          const timeA = a.rcmTime ? new Date(a.rcmTime).getTime() : 0;
-          const timeB = b.rcmTime ? new Date(b.rcmTime).getTime() : 0;
-          return timeB - timeA;
-        });
-
         chatRoomStates.length = 0;
-        sorted.forEach(r => chatRoomStates.push(r));
+        results.forEach(r => chatRoomStates.push(r));
         sortAndRenderChatRooms();
       });
     })
     .catch(err => {
       console.error("채팅방 목록 로딩 실패:", err);
       renderEmptyMessage("채팅방 목록을 불러오지 못했습니다.");
+    });
+}
+
+function loadBrokerChatRooms() {
+  fetch("/broker/chat/list")
+    .then(res => res.json())
+    .then(chatRooms => {
+      const results = chatRooms.map(room => ({
+        type: "broker",
+        room: {
+          brokerChatRoomId: room.crId,
+          brokerChatRoomTitle: room.crTitle
+        },
+        lastMessage: "",
+        rcmTime: "",
+        unitRoom: "",
+        mbrNnm: ""
+      }));
+
+      chatRoomStates.length = 0;
+      results.forEach(r => chatRoomStates.push(r));
+      sortAndRenderChatRooms();
+    })
+    .catch(err => {
+      console.error("❌ 중개 채팅방 로딩 실패:", err);
+      renderEmptyMessage("중개 채팅방을 불러오지 못했습니다.");
     });
 }
 
@@ -180,23 +177,27 @@ function sortAndRenderChatRooms() {
     return timeB - timeA;
   });
 
-  sorted.forEach(({ room, lastMessage, unitRoom, mbrNnm }) => {
-    const hasMessage = lastMessage?.trim();
-    const previewText = hasMessage
+  sorted.forEach(({ type, room, lastMessage, unitRoom, mbrNnm }) => {
+    const previewText = lastMessage?.trim()
       ? `${unitRoom} ${mbrNnm} : ${lastMessage}`
       : "최근 메시지가 없습니다.";
 
     const item = document.createElement("div");
     item.className = "chat-room-item";
-    item.dataset.roomId = room.residentChatRoomId;
+    item.dataset.roomId = type === "resident"
+      ? room.residentChatRoomId
+      : room.brokerChatRoomId;
 
     item.innerHTML = `
-      <div class="chat-room-name">${room.residentChatRoomTitle}</div>
-      <div class="chat-room-last-message">${previewText}</div>
+      <div class="chat-room-name">${type === "resident" ? room.residentChatRoomTitle : room.brokerChatRoomTitle}</div>
+      <div class="chat-room-last-message">${type === "resident" ? previewText : "중개 채팅방"}</div>
     `;
 
     item.addEventListener("dblclick", () => {
-      const popupUrl = `/resident/chat/room?residentChatRoomId=${room.residentChatRoomId}&popup=true`;
+      const popupUrl = type === "resident"
+        ? `/resident/chat/room?residentChatRoomId=${room.residentChatRoomId}&popup=true`
+        : `/broker/chat/room?crId=${room.brokerChatRoomId}&popup=true`;
+
       window.open(popupUrl, "chatRoomPopup", "width=450,height=600,scrollbars=yes");
     });
 

@@ -13,7 +13,7 @@ import kr.or.ddit.vo.UnitResidentVO;
 
 public interface RsdChatServcie {
 	
-	public List<ChatRoomInVO> getBuildingChatList(String mbrCd, String bldgId);
+	public List<ResidentChatRoomVO> getBuildingChatList(String mbrCd, String bldgId);
 
 	public void createChatRoom(		
 			ResidentChatRoomVO crVO,

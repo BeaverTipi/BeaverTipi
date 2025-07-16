@@ -20,11 +20,11 @@ public interface RsdChatMapper {
 	
 	public List<BuildingVO> selectResidentBuildingList(String mbrCd);
 	
-	public List<ChatRoomInVO> selectBuildingChatList(
+	public List<ResidentChatRoomVO> selectBuildingChatList(
 			@Param("mbrCd") String mbrCd,
 			@Param("bldgId") String bldgId
 			);
-	
+
 	public int insertChatRoom(ResidentChatRoomVO rsdChatRoomVO);
 	
 	public List<UnitResidentVO> selectResidentList(UnitResidentVO uriVO); 

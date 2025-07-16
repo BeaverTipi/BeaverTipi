@@ -62,7 +62,7 @@ public class RsdChatServiceImpl implements RsdChatServcie {
     // 👇 이하 기존 메서드는 그대로 유지
 
     @Override
-    public List<ChatRoomInVO> getBuildingChatList(String mbrCd, String bldgId) {
+    public List<ResidentChatRoomVO> getBuildingChatList(String mbrCd, String bldgId) {
         return mapper.selectBuildingChatList(mbrCd, bldgId);
     }
 
@@ -122,6 +122,7 @@ public class RsdChatServiceImpl implements RsdChatServcie {
 	public LastMessageDTO getLastMessage(String residentChatRoomId) {
 		return mapper.selectLastMessage(residentChatRoomId);
 	}
+
 
 
 }

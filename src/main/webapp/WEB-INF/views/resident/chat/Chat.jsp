@@ -130,14 +130,13 @@
       <div class="building-select-area">
         <label for="buildingSelect" class="visually-hidden">건물 선택</label>
         <select id="buildingSelect" name="selectedBldgId">
-
         </select>
       </div>
 
 
-      <div class="chat-toggle-section">
-        <button id="togglePublicBtn" class="chat-btn">🌐 공개 채팅방 보기</button>
-      </div>
+		<div class="chat-toggle-section">
+		  <button id="toggleBrokerBtn" class="chat-btn">🧑‍💼 중개 채팅방 보기</button>
+		</div>
     </div>
 
 

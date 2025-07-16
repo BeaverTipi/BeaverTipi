@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.main.mapper.BrokerChatMapper">
-	<resultMap type ="ChatMessageVO" id="chatMessageMap">
+	<resultMap type ="ChatMessageVO" id="chatMessageMap" autoMapping="true">
 		<id property="cmId" column="CM_ID"/>
-		
 		<association property="member" javaType ="MemberVO">
 		<result property = "mbrNnm" column ="MBR_NNM"/>
 		</association>
-	
 	</resultMap>
 	
 	
@@ -33,14 +31,15 @@
 	
 	<insert id="insertChatParticipant">
 	INSERT INTO BROKER_CHAT_PARTICIPANT(CR_ID,MBR_CD)
-	VALUES (#{crId},#{mbrCd});
+	VALUES (#{crId},#{mbrCd})
 	
 	</insert>
 	
 	
-	<select id="selectChatRoomList" resultType = "BrokerChatParticipantVO">
-	SELECT *
-	FROM BROKER_CHAT_PARTICIPANT
+	<select id="selectChatRoomList" resultType = "BrokerChatroomVO">
+	SELECT A.*
+	FROM BROKER_CHATROOM A
+	INNER JOIN BROKER_CHAT_PARTICIPANT B ON (A.CR_ID = B.CR_ID)
 	WHERE MBR_CD = #{mbrCd}
 	AND BCP_STATUS = 'JOIN'
 		
@@ -53,7 +52,7 @@
 	</select>
 
 	<select id="selectMessages" resultMap = "chatMessageMap">
-	SELECT A.*, COALESCE(B.MBR_NNM,B.MBR_NM) AS MBR_NNM
+	SELECT A.*,COALESCE(B.MBR_NNM,B.MBR_NM) AS MBR_NNM
 	FROM CHAT_MESSAGE A
 	INNER JOIN MEMBER B ON (A.MBR_CD = B.MBR_CD)
 	WHERE CR_ID = #{crId}
@@ -79,16 +78,16 @@
 	
 	<update id="updateLeaveChat" parameterType="string">
 	UPDATE BROKER_CHAT_PARTICIPANT
-	SET BCP_STATUS = 'LEAVE'
-	AND BCP_LEAVED_AT = SYSDATE
+	SET BCP_STATUS = 'LEAVE',
+	    BCP_LEAVED_AT = SYSDATE
 	WHERE CR_ID = #{crId}
 	and MBR_CD = #{mbrCd}	
 	</update>
 	
 	<update id="updateJoinChat" parameterType="string">
 	UPDATE BROKER_CHAT_PARTICIPANT
-	SET BCP_STATUS = 'JOIN'
-	AND BCP_LEAVED_AT = SYSDATE
+	SET BCP_STATUS = 'JOIN',
+	    BCP_LEAVED_AT = NULL
 	WHERE CR_ID = #{crId}
 	and MBR_CD = #{mbrCd}	
 	</update>
@@ -96,6 +95,25 @@
 	<select id="selectCheckChatRoom" resultType ="boolean">
 	SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END AS EXISTS_FLAG
 	FROM BROKER_CHATROOM
-	WHERE INQUIRER_CD = #{inquirerCd} AND LSTG_ID = #{lstgId};	
+	WHERE INQUIRER_CD = #{inquirerCd} AND LSTG_ID = #{lstgId}
 	</select>
+	
+	<select id="selectChatInfo" resultType ="BrokerChatroomVO">
+	SELECT *
+	FROM BROKER_CHATROOM
+	WHERE CR_ID = #{crId}
+	</select>
+	
+	
+	<select id="selectChatInfoWithLstg" resultType ="BrokerChatroomVO">
+	SELECT *
+	FROM BROKER_CHATROOM
+	WHERE INQUIRER_CD=#{inquirerCd}
+	AND LSTG_ID = #{lstgId}
+	</select>
+	
+	
+	
+	
+	
 </mapper>
