@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="kr.or.ddit.admin.mapper.BusinessAdsController">
+<mapper namespace="kr.or.ddit.admin.mapper.BusinessAdsMapper">
 
     <resultMap type="kr.or.ddit.vo.BoardVO" id="BusinessAdsMap">
         <id property="brdNo" column="BRD_NO"/>
@@ -30,7 +30,7 @@
             A_PAGING.MBR_CD,
             A_PAGING.BRD_PBLS_DTM,
             A_PAGING.BRD_VW_CNT,
-            A_PAGING.ADS_ID,
+            A_PAGING.ADS_ID,	
             A_PAGING.ADS_BRD_NO,
             A_PAGING.ADS_STATUS_CODE,
             A_PAGING.ADS_BP,
@@ -57,7 +57,7 @@
 	            ,A.ADS_REQ_PBLS_END_DT
 	        FROM
 	            BOARD B
-	        LEFT JOIN
+	        INNER JOIN
 	            ADS A ON B.BRD_NO = A.BRD_NO
 	        WHERE
 	            1=1
@@ -90,7 +90,7 @@
             COUNT(*)
         FROM
             BOARD B
-        LEFT JOIN
+        INNER JOIN
             ADS A ON B.BRD_NO = A.BRD_NO
         WHERE
             1=1
@@ -115,5 +115,27 @@
                 </if>
             </if>
     </select>
-
+	<select id="selectBusinessAdsDetail" parameterType="String" resultMap="BusinessAdsMap">
+        SELECT
+            B.BRD_NO
+            ,B.BRD_TITL_NM
+            ,B.BRD_CONT
+            ,B.MBR_CD
+            ,B.BRD_PBLS_DTM
+            ,B.BRD_VW_CNT
+            ,A.ADS_ID
+            ,A.BRD_NO AS ADS_BRD_NO
+            ,A.ADS_STATUS_CODE
+            ,A.ADS_BP
+            ,A.ADS_PIC
+            ,A.ADS_PIC_TELNO
+            ,A.ADS_REQ_PBLS_START_DT
+            ,A.ADS_REQ_PBLS_END_DT
+        FROM
+            BOARD B
+        INNER JOIN
+            ADS A ON B.BRD_NO = A.BRD_NO
+        WHERE
+            B.BRD_NO = #{brdNo}
+    </select>
 </mapper>

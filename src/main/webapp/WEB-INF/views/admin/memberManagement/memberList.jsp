@@ -180,7 +180,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="updateMemberStatusBtn">상태 변경</button>
+                <button type="button" class="btn btn-primary" id="updateMemberStatusBtn">저장</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
             </div>
         </div>

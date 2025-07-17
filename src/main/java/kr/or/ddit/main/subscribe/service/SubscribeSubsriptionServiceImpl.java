@@ -59,7 +59,7 @@ public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionServ
 		MultipartFile file = broker.getBrokFile();
 		if (file != null || file.isEmpty()) {
 			try {
-				service.uploadAndSave(file, "broker", "BROKER", broker.getMbrCd(), "001");
+				service.uploadAndSave(file, "broker", "BROKER", broker.getMbrCd(), file.getContentType());
 			} catch (FileIOException e) {
 				e.printStackTrace();
 				return;

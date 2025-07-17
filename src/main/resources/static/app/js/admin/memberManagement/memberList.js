@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     const resetButton = document.getElementById('resetBtn'); 
-    const searchBtn = document.getElementById('searchBtn'); // 검색 버튼 참조
+    const searchBtn = document.getElementById('searchBtn');
     const searchForm = document.getElementById('searchForm');
     
-    // 🔍 검색 필드 요소 참조
+    // 검색 필드 요소 참조
     const userRoleIdSelect = document.querySelector('[name="userRoleId"]'); 
     const mbrIdInput = document.querySelector('[name="mbrId"]'); 
     const mbrFrstRegDtFrom = document.querySelector('[name="mbrFrstRegDtFrom"]');
@@ -15,16 +15,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const currentPageNoInput = document.getElementById('currentPageNoInput'); 
 
-const closeButtons = document.querySelectorAll('[data-dismiss="modal"]');
-    closeButtons.forEach(button => {
-        button.addEventListener('click', function(event) {
-            console.log('닫기 버튼 클릭됨!', this);
-            console.log('클릭된 버튼의 data-dismiss 값:', this.getAttribute('data-dismiss'));
-            // event.stopPropagation(); // 이 줄을 주석 처리하여 이벤트 버블링 확인
+	const closeButtons = document.querySelectorAll('[data-dismiss="modal"]');
+	    closeButtons.forEach(button => {
+	        button.addEventListener('click', function(event) {
+	            console.log('닫기 버튼 클릭됨!', this);
+	            console.log('클릭된 버튼의 data-dismiss 값:', this.getAttribute('data-dismiss'));
         });
     });
 
-    // --- 페이징 처리 함수 ---
+    // 페이징 처리 함수
     window.fnPaging = function(pageNo) {
         if (currentPageNoInput) {
             currentPageNoInput.value = pageNo; 
@@ -32,7 +31,7 @@ const closeButtons = document.querySelectorAll('[data-dismiss="modal"]');
         searchForm.submit(); 
     };
 
-    // --- 초기화 버튼 클릭 이벤트 ---
+    // 초기화 버튼 클릭 이벤트
     if (resetButton) {
         resetButton.addEventListener('click', function(event) {
             // 모든 검색 필드 값 초기화
@@ -123,8 +122,18 @@ const closeButtons = document.querySelectorAll('[data-dismiss="modal"]');
             alert('회원 정보가 불완전합니다.');
             return;
         }
+        
+        const statusDisplayNames = {
+            'ACTIVE': '정상',
+            'INACTIVE': '비활성',
+            'SUSPENDED': '정지',
+            'WITHDRAWN': '탈퇴'
+        };
+        
+    	const displayStatus = statusDisplayNames[newMbrStatusCode] || newMbrStatusCode; // 매핑된 이름이 없으면 원본 코드 사용
 
-        if (confirm(`회원 ${mbrCd}의 상태를 '${newMbrStatusCode}'(으)로 변경하시겠습니까?`)) {
+
+        if (confirm(`회원 ${mbrCd}의 상태를 '${displayStatus}'(으)로 변경하시겠습니까?`)) {	// 한글로 바꿔줄려고 newMbrStatusCode말고 displayStatus 사용
             axios.post('/admin/member/updateStatusFromDetail', null, {
                 params: {
                     mbrCd: mbrCd,
