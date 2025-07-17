@@ -53,7 +53,7 @@ public class DefaultIdSequenceResetJob implements Job {
     private String sequenceList;
 
     // Java 기본 Logger
-    private static final Logger log = Logger.getLogger(ListingIdSequenceResetJob.class.getName());
+    private static final Logger log = Logger.getLogger(DefaultIdSequenceResetJob.class.getName());
 
     @Override
     public void execute(JobExecutionContext context) {

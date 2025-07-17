@@ -14,7 +14,7 @@
 package kr.or.ddit.util.batch;
 
 import kr.or.ddit.util.batch.idseq.ContractIdSequenceResetJob;
-import kr.or.ddit.util.batch.idseq.ListingIdSequenceResetJob;
+import kr.or.ddit.util.batch.idseq.DefaultIdSequenceResetJob;
 import org.quartz.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,18 +34,18 @@ import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties
 public class QuartzSchedulerConfig {
 
     @Bean
-    public JobDetail listingIdResetJobDetail() {
-        return JobBuilder.newJob(ListingIdSequenceResetJob.class)
-                .withIdentity("listingIdResetJob")
+    public JobDetail defaultIdResetJobDetail() {
+        return JobBuilder.newJob(DefaultIdSequenceResetJob.class)
+                .withIdentity("defaultIdResetJob")
                 .storeDurably()
                 .build();
     }
 
     @Bean
-    public Trigger listingIdResetTrigger(JobDetail listingIdResetJobDetail) {
+    public Trigger defaultIdResetTrigger(JobDetail defaultIdResetJobDetail) {
         return TriggerBuilder.newTrigger()
-                .forJob(listingIdResetJobDetail)
-                .withIdentity("listingIdResetTrigger")
+                .forJob(defaultIdResetJobDetail)
+                .withIdentity("defaultIdResetTrigger")
                 .withSchedule(
                     CronScheduleBuilder.cronSchedule("0 0 0 1 * ?")
                         .withMisfireHandlingInstructionFireAndProceed()  // 서버 구동 시 지나간 작업 체크
