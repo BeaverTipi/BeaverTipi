@@ -31,6 +31,12 @@ public class BusinessAdsController {
 	        @ModelAttribute("detailSearch") BoardVO detailSearch,
 	        Model model
 	) {
+		// detailSearch.getAdsClient()가 null일 수 있으므로 초기화 필요
+		if (detailSearch.getAdsClient() == null) {
+			detailSearch.setAdsClient(new kr.or.ddit.vo.AdsClientVO()); //AdsClientVO 객체 초기화
+		}
+		
+		
 		PaginationInfo<BoardVO> pagingVO = new PaginationInfo<>();
         pagingVO.setCurrentPageNo(currentPage);
         pagingVO.setDetailSearch(detailSearch);
@@ -53,7 +59,7 @@ public class BusinessAdsController {
 	    return "admin/businessAds/businessAdsList";
 	}
 
-	// ⭐ 모달용 상세 정보 조회 메서드 - 더미 데이터 제거 ⭐
+	// 모달용 상세 정보 조회 메서드
 	@GetMapping(value = "adsDetailModal.do", produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public BoardVO selectBusinessAdsDetailForModal(@RequestParam("brdNo") String brdNo) {

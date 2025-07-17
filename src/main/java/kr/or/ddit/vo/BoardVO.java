@@ -81,14 +81,6 @@ public class BoardVO implements Serializable{
     }
     
     private AdsClientVO adsClient;	// BoardVO에 AdsClientVO 객체를 포함시켜주는 필드
-    
-    // 광고 검색 조건을 위한 필드
-    private String searchAdsTitle;		// 광고 제목 검색
-    private String searchAdsWriter;
-    private String searchAdsStatusCode; // 광고 상태 코드 검색
-    private String searchAdsBp;         // 사업장명(회사명) 검색
-    private String searchAdsPic;        // 담당자명 검색
-    private String searchAdsPicTelno;   // 담당자 연락처 검색
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate adsReqPblsStartDtFrom; // 광고 요청 게재 시작날짜 From

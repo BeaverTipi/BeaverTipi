@@ -51,8 +51,6 @@ public class ManageMemberListController {
     ) {
         log.info("회원 목록 조회 요청. 현재 페이지: {}, 검색 조건: {}", page, search);
 
-        // ⭐⭐ 컨트롤러에서 날짜 조정 로직 없음. MemberSearchVO의 헬퍼 메서드 사용 ⭐⭐
-
         PaginationInfo<MemberSearchVO> paging = new PaginationInfo<>();
         paging.setCurrentPageNo(page);
         paging.setDetailSearch(search);
@@ -84,7 +82,6 @@ public class ManageMemberListController {
      * @return MemberVO 객체를 JSON 형태로 반환
      */
     @GetMapping("/member/detail/{mbrCd}")
-    @PreAuthorize("hasRole('ADMIN')") // 관리자 권한 필요
     @ResponseBody // JSON 응답을 위해 @ResponseBody 추가
     public ResponseEntity<MemberVO> getMemberDetail(@PathVariable String mbrCd) {
         log.info("회원 상세 조회 요청. MBR_CD: {}", mbrCd);
@@ -92,10 +89,10 @@ public class ManageMemberListController {
 
         if (member != null) {
             log.info("회원 상세 정보 조회 성공: {}", member.getMbrId());
-            return ResponseEntity.ok(member); // 200 OK와 함께 회원 정보 반환
+            return ResponseEntity.ok(member); // 200
         } else {
             log.warn("회원 상세 정보 없음. MBR_CD: {}", mbrCd);
-            return ResponseEntity.notFound().build(); // 404 Not Found 반환
+            return ResponseEntity.notFound().build(); // 404
         }
     }
 
@@ -107,7 +104,6 @@ public class ManageMemberListController {
      * @return "SUCCESS" 또는 "FAIL" 문자열 반환
      */
     @PostMapping("/member/updateStatusFromDetail")
-    @PreAuthorize("hasRole('ADMIN')") // 관리자 권한 필요
     @ResponseBody // JSON 또는 문자열 응답을 위해 @ResponseBody 추가
     public ResponseEntity<String> updateMemberStatusFromDetail(
             @RequestParam("mbrCd") String mbrCd,
