@@ -20,7 +20,7 @@ document.addEventListener("click", async (e) => {
     return;
   }
 
-  const popup = window.open("width=500,height=600,scrollbars=yes,resizable=yes");
+	const popup = window.open("", "brokerChatPopup", "width=500,height=600,scrollbars=yes,resizable=yes");
 
   try {
     const res = await fetch("/broker/chat/create", {

@@ -18,9 +18,11 @@ import kr.or.ddit.vo.BrokerChatroomVO;
 import kr.or.ddit.vo.ChatMessageVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.MemberVO;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequestMapping("/broker/chat")
+@Slf4j
 public class BrokerChatController {
 
     @Autowired
@@ -44,9 +46,9 @@ public class BrokerChatController {
 
         String crId;
         if (service.getCheckChatRoom(lstgId, mbrCd)) {
-            service.editJoinChat(lstgId, mbrCd);
-            service.editJoinChat(lstgId, bcVO.getSellerCd());
-            crId = service.getChatInfoWithLstg(lstgId, mbrCd).getCrId();
+        	crId = service.getChatInfoWithLstg(lstgId, mbrCd).getCrId();
+            service.editJoinChat(crId, mbrCd);
+            service.editJoinChat(crId, bcVO.getSellerCd());
             List<ChatMessageVO> messages = service.getMessages(crId);
             model.addAttribute("messages", messages);
         } else {
