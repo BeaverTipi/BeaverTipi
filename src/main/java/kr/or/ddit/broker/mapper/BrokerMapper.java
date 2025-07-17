@@ -7,6 +7,7 @@
  * 2025. 7. 9.     			김찬영          최초 생성
  * 2025. 7. 11.     		김찬영          패키지 고침.
  * 2025. 7. 15.				김찬영			insert계약
+ * 2025. 7. 17.				김찬영			계약등록 완료^0^
  * </pre>
  */
 package kr.or.ddit.broker.mapper;
@@ -63,6 +64,12 @@ public interface BrokerMapper {
 	 * @return 성공: 1, 실패: 0
 	 */
 	public int insertProceedingContract(ContractVO contract);
+	
+	/**
+	 * @param lstgId: 방금 계약 등록한 매물을 비활성화 상태로 변경하기 위한 식별자
+	 * @return 성공: 1, 실패: 0
+	 */
+	public int updateListingProdStat(String lstgId);
 	
 	public List<CommonCodeVO> selectBankList();
 	public List<CommonCodeVO> selectLesserTypeList();

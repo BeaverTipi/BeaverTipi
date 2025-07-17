@@ -4,8 +4,9 @@
  *   
  *   수정일      			수정자           수정내용
  *  -----------   	-------------    ---------------------------
- * 2025. 7. 9.     			김찬영            최초 생성
- * 2025. 7. 11.     		김찬영            패키지 고침.
+ * 2025. 7. 9.     			김찬영          최초 생성
+ * 2025. 7. 11.     		김찬영          패키지 고침.
+ * 2025. 7. 17.				김찬영			계약등록 프로세스 완료^0^
  *
  * </pre>
  */
@@ -14,6 +15,7 @@ package kr.or.ddit.broker.service.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.broker.mapper.BrokerMapper;
@@ -73,10 +75,30 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 		return contractList;
 	}
 	
+	/**
+	 * @return 계약ID를 돌려줘서 그걸로 계약파일 이름을 짓는 게 낫지 않나
+	 */
 	@Override
-	public String createProceedingContract() {
-		String contractId = "";
-		return contractId;
+	public String createProceedingContract(ContractVO contract) {
+		int rec = mapper.insertProceedingContract(contract);
+		if(rec == 0) return "failed";
+		return contract.getContId();
+	};
+	
+	/**
+	 * @param contId: 방금 계약 등록된 매물의 상태 비활성화로 변경
+	 * @return
+	 */
+	public String modifyListingProdStat(String contId) {
+		int rec = mapper.updateListingProdStat(contId);
+		if(rec == 1) return "SUCCESS";
+		else return "FAILED";
+	}
+
+	@Override
+	public ResponseEntity<?> processOfCreatingContract() {
+		// TODO 컨트롤러 다이어트 들어가야지...
+		return null;
 	};
 
 }

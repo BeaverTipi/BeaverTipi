@@ -1,24 +1,3 @@
-
-package kr.or.ddit.util.batch;
-
-/** 
- * <pre>
- * << 개정이력(Modification Information) >>
- *   
- *   수정일      			수정자           수정내용
- *  -----------   	-------------    ---------------------------
- * 2025. 7. 9.     			김찬영            최초 생성
- *
- * </pre>
- */
-
-import kr.or.ddit.util.batch.idseq.ListingIdSequenceResetJob;
-import org.quartz.*;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
-
 /** 
  * <pre>
  * << 개정이력(Modification Information) >>
@@ -30,6 +9,25 @@ import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties
  * </pre>
  * 
  * - listingIdResetJob을 Quartz를 이용해 매월 1일 자정에 실행.
+ */
+
+package kr.or.ddit.util.batch;
+
+import kr.or.ddit.util.batch.idseq.ContractIdSequenceResetJob;
+import kr.or.ddit.util.batch.idseq.ListingIdSequenceResetJob;
+import org.quartz.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
+
+/**
+ * 
+ * @author developer_KCY
+ * @since
+ * @see
+ *
+ *
  */
 @EnableEncryptableProperties
 @Configuration
@@ -54,4 +52,25 @@ public class QuartzSchedulerConfig {
                 )
                 .build();
     }
+    
+    @Bean
+    public JobDetail contractIdResetJobDetail() {
+        return JobBuilder.newJob(ContractIdSequenceResetJob.class)
+                .withIdentity("contractIdResetJob")
+                .storeDurably()
+                .build();
+    }
+
+    @Bean
+    public Trigger contractIdResetTrigger(JobDetail contractIdResetJobDetail) {
+        return TriggerBuilder.newTrigger()
+                .forJob(contractIdResetJobDetail)
+                .withIdentity("contractIdResetTrigger")
+                .withSchedule(
+                    CronScheduleBuilder.cronSchedule("0 0 0 * * ?") // 매일 자정
+                        .withMisfireHandlingInstructionFireAndProceed()
+                )
+                .build();
+    }
+
 }

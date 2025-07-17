@@ -42,4 +42,5 @@ public class BrokerAuthUnpackingService implements HandlerInterceptor {
 	public BrokerVO getRealUser(Principal principal) {
 		return mapper.selectBrokerByUsername(principal.getName());
 	}
+	
 }

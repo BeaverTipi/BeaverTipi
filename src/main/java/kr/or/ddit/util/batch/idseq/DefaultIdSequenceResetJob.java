@@ -1,3 +1,18 @@
+/** 
+ * <pre>
+ * << 개정이력(Modification Information) >>
+ *   
+ *   수정일      			수정자           수정내용
+ *  -----------   	-------------    ---------------------------
+ * 2025. 7. 9.     			김찬영          최초 생성
+ * 2025. 7. 17.				김찬영			클래스명 변경 (Listing... -> Default)
+ *
+ * </pre>
+ * 
+ * Quartz 스케줄링 Job
+ * - application.properties에 등록된 시퀀스 목록을 RESTART START WITH 1로 초기화.
+ * - 시퀀스 리셋 결과는 SEQ_RESET_LOG 테이블에 기록.
+ */
 package kr.or.ddit.util.batch.idseq;
 
 import java.sql.Connection;
@@ -17,23 +32,17 @@ import org.springframework.stereotype.Component;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 
-/** 
- * <pre>
- * << 개정이력(Modification Information) >>
- *   
- *   수정일      			수정자           수정내용
- *  -----------   	-------------    ---------------------------
- * 2025. 7. 9.     			김찬영            최초 생성
- *
- * </pre>
+/**
  * 
- * Quartz 스케줄링 Job
- * - application.properties에 등록된 시퀀스 목록을 RESTART START WITH 1로 초기화.
- * - 시퀀스 리셋 결과는 SEQ_RESET_LOG 테이블에 기록.
+ * @author developer_KCY
+ * @since
+ * @see
+ *
+ *
  */
 @EnableEncryptableProperties
 @Component
-public class ListingIdSequenceResetJob implements Job {
+public class DefaultIdSequenceResetJob implements Job {
 
     // Oracle DB와 연결하기 위한 Spring DataSource 자동 주입
     @Autowired

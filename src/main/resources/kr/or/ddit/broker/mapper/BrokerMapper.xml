@@ -16,7 +16,8 @@
 	<result property="facOptTypeCd" column="FAC_OPT_TYPE_CD" />
 	<result property="facOptNm" column="FAC_OPT_NM" />
 	<result property="facOptDesc" column="FAC_OPT_DESC" />
-	<result property="facTypeGroupCd" column="FAC_TYPE_GROUP_CD" />
+	<result property="facTypeCcCd" column="FAC_TYPE_CC_CD" />
+	<result property="facTypeGrpCd" column="FAC_TYPE_GRP_CD" />
 </resultMap>
 
 <!-- Tenancy 정보 매핑 -->
@@ -84,7 +85,8 @@
 		<result property="facOptTypeCd"   column="FAC_OPT_TYPE_CD" />
 		<result property="facOptNm" 	  column="FAC_OPT_NM" />
 		<result property="facOptDesc" 	  column="FAC_OPT_DESC" />
-		<result property="facTypeGroupCd" column="FAC_TYPE_GROUP_CD" />
+		<result property="facTypeCcCd" column="FAC_TYPE_CC_CD" />
+		<result property="facTypeGrpCd" column="FAC_TYPE_GRP_CD" />
 	</collection>
 </resultMap>
 <sql id="selectLstgList">
@@ -144,20 +146,43 @@
 	  FROM CONTRACT
 	 WHERE MBR_CD = #{mbrCd}
 </select>
+
 <insert id="insertProceedingContract" parameterType="ContractVO">
-	INSERT INTO CONTRACT
+    <selectKey resultType="string" keyProperty="contId" order="BEFORE">
+        SELECT 'CN' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(seq_contr_id.NEXTVAL, 3, '0') FROM dual
+    </selectKey>
+	INSERT INTO CONTRACT(
+		CONT_ID
+		, MBR_CD
+		, MBR_CD_BROK
+		, LSTG_ID
+		, CONT_TYPE_CODE
+		, CONT_DEPOSIT
+		, CONT_TAX_AMOUNT
+		, CONT_AMOUNT
+		, CONT_STAT_CD
+		, CONT_DTM
+		, CONT_TYPE_GROUP_CD
+		, CONT_STAT_GROUP_CD
+	)
 	VALUES(
-	    'CN' || TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(seq_contr_id.NEXTVAL, 3, '0')
+		#{contId}
 	    , #{mbrCd}
 	    , #{mbrCdBrok}
 	    , #{lstgId}
 	    , #{contTypeCode}
 	    , #{contDeposit}
 	    , #{contTaxAmount}
+	    , #{contAmount}
 	    , #{contStatCd}
 	    , SYSDATE
-	    , #{contTypeGroupCd}
+	    , 'TRDST'
 	    , 'CONTR'
 	)
 </insert>
+<update id="updateListingProdStat" parameterType="String">
+	UPDATE LISTING
+	   SET LSTG_PROD_STAT = '002'
+	 WHERE LSTG_ID = #{lstgId}
+</update>
 </mapper>

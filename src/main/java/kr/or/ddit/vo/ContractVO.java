@@ -26,4 +26,5 @@ public class ContractVO implements Serializable{
 	private Long contAmount;
 	private String contStatCd;
 	private String contDtm;
+	private String contStatGroupCd;
 }
