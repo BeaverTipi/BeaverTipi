@@ -249,7 +249,7 @@ window.showDetailModal = function(data) {
 	    </div>
 		
 		<div class="detail-actions">
-			<button id="inquiryBtn" data-lstg-id=${data.lstgId}>문의하기</button> 
+			<button id="inquiryBtn" data-lstg-id=${data.LSTG_ID || data.lstgId}>문의하기</button> 
 			<img id="heartIcon"
 		     src="/volt/assets/img/heart-svgrepo-com.svg"
 		     data-active="false"
