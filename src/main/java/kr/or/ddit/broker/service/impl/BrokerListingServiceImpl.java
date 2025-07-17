@@ -36,8 +36,8 @@ public class BrokerListingServiceImpl implements BrokerListingService{
 		return lstgList;
 	}
 	
-	public ListingVO readLstgDetails(Map<String, String> param) {
-		ListingVO lstg = mapper.selectLstgDetails(param);
+	public ListingVO readLstgDetails(ListingVO listing) {
+		ListingVO lstg = mapper.selectLstgDetails(listing);
 		return lstg;
 	}
 	

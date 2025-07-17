@@ -63,90 +63,116 @@
 
       <c:if test="${not empty solutionSubscriptionList}">
         <div class="subscription-card-wrapper">
-  <c:forEach var="subscription" items="${solutionSubscriptionList}">
-    <div class="subscription-card">
-  <div class="subscription-header">
-    <h5 class="subscription-title">${subscription.solution.solName}</h5>
-  </div>
- <table class="subscription-table">
-  <tbody>
-<tr>
-  <th>승인 여부</th>
-  <td>
-    <c:choose>
-      <c:when test="${subscription.solution.solCcCd eq '001'}">
-        <span class="${member.tenancy.authApprlYn eq 'Y' ? 'text-success' 
-                      : (member.tenancy.authApprYn eq 'N' ? 'text-danger' : 'text-muted')}">
-          <c:choose>
-            <c:when test="${member.tenancy.authApprYn eq 'Y'}">승인</c:when>
-            <c:when test="${member.tenancy.authApprYn eq 'N'}">승인 거절</c:when>
-            <c:when test="${member.tenancy.authApprYn eq 'W'}">승인 대기</c:when>
-            <c:otherwise>확인 불가</c:otherwise>
-          </c:choose>
-        </span>
-      </c:when>
-
-      <c:when test="${subscription.solution.solCcCd eq '002'}">
-        <span class="${member.broker.authApprYn eq 'Y' ? 'text-success' 
-                      : (member.broker.authApprYn eq 'N' ? 'text-danger' : 'text-muted')}">
-          <c:choose>
-            <c:when test="${member.broker.authApprYn eq 'Y'}">승인</c:when>
-            <c:when test="${member.broker.authApprYn eq 'N'}">승인 거절</c:when>
-            <c:when test="${member.broker.authApprYn eq 'W'}">승인 대기</c:when>
-            <c:otherwise>확인 불가</c:otherwise>
-          </c:choose>
-        </span>
-      </c:when>
-
-      <c:otherwise>
-        <span class="text-muted">해당 없음</span>
-      </c:otherwise>
-    </c:choose>
-  </td>
-</tr>
-
-      <th>솔루션 활성 상태</th>
-      <td>
-        <c:choose>
-          <c:when test="${subscription.subsStatus eq '001'}"><span class="text-success">사용 가능</span></c:when>
-          <c:when test="${subscription.subsStatus eq '002'}"><span class="text-muted">일시 정지</span></c:when>
-          <c:when test="${subscription.subsStatus eq '003'}"><span class="text-muted">취소</span></c:when>
-          <c:otherwise><span class="text-danger">사용 불가</span></c:otherwise>
-        </c:choose>
-      </td>
-    </tr>
-
-<tr>
-  <th>결제 금액</th>
-  <td>
-    <div class="payment-row">
-      ${subscription.solution.solPrice} 원
-      <c:choose>
-        <c:when test="${subscription.subsApprovalYn eq 'Y' and subscription.subsStatus ne '001'}">
-          <form action="${pageContext.request.contextPath}/payment/solution" method="post" class="inline-payment-form">
-            <input type="hidden" name="solId" value="${subscription.solution.solId}" />
-            <button type="submit" class="btn btn-primary btn-sm">결제하기</button>
-          </form>
-        </c:when>
-        <c:otherwise>
-          <div class="empty-button-space"></div> <%-- 버튼 없는 경우에도 동일한 높이 확보 --%>
-        </c:otherwise>
-      </c:choose>
-    </div>
-  </td>
-</tr>
-
-
-
-
-  </tbody>
-</table>
-
-</div>
-
-  </c:forEach>
-</div>
-
+          <c:forEach var="subscription" items="${solutionSubscriptionList}">
+            <div class="subscription-card">
+              <div class="subscription-header">
+                <h5 class="subscription-title">${subscription.solution.solName}</h5>
+              </div>
+              <table class="subscription-table">
+                <tbody>
+                  <tr>
+                    <th>승인 여부</th>
+                    <td>
+                      <c:choose>
+                        <c:when test="${subscription.solution.solCcCd eq '001'}">
+                          <span class="${member.tenancy.authApprYn eq 'Y' ? 'text-success' : (member.tenancy.authApprYn eq 'N' ? 'text-danger' : 'text-muted')}">
+                            <c:choose>
+                              <c:when test="${member.tenancy.authApprYn eq 'Y'}">승인</c:when>
+                              <c:when test="${member.tenancy.authApprYn eq 'N'}">승인 거절</c:when>
+                              <c:when test="${member.tenancy.authApprYn eq 'W'}">승인 대기</c:when>
+                              <c:otherwise>확인 불가</c:otherwise>
+                            </c:choose>
+                          </span>
+                        </c:when>
+                        <c:when test="${subscription.solution.solCcCd eq '002'}">
+                          <span class="${member.broker.authApprYn eq 'Y' ? 'text-success' : (member.broker.authApprYn eq 'N' ? 'text-danger' : 'text-muted')}">
+                            <c:choose>
+                              <c:when test="${member.broker.authApprYn eq 'Y'}">승인</c:when>
+                              <c:when test="${member.broker.authApprYn eq 'N'}">승인 거절</c:when>
+                              <c:when test="${member.broker.authApprYn eq 'W'}">승인 대기</c:when>
+                              <c:otherwise>확인 불가</c:otherwise>
+                            </c:choose>
+                          </span>
+                        </c:when>
+                        <c:otherwise>
+                          <span class="text-muted">해당 없음</span>
+                        </c:otherwise>
+                      </c:choose>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>솔루션 활성 상태</th>
+                    <td>
+                      <c:choose>
+                        <c:when test="${subscription.subsStatus eq '001'}"><span class="text-success">사용 가능</span></c:when>
+                        <c:when test="${subscription.subsStatus eq '002'}"><span class="text-muted">일시 정지</span></c:when>
+                        <c:when test="${subscription.subsStatus eq '003'}"><span class="text-muted">취소</span></c:when>
+                        <c:when test="${subscription.subsStatus eq '004'}"><span class="text-muted">결제 대기</span></c:when>
+                        <c:otherwise><span class="text-danger">사용 불가</span></c:otherwise>
+                      </c:choose>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>결제 금액</th>
+                    <td>
+                      <c:choose>
+                        <c:when test="${member.tenancy.authApprYn eq 'Y' and subscription.subsStatus ne '001'}">
+                          <c:choose>
+                            <c:when test="${subscription.solution.solCcCd eq '001'}">
+                              <c:url var="payActionUrl" value="/payment/bussiness/tenancy" />
+                              <c:set var="userType" value="tenancy"/>
+                            </c:when>
+                            <c:when test="${subscription.solution.solCcCd eq '002'}">
+                              <c:url var="payActionUrl" value="/payment/bussiness/broker" />
+                              <c:set var="userType" value="broker"/>
+                            </c:when>
+                            <c:otherwise>
+                              <c:url var="payActionUrl" value="/payment/bussiness" />
+                              <c:set var="userType" value="unknown"/>
+                            </c:otherwise>
+                          </c:choose>
+                          <div class="payment-row">
+                            ${subscription.solution.solPrice} 원
+                            <form action="${payActionUrl}" method="get" style="display: inline;">
+                              <button type="submit" class="btn btn-primary btn-sm">결제</button>
+                            </form>
+                          </div>
+                        </c:when>
+                        <c:when test="${(member.broker.authApprYn eq 'Y' or member.tenancy.authApprYn eq 'Y') and subscription.subsStatus eq '001'}">
+                          <c:choose>
+                            <c:when test="${subscription.solution.solCcCd eq '001'}">
+                              <c:url var="payActionUrl" value="/payment/bussiness/tenancy" />
+                            </c:when>
+                            <c:when test="${subscription.solution.solCcCd eq '002'}">
+                              <c:url var="payActionUrl" value="/payment/bussiness/broker" />
+                            </c:when>
+                            <c:otherwise>
+                              <c:url var="payActionUrl" value="/payment/bussiness" />
+                            </c:otherwise>
+                          </c:choose>
+                          <div class="inline-payment-form">
+                            ${subscription.solution.solPrice} 원
+                            <form action="${payActionUrl}" method="get" style="display: inline;">
+                              <input type="hidden" name="solId" value="${subscription.subsId}" />
+                              <button type="submit" class="btn btn-primary btn-sm">구독 변경</button>
+                            </form>
+                            <form action="${pageContext.request.contextPath}/subscription/cancel" method="post" style="display: inline;">
+                              <input type="hidden" name="solId" value="${subscription.solution.solId}" />
+                              <button type="submit" class="btn btn-outline-danger btn-sm">구독 취소</button>
+                            </form>
+                          </div>
+                        </c:when>
+                        <c:otherwise>
+                          <div class="text-muted">결제 불가</div>
+                        </c:otherwise>
+                      </c:choose>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </c:forEach>
+        </div>
       </c:if>
 
       <c:if test="${not empty member.broker or not empty member.tenancy}">
@@ -186,7 +212,6 @@
       </c:if>
     </div>
   </div>
-
   <script src="${pageContext.request.contextPath}/app/js/main/member/memberPage.js"></script>
 </body>
 </html>

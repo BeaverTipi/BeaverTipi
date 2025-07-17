@@ -20,6 +20,21 @@ function openTab(tabId) {
   if (button) button.classList.add('active');
   if (content) content.classList.add('active');
 }
+function openPaymentModal(userType) {
+  const url = `/payment/business/${userType}?popup=true`; // 'broker' 또는 'tenancy'
+
+  fetch(url)
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("paymentModalContent").innerHTML = html;
+      const modal = new bootstrap.Modal(document.getElementById("paymentModal"));
+      modal.show();
+    })
+    .catch(err => {
+      console.error(err);
+      Swal.fire("오류", "결제창을 불러올 수 없습니다.", "error");
+    });
+}
 
 // 페이지 로딩 시 defaultTab 자동 열기
 document.addEventListener("DOMContentLoaded", function () {

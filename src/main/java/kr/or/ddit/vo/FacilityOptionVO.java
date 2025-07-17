@@ -20,5 +20,6 @@ public class FacilityOptionVO implements Serializable {
 	private String facOptTypeCd;
 	private String facOptNm;
 	private String facOptDesc;
-	private String facTypeGroupCd;
+	private String facTypeGrpCd;
+	private String facTypeCcCd;
 }

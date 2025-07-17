@@ -27,5 +27,5 @@ public interface BrokerListingService {
 	 */
 	public List<ListingVO> readLstgList(String mbrCd);
 	
-	public ListingVO readLstgDetails(Map<String, String> param);
+	public ListingVO readLstgDetails(ListingVO listing);
 }

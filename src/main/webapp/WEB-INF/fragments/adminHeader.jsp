@@ -42,7 +42,7 @@
 			<c:choose>
 				<c:when test="${not empty notifications}">
 					<c:forEach var="notification" items="${notifications}" varStatus="staus">
-						<a href="/notification/read/${notifId}" class="list-group-item list-group-item-action border-bottom">
+						<a href="/notification/read/${notification.notifId}" class="list-group-item list-group-item-action border-bottom">
 							<div class="row align-items-center">
 								<div class="col-auto">
 									<img src="${pageContext.request.contextPath}/volt/assets/img/team/profile-picture-1.jpg" class="avatar-md rounded" alt="알림">

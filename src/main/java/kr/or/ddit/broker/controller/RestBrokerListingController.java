@@ -13,16 +13,23 @@ package kr.or.ddit.broker.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
 import kr.or.ddit.broker.service.BrokerListingService;
+import kr.or.ddit.util.crypto.AES256Util;
 import kr.or.ddit.vo.ListingVO;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -31,13 +38,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/rest/broker/myoffice/lstg")
+@RequiredArgsConstructor
 public class RestBrokerListingController {
 
-	@Autowired
-	BrokerListingService service;
-	
-	@Autowired
-	BrokerAuthUnpackingService authUnpack;
+	private final BrokerListingService  service;
+	private final BrokerAuthUnpackingService authUnpack;
+	private final ObjectMapper mapper;
+	private final AES256Util aes256Util;
 	
 	@GetMapping("/list")
 	public List<ListingVO> lstgList(
@@ -53,22 +60,45 @@ public class RestBrokerListingController {
 		return lstgList;
 	}
 	
-	@GetMapping("/listing-details")
-	public ListingVO lstgDetails(
+	@PostMapping("/listing-details")
+	public Map<String, String> lstgDetails(
 			Principal principal,
-			@RequestBody String lstgId
+			@RequestBody Map<String, String> payload
 	) {
-		
+		String iv = payload.get("iv");
+		String encrypted = payload.get("encrypted");
+		if (encrypted == null) throw new IllegalArgumentException("암호화된 요청 없음");
+
+		String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
+
+		Map<String, String> parsedRequest;
+		try {
+			parsedRequest = mapper.readValue(decryptedJson, new TypeReference<>() {});
+		} catch (Exception e) {
+			throw new RuntimeException("요청 JSON 파싱 실패", e);
+		}
+		String lstgId = parsedRequest.get("lstgId");
+		if (lstgId == null) throw new IllegalArgumentException("lstgId 누락");
+
+
 		String username = principal.getName();
 		log.error("Handler::lstgDetails() -> username: {}", username);
-		@SuppressWarnings("unused")
 		String mbrCd = authUnpack.getMbrCd(username);
-		
-//		Map<String, String> lstgDetailsParams = Map.of("mbrCd", mbrCd, "lstgId", lstgId);
-//		ListingPackVO lstgDetails = service.readLstgDetails(lstgDetailsParams);
-		
-		
-		log.error("{}", lstgId);
-		return null;
+
+		if (lstgId == null) throw new IllegalArgumentException("lstgId 누락");
+
+		ListingVO listing = new ListingVO();
+		listing.setLstgId(lstgId);
+		listing.setMbrCd(mbrCd);
+
+		ListingVO lstgDetails = service.readLstgDetails(listing);
+
+		try {
+			String resultJson = mapper.writeValueAsString(lstgDetails);
+			Map<String, String> encryptedResponse = aes256Util.encryptWithDynamicIV(resultJson);
+			return encryptedResponse;
+		} catch (Exception e) {
+			throw new RuntimeException("응답 암호화 실패", e);
+		}
 	}
 }

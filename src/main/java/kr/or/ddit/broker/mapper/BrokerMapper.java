@@ -49,7 +49,7 @@ public interface BrokerMapper {
 	 * @param lstgId
 	 * @return 한 매물에 대한 상세정보 (중개인 본인이 올린 경우에만 조회)
 	 */
-	public ListingVO selectLstgDetails(Map<String, String> param);
+	public ListingVO selectLstgDetails(ListingVO listing);
 	public List<ListingWishlistVO> selectWishlistForLessee(String lstgId);
 	
 	/**
