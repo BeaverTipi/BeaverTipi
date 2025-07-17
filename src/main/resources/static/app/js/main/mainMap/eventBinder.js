@@ -269,41 +269,68 @@ window.setDefaultFilterValues = function() {
 	});
 }
 
-const contextPath = document.body.getAttribute('data-context-path') || '';
+function refreshDetailModal(lstgId) {
+	fetch(`/map/api/detail?lstgId=${lstgId}`)
+		.then(res => res.json())
+		.then(detailData => {
+			if (Array.isArray(detailData) && detailData.length > 0) {
+				const data = detailData[0];
+				showDetailModal(data);       // 모달 다시 열기
+				setupHeartClickEvent(data);  // ✅ 하트 상태 및 이벤트 적용
+			}
+		});
+}
 
-window.setupHeartClickEvent = function() {
+window.setupHeartClickEvent = function(data) {
 	const heartIcon = document.getElementById("heartIcon");
-	const inquiryBtn = document.getElementById("inquiryBtn");
+	if (!heartIcon) return;
 
-	if (!heartIcon || !inquiryBtn) return;
+	// 🟢 상태 반영
+	const isWishlisted = data.IS_WISHLISTED === 1 || data.IS_WISHLISTED === '1' || data.isWishlisted === true;
+	heartIcon.dataset.active = isWishlisted ? "true" : "false";
+	heartIcon.src = isWishlisted
+		? "/volt/assets/img/heart-filled.svg"
+		: "/volt/assets/img/heart-svgrepo-com.svg";
 
-	heartIcon.addEventListener("click", () => {
-		const lstgId = inquiryBtn.dataset.lstgId;
+	// 🟢 기존 이벤트 제거 후 새로 등록
+	const clonedHeartIcon = heartIcon.cloneNode(true);
+	heartIcon.parentNode.replaceChild(clonedHeartIcon, heartIcon);
+	const newHeartIcon = document.getElementById("heartIcon");
+
+	newHeartIcon.addEventListener("click", () => {
+		const lstgId = newHeartIcon.dataset.lstgId;
 		const mbrCd = window.loggedInUserId;
 
-		if (!mbrCd) {
+		if (!mbrCd || mbrCd === "null" || mbrCd === "") {
 			alert("로그인이 필요합니다.");
 			return;
 		}
 
-		fetch(`/map/api/wishlist/toggle?lstgId=${lstgId}&mbrCd=${mbrCd}`, {
-			method: "POST"
+		fetch("/map/api/wishlist/toggle", {
+			method: "POST",
+			headers: { "Content-Type": "application/x-www-form-urlencoded" },
+			body: `lstgId=${encodeURIComponent(lstgId)}`
 		})
-			.then(res => res.json())
-			.then(newCount => {
-				document.getElementById("wishlist-count-text").textContent =
-					`${newCount}명이 찜했어요!`;
-
-				const isActive = heartIcon.dataset.active === "true";
-				heartIcon.dataset.active = String(!isActive);
-				heartIcon.src = isActive
-					? "/volt/assets/img/heart-svgrepo-com.svg"
-					: "/volt/assets/img/heart-filled.svg";
+			.then(res => {
+				if (!res.ok) throw new Error("서버 오류");
+				return res.json();
 			})
-			.catch(err => console.error("찜 처리 중 오류:", err));
+			.then(count => {
+				const nowActive = newHeartIcon.dataset.active === "true";
+				newHeartIcon.dataset.active = !nowActive ? "true" : "false";
+				newHeartIcon.src = !nowActive
+					? "/volt/assets/img/heart-filled.svg"
+					: "/volt/assets/img/heart-svgrepo-com.svg";
+
+				const countText = document.getElementById("wishlist-count-text");
+				if (countText) countText.innerText = `${count}명이 관심을 가지고 있습니다.`;
+
+				// 🟡 최신 상태로 다시 렌더링
+				refreshDetailModal(lstgId);
+			})
+			.catch(console.error);
 	});
 };
-
 
 let galleryImages = [];
 let currentIndex = 0;

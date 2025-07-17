@@ -37,6 +37,6 @@ public interface KakaoMapDataMapper {
 	public List<FacilityOptionVO> selectFacilityOptionsByListingId(@Param("lstgId") String lstgId);
 	public int insertWishList(ListingWishlistVO vo);
 	public int deleteWishList(ListingWishlistVO vo);
-	public boolean isWishlisted(@Param("lstgId") String lstgId, @Param("mbrCd") String mbrCd);
+	public boolean isWishlisted(ListingWishlistVO vo);
 	public int countWishListByLstgId(@Param("lstgId") String lstgId);
 }

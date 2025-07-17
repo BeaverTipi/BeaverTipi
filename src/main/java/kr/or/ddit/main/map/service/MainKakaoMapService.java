@@ -28,10 +28,10 @@ public interface MainKakaoMapService {
 			Integer minFloor, Integer maxFloor, // 층수 범위
 			Double minArea, Double maxArea // 면적 범위
 	);
-	public List<Map<String, Object>> selectListingDetailList(String lstgId, @Param("mbrCd") String mbrCd);
+	public List<Map<String, Object>> selectListingDetailList(String lstgId, String mbrCd);
 	public List<FacilityOptionVO> selectFacilityOptionsByListingId(String lstgId);
 	public int insertWishList(ListingWishlistVO vo);
 	public int deleteWishList(ListingWishlistVO vo);
-	public boolean isWishlisted(@Param("lstgId") String lstgId, @Param("mbrCd") String mbrCd);
+	public boolean isWishlisted(ListingWishlistVO vo);
 	public int countWishListByLstgId(@Param("lstgId") String lstgId);
 }

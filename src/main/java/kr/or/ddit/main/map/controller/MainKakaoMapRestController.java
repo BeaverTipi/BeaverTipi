@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.or.ddit.main.map.service.MainKakaoMapService;
+import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
+import kr.or.ddit.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -55,29 +58,35 @@ public class MainKakaoMapRestController {
 
 	
 	@GetMapping("/detail")
-	public ResponseEntity<?> getListingDetalList(
-			@RequestParam("lstgId") String lstgId,
-			@RequestParam(value = "mbrCd", required = false) String mbrCd
+	public ResponseEntity<Map<String, Object>> getDetailInfo(
+	    @RequestParam String lstgId,
+	    @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
 	) {
-		List<Map<String, Object>> detailList = service.selectListingDetailList(lstgId, mbrCd);
+	    String mbrCd = (principal != null && principal.getRealUser() != null)
+	        ? principal.getRealUser().getMbrCd()
+	        : null;
 
-		if (detailList == null || detailList.isEmpty()) {
-			return ResponseEntity.noContent().build();
-		}
+	    List<Map<String, Object>> detailList = service.selectListingDetailList(lstgId, mbrCd);
+	    if (detailList.isEmpty()) {
+	        return ResponseEntity.notFound().build();
+	    }
 
-		// Map 변수 선언
-		Map<String, Object> result = detailList.get(0);
-
-		// 옵션 추가
-		result.put("facilityOptions", service.selectFacilityOptionsByListingId(lstgId));
-
-		return ResponseEntity.ok(result);
+	    return ResponseEntity.ok(detailList.get(0)); // 반드시 get(0) 반환해야 JS에서 map 처리 가능
 	}
+
+
+
 	
 	@PostMapping("/wishlist/toggle")
 	public ResponseEntity<Integer> toggleWishlist(
 	        @RequestParam String lstgId,
-	        @RequestParam String mbrCd) {
+	        @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
+
+	    if (principal == null || principal.getRealUser() == null) {
+	        return ResponseEntity.status(401).build(); // 로그인 필요
+	    }
+
+	    String mbrCd = principal.getRealUser().getMbrCd();
 
 	    ListingWishlistVO vo = new ListingWishlistVO();
 	    vo.setLstgId(lstgId);
@@ -90,7 +99,5 @@ public class MainKakaoMapRestController {
 
 	    return ResponseEntity.ok(service.countWishListByLstgId(lstgId));
 	}
-
-
 	
 }

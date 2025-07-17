@@ -3,7 +3,6 @@ package kr.or.ddit.main.map.service;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.main.mapper.KakaoMapDataMapper;
@@ -60,8 +59,8 @@ public class MainKakaoMapServiceImpl implements MainKakaoMapService {
 	}
 
 	@Override
-	public boolean isWishlisted(String lstgId, String mbrCd) {
-		return kakaoMapDataMapper.isWishlisted(lstgId, mbrCd);
+	public boolean isWishlisted(ListingWishlistVO vo) {
+		return kakaoMapDataMapper.isWishlisted(vo);
 	}
 
 	@Override

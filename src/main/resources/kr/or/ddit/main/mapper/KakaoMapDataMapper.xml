@@ -42,16 +42,23 @@
 	    LI.LSTG_TYPE_CODE2,
 	    LI.LSTG_POSTAL,
 	    <choose>
-	      <when test="mbrCd != null and mbrCd != ''">
-	        (SELECT COUNT(*)
-	         FROM LISTING_WISHLIST W
-	         WHERE W.LSTG_ID = LI.LSTG_ID 
-	         AND W.MBR_CD = #{mbrCd}) AS wishCount
-	      </when>
-	      <otherwise>
-	        0 AS wishCount
-	      </otherwise>
-	    </choose>
+		  <when test="mbrCd != null and mbrCd != ''">
+		    CASE 
+		      WHEN EXISTS (
+		        SELECT 1 
+		        FROM LISTING_WISHLIST W 
+		        WHERE W.LSTG_ID = LI.LSTG_ID 
+		        AND W.MBR_CD = #{mbrCd}
+		      ) THEN 1 ELSE 0 
+		    END AS isWishlisted
+		  </when>
+		  <otherwise>
+		    0 AS isWishlisted
+		  </otherwise>
+		</choose>,
+		(SELECT COUNT(*) 
+		 FROM LISTING_WISHLIST W2 
+		 WHERE W2.LSTG_ID = LI.LSTG_ID) AS wishCount
 	  FROM 
 	    LISTING LI
 	    LEFT OUTER JOIN FILES F ON F.FILE_SOURCE_REF = 'LISTING'
@@ -122,9 +129,20 @@
 	    <if test="maxArea != null">
 	      AND LI.LSTG_GR_AREA &lt;= #{maxArea}
 	    </if>
+	    
+	    ORDER BY
+		    CASE 
+		      WHEN #{mbrCd} IS NOT NULL AND #{mbrCd} != '' AND EXISTS (
+		        SELECT 1 
+		        FROM LISTING_WISHLIST W 
+		        WHERE W.LSTG_ID = LI.LSTG_ID 
+		        AND W.MBR_CD = #{mbrCd}
+		      ) THEN 1 ELSE 0
+		    END DESC,
+		    LI.LSTG_ID DESC
 </select>
 
-<select id="selectListingDetailList" resultType="map" parameterType="string">
+<select id="selectListingDetailList" resultType="map">
 	SELECT
 		LI.LSTG_ID, 
 		LI.MBR_CD, 
@@ -150,28 +168,16 @@
 		B.BROK_NM,
 		B.REPR_NM,
 		B.REPR_TEL_NO,
-		<choose>
-			<when test="mbrCd != null and mbrCd != ''">
-				CASE 
-					WHEN EXISTS (
-						SELECT 1 
-						FROM LISTING_WISHLIST W
-						WHERE W.LSTG_ID = LI.LSTG_ID
-						  AND W.MBR_CD = #{mbrCd}
-					)
-					THEN 1 ELSE 0 
-				END AS IS_WISHLISTED
-			</when>
-			<otherwise>
-				0 AS IS_WISHLISTED
-			</otherwise>
-		</choose>
-	FROM
-		LISTING LI
+		CASE 
+			WHEN W.MBR_CD IS NOT NULL THEN 1
+		ELSE 0
+			END AS IS_WISHLISTED
+		FROM LISTING LI
 		LEFT JOIN BROKER B ON B.MBR_CD = LI.MBR_CD
-	WHERE
-		LI.LSTG_ID = #{lstgId}
-  		AND LI.LSTG_DEL = 'N'
+		LEFT JOIN LISTING_WISHLIST W ON W.LSTG_ID = LI.LSTG_ID AND W.MBR_CD = #{mbrCd}
+		WHERE 
+			LI.LSTG_ID = #{lstgId}
+		  	AND LI.LSTG_DEL = 'N'
 </select>
 
 <select id="selectFacilityOptionsByListingId" resultType="kr.or.ddit.vo.FacilityOptionVO">
@@ -214,7 +220,7 @@
 	WHERE LSTG_ID = #{lstgId}
 </select>
 
-<select id="isWishlisted" resultType="boolean">
+<select id="isWishlisted" parameterType="kr.or.ddit.vo.ListingWishlistVO" resultType="boolean">
 	SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
 	FROM LISTING_WISHLIST
 	WHERE LSTG_ID = #{lstgId}

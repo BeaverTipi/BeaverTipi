@@ -52,11 +52,16 @@ window.renderListPage = function(data, map, page = 1, perPage = 5) {
 
 		div.addEventListener('click', () => {
 			map.panTo(position);
+			openDetailModal(item.lstgId);
+		});
+
+		/*div.addEventListener('click', () => {
+			map.panTo(position);
 			const mbrCdParam = window.loggedInUserId || '';
 			fetch(`/map/api/detail?lstgId=${item.lstgId}&mbrCd=${encodeURIComponent(mbrCdParam)}`)
 				.then(res => res.json())
 				.then(detail => showDetailModal(detail));
-		});
+		});*/
 
 		listContainer.appendChild(div); showDetailModal
 	});
@@ -135,11 +140,23 @@ window.renderListPage = function(data, map, page = 1, perPage = 5) {
 	}
 };
 
+window.openDetailModal = function(lstgId) {
+	const mbrCd = window.loggedInUserId || '';
+	const url = `/map/api/detail?lstgId=${lstgId}&mbrCd=${encodeURIComponent(mbrCd)}`;
+	
+	fetch(url)
+		.then(res => res.json())
+		.then(data => {
+			showDetailModal(data);
+		});
+};
+
+
 window.showDetailModal = function(data) {
 	const modal = document.getElementById('side-detail-modal');
 	const body = document.getElementById('sideModalBody');
 	modal.classList.add('active');
-
+	
 	const getDealType = (code) => ({
 		'001': '전세',
 		'002': '월세',
@@ -215,6 +232,12 @@ window.showDetailModal = function(data) {
 		  </ul>
 		</div>
 	
+	    <!-- 시설 옵션 -->
+	    <div class="option-section">
+	      <h4>시설 옵션</h4>
+	      ${renderFacilityOptions(data.facilityOptions)}
+	    </div>
+	    
 	    <!-- 중개사 정보 -->
 	    <div class="broker-section">
 	      <h4>중개사 정보</h4>
@@ -224,17 +247,13 @@ window.showDetailModal = function(data) {
 	        <li><strong>연락처:</strong> ${data.REPR_TEL_NO || '-'}</li>
 	      </ul>
 	    </div>
-	
-	    <!-- 시설 옵션 -->
-	    <div class="option-section">
-	      <h4>시설 옵션</h4>
-	      ${renderFacilityOptions(data.facilityOptions)}
-	    </div>
 		
 		<div class="detail-actions">
 			<button id="inquiryBtn" data-lstg-id=${data.lstgId}>문의하기</button> 
-			<img id="heartIcon" src="/volt/assets/img/heart-svgrepo-com.svg"
-			data-active="false" style="cursor: pointer;"/>
+			<img id="heartIcon"
+		     src="/volt/assets/img/heart-svgrepo-com.svg"
+		     data-active="false"
+		     data-lstg-id="${data.LSTG_ID || data.lstgId}" />
 		</div>
 		<div id="wishlist-count-text"></div>
 	</div>
@@ -252,17 +271,12 @@ window.showDetailModal = function(data) {
 	 </div>
 	`;
 
-	const heartIcon = document.getElementById("heartIcon");
-	if (heartIcon) {
-		heartIcon.dataset.active = data.isWishlisted ? 'true' : 'false';
-		heartIcon.src = data.isWishlisted
-			? "/volt/assets/img/heart-filled.svg"
-			: "/volt/assets/img/heart-svgrepo-com.svg";
-	}
-
 	setupGalleryViewer();
+
+	setupHeartClickEvent(data);
 	
-	setupHeartClickEvent();
+	console.log('받은 상세 데이터:', data);
+	console.log('찜 여부 판단 결과:', isWishlisted);
 
 };
 
