@@ -126,9 +126,12 @@ public class ComplaintController {
 			    // (optional) 본인글 체크
 			    ResidentBoardVO vo = complaintService.selectComplaintById(rsdBrdId);
 			    MemberVO loginMember = principal.getRealUser();
+			    
 			    boolean isMine = vo.getMbrCd().equals(loginMember.getMbrCd());
 			    boolean isPublic = "Y".equals(vo.getOpenYn());
-
+			    
+//			    boolean isLandlord = complaintService.selectComplaintById(rsdBrdId);
+			    
 			    if (!isMine && !isPublic) {
 			        return "redirect:/resident/complaint?unauthorized=true"; // 또는 에러 페이지
 			    }

@@ -94,4 +94,10 @@ public class ComplaintServiceImpl implements ComplaintService {
 		return mapper.selectComplaintList(param);
 	}
 
+	@Override
+	public boolean isLandlordOfBuilding(String mbrCd, String bldgId) {
+		
+		return mapper.countLandlordByMemberAndBuilding(mbrCd, bldgId)>0;
+	}
+
 }

@@ -4,6 +4,7 @@
 	namespace="kr.or.ddit.resident.mapper.ResidentBoardMapper">
 	<resultMap type="ResidentBoardVO" id="residentBoardMap" autoMapping="true" >
 		<result column="mbr_nnm" property="mbrNnm"/>
+		<result column="bldg_nm" property="bldgNm"/>
 	</resultMap>
 <sql id="searchCondition">
   <where>
@@ -70,9 +71,10 @@
 
 	<!-- 단건 조회 -->
 	<select id="selectBoardById" parameterType="ResidentBoardVO" resultMap="residentBoardMap">
-	  SELECT rb.*, m.mbr_nnm
+	  SELECT rb.*, m.mbr_nnm, b.bldg_nm
 	  FROM resident_board rb
 	  JOIN member m ON rb.mbr_cd = m.mbr_cd
+	  JOIN building b ON rb.bldg_id = b.bldg_id
 	  WHERE rb.rsd_brd_id = #{rsdBrdId}
 	</select>
 

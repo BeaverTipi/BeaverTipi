@@ -236,5 +236,15 @@
        SET RSD_BRD_DEL_YN = 'Y'
      WHERE RSD_BRD_ID      = #{rsdBrdId}
   </update>
+  
+  <select id="countLandlordByMemberAndBuilding" resultType="int">
+	  SELECT COUNT(*) 
+	  FROM TENANCY
+	  WHERE MBR_CD = #{mbrCd}
+	    AND BLDG_ID = #{bldgId}
+	    AND TENANCY_TYPE = 'LANDLORD'
+	</select>
+  
+  
 
 </mapper>

@@ -26,13 +26,13 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px dashed #bbb;
+      border-bottom: 2px dashed #E17100;
       padding-bottom: 10px;
     }
     .page-title h1 {
       font-size: 22px;
       margin: 0;
-      color: #007bff;
+      color: #E17100;
     }
     .page-title p {
       font-size: 13px;
@@ -58,7 +58,7 @@
 }
     .giro-notice-card {
   background: #fff;
-  border: 2px dashed #999;
+  border: 2px dashed #E17100;
   border-radius: 6px;
   padding: 20px;
   height: 100%; /* ✅ 추가 */
@@ -68,7 +68,7 @@
   justify-content: space-between; /* 필요시 콘텐츠 배치 보정 */
 }
     .giro-notice-card h4 {
-      color: #007bff;
+      color: #E17100;
       margin-top: 0;
     }
     .energy-summary {
@@ -76,7 +76,7 @@
       padding: 12px;
       font-size: 13px;
       background: #fdfdfd;
-      border: 1px dashed #ccc;
+      border: 1px dashed #E17100;
       border-radius: 6px;
     }
     .energy-summary .energy-row {
@@ -84,14 +84,14 @@
   flex-direction: column;
   margin-bottom: 10px;
   padding: 8px 10px;
-  border: 1px dashed #ccc;
+  border: 1px dashed #E17100;
   border-radius: 6px;
   background-color: #fcfcfc;
 }
 
 .energy-summary .energy-label {
   font-weight: bold;
-  color: #007bff;
+  color: #E17100;
   margin-bottom: 4px;
 }
 
@@ -159,20 +159,20 @@
      gap: 6px;
    }
    
-    .pay-button {
-     background: linear-gradient(to right, #00c6ff, #0072ff);
-     color: #fff;
-     padding: 10px 24px;
-     font-size: 14px;
-     border: none;
-     border-radius: 8px;
-     cursor: pointer;
-     display: block;
-     margin-top: 14px;
-     transition: background 0.3s ease;
-   }
+.pay-button {
+  background: #E17100;
+  color: #fff;
+  padding: 10px 24px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: block;
+  margin-top: 14px;
+  transition: background 0.3s ease;
+}
    .pay-button:hover {
-     background: linear-gradient(to right, #0072ff, #0056d2);
+     background: #973C00;
    }
     .double-info-box {
       display: flex;
@@ -186,13 +186,13 @@
       margin-top: 20px;
     }
     .info-column:first-child {
-      border-right: 1px dashed #bbb;
+      border-right: 1px dashed #E17100;
       padding-right: 15px;
     }
     .total-charge-amount {
      font-size: 26px;
      font-weight: bold;
-     color: #007bff;
+     color: #E17100;
      margin: 12px 0 6px;
    }
    .total-charge-box p:last-child {
@@ -206,17 +206,17 @@
   font-size: 13px;
 }
 .charge-table thead {
-  background-color: #f0f7ff;
+  background-color: #fff6ed;
 }
 .charge-table th {
   padding: 10px 8px;
-  border-bottom: 2px solid #ddd;
-  color: #007bff;
+  border-bottom: 2px solid #E17100;
+  color: #E17100;
   text-align: left;
 }
 .charge-table td {
   padding: 10px 8px;
-  border-bottom: 1px dashed #ccc;
+  border-bottom: 1px dashed #E17100;
   vertical-align: middle;
 }
 .charge-table tr.even {
@@ -293,6 +293,21 @@
 .info-box li {
   margin-bottom: 6px;
   line-height: 1.5;
+}
+select[name="bldgIdParam"] {
+  font-size: 14px;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #212529;
+  appearance: none; /* 크롬/사파리 기본 화살표 제거 */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='black' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px;
+  cursor: pointer;
+  min-width: 180px;
 }
 
 

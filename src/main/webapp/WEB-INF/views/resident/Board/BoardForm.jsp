@@ -79,15 +79,22 @@
     }
 
     .btn-group .save-btn {
-      background-color: #fd7e14;
+      background-color: #E17100;
       color: white;
     }
-
+	
+	.btn-group .save-btn:hover {
+	  background-color: #973C00; /* Hover 시 진한 주황색 */
+	}
+	
     .btn-group .cancel-btn {
       background-color: #ccc;
       color: black;
     }
-
+	
+	.btn-group .cancel-btn:hover {
+	  background-color: #999; /* Hover 시 어두운 회색 */
+	}
     .error-message {
       color: red;
       font-weight: bold;

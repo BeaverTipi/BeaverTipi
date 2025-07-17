@@ -23,6 +23,7 @@ public class ResidentBoardVO {
 	private String reqStatus;
 	
 	private String bldgId;
+	private String bldgNm;
 	private String mbrNnm;
 	
 	private String brdDelYn;

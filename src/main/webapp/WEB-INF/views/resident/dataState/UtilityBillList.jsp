@@ -11,7 +11,8 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
-      --primary: #007bff;
+      --primary: #E17100;
+      --primary-hover: #973C00;
       --gray: #6c757d;
       --bg: #f8f9fa;
       --font: 'Noto Sans KR', sans-serif;
@@ -71,10 +72,14 @@
       padding: 1.2rem;
       box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     }
-    .bill-box {
-      flex: 0.6;
-      border: 1px solid #ddd;
-    }
+	.bill-box {
+	  flex: 0.6;
+	  border: 2px solid var(--primary); /* → 주황색 강조 */
+	  border-radius: 8px;
+	  background: #fff;
+	  padding: 1.2rem;
+	  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+	}
     .chart-box {
       flex: 1.4;
       border: 2px solid var(--primary);
@@ -142,29 +147,43 @@
       <div class="top-title-row">
         <h2>📄 ${chargeMonth} 공과금 및 관리비 상세내역</h2>
       </div>
-      <div class="top-select-row">
-        <form id="billSearchForm" method="get" action="/resident/dataState/bill">
-          <select name="bldgIdParam" onchange="document.getElementById('billSearchForm').submit();">
-            <c:forEach var="unit" items="${unitList}">
-              <option value="${unit.bldgId}" <c:if test="${selectedBldgId eq unit.bldgId}">selected</c:if>>
-                ${unit.building.bldgNm}
-              </option>
-            </c:forEach>
-          </select>
-         <select name="yearSelect" onchange="document.getElementById('billSearchForm').submit();">
+   <!-- 광고 + 드롭박스 정렬 행 -->
+<div class="top-banner-filter-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+  <!-- ⬅️ 광고 배너 (왼쪽) -->
+  <div class="ad-banner" style="flex-grow: 1;">
+<div style="background: #fff; border: 2px dashed var(--primary); border-radius: 8px;
+            padding: 0.6rem 1rem; display: flex; align-items: center; gap: 10px; width: 100%;">
+      <img src="${pageContext.request.contextPath}/images/ad-banner.png" alt="광고" style="height: 36px;" />
+      <span style="color: var(--primary); font-weight: 500;">
+        🎁 자동납부 시 기프티콘 100% 증정 이벤트!
+      </span>
+    </div>
+  </div>
+
+  <!-- ➡️ 드롭박스 (오른쪽) -->
+  <div class="top-select-row" style="flex-shrink: 0; margin-left: 1rem;">
+    <form id="billSearchForm" method="get" action="/resident/dataState/bill" style="display: flex; gap: 0.5rem;">
+      <select name="bldgIdParam" onchange="document.getElementById('billSearchForm').submit();">
+        <c:forEach var="unit" items="${unitList}">
+          <option value="${unit.bldgId}" <c:if test="${selectedBldgId eq unit.bldgId}">selected</c:if>>
+            ${unit.building.bldgNm}
+          </option>
+        </c:forEach>
+      </select>
+      <select name="yearSelect" onchange="document.getElementById('billSearchForm').submit();">
         <c:forEach var="y" begin="2022" end="2025">
           <option value="${y}" <c:if test="${yearSelect eq y}">selected</c:if>>${y}년</option>
         </c:forEach>
       </select>
-          <select name="monthSelect" onchange="document.getElementById('billSearchForm').submit();">
-           <c:forEach var="m" begin="1" end="12">
-             <c:set var="mm" value="${m lt 10 ? '0' + m : m}" />
-             <option value="${mm}" <c:if test="${monthSelect eq mm}">selected</c:if>>${m}월</option>
-           </c:forEach>
-         </select>
-        </form>
-      </div>
-    </div>
+      <select name="monthSelect" onchange="document.getElementById('billSearchForm').submit();">
+        <c:forEach var="m" begin="1" end="12">
+          <c:set var="mm" value="${m lt 10 ? '0' + m : m}" />
+          <option value="${mm}" <c:if test="${monthSelect eq mm}">selected</c:if>>${m}월</option>
+        </c:forEach>
+      </select>
+    </form>
+  </div>
+</div>
 
     <div class="main-section">
         <c:if test="${empty chargeComparison and empty energyComparison[chargeMonth]}">

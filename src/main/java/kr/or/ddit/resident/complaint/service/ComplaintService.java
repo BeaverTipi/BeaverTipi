@@ -27,5 +27,7 @@ public interface ComplaintService {
     
     public String getNextComplaintId();
     
+    public boolean isLandlordOfBuilding(String mbrCd, String bldgId);
+    
     
 }

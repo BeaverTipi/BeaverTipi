@@ -8,7 +8,7 @@
   <title>
     민원
     <c:choose>
-      <c:when test="${empty complaint.rsdBrdId}">등록</c:when>
+      <c:when test="${empty complaint.rsdBrdId}">저장</c:when>
       <c:otherwise>수정</c:otherwise>
     </c:choose>
   </title>
@@ -85,14 +85,21 @@
     }
 
     .btn-group .btn-success {
-      background-color: #fd7e14;
+      background-color: #E17100;
       color: white;
     }
 
+	.btn-group .btn-success:hover {
+	  background-color: #973C00;   /* hover */
+	}
+	
     .btn-group .btn-primary {
       background-color: #ccc;
       color: black;
     }
+    .btn-group .btn-primary:hover {
+	  background-color: #999;
+	}
 
     label {
       margin-right: 15px;

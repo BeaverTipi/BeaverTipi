@@ -16,6 +16,7 @@
 
     <!-- 🔸 작성 정보 -->
     <div class="detail-info">
+      <p><span class="label">건물:</span>${board.bldgNm}</p>
       <p><span class="label">작성자:</span>${board.mbrNnm}</p>
       <p><span class="label">작성일:</span>
         <fmt:formatDate value="${board.rsdBrdPblsDate}" pattern="yyyy-MM-dd HH:mm" />
@@ -27,7 +28,7 @@
 
     <!-- 🔸 본문 내용 -->
     <div class="detail-content">
-      <p><c:out value="${board.rsdBrdCont}" escapeXml="true" /></p>
+      <p><c:out value="${board.rsdBrdCont}" escapeXml="false" /></p>
     </div>
 
     <!-- 🔸 버튼 영역 -->

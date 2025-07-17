@@ -7,8 +7,7 @@
   <meta charset="UTF-8">
   <title>입주민 게시판</title>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/resident/common_resident.css">
-  <style type="text/css">
-    /* 검색 영역 스타일 */
+  <style>
     .search-area {
       margin-bottom: 30px;
       border: 1px solid #ddd;
@@ -17,56 +16,42 @@
       background-color: #fff;
     }
 
-    /* 검색 폼 레이아웃 */
     .search-form {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr); /* 4개의 열로 나누기 */
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
       gap: 20px;
-      margin-bottom: 30px;
     }
 
-    /* 검색 항목 */
+.search-description {
+  flex-shrink: 0;
+  min-width: 240px; /* ✅ 너비 확보 */
+  font-size: 16px;
+  font-weight: 500;
+  color: #444;
+  align-self: center;
+}
+
+    .search-fields {
+      display: grid;
+      grid-template-columns: repeat(4, auto);
+      gap: 20px;
+    }
+
     .search-item {
       display: flex;
       flex-direction: column;
+      min-width: auto;
+      width: auto;
     }
 
-    /* 레이블 */
     .search-item label {
       font-weight: bold;
       margin-bottom: 8px;
       font-size: 14px;
     }
 
-    /* 입력 필드 */
-    .select-field,
-    .input-field {
-      padding: 8px;
-      font-size: 14px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      margin-bottom: 10px;
-      width: 100%;
-    }
-
-    /* 버튼 */
-    .search-button {
-      background-color: var(--main-color-orange, #ff7f00) !important;
-      color: white;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s ease;
-      width: 100%;
-    }
-
-    .search-button:hover {
-      background-color: #e67e22;
-    }
-
-    /* 날짜 선택 칸 */
     .date-wrapper {
       display: flex;
       gap: 10px;
@@ -76,14 +61,75 @@
       width: 45%;
     }
 
-    /* 화면 크기 768px 이하에서의 레이아웃 조정 */
+    .search-item-group {
+      display: flex;
+      flex: 1 1 auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .search-item-group select,
+    .search-item-group input {
+      height: 38px;
+      padding: 0 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .search-item-group input {
+      flex: 1 1 auto;
+      min-width: 140px;
+    }
+
+    .search-button,
+    .btn-reset {
+      height: 38px;
+      padding: 0 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .search-button {
+      background-color: #E17100;
+      color: white;
+    }
+
+    .search-button:hover {
+      background-color: #973C00;
+    }
+
+    .btn-reset {
+      background-color: #ccc;
+      color: #333;
+    }
+
+    .btn-reset:hover {
+      background-color: #999;
+    }
+
+/* 조건 select 전용 그룹 */
+.condition-group {
+  width: 80px; /* 줄여서 정렬 맞추기 */
+}
+
+.select-type {
+  max-width: 100px;
+  /* 그룹 내에서 꽉 차게 */
+}
+
+
     @media (max-width: 768px) {
       .search-form {
-        grid-template-columns: 1fr 1fr; /* 작은 화면에서는 2개 열로 나누기 */
+        flex-direction: column;
       }
 
-      .search-button {
-        width: 100%;
+      .search-fields {
+        grid-template-columns: 1fr 1fr;
       }
 
       .date-wrapper {
@@ -91,6 +137,17 @@
       }
 
       .date-wrapper input {
+        width: 100%;
+      }
+
+      .search-item-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-item-group input,
+      .search-button,
+      .btn-reset {
         width: 100%;
       }
     }
@@ -103,48 +160,55 @@
       <!-- 🔍 검색 영역 -->
       <div class="search-area">
         <form method="get" action="${pageContext.request.contextPath}/resident/board" class="search-form">
-          <div class="search-conditions">
-            <div class="search-item">
-              <label for="bldgIdParam">건물</label>
-              <select name="bldgIdParam" class="select-field">
-                <option value="">건물 선택</option>
-                <c:forEach var="unit" items="${unitList}">
-                  <option value="${unit.bldgId}" ${unit.bldgId == selectedBldgId ? 'selected' : ''}>${unit.building.bldgNm}</option>
-                </c:forEach>
-              </select>
-            </div>
-
-            <div class="search-item">
-              <label for="searchStartDate">일자</label>
-              <div class="date-wrapper">
-                <input type="date" name="searchStartDate" class="input-field" value="${search.searchStartDate}">
-                ~
-                <input type="date" name="searchEndDate" class="input-field" value="${search.searchEndDate}">
-              </div>
-            </div>
-
-            <div class="search-item">
-              <label for="searchType">조건</label>
-              <select name="searchType" class="select-field">
-                <option value="title" ${search.searchType == 'title' ? 'selected' : ''}>제목</option>
-                <option value="writer" ${search.searchType == 'writer' ? 'selected' : ''}>작성자</option>
-              </select>
-            </div>
-
-            <div class="search-item-group">
-              <label for="searchWord">검색어</label>
-              <input type="text" name="searchWord" value="${search.searchWord}" placeholder="검색어 입력" class="input-field">
-            </div>
-
-            <div class="search-item-group">
-              <button type="submit" class="search-button">검색</button>
-            </div>
+          <div class="search-description">
+            아름다운 우리 집 게시글 함께 만들어갑시다
           </div>
+
+<div class="search-fields">
+  <!-- 건물 -->
+  <div class="search-item">
+    <label for="bldgIdParam">건물</label>
+    <select name="bldgIdParam" class="select-field">
+      <option value="">건물 선택</option>
+      <c:forEach var="unit" items="${unitList}">
+        <option value="${unit.bldgId}" ${unit.bldgId == selectedBldgId ? 'selected' : ''}>${unit.building.bldgNm}</option>
+      </c:forEach>
+    </select>
+  </div>
+
+  <!-- 일자 -->
+  <div class="search-item">
+    <label for="searchStartDate">일자</label>
+    <div class="date-wrapper">
+      <input type="date" name="searchStartDate" value="${search.searchStartDate}">
+      ~
+      <input type="date" name="searchEndDate" value="${search.searchEndDate}">
+    </div>
+  </div>
+
+  <!-- 조건 -->
+<div class="search-item">
+  <label for="searchType">조건</label>
+  <div class="condition-group">
+    <select name="searchType" class="select-field select-type">
+      <option value="title" ${search.searchType == 'title' ? 'selected' : ''}>제목</option>
+      <option value="writer" ${search.searchType == 'writer' ? 'selected' : ''}>작성자</option>
+    </select>
+  </div>
+</div>
+
+  <!-- 검색어 (입력 + 버튼) -->
+  <div class="search-item">
+    <label for="searchWord">검색어</label>
+    <div class="search-item-group">
+      <input type="text" name="searchWord" value="${search.searchWord}" placeholder="검색어 입력" />
+      <button type="submit" class="search-button">검색</button>
+      <button type="button" class="btn-reset" onclick="location.href='${pageContext.request.contextPath}/resident/board'">초기화</button>
+    </div>
+  </div>
+</div>
+
         </form>
-        <form method="get" action="${pageContext.request.contextPath}/resident/board" style="display:inline;">
-		    <input type="hidden" name="page" value="1" />
-		    <button type="submit" class="btn-reset">초기화</button>
-		  </form>
       </div>
 
       <!-- 📋 게시글 목록 -->
@@ -219,9 +283,7 @@
       form.page.value = pageNo;
       form.submit();
     }
-  </script>
 
-  <script>
     document.addEventListener("DOMContentLoaded", () => {
       const currentPage = "${pagingInfo.currentPageNo}";
       document.querySelectorAll(".pagination-wrapper a").forEach(a => {

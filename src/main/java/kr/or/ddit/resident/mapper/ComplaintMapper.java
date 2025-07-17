@@ -40,4 +40,8 @@ public interface ComplaintMapper {
     public void softDeleteComplaint(@Param("rsdBrdId") String rsdBrdId);
 
     public void softDeleteResidentBoard(@Param("rsdBrdId") String rsdBrdId);
+
+    public int countLandlordByMemberAndBuilding(@Param("mbrCd") String mbrCd, @Param("bldgId") String bldgId);
+
+
 }

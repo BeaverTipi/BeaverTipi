@@ -45,17 +45,29 @@
       margin-bottom: 0.5rem;
     }
 
-    input[type="text"], select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    .checkbox-group label {
-      margin-right: 1.5rem;
-    }
-
+	 input[type="text"], select {
+	    padding: 10px;
+	    border: 1px solid #ccc;
+	    border-radius: 4px;
+	  }
+	
+	  /* 제목과 건물 선택 너비 통일 */
+	  input[name="brdTitlNm"],
+	  select[name="bldgId"] {
+	    width: 50%;
+	  }
+    .checkbox-group {
+	  display: flex;
+	  gap: 20px;  /* 라디오 항목 사이 간격 */
+	  flex-wrap: wrap;  /* 항목이 많을 경우 줄바꿈 허용 */
+	}
+    
+	.checkbox-group label {
+	  margin-right: 0;  /* 기존 여백 제거 */
+	  display: flex;
+	  align-items: center;
+	  gap: 6px;
+	}
     .write-buttons {
       display: flex;
       justify-content: flex-end;
@@ -63,24 +75,32 @@
       margin-top: 20px;
     }
 
-    .btn-orange {
-      background-color: #fd7e14;
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .btn-gray {
-      background-color: #ccc;
-      color: black;
-      padding: 10px 16px;
-      text-decoration: none;
-      border-radius: 4px;
-      display: inline-block;
-    }
-
+	.btn-orange {
+	  background-color: #E17100;  /* 기본 오렌지 */
+	  color: white;
+	  border: none;
+	  padding: 10px 16px;
+	  border-radius: 4px;
+	  cursor: pointer;
+	  transition: background-color 0.3s ease;
+	}
+	
+	.btn-orange:hover {
+	  background-color: #973C00;  /* Hover 진한 오렌지 */
+	}
+	.btn-gray {
+	  background-color: #ccc;     /* 기본 회색 */
+	  color: black;
+	  padding: 10px 16px;
+	  text-decoration: none;
+	  border-radius: 4px;
+	  display: inline-block;
+	  transition: background-color 0.3s ease;
+	}
+	
+	.btn-gray:hover {
+	  background-color: #999;     /* Hover 어두운 회색 */
+	}
     .info-box {
       margin: 10px 0;
       padding: 10px;
@@ -172,7 +192,7 @@
 
     <!-- 버튼 -->
     <div class="write-buttons">
-      <button type="submit" class="btn-orange">${empty notice.noticeNo ? '등록' : '수정'}</button>
+      <button type="submit" class="btn-orange">${empty notice.noticeNo ? '저장' : '수정'}</button>
       <a href="${pageContext.request.contextPath}/resident/notice" class="btn-gray">취소</a>
     </div>
 

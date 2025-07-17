@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/resident/common_resident.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
-    /* 검색 영역 스타일 */
     .search-area {
       margin-bottom: 30px;
       border: 1px solid #ddd;
@@ -17,57 +16,41 @@
       border-radius: 8px;
       background-color: #fff;
     }
+    
+.search-form {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 24px;
+  row-gap: 16px;
+}
 
-    /* 검색 폼 레이아웃 */
-    .search-form {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr); /* 4개의 열로 나누기 */
-      gap: 20px;
-      margin-bottom: 30px;
-    }
-
-    /* 검색 항목 */
     .search-item {
       display: flex;
       flex-direction: column;
     }
 
-    /* 레이블 */
     .search-item label {
       font-weight: bold;
-      margin-bottom: 8px;
       font-size: 14px;
+      margin-bottom: 8px;
     }
 
-    /* 입력 필드 */
     .select-field,
     .input-field {
       padding: 8px;
       font-size: 14px;
-      border: 1px solid #ddd;
+      border: 1px solid #ccc;
       border-radius: 4px;
-      margin-bottom: 10px;
-      width: 100%;
     }
 
-    /* 버튼 */
-    .search-button {
-      background-color: var(--main-color-orange, #ff7f00);
-      color: white;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s ease;
-      width: 100%;
+    .select-field.short {
+      width: 120px;
     }
 
-    .search-button:hover {
-      background-color: #e67e22;
+    .input-field.short {
+      width: 160px;
     }
 
-    /* 날짜 선택 칸 */
     .date-wrapper {
       display: flex;
       gap: 10px;
@@ -77,13 +60,62 @@
       width: 45%;
     }
 
-    /* 화면 크기 768px 이하에서의 레이아웃 조정 */
+    .search-buttons {
+      display: flex;
+      justify-content: flex-start;
+      gap: 10px;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .search-button {
+      background-color: #E17100;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      height: 38px;
+    }
+
+    .search-button:hover {
+      background-color: #973C00;
+    }
+
+    .btn-reset {
+      background-color: #f0f0f0;
+      color: #333;
+      padding: 10px 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 14px;
+      height: 38px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-reset:hover {
+      background-color: #ddd;
+      color: #000;
+    }
+
     @media (max-width: 768px) {
       .search-form {
-        grid-template-columns: 1fr 1fr; /* 작은 화면에서는 2개 열로 나누기 */
+        grid-template-columns: repeat(2, 1fr);
       }
 
-      .search-button {
+      .search-buttons {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-button,
+      .btn-reset {
         width: 100%;
       }
 
@@ -103,7 +135,7 @@
 <div class="container-wrapper">
   <main class="container">
 
-    <!-- 🔍 검색 영역 -->
+    <!-- 검색 영역 -->
     <div class="search-area">
       <form id="searchForm" method="get" action="${pageContext.request.contextPath}/resident/complaint" class="search-form">
         <input type="hidden" name="page" value="${pagingInfo.currentPageNo}" />
@@ -158,27 +190,27 @@
             </c:forEach>
           </div>
         </div>
+		
+		<!-- 검색조건 + 검색어 같이 정렬 -->
+		<div class="search-item search-row search-keyword-group" style="grid-column: span 2; display: flex; gap: 10px;">
+		  <div style="flex: 0 0 140px;">
+		    <label for="searchType">검색조건</label>
+		    <select name="searchType" class="select-field short">
+		      <option value="title" ${search.searchType == 'title' ? 'selected' : ''}>제목</option>
+		      <option value="content" ${search.searchType == 'content' ? 'selected' : ''}>내용</option>
+		    </select>
+		  </div>
+		  <div style="flex: 1;">
+		    <label for="searchWord">검색어</label>
+		    <input type="text" name="searchWord" value="${search.searchWord}" class="input-field" placeholder="검색어를 입력하세요" />
+		  </div>
+		</div>
 
-        <!-- 검색조건 -->
-        <div class="search-item">
-          <label for="searchType">조건</label>
-          <select name="searchType" class="select-field">
-            <option value="title" ${search.searchType == 'title' ? 'selected' : ''}>제목</option>
-            <option value="content" ${search.searchType == 'content' ? 'selected' : ''}>내용</option>
-          </select>
-        </div>
-
-        <!-- 검색어 -->
-        <div class="search-item">
-          <label for="searchWord">검색어</label>
-          <input type="text" name="searchWord" value="${search.searchWord}" class="input-field" placeholder="검색어 입력" />
-        </div>
-
-        <!-- 검색 버튼 -->
-        <button type="submit" class="search-button">검색</button>
-
-        <!-- 초기화 버튼 -->
-        <a href="${pageContext.request.contextPath}/resident/complaint" class="btn-reset">초기화</a>
+        <!-- 버튼 -->
+		<div class="search-item search-buttons" style="grid-column: span 2; display: flex; justify-content: flex-end; align-items: end;">
+		  <button type="submit" class="search-button">검색</button>
+		  <a href="${pageContext.request.contextPath}/resident/complaint" class="btn-reset">초기화</a>
+		</div>
       </form>
     </div>
 
@@ -209,12 +241,8 @@
               <c:forEach var="code" items="${reqStatusList}">
                 <c:if test="${code.codeValue eq vo.reqStatus}">
                   <c:choose>
-                    <c:when test="${code.codeValue == '001'}">
-                      <span class="badge badge-orange">${code.codeName}</span>
-                    </c:when>
-                    <c:when test="${code.codeValue == '002'}">
-                      <span class="badge badge-green">${code.codeName}</span>
-                    </c:when>
+                    <c:when test="${code.codeValue == '001'}"><span class="badge badge-orange">${code.codeName}</span></c:when>
+                    <c:when test="${code.codeValue == '002'}"><span class="badge badge-green">${code.codeName}</span></c:when>
                   </c:choose>
                 </c:if>
               </c:forEach>
@@ -241,14 +269,14 @@
 
     <!-- 글쓰기 버튼 -->
     <div class="write-buttons">
-      <a class="btn-success" href="${pageContext.request.contextPath}/resident/complaint/form?bldgIdParam=${selectedBldgId}">등록</a>
+      <a class="btn-success" href="${pageContext.request.contextPath}/resident/complaint/form?bldgIdParam=${selectedBldgId}">글쓰기</a>
     </div>
 
   </main>
 </div>
 
 <script>
-  function fnPaging(pageNo){
+  function fnPaging(pageNo) {
     const form = document.getElementById('searchForm');
     form.page.value = pageNo;
     form.submit();
