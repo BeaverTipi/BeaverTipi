@@ -514,6 +514,6 @@ select[name="bldgIdParam"] {
 <script src="https://js.tosspayments.com/v1"></script>
 <script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/building/move-in/residentList.js"></script>
-
+<script src="${pageContext.request.contextPath}/app/js/resident/residentBuliding.js"></script>
 </body>
 </html>

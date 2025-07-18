@@ -237,13 +237,15 @@
      WHERE RSD_BRD_ID      = #{rsdBrdId}
   </update>
   
-  <select id="countLandlordByMemberAndBuilding" resultType="int">
-	  SELECT COUNT(*) 
-	  FROM TENANCY
-	  WHERE MBR_CD = #{mbrCd}
-	    AND BLDG_ID = #{bldgId}
-	    AND TENANCY_TYPE = 'LANDLORD'
-	</select>
+<select id="isLandlordOfBuilding" resultType="int">
+  SELECT COUNT(*)
+  FROM TENANCY T
+  JOIN BUILDING B ON T.RENTAL_PTY_ID = B.RENTAL_PTY_ID
+  JOIN ROLE_ACHIEVED R ON R.MBR_CD = T.MBR_CD
+  WHERE T.MBR_CD = #{mbrCd}
+    AND B.BLDG_ID = #{bldgId}
+    AND R.USER_ROLE_ID = 'TENANCY'
+</select>
   
   
 

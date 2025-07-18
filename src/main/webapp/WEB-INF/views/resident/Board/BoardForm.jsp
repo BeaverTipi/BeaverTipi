@@ -1,11 +1,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>${mode == 'edit' ? '게시글 수정' : '게시판 글쓰기'}</title>
+  <title>${mode == 'edit' ? '민원 수정' : '민원 글쓰기'}</title>
 
   <!-- ✅ Summernote CSS/JS -->
   <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
@@ -82,19 +82,20 @@
       background-color: #E17100;
       color: white;
     }
-	
-	.btn-group .save-btn:hover {
-	  background-color: #973C00; /* Hover 시 진한 주황색 */
-	}
-	
+
+    .btn-group .save-btn:hover {
+      background-color: #973C00; /* Hover 시 진한 주황색 */
+    }
+
     .btn-group .cancel-btn {
       background-color: #ccc;
       color: black;
     }
-	
-	.btn-group .cancel-btn:hover {
-	  background-color: #999; /* Hover 시 어두운 회색 */
-	}
+
+    .btn-group .cancel-btn:hover {
+      background-color: #999; /* Hover 시 어두운 회색 */
+    }
+
     .error-message {
       color: red;
       font-weight: bold;
@@ -107,17 +108,17 @@
 <div class="form-wrapper">
   <h1>
     <c:choose>
-      <c:when test="${mode == 'edit'}">게시글 수정</c:when>
-      <c:otherwise>${buildingName} 글쓰기</c:otherwise>
+      <c:when test="${mode == 'edit'}">민원 수정</c:when>
+      <c:otherwise>민원 글쓰기</c:otherwise>
     </c:choose>
   </h1>
 
-  <form:form modelAttribute="board"
-             action="${pageContext.request.contextPath}/resident/board"
+  <form:form modelAttribute="complaint"
+             action="${pageContext.request.contextPath}/resident/complaint"
              method="post">
     <form:hidden path="rsdBrdId"/>
     <form:hidden path="mbrCd"/>
-    <form:hidden path="brdCode" value="R0001"/>
+    <form:hidden path="brdCode" value="R0002"/>
     <input type="hidden" name="bldgIdParam" value="${selectedBldgId}" />
 
     <c:if test="${not empty error}">
@@ -125,30 +126,17 @@
     </c:if>
 
     <table>
-      <c:choose>
-        <c:when test="${mode == 'edit'}">
-          <form:hidden path="bldgId"/>
-          <tr>
-            <th>건물</th>
-            <td>${buildingName}</td>
-          </tr>
-        </c:when>
-        <c:otherwise>
-          <tr>
-            <th>건물 선택</th>
-            <td>
-              <form:select path="bldgId">
-                <form:option value="">건물 선택</form:option>
-                <c:forEach var="unit" items="${unitList}">
-                  <form:option value="${unit.bldgId}">
-                    ${unit.building.bldgNm}
-                  </form:option>
-                </c:forEach>
-              </form:select>
-            </td>
-          </tr>
-        </c:otherwise>
-      </c:choose>
+      <tr>
+        <th>건물 선택</th>
+        <td>
+          <form:select path="bldgId">
+            <form:option value="">건물 선택</form:option>
+            <c:forEach var="unit" items="${unitList}">
+              <form:option value="${unit.bldgId}">${unit.building.bldgNm}</form:option>
+            </c:forEach>
+          </form:select>
+        </td>
+      </tr>
 
       <tr>
         <th>제목</th>
@@ -160,17 +148,20 @@
         <td><form:textarea path="rsdBrdCont" id="summernote"/></td>
       </tr>
 
-      <c:if test="${mode == 'edit'}">
-        <tr>
-          <th>조회수</th>
-          <td>${board.rsdBrdCnt}</td>
-        </tr>
-      </c:if>
+      <tr>
+        <th>처리상태</th>
+        <td>
+          <form:select path="processingStatus">
+            <form:option value="N">미처리</form:option>
+            <form:option value="Y">처리 완료</form:option>
+          </form:select>
+        </td>
+      </tr>
     </table>
 
     <div class="btn-group">
       <button type="submit" class="save-btn">저장</button>
-      <a href="<c:url value='/resident/board'>
+      <a href="<c:url value='/resident/complaint'>
                  <c:param name='bldgIdParam' value='${selectedBldgId}'/>
                </c:url>" class="cancel-btn">취소</a>
     </div>
@@ -188,18 +179,61 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     const form = document.querySelector("form");
+    const saveBtn = document.querySelector(".save-btn");
+    const cancelBtn = document.querySelector(".cancel-btn");
     const mode = "${mode}";
 
-    if (mode !== 'edit') {
-      form.addEventListener("submit", function (e) {
+    // 저장(등록/수정) 버튼
+    saveBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+
+      if (mode !== 'edit') {
         const buildingSelect = document.querySelector("select[name='bldgId']");
         if (buildingSelect && buildingSelect.value === "") {
-          alert("건물을 선택해주세요.");
-          e.preventDefault();
+          Swal.fire({
+            icon: 'warning',
+            title: '건물 선택이 필요합니다',
+            text: '건물을 선택해주세요.',
+            confirmButtonColor: '#E17100'
+          });
+          return;
+        }
+      }
+
+      Swal.fire({
+        title: mode === 'edit' ? '민원을 수정하시겠습니까?' : '민원을 등록하시겠습니까?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#E17100',
+        cancelButtonColor: '#aaa',
+        confirmButtonText: '네, 진행합니다',
+        cancelButtonText: '취소'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          form.submit();
         }
       });
-    }
+    });
+
+    // 취소 버튼
+    cancelBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      Swal.fire({
+        title: mode === 'edit' ? '민원 수정을 취소하시겠습니까?' : '민원 작성을 취소하시겠습니까?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#E17100',
+        cancelButtonColor: '#aaa',
+        confirmButtonText: '네, 취소합니다',
+        cancelButtonText: '아니요'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = cancelBtn.getAttribute("href");
+        }
+      });
+    });
   });
 </script>
+<script src="${pageContext.request.contextPath}/app/js/resident/residentBuliding.js"></script>
 </body>
 </html>

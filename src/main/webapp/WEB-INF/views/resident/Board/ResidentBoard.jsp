@@ -210,6 +210,7 @@
 
         </form>
       </div>
+      
 
       <!-- 📋 게시글 목록 -->
       <table class="table">
@@ -293,7 +294,6 @@
       });
     });
   </script>
-
-  <script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/resident/residentBuliding.js"></script>
 </body>
 </html>

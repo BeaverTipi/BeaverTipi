@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kr.or.ddit.admin.code.service.CommonCodeService;
 import kr.or.ddit.resident.complaint.service.ComplaintService;
@@ -85,16 +86,13 @@ public class ComplaintCreateController {
      * 2) 저장 처리 (등록 ↔ 수정 자동 분기)
      */
     @PostMapping("/save")
-    @ResponseBody
     public String save(
             @ModelAttribute("complaint") ResidentBoardVO complaint,
             @RequestParam(value = "bldgIdParam", required = false) String bldgIdParam,
             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
-            Model model
+            RedirectAttributes ra  // ✅ Flash 메시지 전달을 위한 객체
     ) {
-        // 작성자 설정 (인증된 사용자)
-//        complaint.setMbrCd(principal.getRealUser().getMbrCd());
-    	String loginMbrCd = principal.getRealUser().getMbrCd();
+        String loginMbrCd = principal.getRealUser().getMbrCd();
 
         // 신규 등록
         if (complaint.getRsdBrdId() == null || complaint.getRsdBrdId().isBlank()) {
@@ -104,21 +102,23 @@ public class ComplaintCreateController {
             complaint.setMbrCd(loginMbrCd);
             complaint.setReqStatus("001");
             complaintService.insertComplaint(complaint);
+            ra.addFlashAttribute("saveMsg", "등록되었습니다.");
         }
         // 기존 글 수정
         else {
-        	ResidentBoardVO original = complaintService.selectComplaintById(complaint.getRsdBrdId());
-        	
-        	if (!original.getMbrCd().equals(loginMbrCd)) {
-				return "<script>alert('작성자 본인만 수정할 수 있습니다.'); history.back();</script>";
-			}
-        	
-        	complaint.setMbrCd(loginMbrCd);
+            ResidentBoardVO original = complaintService.selectComplaintById(complaint.getRsdBrdId());
+            if (!original.getMbrCd().equals(loginMbrCd)) {
+                ra.addFlashAttribute("saveMsg", "작성자 본인만 수정할 수 있습니다.");
+                return "redirect:/resident/complaint/form?rsdBrdId=" + complaint.getRsdBrdId()
+                        + "&bldgIdParam=" + bldgIdParam;
+            }
+
+            complaint.setMbrCd(loginMbrCd);
             complaintService.updateComplaint(complaint);
+            ra.addFlashAttribute("saveMsg", "수정되었습니다.");
         }
 
-        return "<script>location.href='/resident/complaint/view?rsdBrdId=" 
-        + complaint.getRsdBrdId() + "&bldgIdParam=" + bldgIdParam + "';</script>";
+        return "redirect:/resident/complaint?bldgIdParam=" + bldgIdParam;
     }
     @PostMapping("/delete")
     @ResponseBody

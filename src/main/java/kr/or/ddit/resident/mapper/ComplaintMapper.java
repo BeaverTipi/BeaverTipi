@@ -41,7 +41,7 @@ public interface ComplaintMapper {
 
     public void softDeleteResidentBoard(@Param("rsdBrdId") String rsdBrdId);
 
-    public int countLandlordByMemberAndBuilding(@Param("mbrCd") String mbrCd, @Param("bldgId") String bldgId);
+    public int isLandlordOfBuilding(@Param("mbrCd") String mbrCd, @Param("bldgId") String bldgId);
 
 
 }

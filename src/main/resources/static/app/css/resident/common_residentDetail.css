@@ -6,10 +6,10 @@
   --color-border: #eee;
   --color-title: #E67E22;
 
-  --color-btn-blue: #4a90e2;
-  --color-btn-blue-hover: #357ab8;
-  --color-btn-danger: #e74c3c;
-  --color-btn-danger-hover: #c0392b;
+  --color-btn-main: #E17100;
+  --color-btn-main-hover: #973C00;
+  --color-btn-cancel: #bdc3c7;
+  --color-btn-cancel-hover: #95a5a6;
 
   --font-base: 14px;
   --font-title: 24px;
@@ -35,9 +35,8 @@ body {
   border: 1px solid var(--color-border);
   transition: transform 0.3s ease;
 }
-
 .detail-container:hover {
-  transform: translateY(-5px); /* 살짝 떠있는 효과 */
+  transform: translateY(-5px);
 }
 
 /* 제목 */
@@ -55,7 +54,6 @@ body {
   font-size: var(--font-body);
   color: var(--color-muted);
 }
-
 .label {
   display: inline-block;
   width: 90px;
@@ -72,20 +70,15 @@ body {
   margin-top: 20px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: #f9f9f9;
-  box-sizing: border-box;
+  background: var(--color-bg);
   font-size: var(--font-body);
   color: var(--color-text);
   line-height: 1.7;
-  font-family: 'Noto Sans KR', sans-serif;
 }
-
-/* 본문 내용 - 글자 간격 조정 */
 .detail-content p {
   white-space: pre-wrap;
   word-break: break-word;
   margin: 0;
-  line-height: 1.7;
   color: var(--color-text);
 }
 
@@ -96,61 +89,33 @@ body {
   justify-content: flex-end;
   gap: 15px;
 }
-
 .btn-group a,
 .btn-group button {
-  padding: 12px 25px;
+  background-color: var(--color-btn-main);
+  color: white;
   border: none;
   border-radius: 8px;
+  padding: 12px 25px;
   font-weight: 600;
   font-size: var(--font-base);
-  text-decoration: none;
-  transition: background-color 0.2s ease, transform 0.2s ease;
   cursor: pointer;
+  text-decoration: none;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
-
-/* 기본 파란 버튼 */
-.btn-group a {
-  background-color: var(--color-btn-blue);
-  color: var(--color-white);
-}
-
-.btn-group a:hover {
-  background-color: var(--color-btn-blue-hover);
+.btn-group a:hover,
+.btn-group button:hover {
+  background-color: var(--color-btn-main-hover);
   transform: translateY(-2px);
 }
 
-/* 수정 버튼 */
-.btn-group a.edit-btn {
-  background-color: #fd7e14;
+/* 취소(목록) 버튼 예외 처리 */
+.btn-default {
+  background-color: var(--color-btn-cancel);
   color: white;
 }
-
-.btn-group a.edit-btn:hover {
-  background-color: #d77e0b;
-  transform: translateY(-2px);
-}
-
-/* 삭제 버튼 */
-.delete-btn {
-  background-color: var(--color-btn-danger);
-  color: white;
-}
-
-.delete-btn:hover {
-  background-color: var(--color-btn-danger-hover);
-  transform: translateY(-2px);
-}
-
-/* 목록으로 돌아가기 버튼 */
-.btn-group .btn-default {
-  background-color: #bdc3c7;
-  color: white;
-}
-
-.btn-group .btn-default:hover {
-  background-color: #95a5a6;
+.btn-default:hover {
+  background-color: var(--color-btn-cancel-hover);
   transform: translateY(-2px);
 }
 

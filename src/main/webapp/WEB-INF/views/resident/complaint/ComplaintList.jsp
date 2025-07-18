@@ -79,6 +79,37 @@
       cursor: pointer;
       height: 38px;
     }
+    .badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* 각각 색상 지정 */
+.badge-blue {
+  background-color: #e0f0ff;
+  color: #007acc;
+}
+
+.badge-dark {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.badge-orange {
+  background-color: #ffe3c3;
+  color: #e17100;
+}
+
+.badge-green {
+  background-color: #d5f5dc;
+  color: #2a8a43;
+}
+    
+    
 
     .search-button:hover {
       background-color: #973C00;
@@ -103,6 +134,21 @@
       background-color: #ddd;
       color: #000;
     }
+.radio-group {
+  display: flex;
+  flex-direction: row;       /* 🔄 가로 정렬로 변경 */
+  gap: 16px;                 /* 라디오 사이 간격 */
+  align-items: center;
+  flex-wrap: wrap;           /* 필요 시 다음 줄 허용 */
+}
+
+.radio-group label {
+  display: flex;
+  flex-direction: row;     /* 가로 정렬 */
+  align-items: center;
+  gap: 6px;                /* 라디오와 텍스트 간격 */
+  white-space: nowrap;     /* 줄바꿈 방지 */
+}
 
     @media (max-width: 768px) {
       .search-form {
@@ -191,28 +237,37 @@
           </div>
         </div>
 		
-		<!-- 검색조건 + 검색어 같이 정렬 -->
-		<div class="search-item search-row search-keyword-group" style="grid-column: span 2; display: flex; gap: 10px;">
-		  <div style="flex: 0 0 140px;">
-		    <label for="searchType">검색조건</label>
-		    <select name="searchType" class="select-field short">
-		      <option value="title" ${search.searchType == 'title' ? 'selected' : ''}>제목</option>
-		      <option value="content" ${search.searchType == 'content' ? 'selected' : ''}>내용</option>
-		    </select>
-		  </div>
-		  <div style="flex: 1;">
-		    <label for="searchWord">검색어</label>
-		    <input type="text" name="searchWord" value="${search.searchWord}" class="input-field" placeholder="검색어를 입력하세요" />
-		  </div>
-		</div>
+<!-- 검색조건 + 검색어 같이 정렬 (수정됨) -->
+<div class="search-item search-keyword-group" style="grid-column: span 2;">
+  <div style="display: grid; grid-template-columns: 140px 1fr; gap: 12px; align-items: end;">
+    <div>
+      <label for="searchType">검색조건</label>
+      <select name="searchType" class="select-field short">
+        <option value="title" ${search.searchType == 'title' ? 'selected' : ''}>제목</option>
+        <option value="content" ${search.searchType == 'content' ? 'selected' : ''}>내용</option>
+      </select>
+    </div>
+    <div>
+      <label for="searchWord">검색어</label>
+      <input type="text" name="searchWord" value="${search.searchWord}" class="input-field" placeholder="검색어를 입력하세요" />
+    </div>
+  </div>
+</div>
 
         <!-- 버튼 -->
 		<div class="search-item search-buttons" style="grid-column: span 2; display: flex; justify-content: flex-end; align-items: end;">
 		  <button type="submit" class="search-button">검색</button>
-		  <a href="${pageContext.request.contextPath}/resident/complaint" class="btn-reset">초기화</a>
+		  <a href="${pageContext.request.contextPath}/resident/complaint?bldgIdParam=${selectedBldgId}" class="btn-reset">초기화</a>
 		</div>
       </form>
     </div>
+    
+<%-- <c:if test="${empty loginMember}"> --%>
+<!--   <tr><td colspan="6">⚠ 로그인 정보가 없습니다 (loginMember is null)</td></tr> -->
+<%-- </c:if> --%>
+<%-- <c:if test="${not empty loginMember}"> --%>
+<%--   <tr><td colspan="6">✅ 로그인 정보 있음: ${loginMember.mbrCd}</td></tr> --%>
+<%-- </c:if> --%>
 
     <!-- 민원 목록 테이블 -->
     <table class="table">
@@ -226,40 +281,66 @@
           <th>보기</th>
         </tr>
       </thead>
-      <tbody>
-        <c:forEach var="vo" items="${boardList}">
-          <tr>
-            <td>${vo.mbrNnm}</td>
-            <td><c:out value="${vo.rsdBrdTitl}" /></td>
-            <td>
-              <c:choose>
-                <c:when test="${vo.openYn == 'Y'}"><span class="badge badge-blue">공개</span></c:when>
-                <c:otherwise><span class="badge badge-dark">비공개</span></c:otherwise>
-              </c:choose>
-            </td>
-            <td>
-              <c:forEach var="code" items="${reqStatusList}">
-                <c:if test="${code.codeValue eq vo.reqStatus}">
-                  <c:choose>
-                    <c:when test="${code.codeValue == '001'}"><span class="badge badge-orange">${code.codeName}</span></c:when>
-                    <c:when test="${code.codeValue == '002'}"><span class="badge badge-green">${code.codeName}</span></c:when>
-                  </c:choose>
-                </c:if>
-              </c:forEach>
-            </td>
-            <td><fmt:formatDate value="${vo.rsdBrdPblsDate}" pattern="yyyy-MM-dd"/></td>
-            <td>
-              <form method="get" action="${pageContext.request.contextPath}/resident/complaint/view" style="display:inline;">
-                <input type="hidden" name="rsdBrdId" value="${vo.rsdBrdId}" />
-                <button type="submit" class="btn-view">보기</button>
-              </form>
-            </td>
-          </tr>
+     <tbody>
+  <c:forEach var="vo" items="${boardList}">
+    <tr>
+      <td>${vo.mbrNnm}</td>
+
+      <!-- ✅ 제목 처리: 비공개 + 권한 없는 경우 가림 -->
+      <td>
+        <c:choose>
+          <c:when test="${vo.openYn == 'N' and vo.mbrCd ne loginMember.mbrCd}">
+            <span class="text-muted">비공개 글입니다.</span>
+          </c:when>
+          <c:otherwise>
+            <c:out value="${vo.rsdBrdTitl}" />
+          </c:otherwise>
+        </c:choose>
+      </td>
+
+      <!-- 공개여부 -->
+      <td>
+        <c:choose>
+          <c:when test="${vo.openYn == 'Y'}"><span class="badge badge-blue">공개</span></c:when>
+          <c:otherwise><span class="badge badge-dark">비공개</span></c:otherwise>
+        </c:choose>
+      </td>
+
+      <!-- 처리상태 -->
+      <td>
+        <c:forEach var="code" items="${reqStatusList}">
+          <c:if test="${code.codeValue eq vo.reqStatus}">
+            <c:choose>
+              <c:when test="${code.codeValue == '001'}"><span class="badge badge-orange">${code.codeName}</span></c:when>
+              <c:when test="${code.codeValue == '002'}"><span class="badge badge-green">${code.codeName}</span></c:when>
+            </c:choose>
+          </c:if>
         </c:forEach>
-        <c:if test="${empty boardList}">
-          <tr><td colspan="6" class="no-data-center">검색 결과가 없습니다.</td></tr>
-        </c:if>
-      </tbody>
+      </td>
+
+      <!-- 게시일 -->
+      <td><fmt:formatDate value="${vo.rsdBrdPblsDate}" pattern="yyyy-MM-dd"/></td>
+
+      <!-- ✅ 보기 버튼 처리 -->
+      <td>
+        <c:choose>
+          <c:when test="${vo.openYn == 'N' and vo.mbrCd ne loginMember.mbrCd}">
+            <button type="button" class="btn-view" onclick="showPrivateAlert()">보기</button>
+          </c:when>
+          <c:otherwise>
+            <form method="get" action="${pageContext.request.contextPath}/resident/complaint/view" style="display:inline;">
+              <input type="hidden" name="rsdBrdId" value="${vo.rsdBrdId}" />
+              <button type="submit" class="btn-view">보기</button>
+            </form>
+          </c:otherwise>
+        </c:choose>
+      </td>
+    </tr>
+  </c:forEach>
+  <c:if test="${empty boardList}">
+    <tr><td colspan="6" class="no-data-center">검색 결과가 없습니다.</td></tr>
+  </c:if>
+</tbody>
     </table>
 
     <!-- 페이징 -->
@@ -283,6 +364,17 @@
   }
 </script>
 
-<script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
+<script>
+  function showPrivateAlert() {
+    Swal.fire({
+      icon: 'warning',
+      title: '비공개 글입니다',
+      text: '작성자만 확인할 수 있습니다.',
+      confirmButtonColor: '#E17100'
+    });
+  }
+</script>
+
+<script src="${pageContext.request.contextPath}/app/js/resident/residentBuliding.js"></script>
 </body>
 </html>

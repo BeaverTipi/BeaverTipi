@@ -281,7 +281,6 @@
   });
 </script>
 
-<script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
-
+<script src="${pageContext.request.contextPath}/app/js/resident/residentBuliding.js"></script>
 </body>
 </html>

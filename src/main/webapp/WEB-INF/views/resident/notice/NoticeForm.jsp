@@ -137,7 +137,7 @@
     <div class="success-box">✅ ${success}</div>
   </c:if>
 
-  <form method="post" action="/resident/notice/form" onsubmit="return validateForm();">
+  <form method="post" action="/resident/notice/form" id="noticeForm">
     <sec:csrfInput/>
     <input type="hidden" name="bldgIdHidden" id="bldgIdHidden" />
     <c:if test="${not empty notice.noticeNo}">
@@ -193,7 +193,7 @@
     <!-- 버튼 -->
     <div class="write-buttons">
       <button type="submit" class="btn-orange">${empty notice.noticeNo ? '저장' : '수정'}</button>
-      <a href="${pageContext.request.contextPath}/resident/notice" class="btn-gray">취소</a>
+      <a href="#" class="btn-gray" id="cancelBtn">취소</a>
     </div>
 
     <c:if test="${not empty notice.noticeType}">
@@ -264,5 +264,76 @@ function validateForm() {
 }
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.getElementById('cancelBtn')?.addEventListener('click', function (e) {
+    e.preventDefault();
+    const isEdit = '${not empty notice.noticeNo}';
+    Swal.fire({
+      title: isEdit === 'true' ? '공지 수정을 취소하시겠습니까?' : '공지 작성을 취소하시겠습니까?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#E17100',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: '네, 취소합니다',
+      cancelButtonText: '아니요'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = '${pageContext.request.contextPath}/resident/notice';
+      }
+    });
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("noticeForm");
+    const submitBtn = document.querySelector(".btn-orange");
+
+    submitBtn.addEventListener("click", function (e) {
+      e.preventDefault(); // 기본 제출 막기
+
+      const bldgIdHidden = document.getElementById("bldgIdHidden").value;
+      const types = document.getElementsByName("noticeType");
+      const isEdit = ${not empty notice.noticeNo};
+      const checked = Array.from(types).some(r => r.checked);
+
+      // ✅ 유효성 검사
+      if (!bldgIdHidden) {
+        Swal.fire({
+          icon: 'warning',
+          title: '건물 선택이 필요합니다',
+          text: '건물을 선택하거나 전체 공지를 체크해 주세요',
+          confirmButtonColor: '#E17100'
+        });
+        return;
+      }
+
+      if (!checked) {
+        Swal.fire({
+          icon: 'warning',
+          title: '공지 유형을 선택해 주세요',
+          confirmButtonColor: '#E17100'
+        });
+        return;
+      }
+
+      // ✅ SweetAlert 확인창
+      Swal.fire({
+        title: isEdit ? '공지사항을 수정하시겠습니까?' : '공지사항을 등록하시겠습니까?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#E17100',
+        cancelButtonColor: '#aaa',
+        confirmButtonText: '네, 진행합니다',
+        cancelButtonText: '아니요'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          form.submit(); // 통과 시 폼 제출
+        }
+      });
+    });
+  });
+</script>
+<script src="${pageContext.request.contextPath}/app/js/resident/residentBuliding.js"></script>
 </body>
 </html>

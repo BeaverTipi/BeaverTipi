@@ -10,21 +10,40 @@
   <!-- 외부 CSS 파일 로드 -->
   <link rel="stylesheet" href="<c:url value='/css/theme.css'/>"/>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/resident/common_residentDetail.css" />
+	<style type="text/css">
+	.detail-info p {
+	  margin: 4px 0;
+	  font-size: var(--font-body);
+	}
+	
+	.label {
+	  display: inline-block;
+	  width: 50px;
+	  font-weight: bold;
+	  color: var(--color-text);
+	}
+	.label-sm {
+	  width: 37px;  /* ✅ 일반 label보다 좁게 설정 */
+	}
+	</style>
 </head>
 <body>
-  <div class="container">
+  <div class="detail-container">
     <!-- 제목 및 메타 정보 -->
     <h2><c:out value="${notice.brdTitlNm}"/></h2>
-    <div class="meta">
-      작성자: <c:out value="${notice.member.mbrNnm}"/> |
-      조회수: <c:out value="${notice.brdVwCnt}"/> |
-      작성일: <fmt:formatDate value="${convertedDate}" pattern="yyyy-MM-dd HH:mm"/>
-    </div>
+		<div class="detail-info">
+		  <p><span class="label">작성자:</span> <c:out value="${notice.member.mbrNnm}"/></p>
+		  <p><span class="label">조회수:</span> <c:out value="${notice.brdVwCnt}"/></p>
+		  <p><span class="label">작성일:</span>
+		     <fmt:formatDate value="${convertedDate}" pattern="yyyy-MM-dd HH:mm"/>
+		  </p>
+		  <p><span class="label label-sm">유형:</span> <c:out value="${notice.noticeTypeCode.codeName}" /></p>
+		</div>
     <hr/>
 
     <!-- 내용 -->
-    <div class="content">
-      <pre><c:out value="${notice.brdCont}"/></pre>
+    <div class="detail-content">
+      <p><c:out value="${notice.brdCont}"/></p>
     </div>
 	
     <!-- 권한 기반 수정/삭제 버튼 -->
@@ -38,7 +57,7 @@
     </c:forEach>
 		
     <c:if test="${isAdmin or isAuthor}">
-      <div class="action-buttons">
+      <div class="btn-group">
         <!-- 수정 버튼 -->
         <c:url var="formUrl" value="/resident/notice/form">
           <c:param name="noticeNo"     value="${notice.noticeNo}" />
@@ -48,19 +67,18 @@
           <c:param name="searchType"   value="${searchType}"   />
           <c:param name="searchWord"   value="${searchWord}"   />
         </c:url>
-        <a href="${formUrl}" class="btn btn-primary">수정</a>
+        <a href="${formUrl}" class="edit-btn">수정</a>
 
         <!-- 삭제 버튼 -->
-        <form method="post" action="<c:url value='/resident/notice/delete'/>"
-              onsubmit="return confirm('정말 삭제하시겠습니까?');" style="display:inline;">
-          <input type="hidden" name="noticeNo"    value="${notice.noticeNo}" />
-          <input type="hidden" name="bldgIdParam" value="${bldgIdParam}" />
-          <input type="hidden" name="page"        value="${page}" />
-          <input type="hidden" name="noticeType"  value="${noticeType}" />
-          <input type="hidden" name="searchType"  value="${searchType}" />
-          <input type="hidden" name="searchWord"  value="${searchWord}" />
-          <button type="submit" class="btn btn-danger">삭제</button>
-        </form>
+        <form id="deleteForm" method="post" action="<c:url value='/resident/notice/delete'/>" style="display:inline;">
+		  <input type="hidden" name="noticeNo"    value="${notice.noticeNo}" />
+		  <input type="hidden" name="bldgIdParam" value="${bldgIdParam}" />
+		  <input type="hidden" name="page"        value="${page}" />
+		  <input type="hidden" name="noticeType"  value="${noticeType}" />
+		  <input type="hidden" name="searchType"  value="${searchType}" />
+		  <input type="hidden" name="searchWord"  value="${searchWord}" />
+		  <button type="button" id="deleteBtn" class="delete-btn">삭제</button>
+		</form>
       </div>
     </c:if>
 
@@ -72,8 +90,32 @@
       <c:param name="searchType"  value="${searchType}"/>
       <c:param name="searchWord"  value="${searchWord}"/>
     </c:url>
-    <a href="${listUrl}" class="btn btn-default">목록으로</a>
+    <div class="btn-group">
+      <a href="${listUrl}" class="btn-default">목록</a>
+    </div>
   </div>
-<script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.getElementById('deleteBtn')?.addEventListener('click', function () {
+    Swal.fire({
+      title: '정말 삭제하시겠습니까?',
+      text: '삭제 후에는 해당 공지글이 삭제됩니다..',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#E17100',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: '네, 삭제합니다',
+      cancelButtonText: '취소'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById('deleteForm').submit();
+      }
+    });
+  });
+</script>
+
+<script src="${pageContext.request.contextPath}/app/js/resident/residentBuliding.js"></script>
 </body>
 </html>

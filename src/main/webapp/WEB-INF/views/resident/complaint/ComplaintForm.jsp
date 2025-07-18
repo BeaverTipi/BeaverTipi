@@ -152,21 +152,98 @@
     </table>
 
     <div class="btn-group">
-      <button class="btn btn-success" type="submit">저장</button>
-      <a class="btn btn-primary" href="${pageContext.request.contextPath}/resident/complaint?bldgIdParam=${selectedBldgId}">취소</a>
+      <button type="button" class="btn btn-success" id="submitBtn">저장</button>
+      <button type="button" class="btn btn-primary" id="cancelBtn">취소</button>
     </div>
   </form>
 </div>
 
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
+  const contextPath = '${pageContext.request.contextPath}';
+  const selectedBldgId = '${selectedBldgId}';
+
   $(document).ready(function () {
+    // Summernote 초기화
     $('#summernote').summernote({
       height: 300,
       placeholder: '내용을 입력하세요...',
       lang: 'ko-KR'
     });
+
+    // 저장 버튼 클릭 시 SweetAlert
+    $('#submitBtn').click(function () {
+      const isEdit = $('input[name="rsdBrdId"]').val();
+      const title = $('input[name="rsdBrdTitl"]').val().trim();
+      const content = $('#summernote').summernote('isEmpty') ? '' : $('#summernote').val().trim();
+      const openYn = $('input[name="openYn"]:checked').val();
+      
+      if (!title) {
+    	    Swal.fire({
+    	      icon: 'warning',
+    	      title: '제목을 입력하세요.',
+    	      confirmButtonColor: '#E17100'
+    	    });
+    	    return;
+    	  }
+      
+      if (!content) {
+    	    Swal.fire({
+    	      icon: 'warning',
+    	      title: '내용을 입력하세요.',
+    	      confirmButtonColor: '#E17100'
+    	    });
+    	    return;
+    	  }
+
+    	  // 공개여부 확인
+    	  if (!openYn) {
+    	    Swal.fire({
+    	      icon: 'warning',
+    	      title: '공개여부를 선택하세요.',
+    	      confirmButtonColor: '#E17100'
+    	    });
+    	    return;
+    	  }
+      
+      Swal.fire({
+        title: isEdit ? '민원을 수정하시겠습니까?' : '민원을 등록하시겠습니까?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#E17100',
+        cancelButtonColor: '#aaa',
+        confirmButtonText: isEdit ? '수정하기' : '등록하기',
+        cancelButtonText: '취소'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $('form').submit(); // 확인 시 제출
+        }
+      });
+    });
+
+    // 취소 버튼 클릭 시 SweetAlert
+    $('#cancelBtn').click(function () {
+      const isEdit = $('input[name="rsdBrdId"]').val();
+      Swal.fire({
+        title: isEdit ? '글 수정을 취소하시겠습니까?' : '글 작성을 취소하시겠습니까?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#E17100',
+        cancelButtonColor: '#aaa',
+        confirmButtonText: '네, 취소합니다',
+        cancelButtonText: '아니요'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = `${contextPath}/resident/complaint?bldgIdParam=${selectedBldgId}`;
+        }
+      });
+    });
   });
 </script>
-<script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
+
+<script src="${pageContext.request.contextPath}/app/js/resident/residentBuliding.js"></script>
 </body>
 </html>

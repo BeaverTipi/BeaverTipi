@@ -107,6 +107,7 @@ public class ComplaintController {
 	            List<ResidentBoardVO> list = 
 	                complaintService.selectComplaintList(paramMap);
 	            
+	            model.addAttribute("loginMember", member);
 	            model.addAttribute("boardList", list);
 	            model.addAttribute("unitList",   units);
 	            model.addAttribute("selectedBldgId", selectedBldg);
@@ -130,12 +131,21 @@ public class ComplaintController {
 			    boolean isMine = vo.getMbrCd().equals(loginMember.getMbrCd());
 			    boolean isPublic = "Y".equals(vo.getOpenYn());
 			    
-//			    boolean isLandlord = complaintService.selectComplaintById(rsdBrdId);
+			    boolean isLandlord = false;
+			    isLandlord = complaintService.isLandlordOfBuilding(loginMember.getMbrCd(), vo.getBldgId());
 			    
 			    if (!isMine && !isPublic) {
 			        return "redirect:/resident/complaint?unauthorized=true"; // 또는 에러 페이지
 			    }
-
+			    if (!isMine && !isPublic && !isLandlord) {
+			        return "redirect:/resident/complaint?unauthorized=true";
+			    }
+			    List<CommonCodeVO> openYnList    = codeService.readCommonCodeList("OPYN");
+			    List<CommonCodeVO> reqStatusList = codeService.readCommonCodeList("PROC");
+			    
+			    model.addAttribute("openYnList", openYnList);
+			    model.addAttribute("reqStatusList", reqStatusList);
+			    model.addAttribute("isLandlord", isLandlord);
 			    model.addAttribute("loginMember", loginMember);
 			    model.addAttribute("complaint", vo);
 			    model.addAttribute("bldgIdParam", bldgIdParam);

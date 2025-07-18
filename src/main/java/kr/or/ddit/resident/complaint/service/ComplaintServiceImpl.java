@@ -96,8 +96,10 @@ public class ComplaintServiceImpl implements ComplaintService {
 
 	@Override
 	public boolean isLandlordOfBuilding(String mbrCd, String bldgId) {
-		
-		return mapper.countLandlordByMemberAndBuilding(mbrCd, bldgId)>0;
+		// TODO Auto-generated method stub
+		return mapper.isLandlordOfBuilding(mbrCd, bldgId)>0;
 	}
+
+
 
 }

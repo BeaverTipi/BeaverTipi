@@ -180,6 +180,20 @@ input[type="date"],
 .btn-success:hover {
   background-color: #973C00;
 }
+.btn-view {
+  background-color: #E17100;
+  color: white;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-view:hover {
+  background-color: #973C00;
+}
 
 .btn-dark {
   background-color: #1f2d3d;
