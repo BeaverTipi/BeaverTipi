@@ -62,10 +62,10 @@
 	        WHERE
 	            1=1
 	        <if test="detailSearch != null">
-	        	<if test="detailSearch.searchAdsTitle != null and detailSearch.searchTitle != ''">
+	        	<if test="detailSearch.searchAdsTitle != null and detailSearch.searchAdsTitle != ''">
 	                AND B.BRD_TITL_NM LIKE '%' || #{detailSearch.searchAdsTitle} || '%'
 	            </if>
-	            <if test="detailSearch.searchAdsWriter != null and detailSearch.searchWriter != ''">
+	            <if test="detailSearch.searchAdsWriter != null and detailSearch.searchAdsWriter != ''">
 	                AND B.MBR_CD LIKE '%' || #{detailSearch.searchAdsWriter} || '%'
 	            </if>
 	            <if test="detailSearch.searchAdsStatusCode != null and detailSearch.searchAdsStatusCode != ''">
@@ -95,10 +95,10 @@
         WHERE
             1=1
             <if test="detailSearch != null">
-                <if test="detailSearch.searchAdsTitle != null and detailSearch.searchTitle != ''">
+                <if test="detailSearch.searchAdsTitle != null and detailSearch.searchAdsTitle != ''">
                     AND B.BRD_TITL_NM LIKE '%' || #{detailSearch.searchAdsTitle} || '%'
                 </if>
-                <if test="detailSearch.searchAdsWriter != null and detailSearch.searchWriter != ''">
+                <if test="detailSearch.searchAdsWriter != null and detailSearch.searchAdsWriter != ''">
                     AND B.MBR_CD LIKE '%' || #{detailSearch.searchAdsWriter} || '%'
                 </if>
                 <if test="detailSearch.searchAdsStatusCode != null and detailSearch.searchAdsStatusCode != ''">

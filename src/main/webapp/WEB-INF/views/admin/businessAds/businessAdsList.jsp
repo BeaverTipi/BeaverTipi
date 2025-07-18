@@ -24,15 +24,15 @@
     <div class="search-area">
       <form:form modelAttribute="detailSearch" action="${pageContext.request.contextPath}/admin/businessAds/businessAdsList" method="get" id="searchForm" class="search-form">
         <input type="hidden" name="page" value="${pagingVO.currentPageNo}" id="currentPageNoInput">
-
+                                                                   
         <div class="search-conditions">
-          <div class="search-item">
+       <div class="search-item">
             <label for="searchAdsTitle">광고 제목:</label>
             <form:input path="searchAdsTitle" id="searchAdsTitle" placeholder="광고 제목" class="input-field"/>
           </div>
 
-          <div class="search-item">
-            <label for="searchAdsWriter">작성자 ID:</label>
+          <div class="search-item">                                                                                           
+            <label for="searchAdsWriter">작성자 ID:</label>            
             <form:input path="searchAdsWriter" id="searchAdsWriter" placeholder="작성자 ID" class="input-field"/>
           </div>
 
@@ -50,10 +50,9 @@
             <label for="searchAdsStatusCode">광고 상태:</label>
             <form:select path="searchAdsStatusCode" id="searchAdsStatusCode" class="select-field">
                 <form:option value="">전체</form:option>
-                <form:option value="ADS001" label="심사대기"/>
-                <form:option value="ADS002" label="심사반려"/>
-                <form:option value="ADS003" label="게재중"/>
-                <form:option value="ADS004" label="게재종료"/>
+                <form:option value="대기" label="대기"/>
+                <form:option value="반려" label="반려"/>
+                <form:option value="승인" label="승인"/>
             </form:select>
           </div>
 
@@ -96,7 +95,7 @@
                                 <td>${ad.adsClient.adsPic}</td>
                                 <td>${ad.adsClient.adsBp}</td>
                                 <td>${ad.adsClient.adsStatusCode}</td>
-                                <td>${ad.adsClient.adsPicTelno}</td>
+                                <td class="ads-pic-telno" data-telno="${ad.adsClient.adsPicTelno}"></td>
                                 <td class="ads-start-dt" data-date="${ad.adsClient.adsReqPblsStartDt}"></td>
                                 <td class="ads-end-dt" data-date="${ad.adsClient.adsReqPblsEndDt}"></td>
                             </tr>
@@ -123,7 +122,6 @@
   </main>
 </div>
 
-<%-- 모달 시작: userList.jsp 구조를 참고하여 재구성 --%>
 <div class="modal fade" id="adsDetailModal" tabindex="-1" aria-labelledby="adsDetailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -184,18 +182,14 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <%-- userList에서 가져온 저장 버튼은 adsDetailModal에 필요하지 않아 제거 --%>
-                <%-- <button type="button" class="btn btn-primary" id="btnProcessAllChanges">저장</button> --%>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeReportDetailModalBtn">닫기</button>
             </div>
         </div>
     </div>
 </div>
-<%-- 모달 끝 --%>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<%-- ⭐ 컨텍스트 패스 변수를 전역으로 선언 (AJAX URL 위함) ⭐ --%>
 <script>
     var contextPath = '${pageContext.request.contextPath}';
 </script>
