@@ -1,6 +1,7 @@
 window.renderListPage = function(data, map, page = 1, perPage = 5) {
 	const listContainer = document.getElementById('listing-list');
 	const paginationContainer = document.getElementById('pagination');
+
 	const getSaleTypeText = (code) => {
 		switch (code) {
 			case '001': return '전세';
@@ -16,14 +17,10 @@ window.renderListPage = function(data, map, page = 1, perPage = 5) {
 		const leaseM = item.lstgLeaseM || 0;
 
 		switch (type) {
-			case '001': // 전세
-				return `전세금: ${lease}`;
-			case '002': // 월세
-				return `보증금: ${lease} / 월세: ${leaseM}`;
-			case '003': // 매매
-				return `매매가: ${lease}`;
-			default:
-				return '';
+			case '001': return `전세금: ${lease}`;
+			case '002': return `보증금: ${lease} / 월세: ${leaseM}`;
+			case '003': return `매매가: ${lease}`;
+			default: return '';
 		}
 	};
 
@@ -49,26 +46,21 @@ window.renderListPage = function(data, map, page = 1, perPage = 5) {
 				</div>
 			</div>
 		`;
-
 		div.addEventListener('click', () => {
 			map.panTo(position);
 			openDetailModal(item.lstgId);
 		});
-
-		/*div.addEventListener('click', () => {
-			map.panTo(position);
-			const mbrCdParam = window.loggedInUserId || '';
-			fetch(`/map/api/detail?lstgId=${item.lstgId}&mbrCd=${encodeURIComponent(mbrCdParam)}`)
-				.then(res => res.json())
-				.then(detail => showDetailModal(detail));
-		});*/
-
-		listContainer.appendChild(div); showDetailModal
+		listContainer.appendChild(div);
 	});
 
-	// ✅ 페이지네이션은 여기만!
 	if (paginationContainer) {
 		const totalPages = Math.ceil(data.length / perPage);
+		const maxVisiblePages = 5;
+		
+		const currentBlock = Math.floor((page - 1) / maxVisiblePages);
+		const startPage = currentBlock * maxVisiblePages + 1;
+		let endPage = startPage + maxVisiblePages - 1;
+		if (endPage > totalPages) endPage = totalPages;
 
 		const first = document.createElement('a');
 		first.innerText = '«';
@@ -96,7 +88,7 @@ window.renderListPage = function(data, map, page = 1, perPage = 5) {
 		}
 		paginationContainer.appendChild(prev);
 
-		for (let i = 1; i <= totalPages; i++) {
+		for (let i = startPage; i <= endPage; i++) {
 			const a = document.createElement('a');
 			a.href = '#';
 			a.innerText = i;
@@ -139,6 +131,7 @@ window.renderListPage = function(data, map, page = 1, perPage = 5) {
 		paginationContainer.appendChild(last);
 	}
 };
+
 
 window.openDetailModal = function(lstgId) {
 	const mbrCd = window.loggedInUserId || '';
