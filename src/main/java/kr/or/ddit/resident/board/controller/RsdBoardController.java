@@ -88,6 +88,7 @@ public class RsdBoardController {
                                  .renderPagination(paging, "fnPaging");
         
         // 5) 모델에 데이터 바인딩
+        model.addAttribute("search", simpleSearch);
         model.addAttribute("unitList", units);
         model.addAttribute("selectedBldgId", selectedBldgId);
         model.addAttribute("boardList", boardList);

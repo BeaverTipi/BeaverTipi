@@ -168,10 +168,13 @@
   <!-- 건물 -->
   <div class="search-item">
     <label for="bldgIdParam">건물</label>
-    <select name="bldgIdParam" class="select-field">
+    <select name="search.bldgId" class="select-field">
       <option value="">건물 선택</option>
       <c:forEach var="unit" items="${unitList}">
-        <option value="${unit.bldgId}" ${unit.bldgId == selectedBldgId ? 'selected' : ''}>${unit.building.bldgNm}</option>
+      	<option value="${unit.bldgId}" 
+		  <c:if test="${unit.bldgId eq search.bldgId or (empty search.bldgId and unit.bldgId eq selectedBldgId)}">selected</c:if>>
+		  ${unit.building.bldgNm}
+		</option>
       </c:forEach>
     </select>
   </div>
@@ -207,7 +210,6 @@
     </div>
   </div>
 </div>
-
         </form>
       </div>
       
@@ -274,6 +276,7 @@
         <input type="hidden" name="searchWord" value="${search.searchWord}">
         <input type="hidden" name="searchStartDate" value="${search.searchStartDate}">
         <input type="hidden" name="searchEndDate" value="${search.searchEndDate}">
+        <input type="hidden" name="search.bldgId" value="${empty search.bldgId ? selectedBldgId : search.bldgId}" />
       </form>
     </main>
   </div>

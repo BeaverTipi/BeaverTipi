@@ -5,74 +5,74 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(of="chgbillId")
 public class ChargeBillVO implements Serializable {
-    private String chgbillId;
+    // 청구 관련 정보
     private String rentalPtyId;
     private String unitId;
     private String bldgId;
     private String chgbillChargeMonth;
-    private long chgbillAmount;
+    private Long chgbillAmount;
     private String chgbillStatus;
     private String chgbillStatusGrpCd;
-    private String chgbillDueDate;  // 날짜는 String으로 저장
-    private String chgbillPaidDate;  // 날짜는 String으로 저장
+    private String chgbillDueDate;   // yyyyMMdd
+    private String chgbillPaidDate;  // yyyyMMdd
     private String chgbillDesc;
-    
+
+    // 코드명 정보
+    private String chgbillStatusName;
+    private String intManFeeName;
+    private String intManFeeDesc;
+
+    // 관계 정보
+    private String rentalPartyName;
+    private String residentName;
+    private String buildingName;
+
+    // 통합관리비 정보
     private String intgFeeId;
-    private long intgFeeAmount;
+    private Long intgFeeAmount;
     private String chargeMonth;
     private String feeStatus;
 
+    // 에너지 사용 정보
     private Double energyUsageQty;
     private Long energyChargeAmount;
     private String energyType;
 
-    private String residentName;
-    private String buildingName;
-
-
-    // String으로 저장된 날짜를 LocalDate로 변환
+    // 날짜 변환 유틸
     public LocalDate getChgbillDueDateAsLocalDate() {
-        return chgbillDueDate != null && !chgbillDueDate.isEmpty() 
-               ? LocalDate.parse(chgbillDueDate, DateTimeFormatter.ofPattern("yyyyMMdd"))
-               : null;
+        return (chgbillDueDate != null && chgbillDueDate.length() == 8)
+            ? LocalDate.parse(chgbillDueDate, DateTimeFormatter.ofPattern("yyyyMMdd"))
+            : null;
     }
 
     public LocalDate getChgbillPaidDateAsLocalDate() {
-        return chgbillPaidDate != null && !chgbillPaidDate.isEmpty() 
-               ? LocalDate.parse(chgbillPaidDate, DateTimeFormatter.ofPattern("yyyyMMdd"))
-               : null;
+        return (chgbillPaidDate != null && chgbillPaidDate.length() == 8)
+            ? LocalDate.parse(chgbillPaidDate, DateTimeFormatter.ofPattern("yyyyMMdd"))
+            : null;
     }
 
-    // 날짜를 String으로 변환
-    public String getChgbillDueDateAsString() {
-        return chgbillDueDate != null ? chgbillDueDate : null;
-    }
-
-    public String getChgbillPaidDateAsString() {
-        return chgbillPaidDate != null ? chgbillPaidDate : null;
-    }
-
-    // 날짜 파싱 메서드 (문자열을 LocalDate로 변환하고 yyyyMMdd 형식으로 반환)
     public void setChgbillDueDateFromString(String dueDate) {
         if (dueDate != null && !dueDate.isEmpty()) {
-            this.chgbillDueDate = LocalDate.parse(dueDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            this.chgbillDueDate = LocalDate.parse(dueDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                                            .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         }
     }
 
     public void setChgbillPaidDateFromString(String paidDate) {
         if (paidDate != null && !paidDate.isEmpty()) {
-            this.chgbillPaidDate = LocalDate.parse(paidDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            this.chgbillPaidDate = LocalDate.parse(paidDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                                             .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         }
     }
+
     public String getFormattedDueDate() {
-        if (chgbillDueDate == null || chgbillDueDate.length() != 8) return "";
-        return chgbillDueDate.substring(0, 4) + "-" +
-               chgbillDueDate.substring(4, 6) + "-" +
-               chgbillDueDate.substring(6, 8);
+        return (chgbillDueDate != null && chgbillDueDate.length() == 8)
+            ? chgbillDueDate.substring(0, 4) + "-" +
+              chgbillDueDate.substring(4, 6) + "-" +
+              chgbillDueDate.substring(6, 8)
+            : "";
     }
 }
