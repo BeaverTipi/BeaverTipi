@@ -5,7 +5,10 @@ import java.io.Serializable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+
 @Data
+
+@SuppressWarnings("serial")
 public class UnitResidentVO implements Serializable {
 	@NotBlank
 	private String unitId;
@@ -15,7 +18,7 @@ public class UnitResidentVO implements Serializable {
 	private String moveInDt;
 	private String moveOutDt;
 	private String mbrCd;
-	private String unitDelYn;
+	
 	
 	
 	private BuildingVO building;

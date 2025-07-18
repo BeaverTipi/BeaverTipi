@@ -10,22 +10,22 @@
  */
 package kr.or.ddit.building.resident.controller;
 
-import java.util.List;
+
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
 import kr.or.ddit.building.resident.service.MoveInService;
-import kr.or.ddit.util.security.auth.RealUserWrapper;
-import kr.or.ddit.vo.CommonCodeVO;
-import kr.or.ddit.vo.MemberVO;
+
 import kr.or.ddit.vo.UnitResidentVO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,18 +46,26 @@ public class MoveInAddController {
     private MoveInService moveInService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerResident(@RequestBody UnitResidentVO vo,
-        @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
+    public ResponseEntity<String> registerResident(
+        @RequestBody UnitResidentVO vo
+        /* 필요하면 @AuthenticationPrincipal RealUserWrapper<MemberVO> principal */
+    ) {
+        // 걍임대인ID도 받아와버려 썅!
+        log.info("=== 입주민 등록 시도 ===");
+        log.info("unitId: {}", vo.getUnitId());
+        log.info("bldgId: {}", vo.getBldgId());
+        log.info("rentalPtyId: {}", vo.getRentalPtyId());
+        log.info("mbrCd: {}", vo.getMbrCd());
+        log.info("moveInDt: {}", vo.getMoveInDt());
 
-        MemberVO loginMember = principal.getRealUser();
-
-        vo.setRentalPtyId(loginMember.getTenancy().getRentalPtyId());
-
-        log.info("입주민 등록 요청: {}", vo);
+        // (선택) rentalPtyId null 체크
+        if (vo.getRentalPtyId() == null || vo.getRentalPtyId().isEmpty()) {
+            log.error("rentalPtyId 값이 없습니다!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("임대사업자 정보 누락");
+        }
 
         int result = moveInService.registerResident(vo);
         return ResponseEntity.ok(result > 0 ? "SUCCESS" : "FAIL");
     }
-    
    
 }

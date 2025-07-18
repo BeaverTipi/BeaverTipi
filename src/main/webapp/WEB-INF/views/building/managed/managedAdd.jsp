@@ -122,10 +122,7 @@
       <label for="bldgCmpltnDt">준공일</label>
       <form:input path="bldgCmpltnDt" type="date" id="bldgCmpltnDt" />
     </div>
-<div class="form-row">
-  <label for="bldgFlrCnt">층수</label>
-  <form:input path="bldgFlrCnt" id="bldgFlrCnt" placeholder="예: 5" />
-</div>
+
     <div class="form-row">
       <label for="lstgLease">전세</label>
       <input type="text" name="lstgLease" id="lstgLease" />
@@ -155,7 +152,7 @@
     </div>
 
     <div class="form-row" style="text-align: right;">
-      <button type="submit" class="submit-btn">건물 등록</button>
+      <button type="submit" class="submit-btn">상세정보 입력</button>
     </div>
   </div>
 </form:form>

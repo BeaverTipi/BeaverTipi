@@ -8,10 +8,10 @@
   <insert id="insertResident" parameterType="UnitResidentVO">
     INSERT INTO UNIT_RESIDENT (
       UNIT_ID, BLDG_ID, RENTAL_PTY_ID,
-      MOVE_IN_DT, MBR_CD, UNIT_DEL_YN
+      MOVE_IN_DT, MBR_CD
     ) VALUES (
       #{unitId}, #{bldgId}, #{rentalPtyId},
-      #{moveInDt}, #{mbrCd}, 'N'
+      #{moveInDt}, #{mbrCd}
     )
   </insert>
 
@@ -59,7 +59,7 @@
       )
   </select>
 <!-- 임대사업자 ID로 건물 목록 조회 -->
-<select id="selectBuildingsByRentalPtyId" parameterType="string" resultType="BuildingVO">
+	<select id="selectBuildingsByRentalPtyId" parameterType="string" resultType="BuildingVO">
 	  SELECT 
 	    BLDG_ID,
 	    RENTAL_PTY_ID,
@@ -74,5 +74,44 @@
 	  WHERE RENTAL_PTY_ID = #{rentalPtyId}
 	    AND DEL_YN = 'N'
 	  ORDER BY BLDG_NM ASC
-</select>
+	</select>
+	<select id="selectUnitResidentWithVacancy" parameterType="string" resultType="map">
+	  SELECT
+	    u.UNIT_ID,
+	    u.BLDG_ID,
+	    u.RENTAL_PTY_ID,
+	    u.UNIT_ROOM,
+	    u.UNIT_FLR_NO,
+	    u.UNIT_STAT_CD,
+	    ur.MBR_CD,
+	    ur.MOVE_IN_DT,
+	    ur.MOVE_OUT_DT,
+	    ur.UNIT_DEL_YN,
+	    m.MBR_NM,
+	    m.MBR_ID,
+	    m.MBR_TELNO
+	  FROM UNIT u
+	  LEFT OUTER JOIN UNIT_RESIDENT ur
+	    ON u.UNIT_ID = ur.UNIT_ID
+	   AND u.BLDG_ID = ur.BLDG_ID
+	   AND u.RENTAL_PTY_ID = ur.RENTAL_PTY_ID
+	  LEFT OUTER JOIN MEMBER m
+	    ON ur.MBR_CD = m.MBR_CD
+	  WHERE u.BLDG_ID = #{bldgId}
+	  ORDER BY u.UNIT_ID, ur.MBR_CD
+	</select>
+
+	<!-- 직접입력 모달에 뿌릴거얌 진짜 개복잡해 ㅡㅡ -->
+	<select id="selectVacantUnitList" resultType="kr.or.ddit.vo.UnitVO">
+	  SELECT u.UNIT_ID, u.BLDG_ID, u.UNIT_FLR_NO
+	  FROM UNIT u
+	  LEFT JOIN UNIT_RESIDENT r
+	    ON u.UNIT_ID = r.UNIT_ID
+	   AND u.BLDG_ID = r.BLDG_ID
+	   AND r.UNIT_DEL_YN = 'N'
+	  WHERE u.BLDG_ID = #{bldgId}
+	    AND (r.UNIT_ID IS NULL)  <!-- 공실인 호실만 -->
+	    
+	</select>
+
 </mapper>

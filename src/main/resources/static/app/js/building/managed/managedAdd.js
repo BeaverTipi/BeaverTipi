@@ -1,53 +1,59 @@
-function execDaumPostcode() {
-  new daum.Postcode({
-    oncomplete: function(data) {
-      document.querySelector("#bldgZipNo").value = data.zonecode;
-      document.querySelector("#bldgAddr").value = data.address;
-      document.querySelector("#bldgDtlAddr").focus();
-    }
-  }).open();
-}
+// DOM이 완전히 로드된 후 실행
+document.addEventListener("DOMContentLoaded", function () {
 
-document.addEventListener("DOMContentLoaded", () => {
-  const selectBox = document.querySelector("#listingSelectBox");
+  // 카카오 주소 검색
+  window.execDaumPostcode = function () {
+    new daum.Postcode({
+      oncomplete: function (data) {
+        document.querySelector("#bldgZipNo").value = data.zonecode;
+        document.querySelector("#bldgAddr").value = data.address;
+        document.querySelector("#bldgDtlAddr").focus();
+      }
+    }).open();
+  };
 
-  const nameInput = document.querySelector("input[name='bldgNm']");
-  const addr1Input = document.querySelector("input[name='bldgAddr']");
-  const addr2Input = document.querySelector("input[name='bldgDtlAddr']");
-  const zipcodeInput = document.querySelector("input[name='bldgZipNo']");
-  const areaInput = document.querySelector("input[name='bldgGrossArea']");
-
-  const fillListingInfo = () => {
-    const selectedId = selectBox.value;
+  // 매물 정보 불러오기
+  window.fillListingInfo = function () {
+    const selectedId = document.getElementById("listingSelectBox").value;
     if (!selectedId) {
-      console.warn("매물이 선택되지 않았습니다.");
+      console.warn("어서 선택해.");
       return;
     }
 
     fetch(`/building/managed/listing/detail?lstgId=${selectedId}`)
       .then(res => res.json())
       .then(data => {
-        if (data && data.lstgId) {
-          nameInput.value = data.lstgNm || "";
-          addr1Input.value = data.lstgAdd || "";
-          addr2Input.value = data.lstgAdd2 || "";
-          zipcodeInput.value = data.lstgPostal || "";
-          areaInput.value = data.lstgGrArea || "";
+        console.log("매물 데이터:", data);
 
-          console.info("매물 정보가 건물 등록 폼에 반영되었습니다.");
+        if (data && data.lstgId) {
+          requestAnimationFrame(() => {
+            // 매물 기본 정보 → 건물 등록 폼에 채우기
+            document.querySelector("input[name='bldgNm']").value = data.lstgNm || "";
+            document.querySelector("input[name='bldgZipNo']").value = data.lstgPostal || "";
+            document.querySelector("input[name='bldgAddr']").value = data.lstgAdd || "";
+            document.querySelector("input[name='bldgDtlAddr']").value = data.lstgAdd2 || "";
+            document.querySelector("input[name='bldgGrossArea']").value = data.lstgGrArea || "";
+
+            // 매물 유형 코드 → 건물 유형 셀렉트에 반영
+            document.querySelector("#bldgTypeCode").value = data.lstgTypeCode1 || "";
+
+            // 임대 금액 정보 바인딩
+            const leaseInput = document.querySelector("input[name='lstgLease']");
+            const leaseMInput = document.querySelector("input[name='lstgLeaseM']");
+            const leaseAmtInput = document.querySelector("input[name='lstgLeaseAmt']");
+
+            if (leaseInput) leaseInput.value = data.lstgLease || "";
+            if (leaseMInput) leaseMInput.value = data.lstgLeaseM || "";
+            if (leaseAmtInput) leaseAmtInput.value = data.lstgLeaseAmt || "";
+
+            console.info("매물 정보 가져옴");
+          });
         } else {
-          console.warn("매물 데이터를 찾을 수 없습니다.");
+          console.warn("매물 정보가 없거나 lstgId 없음");
         }
       })
       .catch(err => {
-        console.error("서버 요청 중 오류 발생:", err);
+        console.error("fetch 에 문제가 있는겨:", err);
       });
   };
-
-  const btn = document.querySelector("button[onclick='fillListingInfo()']");
-  if (btn) {
-    btn.addEventListener("click", fillListingInfo);
-  } else {
-    console.warn("불러오기 버튼을 찾을 수 없습니다.");
-  }
 });

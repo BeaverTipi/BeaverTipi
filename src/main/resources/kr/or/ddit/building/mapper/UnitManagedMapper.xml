@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.ddit.building.mapper.UnitManagedMapper">
+
+  <!-- UNIT 등록 -->
+  <insert id="insertUnit" parameterType="kr.or.ddit.vo.UnitVO">
+    INSERT INTO UNIT (
+      UNIT_ID,
+      BLDG_ID,
+      RENTAL_PTY_ID,
+      UNIT_FLR_NO,
+      UNIT_CMAR,
+      UNIT_XUAR,
+      UNIT_DSR_MNTH_RENT_AMT,
+      UNIT_DSR_SALE_AMT,
+      UNIT_DPST_AMT,
+      UNIT_DTL_DESC_CN,
+      UNIT_STAT_CD,
+      UNIT_ROOM
+    ) VALUES (
+      SEQ_UNIT_ID.NEXTVAL,
+      #{bldgId},
+      #{rentalPtyId},
+      #{unitFlrNo},
+      #{unitCmar},
+      #{unitXuar},
+      #{unitDsrMnthRentAmt},
+      #{unitDsrSaleAmt},
+      #{unitDpstAmt},
+      #{unitDtlDescCn},
+      #{unitStatCd},
+      #{unitRoom}
+    )
+  </insert>
+
+</mapper>

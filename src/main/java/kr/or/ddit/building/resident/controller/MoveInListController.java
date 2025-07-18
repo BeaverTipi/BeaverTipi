@@ -11,6 +11,7 @@
 package kr.or.ddit.building.resident.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import kr.or.ddit.building.resident.service.MoveInService;
 
 
-import kr.or.ddit.vo.UnitResidentVO;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -45,9 +46,8 @@ public class MoveInListController {
     private MoveInService moveInService;
 
     @GetMapping("/list/{bldgId}")
-    public ResponseEntity<List<UnitResidentVO>> getResidentsByBldgId(@PathVariable String bldgId) {
-        log.info("입주민 목록 조회 요청 - 건물 ID: {}", bldgId);
-        List<UnitResidentVO> list = moveInService.getResidentsByBldgId(bldgId);
+    public ResponseEntity<List<Map<String, Object>>> getResidentsByBldgId(@PathVariable String bldgId) {
+        List<Map<String, Object>> list = moveInService.getUnitResidentWithVacancy(bldgId);
         return ResponseEntity.ok(list);
     }
 }

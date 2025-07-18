@@ -77,7 +77,8 @@ public class ManagedAddController {
     	
         managedService.insertBuilding(buildingVO);
         System.out.println("여기를봐라 멍청이들아" + buildingVO);
-        return "redirect:/building/managed/list?bldgId=" + buildingVO.getBldgId();
+        return "redirect:/building/unitManaged/add?bldgId=" + buildingVO.getBldgId()
+        + "&rentalPtyId=" + buildingVO.getRentalPtyId();
     }
 	
 }
