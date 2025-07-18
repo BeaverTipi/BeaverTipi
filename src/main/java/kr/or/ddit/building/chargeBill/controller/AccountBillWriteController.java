@@ -9,4 +9,7 @@ public class AccountBillWriteController {
 	public String giro() {
 		return "building/payments/giro";
 	}
+	
+	
+	
 }
