@@ -164,11 +164,13 @@
             아름다운 우리 집 게시글 함께 만들어갑시다
           </div>
 
+
+<div class="post-list"></div>
 <div class="search-fields">
   <!-- 건물 -->
   <div class="search-item">
     <label for="bldgIdParam">건물</label>
-    <select name="search.bldgId" class="select-field">
+    <select name="search.bldgId" class="select-field" onchange="loadPosts(this.value)">
       <option value="">건물 선택</option>
       <c:forEach var="unit" items="${unitList}">
       	<option value="${unit.bldgId}" 
@@ -297,6 +299,7 @@
       });
     });
   </script>
-<script src="${pageContext.request.contextPath}/app/js/resident/residentBuliding.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/resident/residentBuilding.js"></script>
 </body>
 </html>

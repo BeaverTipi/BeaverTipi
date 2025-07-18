@@ -1,6 +1,5 @@
 package kr.or.ddit.resident.board.controller;
 
-import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,47 +34,38 @@ public class RsdBoardController {
 
     @Autowired
     private UnitResidentService unitResidentService;
-
+    
     @GetMapping("/board")
     public String readResidentBoard(
             Model model,
             @RequestParam(required = false, defaultValue = "1") int page,
-            @RequestParam(required = false) String bldgIdParam,
+            @RequestParam(value = "search.bldgId", required = false) String search_bldgId,  // search.bldgId로 받기
             @ModelAttribute("search") SimpleSearch simpleSearch,
             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
 
-    	log.info("🔎 noticeType = {}", simpleSearch.getNoticeType());
-    	log.info("📅 searchStartDate = {}", simpleSearch.getSearchStartDate());
-    	log.info("📅 searchEndDate = {}", simpleSearch.getSearchEndDate());
-        // 1) 입주민의 유닛 정보 확인
+        log.info("🔎 noticeType = {}", simpleSearch.getNoticeType());
+        log.info("📅 searchStartDate = {}", simpleSearch.getSearchStartDate());
+        log.info("📅 searchEndDate = {}", simpleSearch.getSearchEndDate());
+        log.info("📌 search_bldgId: {}", search_bldgId);
+        
+        // 입주민의 유닛 정보 확인
         MemberVO member = principal.getRealUser();
         List<UnitResidentVO> units = unitResidentService.getUnitsByMember(member.getMbrCd());
         if (units == null || units.isEmpty()) {
             return "redirect:/member/register";
         }
 
-        log.info("📌 bldgIdParam: {}", bldgIdParam);
-        log.info("📌 simpleSearch.bldgId (before): {}", simpleSearch.getBldgId());
-
-        // 2) 건물 선택이 안 됐으면 빈 리스트 리턴
-        String selectedBldgId = bldgIdParam;
-        if(selectedBldgId == null || selectedBldgId.isBlank()) {
-        	selectedBldgId = units.stream()
-        		.min(Comparator.comparing(UnitResidentVO::getMoveInDt))
-        		.map(UnitResidentVO::getBldgId)
-        		.orElse(units.get(0).getBldgId());
+        log.info("📌 search_bldgId: {}", search_bldgId);
+        
+        if (search_bldgId == null || search_bldgId.isEmpty()) {
+            search_bldgId = units.get(0).getBldgId();
         }
 
-        // 3) 선택된 건물이 있으면 VO에 세팅
-        simpleSearch.setBldgId(selectedBldgId);
-        log.info("📌 simpleSearch.bldgId (after): {}", simpleSearch.getBldgId());
-        log.info("▶ Search: bldgId={}, brdCode={}, noticeType={}, keyword={}",
-        		  simpleSearch.getBldgId(),
-        		  simpleSearch.getBrdCode(),
-        		  simpleSearch.getNoticeType(),
-        		  simpleSearch.getSearchWord()
-        		);
-        // 4) 페이징 및 검색 수행
+        // 검색 파라미터로 받은 bldgId를 SimpleSearch 객체에 세팅
+        simpleSearch.setBldgId(search_bldgId);  // search.bldgId를 simpleSearch에 설정
+        
+        
+        // 나머지 로직은 그대로
         PaginationInfo<ResidentBoardVO> paging = new PaginationInfo<>();
         paging.setCurrentPageNo(page);
         paging.setSimpleSearch(simpleSearch);
@@ -84,19 +74,19 @@ public class RsdBoardController {
         paging.setTotalRecordCount(totalRecord);
 
         List<ResidentBoardVO> boardList = boardService.getBoardList(paging);
-        String pagingHTML = new DefaultPaginationRenderer()
-                                 .renderPagination(paging, "fnPaging");
-        
-        // 5) 모델에 데이터 바인딩
+        String pagingHTML = new DefaultPaginationRenderer().renderPagination(paging, "fnPaging");
+
+        // 모델에 데이터 바인딩
         model.addAttribute("search", simpleSearch);
         model.addAttribute("unitList", units);
-        model.addAttribute("selectedBldgId", selectedBldgId);
+        model.addAttribute("selectedBldgId", search_bldgId);
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagingHTML", pagingHTML);
         model.addAttribute("pagingInfo", paging);
 
         return "resident/Board/ResidentBoard";
     }
+
     
     @GetMapping("/board/trash")
     public String readTrash(
