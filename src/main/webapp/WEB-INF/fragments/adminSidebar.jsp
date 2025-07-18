@@ -111,7 +111,7 @@
               </a>
             </li>
             <li class="nav-item ">
-              <a class="nav-link" href="${pageContext.request.contextPath}/admin/adcList">
+              <a class="nav-link" href="${pageContext.request.contextPath}/admin/businessAds/businessAdsList">
                 <span class="sidebar-text">업체 광고 관리</span>
               </a>
             </li>
