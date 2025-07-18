@@ -249,7 +249,8 @@ public class TossBillingController {
                                                    @RequestParam int amount,
                                                    @RequestParam("role") String role,
                                                    @RequestParam("solId") String solId,
-                                                   @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
+                                                   @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
+                                                   RedirectAttributes redirectAttributes) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -293,13 +294,15 @@ public class TossBillingController {
                 subscriptionVO.setSolution(solutionVO);
 
                 service.savePaymentResult(paymentVO, roleAchievedVO, subscriptionVO);
-
+                redirectAttributes.addFlashAttribute("message", "결제에 성공했습니다.");
                 return new RedirectView("/account/read?success=true");
             } else {
+            	redirectAttributes.addFlashAttribute("message", "결제에 실패했습니다.");
                 return new RedirectView("/account/read?fail=true");
             }
         } catch (Exception e) {
             log.error("일반결제 처리 중 오류", e);
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
             return new RedirectView("/account/read?fail=true");
         }
     }
