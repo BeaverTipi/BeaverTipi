@@ -29,6 +29,7 @@ import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.PaymentTosspamentsRawVO;
 import kr.or.ddit.vo.RoleAchievedVO;
 import kr.or.ddit.vo.SolutionSubscriptionPaymentVO;
+import kr.or.ddit.vo.SolutionSubscriptionVO;
 import kr.or.ddit.vo.SolutionVO;
 import kr.or.ddit.vo.SolutionnSubscriptionAutopayMethodVO;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class TossBillingController {
+
     private final SubscribeSubsriptionService service;
 
     @Value("${tosspayments.secret-key}")
@@ -49,8 +51,8 @@ public class TossBillingController {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private final String billingSuccessURL = "/ajax/toss/billing-success";
-    private final String successURL = "http://localhost/ajax/toss/payment-success";
+    private static final String BILLING_SUCCESS_URL = "/ajax/toss/billing-success";
+    private static final String PAYMENT_SUCCESS_URL = "http://localhost/ajax/toss/payment-success";
 
     @PostMapping("/billing-key")
     public ResponseEntity<Map> issueBillingKey(@RequestBody CardVO cardVO,
@@ -61,13 +63,12 @@ public class TossBillingController {
         cardRequest.put("cardExpirationMonth", cardVO.getCardExpirationMonth());
         cardRequest.put("cardPassword", cardVO.getCardPassword());
         cardRequest.put("customerIdentityNumber", cardVO.getCustomerIdentityNumber());
-        String customerKey = "CUST-" + principal.getRealUser().getMbrCd();
+        String customerKey = "CK-" + principal.getRealUser().getMbrCd();
         cardRequest.put("customerKey", customerKey);
 
-        String base64Credentials = Base64.getEncoder().encodeToString((secretKey + ":").getBytes());
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization", "Basic " + base64Credentials);
+        headers.setBasicAuth(secretKey, "");
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(cardRequest, headers);
         return restTemplate.exchange(
@@ -94,7 +95,7 @@ public class TossBillingController {
         headers.setBasicAuth(secretKey, "");
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(billingRequest, headers);
-        String url = "https://api.tosspayments.com/v1/billing/authorizations/" + cardVO.getBillingKey();
+        String url = "https://api.tosspayments.com/v1/billing/" + cardVO.getBillingKey();
         return restTemplate.exchange(url, HttpMethod.POST, request, String.class);
     }
 
@@ -109,19 +110,30 @@ public class TossBillingController {
         toss.setAmount(sol.getSolPrice());
         toss.setOrderName(sol.getSolName());
         toss.setCustomerName(principal.getRealUser().getMbrNm());
-        toss.setSuccessUrl(successURL);
+        toss.setSuccessUrl(PAYMENT_SUCCESS_URL);
         toss.setClientKey(clientKey);
 
         return toss;
     }
 
     @PostMapping("/billing-ready")
-    public PaymentTosspamentsRawVO prepareBillingRegistration(@AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
-                                                              @RequestBody SolutionVO solution) {
+    public PaymentTosspamentsRawVO prepareBillingRegistration(
+            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
+            @RequestBody SolutionVO solution) {
+
         MemberVO member = principal.getRealUser();
         String customerKey = "CK-" + member.getMbrCd();
+
+        if (solution == null || solution.getSolId() == null) {
+            throw new IllegalArgumentException("solId가 없습니다.");
+        }
+
         SolutionVO sol = service.readSolution(solution.getSolId());
-        String orderId = "ORD" + System.currentTimeMillis() + principal.getRealUser().getMbrCd();
+        if (sol == null) {
+            throw new IllegalArgumentException("해당 solId에 대한 솔루션 정보를 찾을 수 없습니다.");
+        }
+
+        String orderId = "ORD" + System.currentTimeMillis() + member.getMbrCd();
 
         PaymentTosspamentsRawVO vo = new PaymentTosspamentsRawVO();
         vo.setOrderId(orderId);
@@ -129,7 +141,10 @@ public class TossBillingController {
         vo.setCustomerKey(customerKey);
         vo.setOrderName(sol.getSolName());
         vo.setAmount(sol.getSolPrice());
-        vo.setSuccessUrl(billingSuccessURL);
+        vo.setCustomerName(member.getMbrNm());
+        vo.setSuccessUrl(BILLING_SUCCESS_URL);
+        vo.setFailUrl("/fail"); // 필요 시
+        vo.setCustomerEmail(member.getMbrEmlAddr());
 
         return vo;
     }
@@ -141,13 +156,13 @@ public class TossBillingController {
             String mbrCd = principal.getRealUser().getMbrCd();
             String billingKey = payload.get("billingKey");
             String approvedAtRaw = payload.get("approvedAt");
-            
             String customerKey = payload.get("customerKey");
             String role = payload.get("role");
+            String solId = payload.get("solId");
+
             OffsetDateTime offsetDateTime = OffsetDateTime.parse(approvedAtRaw);
             LocalDate approvedAt = offsetDateTime.toLocalDate();
 
-            // 자동결제 수단 정보
             SolutionnSubscriptionAutopayMethodVO methodVO = new SolutionnSubscriptionAutopayMethodVO();
             methodVO.setMbrCd(mbrCd);
             methodVO.setAutomethBillingkey(billingKey);
@@ -158,16 +173,23 @@ public class TossBillingController {
             methodVO.setAutomethIsActiveGrpCd("YNFG");
             methodVO.setAutomethStartedAt(approvedAt);
 
-            // 결제 정보
             SolutionSubscriptionPaymentVO paymentVO = new SolutionSubscriptionPaymentVO();
             paymentVO.setBillingKey(billingKey);
             paymentVO.setCustomerKey(customerKey);
             paymentVO.setMbrCd(mbrCd);
+
             RoleAchievedVO roleAchievedVO = new RoleAchievedVO();
             roleAchievedVO.setMbrCd(mbrCd);
             roleAchievedVO.setUserRoleId(role);
 
-            service.saveAutopayAndFirstPayment(methodVO, paymentVO, roleAchievedVO);
+            SolutionSubscriptionVO subscriptionVO = new SolutionSubscriptionVO();
+            subscriptionVO.setMbrCd(mbrCd);
+            subscriptionVO.setSolId(solId);
+            SolutionVO solutionVO = new SolutionVO();
+            solutionVO.setSolCcCd("BROKER".equalsIgnoreCase(role) ? "002" : "001");
+            subscriptionVO.setSolution(solutionVO);
+
+            service.saveAutopayAndFirstPayment(methodVO, paymentVO, roleAchievedVO, subscriptionVO);
 
             return ResponseEntity.ok(Map.of("redirectUrl", "/account/read?success=true"));
 
@@ -177,14 +199,12 @@ public class TossBillingController {
         }
     }
 
-
-
-
     @GetMapping("/payment-success")
     public RedirectView handleNormalPaymentSuccess(@RequestParam String paymentKey,
                                                    @RequestParam String orderId,
                                                    @RequestParam int amount,
                                                    @RequestParam("role") String role,
+                                                   @RequestParam("solId") String solId,
                                                    @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
         try {
             HttpHeaders headers = new HttpHeaders();
@@ -206,38 +226,36 @@ public class TossBillingController {
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 Map<String, Object> data = response.getBody();
-                String method = (String) data.get("method");
                 String approvedAtRaw = (String) data.get("approvedAt");
                 LocalDate approvedAt = LocalDate.parse(approvedAtRaw.substring(0, 10));
 
                 Map<String, Object> card = (Map<String, Object>) data.get("card");
-                String cardNumber = (String) card.get("number");
-                String cardCompany = (String) card.get("company");
+                String mbrCd = principal.getRealUser().getMbrCd();
 
                 SolutionSubscriptionPaymentVO paymentVO = new SolutionSubscriptionPaymentVO();
-                paymentVO.setSubsId("SUBS001");
-                paymentVO.setCustomerKey("CUST-" + principal.getRealUser().getMbrCd());
-                paymentVO.setMbrCd(principal.getRealUser().getMbrCd());
+                paymentVO.setCustomerKey("CUST-" + mbrCd);
+                paymentVO.setMbrCd(mbrCd);
+
                 RoleAchievedVO roleAchievedVO = new RoleAchievedVO();
-                roleAchievedVO.setMbrCd(principal.getRealUser().getMbrCd());
+                roleAchievedVO.setMbrCd(mbrCd);
                 roleAchievedVO.setUserRoleId(role);
 
-                service.savePaymentResult(paymentVO, roleAchievedVO);
+                SolutionSubscriptionVO subscriptionVO = new SolutionSubscriptionVO();
+                subscriptionVO.setMbrCd(mbrCd);
+                subscriptionVO.setSolId(solId);
+                SolutionVO solutionVO = new SolutionVO();
+                solutionVO.setSolCcCd("BROKER".equalsIgnoreCase(role) ? "002" : "001");
+                subscriptionVO.setSolution(solutionVO);
 
-                // 리다이렉트 URL 설정
-                String redirectUrl = "/account/read?success=true";  // 성공 리다이렉트 URL 설정
-                return new RedirectView(redirectUrl);  // 리다이렉트 처리
+                service.savePaymentResult(paymentVO, roleAchievedVO, subscriptionVO);
+
+                return new RedirectView("/account/read?success=true");
             } else {
-                // 실패 시 리다이렉트 처리
-                String redirectUrl = "/account/read?fail=true";
-                return new RedirectView(redirectUrl);
+                return new RedirectView("/account/read?fail=true");
             }
         } catch (Exception e) {
             log.error("일반결제 처리 중 오류", e);
-            // 예외 처리 후 리다이렉트
-            String redirectUrl = "/account/read?fail=true";
-            return new RedirectView(redirectUrl);
+            return new RedirectView("/account/read?fail=true");
         }
     }
-
 }

@@ -12,23 +12,25 @@
 package kr.or.ddit.broker.service.impl;
 
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.broker.mapper.BrokerMapper;
+import kr.or.ddit.broker.mapper.ListingMapper;
 import kr.or.ddit.broker.service.BrokerListingService;
+import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingVO;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author developer_KCY
  */
 @Service
+@RequiredArgsConstructor
 public class BrokerListingServiceImpl implements BrokerListingService{
 
-	@Autowired
-	BrokerMapper mapper;
+	private final BrokerMapper mapper;
+	private final ListingMapper listMapper;
 
 	@Override
 	public List<ListingVO> readLstgList(String mbrCd) {
@@ -39,6 +41,12 @@ public class BrokerListingServiceImpl implements BrokerListingService{
 	public ListingVO readLstgDetails(ListingVO listing) {
 		ListingVO lstg = mapper.selectLstgDetails(listing);
 		return lstg;
+	}
+
+	@Override
+	public List<FacilityOptionVO> readFacilityOptionList() {
+		// TODO Auto-generated method stub
+		return listMapper.selectfacilityOptionList();
 	}
 	
 }

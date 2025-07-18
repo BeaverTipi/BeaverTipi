@@ -131,41 +131,40 @@ document.addEventListener("DOMContentLoaded", () => {
 			}
 		});
 	});
+	
+window.openFilePopup = function(mbrCd, userType) {
+	const popupUrl = `/admin/business/filePopup/${userType}/${mbrCd}`;
+	const popupKey = `popupOpened_${userType}_${mbrCd}`;
 
-	// 파일 팝업 열기
-	// 파일 팝업 열기 + 체크박스 활성화 + 다시 열 수 없게
-	window.openFilePopup = function(mbrCd, userType) {
-		const popupUrl = `/admin/business/filePopup/${userType}/${mbrCd}`;
-		const popupKey = `popupOpened_${userType}_${mbrCd}`;
+	// 이미 열람한 경우: 다시 못 엶
+	if (sessionStorage.getItem(popupKey)) {
+		Swal.fire("안내", "이미 첨부파일을 확인하셨습니다.", "info");
+		return;
+	}
 
-		// 이미 열람한 경우: 다시 못 엶
-		if (sessionStorage.getItem(popupKey)) {
-			Swal.fire("안내", "이미 첨부파일을 확인하셨습니다.", "info");
-			return;
+	// 팝업 열기
+	const popup = window.open(popupUrl, "_blank", "width=900,height=700");
+
+	// ✅ 팝업을 열었을 때 바로 열람 상태로 간주
+	sessionStorage.setItem(popupKey, "true");
+
+	// 대상 체크박스 및 버튼 요소 찾기
+	const checkbox = document.querySelector(`.row-check[data-usertype="${userType}"][value="${mbrCd}"]`);
+	const fileBtn = document.querySelector(`#fileBtn_${userType}_${mbrCd}`);
+
+	const checkInterval = setInterval(() => {
+		if (popup.closed) {
+			clearInterval(checkInterval);
+
+			// 체크박스 활성화
+			if (checkbox) checkbox.disabled = false;
+
+			// 버튼 다시 못 누르게 비활성화
+			if (fileBtn) fileBtn.disabled = true;
 		}
+	}, 500);
+};
 
-		// 팝업 열기
-		const popup = window.open(popupUrl, "_blank", "width=900,height=700");
-
-		// 대상 체크박스 및 버튼 요소 찾기
-		const checkbox = document.querySelector(`.row-check[data-usertype="${userType}"][value="${mbrCd}"]`);
-		const fileBtn = document.querySelector(`#fileBtn_${userType}_${mbrCd}`);
-
-		const checkInterval = setInterval(() => {
-			if (popup.closed) {
-				clearInterval(checkInterval);
-
-				// 체크박스 활성화
-				if (checkbox) checkbox.disabled = false;
-
-				// 버튼 다시 못 누르게 비활성화
-				if (fileBtn) fileBtn.disabled = true;
-
-				// 열람 여부 기록
-				sessionStorage.setItem(popupKey, "true");
-			}
-		}, 500);
-	};
 
 
 	// 공통 Confirm 팝업

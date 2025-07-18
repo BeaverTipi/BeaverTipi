@@ -29,23 +29,42 @@
 					<form:input path="mbrCd" type="hidden" class="form-control" />
 					<form:input path="mbrPw" type="hidden" class="form-control" />
 				</div>
-				<div class="form-group">
-					<label>프로필 이미지</label>
-					<div class="profile-image-wrapper">
-						<c:choose>
-							<c:when test="${not empty member.mbrProfilImage}">
-								<img id="previewImage"
-									src="${pageContext.request.contextPath}${member.mbrProfilImage}"
-									alt="기존 프로필 이미지" class="profile-image-preview solid-border" />
-							</c:when>
-							<c:otherwise>
-								<img id="previewImage"
-									src="${pageContext.request.contextPath}/volt/assets/img/images/기본프로필.png"
-									alt="기본 프로필 이미지" class="profile-image-preview dashed-border" />
-							</c:otherwise>
-						</c:choose>
-					</div>
-				</div>
+<!-- ✅ 감싸는 박스: relative 기준 -->
+<div class="profile-wrapper">
+
+  <!-- 🖼 프로필 이미지 -->
+  <div class="profile-image-wrapper">
+    <c:choose>
+      <c:when test="${not empty member.mbrProfilImage}">
+        <img id="previewImage"
+             src="${pageContext.request.contextPath}${member.mbrProfilImage}"
+             alt="기존 프로필 이미지"
+             class="profile-image-preview" />
+      </c:when>
+      <c:otherwise>
+        <img id="previewImage"
+             src="${pageContext.request.contextPath}/volt/assets/img/images/기본프로필.png"
+             alt="기본 프로필 이미지"
+             class="profile-image-preview" />
+      </c:otherwise>
+    </c:choose>
+  </div>
+
+  <!-- ✅ 파일 업로드 박스 -->
+  <div class="profile-upload-box">
+    <label for="mbrProfilImage" class="upload-title">프로필 이미지 수정</label>
+    <div class="custom-file-upload">
+      <label for="mbrProfilImage" class="file-label">파일 선택</label>
+      <span id="file-name" class="file-name">선택된 파일 없음</span>
+      <form:input type="file" path="mbrProfilImage" id="mbrProfilImage"
+                  class="file-input" onchange="updateFileName(this)" />
+    </div>
+  </div>
+</div>
+
+
+
+
 
 				       <div class="form-group-wrapper">
           <div class="form-group">
@@ -91,23 +110,13 @@
             <input type="text" id="authCode" class="form-control" maxlength="6" />
           </div>
 
-          <div class="form-group full-width">
-            <label for="mbrProfilImage">프로필 이미지</label>
-            <div class="custom-file-upload">
-              <label for="mbrProfilImage" class="file-label">파일 선택</label>
-              <span id="file-name" class="file-name">선택된 파일 없음</span>
-              <form:input type="file" path="mbrProfilImage" id="mbrProfilImage"
-                class="file-input" onchange="updateFileName(this)" />
-            </div>
-          </div>
-        </div>
+    </div>
 
         <div class="form-actions">
-          <button type="submit" class="btn-primary">수정하기</button>
-          <button type="button" id="resetBtn" class="btn-outline">취소</button>
+          <button type="submit" class="btn btn-primary">수정하기</button>
+          <button type="button" id="resetBtn" class="btn btn-outline">취소</button>
         </div>
       </form:form>
-    </div>
   </div>
 
 

@@ -28,18 +28,17 @@
   <!-- 🔸 솔루션 선택 -->
   <form action="${pageContext.request.contextPath}/payment/process" method="post">
     <div><strong>구독 솔루션 선택</strong></div>
-<c:set var="selectedSolId" value="${solutionSubscription.solId}" />
 
 <div class="solution-wrapper">
   <c:forEach var="sol" items="${solutionList}">
-    <label class="solution-card ${sol.solId == selectedSolId ? 'selected' : ''}">
+    <label class="solution-card" >
       <input type="radio"
              name="solutionCode"
              value="${sol.solId}"
              data-name="${sol.solName} 솔루션"
              data-price="${sol.solPrice}"
              data-cycle="${sol.solCycle}"
-             ${sol.solId == selectedSolId ? 'checked' : ''}>
+             >
              
       <div class="title">${sol.solName}</div>
       <div class="desc">${sol.solDesc}</div>

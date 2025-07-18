@@ -164,10 +164,10 @@
 		TRIM('S')||TRIM(TO_CHAR(SEQ_SUBS_ID.NEXTVAL,'00000'))
 		, #{mbrCd}
 		, #{solId}
-		, #{subsStartedAt}
+		, SYSDATE
 		, #{subsUpdatedDate}
 		, #{subsExpirationDate}
-		, '004'
+		, '001'
 		, #{subsAutoRenewYn}
 		, #{subsRevokedAt}
 		, 'SBSTA'
@@ -220,7 +220,7 @@
 	)VALUES(
 		#{rentalPtyId}
 		, #{rentalPtyBizRegFilePath}
-		, #{rentalPtyRegBldgCnt}
+		, 0
 		, #{rentalPtyBizRegNo}
 		, #{rentalPtyFile}
 		, #{rentalPtyFile2}

@@ -172,3 +172,83 @@
   gap: 10px;
   align-items: center;
 }
+/* ✅ 전체 프로필 wrapper: 이미지 기준 상대 위치 */
+.profile-wrapper {
+  position: relative;
+  margin: 0 auto;
+}
+
+/* ✅ 프로필 이미지 스타일 */
+.profile-image-preview {
+  width: 500px;
+  height: 500px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #ccc;
+}
+
+/* ✅ 오른쪽 하단 고정된 업로드 박스 */
+.profile-upload-box {
+  position: absolute;
+  right: -20px;
+  bottom: -10px;
+  background-color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* ✅ 제목 스타일 */
+.profile-upload-box .upload-title {
+  margin-bottom: 4px;
+}
+
+/* ✅ 파일 업로드 UI */
+.custom-file-upload {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-label {
+  cursor: pointer;
+}
+.form-actions {
+  display: flex;
+  gap: 16px; /* 버튼 사이 여백 */
+  margin-top: 30px;
+   justify-content: flex-end;
+   width: 100%; 
+}
+
+.btn {
+  padding: 12px 32px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* ✅ 기본 버튼 스타일 */
+.btn-primary {
+  background-color: #d4a373;
+  color: white;
+  border: none;
+}
+
+.btn-outline {
+  background-color: white;
+  border: 1px solid #d4a373;
+  color: #d4a373;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+

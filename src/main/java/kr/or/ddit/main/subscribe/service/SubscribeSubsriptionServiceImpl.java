@@ -13,6 +13,7 @@ import kr.or.ddit.util.validate.exception.FileIOException;
 import kr.or.ddit.util.validate.exception.SubscriptionException;
 import kr.or.ddit.util.validate.exception.TenancyException;
 import kr.or.ddit.vo.BrokerVO;
+import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.RoleAchievedVO;
 import kr.or.ddit.vo.SolutionSubscriptionPaymentVO;
 import kr.or.ddit.vo.SolutionSubscriptionVO;
@@ -52,6 +53,7 @@ public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionServ
 	}
 
 	@Override
+	@Transactional
 	public void createBroker(BrokerVO broker) {
 		if (this.checkedBrokerCount(broker.getMbrCd()) > 0) {
 			throw new BrokerException();
@@ -73,6 +75,7 @@ public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionServ
 	}
 
 	@Override
+	@Transactional
 	public void createTenancy(TenancyVO tenancy) {
 		if (this.checkedTenancyCount(tenancy.getMbrCd())>0) {
 			throw new TenancyException();
@@ -81,7 +84,8 @@ public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionServ
 		MultipartFile file = tenancy.getTenancyFile();
 		if (file != null || file.isEmpty()) {
 			try {
-				service.uploadAndSave(file, "broker", "BROKER", tenancy.getMbrCd(), "002");
+				FileVO  fileVO = service.uploadAndSave(file, "tenancy", "TENANCY", tenancy.getMbrCd(), file.getContentType());
+				tenancy.setRentalPtyBizRegFilePath(fileVO.getFilePathUrl());
 			} catch (FileIOException e) {
 				e.printStackTrace();
 				return;
@@ -132,13 +136,15 @@ public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionServ
 	
 	@Override
 	@Transactional
-	public void savePaymentResult(SolutionSubscriptionPaymentVO paymentVO,RoleAchievedVO roleAchievedVO) {
+	public void savePaymentResult(SolutionSubscriptionPaymentVO paymentVO,RoleAchievedVO roleAchievedVO,SolutionSubscriptionVO solutionSubVO) {
+		this.createSolutionSubscription(solutionSubVO);
 		mapper.insertSubscriptionPayment(paymentVO);
 		mapper.insertRoleAchived(roleAchievedVO);
 	}
 	@Override
 	@Transactional
-	public void saveAutopayAndFirstPayment(SolutionnSubscriptionAutopayMethodVO methodVO, SolutionSubscriptionPaymentVO paymentVO,RoleAchievedVO roleAchievedVO) {
+	public void saveAutopayAndFirstPayment(SolutionnSubscriptionAutopayMethodVO methodVO, SolutionSubscriptionPaymentVO paymentVO,RoleAchievedVO roleAchievedVO, SolutionSubscriptionVO solutionSubVO) {
+		this.createSolutionSubscription(solutionSubVO);
 	    mapper.insertSubscriptionBillingKey(methodVO);
 	    mapper.insertSubscriptionPayment(paymentVO);
 	    mapper.insertRoleAchived(roleAchievedVO);
@@ -155,5 +161,7 @@ public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionServ
 		// TODO Auto-generated method stub
 		return mapper.selectTenancy(username);
 	}
+	
+
 
 }

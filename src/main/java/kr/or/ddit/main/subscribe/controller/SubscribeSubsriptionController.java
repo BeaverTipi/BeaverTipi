@@ -21,7 +21,9 @@ import kr.or.ddit.main.subscribe.service.SubscribeSubsriptionService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.util.validate.BrokerInsertGroup;
 import kr.or.ddit.util.validate.TenancyInsertGroup;
+import kr.or.ddit.util.validate.exception.BrokerException;
 import kr.or.ddit.util.validate.exception.FileIOException;
+import kr.or.ddit.util.validate.exception.TenancyException;
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.MemberVO;
@@ -67,15 +69,11 @@ public class SubscribeSubsriptionController {
 
 	@GetMapping("/apply/broker")
 	public String brokerForm(Model model) {
-		List<SolutionVO> solutionList = service.readCommonCodeSolutionList("002");
-
-		model.addAttribute("solutionList", solutionList);
 		return "main/subscribe/brokerForm";
 	}
 
 	@PostMapping("/apply/broker")
 	public String brokerFormProcess(@AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
-	                                @RequestParam(name = "solution", required = false) String solutionId,
 	                                @Validated(BrokerInsertGroup.class) @ModelAttribute(BROKER) BrokerVO broker,
 	                                BindingResult errors,
 	                                RedirectAttributes redirectAttributes) {
@@ -85,28 +83,23 @@ public class SubscribeSubsriptionController {
 	        try {
 	            String mbrCd = principal.getRealUser().getMbrCd();
 	            SolutionSubscriptionVO sol = new SolutionSubscriptionVO();
-	            sol.setSolId(solutionId);
-	            sol.setMbrCd(mbrCd);
-	            SolutionVO solution = new SolutionVO();
-	            solution.setSolCcCd("002");
-	            sol.setSolution(solution);
-	            service.createSolutionSubscription(sol);
-
 	            broker.setMbrCd(mbrCd);
+
 	            service.createBroker(broker);
 
 	            lvn = "redirect:/account/read";
 
-	        } catch (Exception e) {
+	        } catch (FileIOException e) {
 	            log.error("▶▶ 예외 발생: ", e);
 	            redirectAttributes.addFlashAttribute("message", e.getMessage());
 	            redirectAttributes.addFlashAttribute("broker", broker);
-	            redirectAttributes.addFlashAttribute("solutionId", solutionId);
+	        } catch(BrokerException e) {
+	        	redirectAttributes.addFlashAttribute("message", e.getMessage());
 	        }
+	        
 	    } else {
 	        String errorName = BindingResult.MODEL_KEY_PREFIX + "broker";
 	        redirectAttributes.addFlashAttribute("broker", broker);
-	        redirectAttributes.addFlashAttribute("solutionId", solutionId);
 	        redirectAttributes.addFlashAttribute(errorName, errors);
 	    }
 
@@ -115,15 +108,13 @@ public class SubscribeSubsriptionController {
 
 	@GetMapping("/apply/tenancy")
 	public String tenancyForm(Model model) {
-		List<SolutionVO> solutionList = service.readCommonCodeSolutionList("001");
-		
-		model.addAttribute("solutionList", solutionList);
+		List<CommonCodeVO> lsrTypeCodeList = commonService.readCommonCodeList("LSR");
+		model.addAttribute("lsrTypeCodeList", lsrTypeCodeList);
 		return "main/subscribe/tenancyForm";
 	}
 
 	@PostMapping("/apply/tenancy")
 	public String tenancyFormProcess(@AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
-			@RequestParam(name = "solution", required = false) String solutionId,
 			@Validated(TenancyInsertGroup.class) @ModelAttribute(TENANCY) TenancyVO tenancy, BindingResult errors,
 			RedirectAttributes redirectAttributes) {
 		String lvn = "redirect:/apply/tenancy";
@@ -131,12 +122,6 @@ public class SubscribeSubsriptionController {
 		if (!errors.hasErrors()) {
 			try {
 				String mbrCd = principal.getRealUser().getMbrCd();
-				
-				SolutionSubscriptionVO sol = new SolutionSubscriptionVO();
-				sol.setSolId(solutionId);
-				sol.setMbrCd(mbrCd);
-				service.createSolutionSubscription(sol);
-				
 				tenancy.setMbrCd(mbrCd);
 				service.createTenancy(tenancy);
 				// 수정 성공 후? 새 mypage로 이동
@@ -145,13 +130,14 @@ public class SubscribeSubsriptionController {
 				// 인증 실패? 수정양식으로 redirect, 비번오류 메시지, 기존 입력 데이터
 				redirectAttributes.addFlashAttribute("message", e.getMessage());
 				redirectAttributes.addFlashAttribute(TENANCY, tenancy);
-				redirectAttributes.addFlashAttribute("solutionId", solutionId);
+			}catch (TenancyException e) {
+				redirectAttributes.addFlashAttribute("message", e.getMessage());
 			}
 		} else {
 			// 검증 실패? 수정양식으로 redirect, 검증 에러 메시지, 기존 입력데이터
+			log.info(errors.toString());
 			String errorName = BindingResult.MODEL_KEY_PREFIX + TENANCY;
 			redirectAttributes.addFlashAttribute(TENANCY, tenancy);
-			redirectAttributes.addFlashAttribute("solutionId", solutionId);
 			redirectAttributes.addFlashAttribute(errorName, errors);
 		}
 		return lvn;

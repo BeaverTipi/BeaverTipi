@@ -34,7 +34,7 @@ public class MemberRegisterController {
 	private final MemberService service;
 	
 	private static final String MODELNAME = "member";
-	
+	private final String DONE = "회원가입이 완료 되었습니다.";
 	@ModelAttribute(MODELNAME)
 	public MemberVO member(
 	    @SessionAttribute(name = WebAttributes.AUTHENTICATION_EXCEPTION, required = false)
@@ -108,6 +108,7 @@ public class MemberRegisterController {
 		}else {
 			try {
 				service.createMember(member);
+				redirectAttributes.addFlashAttribute("message", DONE);
 				lvn = "redirect:/";
 				  if (lastException instanceof OAuth2AuthenticationException oauth2Ex) {
 		                Throwable cause = oauth2Ex.getCause();

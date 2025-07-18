@@ -24,7 +24,7 @@ public interface SubscribeSubsriptionService {
 	public int checkedTenancyCount(String username);
 	public SolutionSubscriptionVO checkedSolutionSubscription(String username, String SolutionCode);
 	public List<SolutionSubscriptionVO> checkedSolutionSubscriptionList(String username);
-	public void savePaymentResult(SolutionSubscriptionPaymentVO paymentVO ,RoleAchievedVO roleAchievedVO);
+	public void savePaymentResult(SolutionSubscriptionPaymentVO paymentVO ,RoleAchievedVO roleAchievedVO,SolutionSubscriptionVO solutionSubVO);
 	public void saveAutopayAndFirstPayment(SolutionnSubscriptionAutopayMethodVO methodVO,
-			SolutionSubscriptionPaymentVO paymentVO,RoleAchievedVO roleAchievedVO);
+			SolutionSubscriptionPaymentVO paymentVO,RoleAchievedVO roleAchievedVO,SolutionSubscriptionVO solutionSubVO);
 }

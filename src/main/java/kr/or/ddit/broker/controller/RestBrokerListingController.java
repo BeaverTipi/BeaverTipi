@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
 import kr.or.ddit.broker.service.BrokerListingService;
 import kr.or.ddit.util.crypto.AES256Util;
+import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,44 +62,49 @@ public class RestBrokerListingController {
 	}
 	
 	@PostMapping("/listing-details")
-	public Map<String, String> lstgDetails(
-			Principal principal,
-			@RequestBody Map<String, String> payload
-	) {
-		String iv = payload.get("iv");
-		String encrypted = payload.get("encrypted");
-		if (encrypted == null) throw new IllegalArgumentException("암호화된 요청 없음");
+	public Map<String, String> lstgDetails(Principal principal, @RequestBody Map<String, String> payload) {
+	    Map<String, String> parsedRequest = decryptRequestPayload(payload);
+	    String lstgId = parsedRequest.get("lstgId");
+	    if (lstgId == null) throw new IllegalArgumentException("lstgId 누락");
 
-		String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
+	    String mbrCd = authUnpack.getMbrCd(principal.getName());
+	    ListingVO listing = new ListingVO();
+	    listing.setLstgId(lstgId);
+	    listing.setMbrCd(mbrCd);
 
-		Map<String, String> parsedRequest;
-		try {
-			parsedRequest = mapper.readValue(decryptedJson, new TypeReference<>() {});
-		} catch (Exception e) {
-			throw new RuntimeException("요청 JSON 파싱 실패", e);
-		}
-		String lstgId = parsedRequest.get("lstgId");
-		if (lstgId == null) throw new IllegalArgumentException("lstgId 누락");
-
-
-		String username = principal.getName();
-		log.error("Handler::lstgDetails() -> username: {}", username);
-		String mbrCd = authUnpack.getMbrCd(username);
-
-		if (lstgId == null) throw new IllegalArgumentException("lstgId 누락");
-
-		ListingVO listing = new ListingVO();
-		listing.setLstgId(lstgId);
-		listing.setMbrCd(mbrCd);
-
-		ListingVO lstgDetails = service.readLstgDetails(listing);
-
-		try {
-			String resultJson = mapper.writeValueAsString(lstgDetails);
-			Map<String, String> encryptedResponse = aes256Util.encryptWithDynamicIV(resultJson);
-			return encryptedResponse;
-		} catch (Exception e) {
-			throw new RuntimeException("응답 암호화 실패", e);
-		}
+	    ListingVO lstgDetails = service.readLstgDetails(listing);
+	    return encryptResponsePayload(lstgDetails);
 	}
+
+	
+	@PostMapping("/facilityOption")
+	public Map<String, String> facilityOption() {
+	    List<FacilityOptionVO> facilityOptionList = service.readFacilityOptionList();
+	    return encryptResponsePayload(facilityOptionList);
+	}
+
+	
+	private Map<String, String> decryptRequestPayload(Map<String, String> payload) {
+	    String iv = payload.get("iv");
+	    String encrypted = payload.get("encrypted");
+	    if (encrypted == null) throw new IllegalArgumentException("암호화된 요청 없음");
+
+	    String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
+	    try {
+	        return mapper.readValue(decryptedJson, new TypeReference<>() {});
+	    } catch (Exception e) {
+	        throw new RuntimeException("요청 JSON 파싱 실패", e);
+	    }
+	}
+	
+	private Map<String, String> encryptResponsePayload(Object responseData) {
+	    try {
+	        String resultJson = mapper.writeValueAsString(responseData);
+	        return aes256Util.encryptWithDynamicIV(resultJson);
+	    } catch (Exception e) {
+	        throw new RuntimeException("응답 암호화 실패", e);
+	    }
+	}
+
+
 }

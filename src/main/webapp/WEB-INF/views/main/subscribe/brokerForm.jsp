@@ -106,24 +106,7 @@
 
 					<!-- 오른쪽 컬럼: 구독 솔루션 + PDF 미리보기 -->
 					<div class="right-column">
-						<div class="form-group mb-4">
-							<label class="form-label d-block mb-2">구독 솔루션 선택</label>
-							<c:forEach var="solution" items="${solutionList}"
-								varStatus="status">
-								<div class="form-check mb-2">
-									<input class="form-check-input" type="radio" name="solution"
-										id="solution_${solution.solId}" value="${solution.solId}"
-										<%-- 첫 번째 항목은 무조건 checked, 그 외는 조건 비교 --%>
-					<c:choose>
-						<c:when test="${status.first && empty solutionId}">checked="checked"</c:when>
-						<c:when test="${solution.solId == solutionId}">checked="checked"</c:when>
-					</c:choose> />
-									<label class="form-check-label"
-										for="solution_${solution.solId}"> ${solution.solName}
-									</label>
-								</div>
-							</c:forEach>
-						</div>
+						
 
 						<div id="pdfViewer">
 							<div id="emptyMessage" class="text-muted small">첨부된 파일이

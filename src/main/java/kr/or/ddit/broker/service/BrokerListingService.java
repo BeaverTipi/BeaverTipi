@@ -14,6 +14,7 @@ package kr.or.ddit.broker.service;
 import java.util.List;
 import java.util.Map;
 
+import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingVO;
 
 /**
@@ -28,4 +29,6 @@ public interface BrokerListingService {
 	public List<ListingVO> readLstgList(String mbrCd);
 	
 	public ListingVO readLstgDetails(ListingVO listing);
+	
+	public List<FacilityOptionVO> readFacilityOptionList();
 }

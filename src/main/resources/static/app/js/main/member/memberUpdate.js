@@ -8,13 +8,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const authCodeWrapper = document.querySelector("#authCodeWrapper");
   const timerText = document.querySelector("#timerText");
   const resetBtn = document.querySelector("#resetBtn");
-
+  const baseURL = window.location.origin;
+  
   let verified = false;
   let failCount = 0;
   let timer = null;
   let remainingTime = 300;
 
   const originalTel = telInput.value;
+resetBtn.addEventListener("click", () => {
+ location.href =`${baseURL}/account/read`;
+});
 
 function toggleButtonVisibility() {
   const currentTel = telInput.value.trim();

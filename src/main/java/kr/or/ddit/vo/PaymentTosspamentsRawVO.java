@@ -3,6 +3,7 @@ import java.io.Serializable;
 
 import org.springframework.beans.factory.annotation.Value;
 
+import jakarta.validation.constraints.Email;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -31,4 +32,6 @@ public class PaymentTosspamentsRawVO implements Serializable{
 	private String failUrl;
 	private String clientKey;
 	private String customerKey;
+	@Email
+	private String customerEmail;
 }
