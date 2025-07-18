@@ -37,6 +37,8 @@ public class BoardVO implements Serializable{
 	@NotBlank(groups = {InsertGroup.class, DeleteGroup.class})
 	private String brdDelYn;
 	
+	private String noticeType; 
+	private String noticeTypeName;	
 	private List<NoticeVO> notice;
 	private BoardCartegoryVO boardCartegory;
 	private List<FAQVO> faq;
