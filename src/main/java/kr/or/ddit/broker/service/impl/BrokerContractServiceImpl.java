@@ -105,10 +105,16 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	}
 
 	@Override
+	public List<ContractVO> readProceedingContractsList(String mbrCd) {
+		List<ContractVO> proceedingContractsList = null;
+		proceedingContractsList = mapper.selectProceedingContractsList(mbrCd);
+		return proceedingContractsList;
+	}
+
+
+	@Override
 	public ResponseEntity<?> processOfCreatingContract() {
 		// TODO 컨트롤러 다이어트 들어가야지...
 		return null;
 	}
-
-
 }

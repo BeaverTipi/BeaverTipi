@@ -66,7 +66,6 @@ public class RestSpringSecurityConfig {
 			)
 			.addFilterBefore(new JwtAuthenticationFilter(jwtProvider), 
 					 UsernamePasswordAuthenticationFilter.class);
-
 		return http.build();
 	}
 	

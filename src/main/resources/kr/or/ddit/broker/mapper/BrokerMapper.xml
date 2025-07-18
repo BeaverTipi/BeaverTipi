@@ -190,4 +190,11 @@
 	   SET LSTG_PROD_STAT = '002'
 	 WHERE LSTG_ID = #{lstgId}
 </update>
+<select id="selectProceedingContractsList" parameterType="String" resultType="ContractVO">
+	SELECT *
+	  FROM CONTRACT
+	 WHERE MBR_CD_BROK = #{mbrCd}
+	   AND CONT_STAT_CD = '001'
+	 ORDER BY CONT_DTM DESC
+</select>
 </mapper>

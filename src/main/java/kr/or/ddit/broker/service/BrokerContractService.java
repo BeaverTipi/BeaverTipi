@@ -55,6 +55,7 @@ public interface BrokerContractService {
 	public String modifyListingProdStat(String contId);
 	
 	
+	public List<ContractVO> readProceedingContractsList(String mbrCd);
 	
 	
 	

@@ -74,6 +74,12 @@ public interface BrokerMapper {
 	 */
 	public int updateListingProdStat(String lstgId);
 	
+	/**
+	 * @param params: mbrCd && contStatCd "001"
+	 * @return 진행중인 계약 리스트
+	 */
+	public List<ContractVO> selectProceedingContractsList(String mbrCd);
+	
 	public List<CommonCodeVO> selectBankList();
 	public List<CommonCodeVO> selectLesserTypeList();
     public List<CommonCodeVO> selectCommonCodeByGroup(@Param("codeGroup") String codeGroup);
