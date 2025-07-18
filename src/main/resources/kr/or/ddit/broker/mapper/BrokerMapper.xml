@@ -126,6 +126,11 @@
 	  FROM MEMBER
 	 WHERE MBR_CD = #{mbrCd}
 </select>
+<select id="selectTenancyInfo" parameterType="String" resultType="TenancyVO">
+	SELECT *
+	  FROM TENANCY
+	 WHERE RENTAL_PTY_ID = #{rentalPtyId}
+</select>
 <select id="selectCommonCodeByGroup" parameterType="String" resultType="CommonCodeVO">
     SELECT *
       FROM COMMON_CODE

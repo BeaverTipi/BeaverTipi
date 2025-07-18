@@ -32,9 +32,12 @@ import kr.or.ddit.vo.TenancyVO;
 @Mapper
 public interface BrokerMapper {
 
-	public TenancyVO selectTenancyInfo(String rentalPtyId);
-	public BrokerVO selectBrokerInfo(String mbrCd);
-	public MemberVO selectLesseeInfo(String mbrCd);
+	/** 안 쓰고 싶었는데 필요해졌다.
+	 * @param rentalPtyId
+	 * @return
+	 */
+	public List<TenancyVO> selectTenancyInfo(String rentalPtyId);
+	
 
 	/**
 	 * @param mbrCd :중개인의 멤버코드
@@ -75,6 +78,8 @@ public interface BrokerMapper {
 	public List<CommonCodeVO> selectLesserTypeList();
     public List<CommonCodeVO> selectCommonCodeByGroup(@Param("codeGroup") String codeGroup);
     
+    public BrokerVO selectBrokerInfo(String mbrCd);
+    public MemberVO selectLesseeInfo(String mbrCd);
     
     
 

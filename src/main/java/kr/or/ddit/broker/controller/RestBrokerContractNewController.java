@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,6 +54,7 @@ import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
 import kr.or.ddit.vo.StandardLeaseFormDTO;
+import kr.or.ddit.vo.TenancyVO;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -112,6 +114,32 @@ public class RestBrokerContractNewController {
 		List<ListingWishlistVO> wishlist = contService.readLesseeVolunteerList(lstgId);
 		return wishlist;
 	}
+	
+	@PostMapping("/lessor")
+	public List<TenancyVO> lessorForContract(@RequestBody Map<String, String> payload) {
+		String iv = payload.get("iv");
+		String encrypted = payload.get("encrypted");
+		if (encrypted == null)
+			throw new IllegalArgumentException("암호화된 요청 없음");
+		String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
+		
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+		mapper.registerModule(new JavaTimeModule());
+		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		
+		String rentalPtyId = "";
+		try {
+			Map<String, String> parsedRequest = mapper.readValue(decryptedJson, new TypeReference<>() {});
+			rentalPtyId = String.valueOf(parsedRequest.get("rentalPtyId"));
+		} catch(JsonProcessingException e) { e.printStackTrace(); }
+		
+		log.debug("------<><><><> {}", rentalPtyId);
+		
+		return contService.readTenancyList(rentalPtyId);
+	}
+	
 
 	@PostMapping("/submit")
 	public ResponseEntity<?> encryptedNewContract(Principal principal,

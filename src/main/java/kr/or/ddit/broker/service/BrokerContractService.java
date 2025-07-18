@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import kr.or.ddit.vo.ContractVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
+import kr.or.ddit.vo.TenancyVO;
 
 /**
  * @author developer_KCY
@@ -36,6 +37,8 @@ public interface BrokerContractService {
 	 */
 	public List<ListingWishlistVO> readLesseeVolunteerList(String lstgId);
 	
+	public List<TenancyVO> readTenancyList(String rentalPtyId);
+	
 	public Map<String, Object> readContractPartyInfo(Map<String, String> partyInfoParams);
 	
 	public List<ContractVO> readContractList(String mbrCd);
@@ -50,6 +53,8 @@ public interface BrokerContractService {
 	 * @return
 	 */
 	public String modifyListingProdStat(String contId);
+	
+	
 	
 	
 	

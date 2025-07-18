@@ -23,6 +23,7 @@ import kr.or.ddit.broker.service.BrokerContractService;
 import kr.or.ddit.vo.ContractVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
+import kr.or.ddit.vo.TenancyVO;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -64,6 +65,14 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 		return lesseeVolunteerList;
 	}
 
+	@Override
+	public List<TenancyVO> readTenancyList(String rentalPtyId) {
+		List<TenancyVO> tenancyList = null;
+		tenancyList = mapper.selectTenancyInfo(rentalPtyId);
+		return tenancyList;
+	};
+
+	
 	/**
 	 *	@param principal 내에서 불러온 Broker의 mbrCd
 	 *	@return Broker가 가진 계약(CONTRACT)의 리스트
@@ -99,6 +108,7 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	public ResponseEntity<?> processOfCreatingContract() {
 		// TODO 컨트롤러 다이어트 들어가야지...
 		return null;
-	};
+	}
+
 
 }
