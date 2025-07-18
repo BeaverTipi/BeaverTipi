@@ -59,7 +59,7 @@ public class RentalOwnerProductAddController {
 
         // 3. 그룹핑 (FAC_TYPE_GROUP_CD 기준)
         Map<String, List<FacilityOptionVO>> facilityMap = optionList.stream()
-            .collect(Collectors.groupingBy(FacilityOptionVO::getFacTypeGroupCd));
+            .collect(Collectors.groupingBy(FacilityOptionVO::getFacTypeCcCd));
 
         // 4. 모델에 추가
         model.addAttribute("facilityMap", facilityMap);
