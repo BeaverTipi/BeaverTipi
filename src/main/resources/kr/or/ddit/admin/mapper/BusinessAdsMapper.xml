@@ -62,11 +62,11 @@
 	        WHERE
 	            1=1
 	        <if test="detailSearch != null">
-	        	<if test="detailSearch.searchTitle != null and detailSearch.searchTitle != ''">
-	                AND B.BRD_TITL_NM LIKE '%' || #{detailSearch.searchTitle} || '%'
+	        	<if test="detailSearch.searchAdsTitle != null and detailSearch.searchTitle != ''">
+	                AND B.BRD_TITL_NM LIKE '%' || #{detailSearch.searchAdsTitle} || '%'
 	            </if>
-	            <if test="detailSearch.searchWriter != null and detailSearch.searchWriter != ''">
-	                AND B.MBR_CD LIKE '%' || #{detailSearch.searchWriter} || '%'
+	            <if test="detailSearch.searchAdsWriter != null and detailSearch.searchWriter != ''">
+	                AND B.MBR_CD LIKE '%' || #{detailSearch.searchAdsWriter} || '%'
 	            </if>
 	            <if test="detailSearch.searchAdsStatusCode != null and detailSearch.searchAdsStatusCode != ''">
 	                AND A.ADS_STATUS_CODE = #{detailSearch.searchAdsStatusCode}
@@ -95,23 +95,23 @@
         WHERE
             1=1
             <if test="detailSearch != null">
-                <if test="detailSearch.searchTitle != null and detailSearch.searchTitle != ''">
-                    AND B.BRD_TITL_NM LIKE '%' || #{detailSearch.searchTitle} || '%'
+                <if test="detailSearch.searchAdsTitle != null and detailSearch.searchTitle != ''">
+                    AND B.BRD_TITL_NM LIKE '%' || #{detailSearch.searchAdsTitle} || '%'
                 </if>
-                <if test="detailSearch.searchWriter != null and detailSearch.searchWriter != ''">
-                    AND B.MBR_CD LIKE '%' || #{detailSearch.searchWriter} || '%'
+                <if test="detailSearch.searchAdsWriter != null and detailSearch.searchWriter != ''">
+                    AND B.MBR_CD LIKE '%' || #{detailSearch.searchAdsWriter} || '%'
                 </if>
                 <if test="detailSearch.searchAdsStatusCode != null and detailSearch.searchAdsStatusCode != ''">
                     AND A.ADS_STATUS_CODE = #{detailSearch.searchAdsStatusCode}
                 </if>
                 <if test="detailSearch.searchAdsBp != null and detailSearch.searchAdsBp != ''">
-                    AND A.ADS_BP LIKE '%' || #{detailSearch.adsBp} || '%'
+                    AND A.ADS_BP LIKE '%' || #{detailSearch.searchAdsBp} || '%'  
                 </if>
                 <if test="detailSearch.searchAdsPic != null and detailSearch.searchAdsPic != ''">
-                    AND A.ADS_PIC LIKE '%' || #{detailSearch.adsPic} || '%'
+                    AND A.ADS_PIC LIKE '%' || #{detailSearch.searchAdsPic} || '%'  
                 </if>
                 <if test="detailSearch.searchAdsPicTelno != null and detailSearch.searchAdsPicTelno != ''">
-                    AND A.ADS_PIC_TELNO LIKE '%' || #{detailSearch.adsPicTelno} || '%'
+                    AND A.ADS_PIC_TELNO LIKE '%' || #{detailSearch.searchAdsPicTelno} || '%' 
                 </if>
             </if>
     </select>

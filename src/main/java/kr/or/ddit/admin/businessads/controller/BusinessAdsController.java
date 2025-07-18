@@ -15,6 +15,7 @@ import kr.or.ddit.admin.businessads.service.BusinessAdsService;
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.util.renderer.DefaultPaginationRenderer;
 import kr.or.ddit.vo.BoardVO;
+import kr.or.ddit.vo.BusinessAdsSearchVO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -28,14 +29,9 @@ public class BusinessAdsController {
 	@GetMapping("businessAdsList") // 기존 목록 조회
 	public String selectBusinessAdsList(
 	        @RequestParam(name="page", required = false, defaultValue = "1") int currentPage,
-	        @ModelAttribute("detailSearch") BoardVO detailSearch,
+	        @ModelAttribute("detailSearch") BusinessAdsSearchVO detailSearch,
 	        Model model
 	) {
-		// detailSearch.getAdsClient()가 null일 수 있으므로 초기화 필요
-		if (detailSearch.getAdsClient() == null) {
-			detailSearch.setAdsClient(new kr.or.ddit.vo.AdsClientVO()); //AdsClientVO 객체 초기화
-		}
-		
 		
 		PaginationInfo<BoardVO> pagingVO = new PaginationInfo<>();
         pagingVO.setCurrentPageNo(currentPage);

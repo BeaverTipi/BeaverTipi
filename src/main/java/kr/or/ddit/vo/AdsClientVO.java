@@ -22,11 +22,4 @@ public class AdsClientVO implements Serializable {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate adsReqPblsEndDt;	// 광고 요청 개제 종료날짜
 	
-    // 광고 검색 조건을 위한 필드
-    private String searchAdsTitle;		// 광고 제목 검색
-    private String searchAdsWriter;		// 광고 작성자 검색
-    private String searchAdsStatusCode; // 광고 상태 코드 검색
-    private String searchAdsBp;         // 사업장명(회사명) 검색
-    private String searchAdsPic;        // 담당자명 검색
-    private String searchAdsPicTelno;   // 담당자 연락처 검색
 }

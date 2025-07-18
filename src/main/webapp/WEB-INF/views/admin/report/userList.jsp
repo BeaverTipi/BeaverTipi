@@ -6,9 +6,9 @@
 <html lang="ko">
 <head>
     <title>회원 & 매물 신고 관리</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/common_admin.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/board/userList.css">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

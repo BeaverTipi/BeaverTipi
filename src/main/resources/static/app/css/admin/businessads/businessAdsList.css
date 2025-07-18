@@ -1,0 +1,91 @@
+/* src/main/webapp/app/css/admin/businessads/businessAdsList.css */
+
+/* 추가: 테이블 행이 클릭 가능함을 시각적으로 나타냄 */
+.table tbody tr {
+    cursor: pointer;
+}
+.table tbody tr:hover {
+    background-color: #f5f5f5; /* 마우스 오버 시 배경색 변경 */
+}
+
+/* ⭐ 제공해주신 모달 스타일 ⭐ */
+/* 모달의 select 박스 크기 조절 (해당 ID가 없으면 영향 없음) */
+#modalNewMbrStatus, #modalRptStatusCode, #modalNewLtsgDel {
+    width: auto;
+    height: 100%;
+}
+
+/* ReportedUserTable 관련 스타일 (현재 페이지에는 영향 없음) */
+#reportedUserTable tbody tr:hover {
+    cursor: pointer;
+}
+#reportedUserTable tbody tr:hover td {
+    color: #f3c78e;
+}
+
+/* 버튼 스타일 (현재 페이지에는 영향 없음) */
+#btnProcessAllChanges {
+    background-color: black;
+    border-color: black;
+}
+
+/* 신고기간 버튼 마진 삭제 (해당 ID가 없으면 영향 없음) */
+#brdPblsDtmFrom {
+    margin-right: 0px;
+}
+
+/* ⭐ 모달 내부 이미지 및 파일 링크 스타일 ⭐ */
+.modal-body img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.modal-body .file-link {
+    display: block;
+    margin-bottom: 5px;
+    color: #28a745;
+    text-decoration: none;
+    font-weight: bold;
+}
+.modal-body .file-link:hover {
+    text-decoration: underline;
+}
+#attachFilesSection { /* 해당 ID가 없으면 영향 없음 */
+    margin-top: 15px;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+#attachFilesSection h5 { /* 해당 ID가 없으면 영향 없음 */
+    margin-bottom: 10px;
+    color: #343a40;
+}
+.modal-dialog.modal-lg .modal-body {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+.alert-secondary { /* 해당 클래스가 없으면 영향 없음 */
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+/* 탭 스타일 추가 (현재 페이지에는 탭 구조가 없으므로 영향 없음) */
+.nav-tabs .nav-item .nav-link {
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+    padding: .5rem 1rem;
+    color: #495057;
+}
+.nav-tabs .nav-item .nav-link.active {
+    color: #495057;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+}
+.nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 20px;
+}
