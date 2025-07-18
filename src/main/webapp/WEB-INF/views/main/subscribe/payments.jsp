@@ -208,7 +208,7 @@
 
 
 
-<script src="https://js.tosspayments.com/v1"></script>
+    <script src="https://js.tosspayments.com/v2/standard"></script>
 <script src="${pageContext.request.contextPath}/app/js/main/payments.js"></script>
 
 

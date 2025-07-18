@@ -9,7 +9,7 @@
 <script src="${pageContext.request.contextPath}/volt/vendor/onscreen/dist/on-screen.umd.min.js"></script>
 
 <!-- Slider -->
-<script src="${pageContext.request.contextPath}/volt/vendor/nouislider/distribute/nouislider.min.js"></script>
+<script src="${pageContext.request.contextPath}/volt/vendor/nouislider/dist/nouislider.min.js"></script>
 
 <!-- Smooth scroll -->
 <script src="${pageContext.request.contextPath}/volt/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
@@ -53,12 +53,10 @@
 <script src="${pageContext.request.contextPath}/app/js/main/mainPage.js"></script>
 
 <!-- tosspayments -->
-<script src="https://js.tosspayments.com/v1/payment"></script>
 
 
 <!-- pdf -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<%-- <script src="${pageContext.request.contextPath}/app/js/main/payments.js"></script> --%>
 
 
   

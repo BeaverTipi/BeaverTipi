@@ -12,7 +12,7 @@ public class CardVO implements Serializable{
 	private Integer amount;
 	private String issuerCode;
 	private String acquirerCode;
-	private String number;
+	private String cardNumber;
 	private Integer installmentPlanMonths;
 	private String approveNo;
 	private String useCardPoint;
@@ -22,9 +22,9 @@ public class CardVO implements Serializable{
 	private String isinterestFree;
 	private String interestPayer;
 	private String paymentKey;
+	private String mbrCd;
 	
 	// 결제를 위한 카드 넘겨줄 값
-    private String cardNumber;
     private String cardExpirationYear;
     private String cardExpirationMonth;
     private String cardPassword;

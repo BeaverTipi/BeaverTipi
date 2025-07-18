@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import kr.or.ddit.main.subscribe.service.SubscribeSubsriptionService;
@@ -51,7 +52,7 @@ public class TossBillingController {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private static final String BILLING_SUCCESS_URL = "/ajax/toss/billing-success";
+    private static final String BILLING_SUCCESS_URL = "http://localhost/ajax/toss/billing-success";
     private static final String PAYMENT_SUCCESS_URL = "http://localhost/ajax/toss/payment-success";
 
     @PostMapping("/billing-key")
@@ -104,7 +105,8 @@ public class TossBillingController {
                                                @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
         SolutionVO sol = service.readSolution(solution.getSolId());
         String orderId = "ORD" + System.currentTimeMillis() + principal.getRealUser().getMbrCd();
-
+        String customerKey = "CK-" + principal.getRealUser().getMbrCd();
+        
         PaymentTosspamentsRawVO toss = new PaymentTosspamentsRawVO();
         toss.setOrderId(orderId);
         toss.setAmount(sol.getSolPrice());
@@ -112,7 +114,7 @@ public class TossBillingController {
         toss.setCustomerName(principal.getRealUser().getMbrNm());
         toss.setSuccessUrl(PAYMENT_SUCCESS_URL);
         toss.setClientKey(clientKey);
-
+        toss.setCustomerKey(customerKey);
         return toss;
     }
 
@@ -148,21 +150,51 @@ public class TossBillingController {
 
         return vo;
     }
-
-    @PostMapping("/billing-success")
-    public ResponseEntity<?> handleTossSuccess(@RequestBody Map<String, String> payload,
-                                               @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
+    @GetMapping("/billing-success")
+    public RedirectView handleTossBillingSuccess(@RequestParam String customerKey,
+                                                 @RequestParam String authKey,
+                                                 @RequestParam String role,
+                                                 @RequestParam String solId,
+                                                 @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
+                                                 RedirectAttributes redirectAttributes) {
         try {
-            String mbrCd = principal.getRealUser().getMbrCd();
-            String billingKey = payload.get("billingKey");
-            String approvedAtRaw = payload.get("approvedAt");
-            String customerKey = payload.get("customerKey");
-            String role = payload.get("role");
-            String solId = payload.get("solId");
+            // 💡 Toss 인증 헤더 수동 처리
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            String encodedSecret = Base64.getEncoder().encodeToString((secretKey + ":").getBytes());
+            headers.set("Authorization", "Basic " + encodedSecret);
+
+            Map<String, String> requestBody = new HashMap<>();
+            requestBody.put("customerKey", customerKey);
+            requestBody.put("authKey", authKey);
+
+            HttpEntity<Map<String, String>> request = new HttpEntity<>(requestBody, headers);
+            ResponseEntity<Map> response = restTemplate.exchange(
+                "https://api.tosspayments.com/v1/billing/authorizations/issue",
+                HttpMethod.POST,
+                request,
+                Map.class
+            );
+
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                return new RedirectView("/account/read?fail=true");
+            }
+
+            Map<String, Object> result = response.getBody();
+            log.info("✅ Toss API 응답 결과: {}", result);
+            String billingKey = (String) result.get("billingKey");
+            String approvedAtRaw = (String) result.get("authenticatedAt");
 
             OffsetDateTime offsetDateTime = OffsetDateTime.parse(approvedAtRaw);
             LocalDate approvedAt = offsetDateTime.toLocalDate();
 
+            // 2. 사용자 정보 추출
+            String mbrCd = principal.getRealUser().getMbrCd();
+
+            // ⚠️ role과 solId는 Toss에서 제공되지 않기 때문에 세션이나 파라미터로 추가 필요
+            // 임시로 기본값 지정 (필요시 프론트에서 함께 전달)
+
+            // 3. DB 저장 처리
             SolutionnSubscriptionAutopayMethodVO methodVO = new SolutionnSubscriptionAutopayMethodVO();
             methodVO.setMbrCd(mbrCd);
             methodVO.setAutomethBillingkey(billingKey);
@@ -181,7 +213,16 @@ public class TossBillingController {
             RoleAchievedVO roleAchievedVO = new RoleAchievedVO();
             roleAchievedVO.setMbrCd(mbrCd);
             roleAchievedVO.setUserRoleId(role);
-
+            
+            CardVO cardVO =new CardVO();
+            Map<String,String> map = (Map<String,String>)result.get("card");
+            cardVO.setIssuerCode(map.get("issuerCode").toString());
+            cardVO.setAcquirerCode(map.get("acquirerCode").toString());
+            cardVO.setCardNumber(map.get("number").toString());
+            cardVO.setCardType(map.get("cardType").toString());
+            cardVO.setOwnerType(map.get("ownerType").toString());
+            cardVO.setMbrCd(mbrCd);
+            
             SolutionSubscriptionVO subscriptionVO = new SolutionSubscriptionVO();
             subscriptionVO.setMbrCd(mbrCd);
             subscriptionVO.setSolId(solId);
@@ -189,15 +230,18 @@ public class TossBillingController {
             solutionVO.setSolCcCd("BROKER".equalsIgnoreCase(role) ? "002" : "001");
             subscriptionVO.setSolution(solutionVO);
 
-            service.saveAutopayAndFirstPayment(methodVO, paymentVO, roleAchievedVO, subscriptionVO);
-
-            return ResponseEntity.ok(Map.of("redirectUrl", "/account/read?success=true"));
+            service.saveAutopayAndFirstPayment(methodVO, paymentVO, roleAchievedVO, subscriptionVO, cardVO);
+            redirectAttributes.addFlashAttribute("message", "결제에 성공했습니다.");
+            return new RedirectView("/account/read?success=true");
 
         } catch (Exception e) {
             log.error("billing-success 처리 오류", e);
-            return ResponseEntity.status(500).body(Map.of("redirectUrl", "/account/read?fail=true"));
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            return new RedirectView("/account/read?fail=true");
         }
     }
+
+
 
     @GetMapping("/payment-success")
     public RedirectView handleNormalPaymentSuccess(@RequestParam String paymentKey,
@@ -226,6 +270,7 @@ public class TossBillingController {
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 Map<String, Object> data = response.getBody();
+                log.info(data.toString());
                 String approvedAtRaw = (String) data.get("approvedAt");
                 LocalDate approvedAt = LocalDate.parse(approvedAtRaw.substring(0, 10));
 

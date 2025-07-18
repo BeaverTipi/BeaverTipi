@@ -120,52 +120,99 @@ function requestPayment(selectedPayment) {
 		const solId = selectedSolution.value;
 		const currentPath = window.location.pathname;
 		const role = currentPath.split("/").pop().toUpperCase();
+		
 		axios.post("/ajax/toss/ready", { solId })
-			.then(res => {
-				const data = res.data;
-				const tossPayments = TossPayments(data.clientKey);
-				return tossPayments.requestPayment(selectedPayment.value, {
-					amount: solPrice,
-					orderId: data.orderId,
-					orderName: solName,
-					customerName: data.customerName,
-					successUrl: data.successUrl + "?role=" + role,
-					failUrl: currentUrl + "?fail=true"
-				});
-			})
-			.catch(err => {
-				console.error(err);
-				Swal.fire("결제 실패", "일반결제 처리 중 오류가 발생했습니다.", "error");
-			});
+		  .then(res => {
+		    const data = res.data;
+		    const tossPayments = TossPayments(data.clientKey);
+		    const customerKey = data.customerKey;
+		    const payment = tossPayments.payment({ customerKey });
+		
+		    // ✅ 결제 수단은 고정 or data-value로 분리해둔 값
+		    const methodType = selectedPayment.value; // 예: "카드"
+			const methodOptionMap = {
+			  "카드" : () => ({
+			    card: {
+			      // 필요한 경우 옵션 설정 (예: useCardPoint: true)
+			    }
+			  }),
+			  "가상계좌": () => ({
+			    virtualAccount: {
+			      // 예: cashReceipt: { type: "소득공제" }
+			    }
+			  }),
+			  TRANSFER: () => ({
+			    transfer: {}
+			  }),
+			  "계좌이체": () => ({
+			    tossMoney: {}
+			  })
+			};
+	    let methodOptions = {};
+
+		if (methodType && methodOptionMap[methodType]) {
+		  methodOptions = methodOptionMap[methodType](); // 안전하게 호출
+		}
+		
+		console.log(methodOptions);
+		    return payment.requestPayment(methodType, {
+		        amount: {
+			    value: Number(solPrice),
+			    currency: "KRW"
+			  },
+		      orderId: data.orderId,
+		      orderName: solName,
+		      customerName: data.customerName,
+		      successUrl: data.successUrl + "?role=" + role + "&solId=" + solId,
+		      failUrl: currentUrl + "?fail=true",
+		      ...methodOptions
+		    });
+		  })
+		  .catch(err => {
+		    console.error(err);
+		    Swal.fire("결제 실패", "일반결제 처리 중 오류가 발생했습니다.", "error");
+		  });
+
 	}
 }
 
 function openBillingModal() {
-	const selectedSol = document.querySelector('input[name="solutionCode"]:checked');
-	if (!selectedSol) {
-		alert("요금제를 선택해주세요.");
-		return;
-	}
+const currentPath = window.location.pathname;
+const role = currentPath.split("/").pop().toUpperCase();
 
-	const solId = selectedSol.value;
+  const selectedSol = document.querySelector('input[name="solutionCode"]:checked');
+  if (!selectedSol) {
+    Swal.fire("안내", "요금제를 선택해주세요.", "warning");
+    return;
+  }
 
-	axios.post("/ajax/toss/billing-ready", { solId })
-		.then(res => {
-			console.log(res.data);
-			const { clientKey, customerKey, successUrl, customerName, customerEmail } = res.data;
-			
-			const tossPayments = TossPayments(clientKey);
-			tossPayments.requestBillingAuth({
-				customerKey,
-				successUrl,
-				failUrl: window.location.href + "?fail=true",
-				method: "CARD",
-				customerName,
-				customerEmail
-			});
-		})
-		.catch(err => {
-			console.error(err);
-			Swal.fire("실패", "정기결제 준비 중 오류가 발생했습니다.", "error");
-		});
+  const solId = selectedSol.value;
+
+  axios.post("/ajax/toss/billing-ready", { solId })
+    .then(async (res) => {
+      const { clientKey, customerKey, successUrl, customerName, customerEmail } = res.data;
+
+      if (!clientKey || !customerKey || !successUrl) {
+        console.error("⚠️ 누락된 필수 값 있음", res.data);
+        return;
+      }
+
+      // ✅ TossPayments 초기화
+      const tossPayments = TossPayments(clientKey);
+      const payment = tossPayments.payment({ customerKey });
+
+      // ✅ requestBillingAuth는 payment 인스턴스를 통해 호출
+      await payment.requestBillingAuth({
+        method: "CARD", // 자동결제는 카드 고정
+        successUrl: successUrl  + "?role=" + role + "&solId=" +solId,
+        failUrl: window.location.href + "?fail=true",
+        customerName: customerName,
+        customerEmail: customerEmail
+      });
+
+    })
+    .catch((err) => {
+      console.error(err);
+      Swal.fire("실패", "정기결제 준비 중 오류가 발생했습니다.", "error");
+    });
 }

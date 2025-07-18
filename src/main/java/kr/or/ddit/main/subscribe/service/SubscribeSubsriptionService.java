@@ -3,6 +3,7 @@ package kr.or.ddit.main.subscribe.service;
 import java.util.List;
 
 import kr.or.ddit.vo.BrokerVO;
+import kr.or.ddit.vo.CardVO;
 import kr.or.ddit.vo.RoleAchievedVO;
 import kr.or.ddit.vo.SolutionSubscriptionPaymentVO;
 import kr.or.ddit.vo.SolutionSubscriptionVO;
@@ -26,5 +27,5 @@ public interface SubscribeSubsriptionService {
 	public List<SolutionSubscriptionVO> checkedSolutionSubscriptionList(String username);
 	public void savePaymentResult(SolutionSubscriptionPaymentVO paymentVO ,RoleAchievedVO roleAchievedVO,SolutionSubscriptionVO solutionSubVO);
 	public void saveAutopayAndFirstPayment(SolutionnSubscriptionAutopayMethodVO methodVO,
-			SolutionSubscriptionPaymentVO paymentVO,RoleAchievedVO roleAchievedVO,SolutionSubscriptionVO solutionSubVO);
+			SolutionSubscriptionPaymentVO paymentVO,RoleAchievedVO roleAchievedVO,SolutionSubscriptionVO solutionSubVO, CardVO cardVO);
 }

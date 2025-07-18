@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import kr.or.ddit.vo.BrokerVO;
+import kr.or.ddit.vo.CardVO;
 import kr.or.ddit.vo.RoleAchievedVO;
 import kr.or.ddit.vo.SolutionSubscriptionPaymentVO;
 import kr.or.ddit.vo.SolutionSubscriptionVO;
@@ -34,4 +35,5 @@ public interface SubscribeSubscriptionMapper {
 	public Integer insertSubscriptionBillingKey(SolutionnSubscriptionAutopayMethodVO methodVO);
 	public Integer insertSubscriptionPayment(SolutionSubscriptionPaymentVO paymentVO);
 	public Integer insertRoleAchived(RoleAchievedVO roleAchievedVO);
+	public Integer insertCard(CardVO cardVO);
 }

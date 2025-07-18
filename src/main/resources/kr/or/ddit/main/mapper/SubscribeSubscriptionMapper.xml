@@ -291,6 +291,38 @@ INSERT INTO ROLE_ACHIEVED (
     #{userRoleId}
 )
 </insert>
+<insert id="insertCard">
+INSERT INTO CARD(
+	CARD_ID
+	, AMOUNT
+	, ISSUER_CODE
+	, ACQUIRER_CODE
+	, CARD_NUMBER
+	, INSTALLMENT_PLAN_MONTHS
+	, APPROVE_NO, USE_CARD_POINT
+	, CARD_TYPE
+	, OWNER_TYPE
+	, ACQUIRE_STATUS
+	, ISINTEREST_FREE
+	, INTEREST_PAYER
+	, MBR_CD
+) VALUES (
+	 #{cardId}
+	 , #{amount}
+	 , #{issuerCode}
+	 , #{acquirerCode}
+	 , #{cardNumber}
+	 , #{installmentPlanMonths}
+	 , #{approveNo}
+	 , #{useCardPoint}
+	 , #{cardType}
+	 , #{ownerType}
+	 , #{acquireStatus}
+	 , #{isinterestFree}
+	 , #{interestPayer}
+	 , #{mbrCd}
+)
+</insert>
 <select id="selectTenancy">
 SELECT RENTAL_PTY_ID
 	, RENTAL_PTY_BIZ_REG_FILE_PATH
