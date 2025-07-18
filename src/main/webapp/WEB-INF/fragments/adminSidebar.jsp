@@ -148,13 +148,7 @@
               <a class="nav-link" href="${pageContext.request.contextPath}/volt/pages/examples/sign-up.html">
                 <span class="sidebar-text">문의사항</span>
               </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/admin/reportList">
-                <span class="sidebar-text">신고관리</span>
-              </a>
-            </li>
-            
+            </li>     
           </ul>
         </div>
       </li>

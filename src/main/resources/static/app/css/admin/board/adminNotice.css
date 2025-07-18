@@ -1,238 +1,5 @@
 @charset "UTF-8";
 
-/* ========== Table Styles ========== */
-table {
-	border-collapse: collapse;
-	width: 100%;
-	color: #333;
-	background: #fff;
-	text-align: center;
-}
-
-table.table {
-	border-radius: 3px;
-	border-style: hidden;
-	box-shadow: 0 0 0 1px #ddd;
-}
-
-table.table thead {
-	background: #f5f5f5;
-}
-
-table.table thead th {
-	font-weight: 400;
-	padding: 15px 20px;
-	text-transform: uppercase;
-	border: 1px solid #ddd;
-	border-radius: 3px;
-}
-
-table.table tbody td {
-	padding: 10px 20px;
-	border: 1px solid #ddd;
-	border-radius: 3px;
-	vertical-align: middle;
-}
-
-table.table-striped tbody tr:nth-of-type(odd) {
-	background-color: #fafafa;
-}
-
-table.table-hover tbody tr:hover {
-	background-color: #eee;
-}
-
-/* ========== Custom Table Style ========== */
-table.table-custom {
-	box-shadow: none;
-}
-
-table.table-custom thead {
-	background: transparent;
-	border-bottom: 2px solid #ddd;
-}
-
-table.table-custom thead th {
-	border: 0;
-	border-bottom: 1px solid #ddd;
-}
-
-table.table-custom tbody tr {
-	border-bottom: 1px solid #ddd;
-}
-
-table.table-custom tbody tr td {
-	border: 0;
-}
-
-table.table-custom tbody tr:hover {
-	background: #ddd;
-}
-
-/* ========== Button Styles ========== */
-.btn {
-	border-radius: 4px;
-	transition: all 0.3s ease;
-	padding: 6px 12px;
-	font-size: 14px;
-	cursor: pointer;
-}
-
-.button-group {
-	margin: 20px 0;
-	text-align: right;
-}
-
-.btn.btn-primary {
-	background-color: #007bff;
-	border: 1px solid #007bff;
-	color: #fff;
-}
-
-.btn.btn-primary:hover, .btn.btn-primary:focus {
-	background-color: #0069d9;
-	border-color: #0069d9;
-}
-
-.btn.btn-danger {
-	background-color: #dc3545;
-	border: 1px solid #dc3545;
-	color: #fff;
-}
-
-.btn.btn-danger:hover, .btn.btn-danger:focus {
-	background-color: #c82333;
-	border-color: #c82333;
-}
-
-.btn.btn-warning {
-	background-color: #ffc107;
-	border: 1px solid #ffc107;
-	color: #fff;
-}
-
-.btn.btn-warning:hover, .btn.btn-warning:focus {
-	background-color: #e0a800;
-	border-color: #e0a800;
-}
-
-.btn.btn-success {
-	background-color: #28a745;
-	border: 1px solid #28a745;
-	color: #fff;
-}
-
-.btn.btn-success:hover, .btn.btn-success:focus {
-	background-color: #218838;
-	border-color: #218838;
-}
-
-.btn.btn-secondary {
-	background-color: #6c757d;
-	border: 1px solid #6c757d;
-	color: #fff;
-}
-
-.btn.btn-secondary:hover, .btn.btn-secondary:focus {
-	background-color: #5a6268;
-	border-color: #5a6268;
-}
-
-/* === PAGINATION STYLES === */
-ul.pagination {
-	display: flex;
-	justify-content: center;
-	list-style: none;
-	padding-left: 0;
-	margin-top: 30px;
-}
-
-ul.pagination li {
-	margin: 0 5px;
-}
-
-ul.pagination li a {
-	display: block;
-	padding: 8px 12px;
-	font-size: 14px;
-	background: #fff;
-	border: 1px solid #dee2e6;
-	border-radius: 4px;
-	color: #007bff;
-	text-decoration: none;
-	transition: all 0.2s ease;
-}
-
-ul.pagination li a:hover {
-	background-color: #f2f2f2;
-	border-color: #007bff;
-}
-
-ul.pagination li.active a, ul.pagination li.active a.page-link {
-	background-color: #007bff !important;
-	color: #fff !important;
-	border-color: #007bff !important;
-	font-weight: bold;
-}
-
-ul.pagination li.disabled a {
-	background-color: #f8f9fa;
-	color: #aaa;
-	pointer-events: none;
-	border-color: #dee2e6;
-}
-
-/* ========== Form Styles ========== */
-label {
-	color: #7f8fa4;
-	padding-right: 1rem;
-	font-weight: 400;
-}
-
-.form-control {
-	outline: none;
-	line-height: 1.5em;
-	padding-left: .8rem;
-	padding-right: .8rem;
-	background: #fff;
-	border: 1px solid #ccc;
-	box-shadow: inset 0 2px 0 0 #f2f5f8;
-	border-radius: 4px;
-}
-
-.input-group-addon {
-	background-color: #f0f0f0;
-	border-color: #d9d9d9;
-}
-
-.input-group-btn+.form-control {
-	border-left: 0;
-}
-
-.has-success .control-label {
-	color: #28a745;
-}
-
-.has-success .form-control {
-	border-color: #28a745;
-}
-
-.has-warning .control-label {
-	color: #ffc107;
-}
-
-.has-warning .form-control {
-	border-color: #ffc107;
-}
-
-.has-error .control-label {
-	color: #dc3545;
-}
-
-.has-error .form-control {
-	border-color: #dc3545;
-}
-
 /* === TAB STYLES === */
 .nav-tabs {
 	background-color: #f8f9fa;
@@ -293,4 +60,50 @@ label {
 	border-bottom: 2px solid #458ab6 !important;
 	color: #458ab6;
 	font-weight: bold;
+}
+
+/* 첨부파일 아이콘 hover 효과 (선택) */
+.table td img {
+  cursor: pointer;
+  opacity: 0.85;
+  transition: 0.2s;
+}
+
+.table td img:hover {
+  opacity: 1;
+}
+
+/* FAQ, QNA 테이블 뒷 배경 흰색으로 */
+.table.faq-table tbody tr:nth-child(even),
+.table.qna-table tbody tr:nth-child(even) {
+  background-color: #fff !important;
+}
+
+/* 공지사항 공지 유형 별 CSS */
+.badge {
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.badge-normal {
+  background-color: #e2e3e5;
+  color: #333;
+}
+
+.badge-danger {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.badge-event {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.badge-etc {
+  background-color: #6c757d;
+  color: #fff;
 }
