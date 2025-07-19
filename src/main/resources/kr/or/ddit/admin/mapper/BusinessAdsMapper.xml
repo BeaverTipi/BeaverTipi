@@ -115,6 +115,7 @@
                 </if>
             </if>
     </select>
+    
 	<select id="selectBusinessAdsDetail" parameterType="String" resultMap="BusinessAdsMap">
         SELECT
             B.BRD_NO
@@ -138,4 +139,12 @@
         WHERE
             B.BRD_NO = #{brdNo}
     </select>
+    
+    <update id="updateAdsStatus" parameterType="kr.or.ddit.vo.BoardVO">
+        UPDATE ADS
+        SET
+            ADS_STATUS_CODE = #{adsClient.adsStatusCode}
+        WHERE
+            BRD_NO = #{brdNo}
+    </update>
 </mapper>

@@ -138,18 +138,24 @@
                 </button>
             </div>
             <div class="modal-body">
-                <%-- ⭐ 여기에 P 태그 기반의 새로운 구조가 적용됩니다 ⭐ --%>
                 <p><strong>광고 번호:</strong> <span id="modalBrdNo"></span></p>
-                <p><strong>광고 상태:</strong> <span id="modalAdsStatusCode"></span></p>
+                <div class="form-group d-flex align-items-center">
+                    <label for="modalAdsStatusCodeSelect" class="mr-2 mb-0"><strong>광고 상태:</strong></label>
+                    <select class="form-control" id="modalAdsStatusCodeSelect">
+                        <option value="대기">대기</option>
+                        <option value="반려">반려</option>
+                        <option value="승인">승인</option>
+                    </select>
+                </div>
                 <p><strong>사업장명:</strong> <span id="modalAdsBp"></span></p>
                 <p><strong>광고 제목:</strong> <span id="modalBrdTitlNm"></span></p>
                 
-                <hr> <%-- 구분을 위한 구분선 --%>
+                <hr>
 
                 <p><strong>광고 내용:</strong></p>
                 <div id="modalBrdCont" class="alert alert-secondary full-content"></div>
 
-                <hr> <%-- 구분을 위한 구분선 --%>
+                <hr>
                 
                 <p><strong>담당자명:</strong> <span id="modalAdsPic"></span></p>
                 <p><strong>담당자 연락처:</strong> <span id="modalAdsPicTelno"></span></p>
@@ -160,6 +166,7 @@
 
             </div>
             <div class="modal-footer">
+            	<button type="button" class="btn btn-primary" id="saveAdsStatusBtn">저장</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeReportDetailModalBtn">닫기</button>
             </div>
         </div>

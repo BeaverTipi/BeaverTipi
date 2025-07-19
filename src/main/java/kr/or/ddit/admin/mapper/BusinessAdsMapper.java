@@ -13,6 +13,7 @@ public interface BusinessAdsMapper {
 
     int selectBusinessAdsCount(PaginationInfo<BoardVO> pagingVO);
 
-    // ⭐ 상세 정보 조회 메서드 추가 ⭐
     BoardVO selectBusinessAdsDetail(String brdNo);
+
+	int updateAdsStatus(BoardVO boardToUpdate);
 }

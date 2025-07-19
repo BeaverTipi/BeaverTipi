@@ -11,6 +11,7 @@ public interface BusinessAdsService {
 
 	public int selectBusinessAdsCount(PaginationInfo<BoardVO> pagingVO);
 
-	// ⭐ 상세 정보 조회 메서드 추가 ⭐
 	public BoardVO selectBusinessAdsDetail(String brdNo);
+	
+	public int updateAdsStatus(String brdNo, String adsStatusCode);
 }

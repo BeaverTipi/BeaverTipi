@@ -1,7 +1,7 @@
 
 /* ⭐ 제공해주신 모달 스타일 ⭐ */
 /* 모달의 select 박스 크기 조절 (해당 ID가 없으면 영향 없음) */
-#modalNewMbrStatus, #modalRptStatusCode, #modalNewLtsgDel {
+#modalAdsStatusCodeSelect {
     width: auto;
     height: 100%;
 }

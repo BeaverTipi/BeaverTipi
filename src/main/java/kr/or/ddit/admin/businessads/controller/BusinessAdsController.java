@@ -1,11 +1,18 @@
 package kr.or.ddit.admin.businessads.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -56,14 +63,52 @@ public class BusinessAdsController {
 	}
 
 	// 모달용 상세 정보 조회 메서드
-	@GetMapping(value = "adsDetailModal.do", produces = "application/json;charset=UTF-8")
+	@GetMapping(value = "adsDetailModal.do")
 	@ResponseBody
 	public BoardVO selectBusinessAdsDetailForModal(@RequestParam("brdNo") String brdNo) {
-		log.info("모달 상세 조회 요청 - brdNo: {}", brdNo);
 
+		
 		// 실제 서비스 메서드 호출
 		BoardVO boardDetail = businessAdsService.selectBusinessAdsDetail(brdNo);
 
         return boardDetail; // 실제 DB에서 조회한 BoardVO 객체 반환
 	}
+	
+	@PostMapping(value = "/updateAdsStatus.do", produces = MediaType.APPLICATION_JSON_VALUE) // produces 속성 -> 응답의 Content-Type 지정
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updateAdsStatus(@RequestBody Map<String, String> payload) {
+        Map<String, Object> response = new HashMap<>(); // Map 객체 생성
+        try {
+            String brdNo = payload.get("brdNo");
+            String adsStatusCode = payload.get("adsStatusCode");
+
+            log.info("updateAdsStatus - Received update request for brdNo: {}, new status: {}", brdNo, adsStatusCode);
+
+            if (brdNo == null || brdNo.isEmpty() || adsStatusCode == null || adsStatusCode.isEmpty()) {
+                response.put("success", false);
+                response.put("message", "필수 파라미터(brdNo 또는 adsStatusCode)가 누락되었습니다.");
+                log.warn("updateAdsStatus - Missing required parameters: brdNo={}, adsStatusCode={}", brdNo, adsStatusCode);
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); // 400 Bad Request
+            }
+
+            int result = businessAdsService.updateAdsStatus(brdNo, adsStatusCode);
+
+            if (result > 0) {
+                response.put("success", true);
+                response.put("message", "광고 상태가 성공적으로 업데이트되었습니다.");
+                log.info("updateAdsStatus - Successfully updated ad status for brdNo: {}", brdNo);
+                return new ResponseEntity<>(response, HttpStatus.OK); // 200 OK
+            } else {
+                response.put("success", false);
+                response.put("message", "광고 상태 업데이트에 실패했습니다. (영향받은 행 없음)");
+                log.warn("updateAdsStatus - Failed to update ad status for brdNo {} (no rows affected)", brdNo);
+                return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // 500 Internal Server Error
+            }
+        } catch (Exception e) {
+            log.error("updateAdsStatus - 서버 오류 발생: ", e);
+            response.put("success", false);
+            response.put("message", "서버 오류 발생: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // 500 Internal Server Error
+        }
+    }
 }
