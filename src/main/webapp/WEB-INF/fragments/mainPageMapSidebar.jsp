@@ -8,31 +8,22 @@
 -->
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <meta charset="UTF-8">
 <div id="main-content">
 	<nav class="sidebar-inner">
 		<div class="sidebar-category-list">
-			<a href="#" class="category-btn" data-category="001"> 
-			<img src="${pageContext.request.contextPath}/volt/assets/img/icons/home-layout-svgrepo-com.svg"
-				alt="One/TwoRoom"> <span>원룸/투룸</span>
-			</a> 
-			<a href="#" class="category-btn" data-category="002"> 
-			<img src="${pageContext.request.contextPath}/volt/assets/img/icons/home-2-svgrepo-com.svg"
-				alt="Home/Villa"> <span>주택/빌라</span>
-			</a> 
-			<a href="#" class="category-btn" data-category="003"> 
-			<img src="${pageContext.request.contextPath}/volt/assets/img/icons/building-svgrepo-com.svg"
-				alt="Officetel"> <span>오피스텔</span>
-			</a> 
-			<a href="#" class="category-btn" data-category="004"> 
-			<img src="${pageContext.request.contextPath}/volt/assets/img/icons/apartment-svgrepo-com.svg"
-				alt="Apartment/New Construction"> <span>아파트/신축</span>
-			</a> 
-			<a href="#" class="category-btn" data-category="005"> 
-			<img src="${pageContext.request.contextPath}/volt/assets/img/icons/traffic-cone-svgrepo-com.svg"
-				alt="NewConstructionSale"> <span>신축분양</span>
-			</a>
+			<c:forEach var="code" items="${categoryList}">
+				<c:if test="${not empty code.codeValue and code.codeName ne '전체'}">
+					<button type="button" class="category-btn"
+						data-category="${code.codeValue}">
+						<img
+							src="${pageContext.request.contextPath}/volt/assets/img/icons/${code.codeValue}.svg"
+							alt="${code.codeName}"> <span>${code.codeName}</span>
+					</button>
+				</c:if>
+			</c:forEach>
 		</div>
 	</nav>
-
 </div>

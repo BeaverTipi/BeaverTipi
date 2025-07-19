@@ -8,10 +8,9 @@
 -->
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-
-<link rel="styleSheet"
-	href="${pageContext.request.contextPath }/app/css/main/mainMap/kakaoMap.css">
-
+<link rel="styleSheet" href="${pageContext.request.contextPath }/app/css/main/mainMap/kakaoMap.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<title>지도</title>
 <div id="wrap">
 	<!-- 헤더 등 상단 영역이 있다면 여기 포함 -->
 
@@ -31,31 +30,18 @@
 						  </div>
 						  <div class="popup-body">
 						    <button class="popup-option" data-type="saleType" data-value="">전체</button>
-						    <button class="popup-option" data-type="saleType" data-value="001">전세</button>
-						    <button class="popup-option" data-type="saleType" data-value="002">월세</button>
-						    <button class="popup-option" data-type="saleType" data-value="003">매매</button>
+						    <c:forEach var="item" items="${saleTypeList}">
+							  <c:if test="${not empty item.codeValue && item.codeValue ne ''}">
+							    <button class="popup-option"
+							            data-type="saleType"
+							            data-value="${item.codeValue}">
+							      ${item.codeName}
+							    </button>
+							  </c:if>
+							</c:forEach>
 						  </div>
 						</div>
 					<input type="hidden" id="saleTypeFilter" />
-				<button class="filter-toggle-btn" onclick="toggleFilterPopup('listingType', this)">매물유형</button>
-					<div class="filter-popup" id="popup-listingType">
-						  <div class="popup-header">
-						    매물유형
-						    <button class="close-btn" onclick="closeFilterPopup('listingType')">×</button>
-						  </div>
-						  <div class="popup-body">
-						    <button class="popup-option" data-type="listingType" data-value="">전체</button>
-						    <button class="popup-option" data-type="listingType" data-value="001">아파트</button>
-						    <button class="popup-option" data-type="listingType" data-value="002">빌라</button>
-						    <button class="popup-option" data-type="listingType" data-value="003">오피스텔</button>
-						    <button class="popup-option" data-type="listingType" data-value="004">단독주택</button>
-						    <button class="popup-option" data-type="listingType" data-value="005">상가주택</button>
-						    <button class="popup-option" data-type="listingType" data-value="006">상가</button>
-						    <button class="popup-option" data-type="listingType" data-value="007">오피스빌딩/사무실</button>
-						    <button class="popup-option" data-type="listingType" data-value="008">기타</button>
-						  </div>
-						</div>
-					<input type="hidden" id="listingTypeFilter" />
 				<button class="filter-toggle-btn" onclick="toggleFilterPopup('saleDetailType', this)">매물상세유형</button>
 					<div class="filter-popup" id="popup-saleDetailType">
 						  <div class="popup-header">
@@ -64,13 +50,18 @@
 						  </div>
 						  <div class="popup-body">
 						    <button class="popup-option" data-type="saleDetailType" data-value="">전체</button>
-						    <button class="popup-option" data-type="saleDetailType" data-value="001">원룸/투룸/다세대</button>
-						    <button class="popup-option" data-type="saleDetailType" data-value="002">단독주택</button>
-						    <button class="popup-option" data-type="saleDetailType" data-value="003">다가구주택</button>
-						    <button class="popup-option" data-type="saleDetailType" data-value="004">상가주택</button>
+						    <c:forEach var="item" items="${saleDetailTypeList}">
+						      <button class="popup-option"
+						              data-type="saleType"
+						              data-value="${item.codeValue}">
+						        ${item.codeName}
+						      </button>
+						    </c:forEach>
 						  </div>
 						</div>
 					<input type="hidden" id="saleDetailTypeFilter" />
+					
+				<!-- 여긴 하드 코딩(방 크기)  -->
 				<button class="filter-toggle-btn" onclick="toggleFilterPopup('area', this)">방크기</button>
 					<div class="filter-popup" id="popup-area">
 						  <div class="popup-header">

@@ -160,19 +160,21 @@ body {
 
 .sidebar-category-list {
 	display: flex;
+	flex-wrap: wrap;
 	flex-direction: column;
 	gap: 10px;
 }
 
 .category-btn {
+	height: 80px; 
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	text-align: center;
-	padding: 8px;
+	padding: 6px;
 	border: 1px solid #ddd;
-	border-radius: 10px;
+	border-radius: 8px;
 	text-decoration: none;
 	color: #333;
 	transition: all 0.2s ease;
@@ -194,7 +196,7 @@ body {
 .category-btn img {
 	width: 28px;
 	height: 28px;
-	margin-bottom: 5px;
+	margin-bottom: 6px;
 }
 
 .category-btn span {

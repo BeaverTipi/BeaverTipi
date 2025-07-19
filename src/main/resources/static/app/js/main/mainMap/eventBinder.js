@@ -302,7 +302,12 @@ window.setupHeartClickEvent = function(data) {
 		const mbrCd = window.loggedInUserId;
 
 		if (!mbrCd || mbrCd === "null" || mbrCd === "") {
-			alert("찜 기능은 로그인 후 이용 가능합니다.");
+			Swal.fire({
+				icon: 'warning',
+				title: '로그인이 필요합니다',
+				text: '찜 기능은 로그인 후 이용 가능합니다.',
+				confirmButtonText: '확인'
+			});
 			return;
 		}
 

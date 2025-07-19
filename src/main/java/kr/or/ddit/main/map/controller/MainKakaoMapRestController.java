@@ -71,7 +71,7 @@ public class MainKakaoMapRestController {
 	        return ResponseEntity.notFound().build();
 	    }
 
-	    return ResponseEntity.ok(detailList.get(0)); // 반드시 get(0) 반환해야 JS에서 map 처리 가능
+	    return ResponseEntity.ok(detailList.get(0));
 	}
 
 

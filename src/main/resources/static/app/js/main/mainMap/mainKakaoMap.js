@@ -11,8 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		const map = initMap();
 		const clusterer = initClusterer(map);
 		setupMapControls(map);
-
-		// 👇 여기에 반드시 추가!
+		
 		window._map = map;
 		window._clusterer = clusterer;
 
