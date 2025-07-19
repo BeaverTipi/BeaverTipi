@@ -69,6 +69,20 @@ $(document).ready(function() {
         const telNoVal = $(this).data('telno');
         $(this).text(formatPhoneNumber(telNoVal)); // formatDateString 변경으로 하이픈 적용
     });
+    
+     $('#resetBtn').on('click', function() {
+        // 모든 텍스트/셀렉트 입력 필드 초기화
+        $('#searchForm').find('input[type="text"], select').val('');
+
+        // 숨겨진 page 필드를 1로 설정
+        $('#currentPageNoInput').val('1');
+
+        // 필요하다면 다른 숨겨진 검색 필드도 초기화
+        // $('#searchRptCodeInput').val(''); // 예시 (만약 다른 숨겨진 필드가 있다면)
+
+        // 폼 제출 (초기화된 상태로 다시 리스트를 불러옴)
+        $('#searchForm').submit();
+    });
 });
 
 

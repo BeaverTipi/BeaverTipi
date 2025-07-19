@@ -14,6 +14,12 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/businessads/businessAdsList.css">
 </head>
 <body>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    var contextPath = '${pageContext.request.contextPath}';
+</script>
+<script src="${pageContext.request.contextPath}/app/js/admin/businessads/businessAdsList.js"></script>
 
 <h2 class="board-title">광고 관리</h2>
 
@@ -58,7 +64,7 @@
 
           <div class="search-item">
             <label for="searchAdsPicTelno">담당자 연락처:</label>
-            <form:input path="searchAdsPicTelno" id="searchAdsPicTelno" placeholder="담당자 연락처" class="input-field"/>
+            <form:input path="searchAdsPicTelno" id="searchAdsPicTelno" placeholder="하이폰( - ) 없이 입력" class="input-field"/>
           </div>
         </div>
 
@@ -132,54 +138,26 @@
                 </button>
             </div>
             <div class="modal-body">
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th>광고 번호</th>
-                            <td id="modalBrdNo"></td>
-                        </tr>
-                        <tr>
-                            <th>광고 상태</th>
-                            <td id="modalAdsStatusCode"></td>
-                        </tr>
-                        <tr>
-                            <th>사업장명</th>
-                            <td id="modalAdsBp"></td>
-                        </tr>
-                        <tr>
-                            <th>광고 제목</th>
-                            <td id="modalBrdTitlNm"></td>
-                        </tr>
-                        <tr>
-                            <th>광고 내용</th>
-                            <td id="modalBrdCont" class="full-content"></td>
-                        </tr>
-                        <tr>
-                            <th>담당자명</th>
-                            <td id="modalAdsPic"></td>
-                        </tr>
-                        <tr>
-                            <th>담당자 연락처</th>
-                            <td id="modalAdsPicTelno"></td>
-                        </tr>
-                        <tr>
-                            <th>희망 게재 시작일</th>
-                            <td id="modalAdsReqPblsStartDt"></td>
-                        </tr>
-                        <tr>
-                            <th>희망 게재 종료일</th>
-                            <td id="modalAdsReqPblsEndDt"></td>
-                        </tr>
-                        <tr>
-                            <th>작성자 ID</th>
-                            <td id="modalMbrCd"></td>
-                        </tr>
-                        <tr>
-                            <th>작성일시</th>
-                            <td id="modalBrdPblsDtm"></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <%-- ⭐ 여기에 P 태그 기반의 새로운 구조가 적용됩니다 ⭐ --%>
+                <p><strong>광고 번호:</strong> <span id="modalBrdNo"></span></p>
+                <p><strong>광고 상태:</strong> <span id="modalAdsStatusCode"></span></p>
+                <p><strong>사업장명:</strong> <span id="modalAdsBp"></span></p>
+                <p><strong>광고 제목:</strong> <span id="modalBrdTitlNm"></span></p>
+                
+                <hr> <%-- 구분을 위한 구분선 --%>
+
+                <p><strong>광고 내용:</strong></p>
+                <div id="modalBrdCont" class="alert alert-secondary full-content"></div>
+
+                <hr> <%-- 구분을 위한 구분선 --%>
+                
+                <p><strong>담당자명:</strong> <span id="modalAdsPic"></span></p>
+                <p><strong>담당자 연락처:</strong> <span id="modalAdsPicTelno"></span></p>
+                <p><strong>희망 게재 시작일:</strong> <span id="modalAdsReqPblsStartDt"></span></p>
+                <p><strong>희망 게재 종료일:</strong> <span id="modalAdsReqPblsEndDt"></span></p>
+                <p><strong>작성자 ID:</strong> <span id="modalMbrCd"></span></p>
+                <p><strong>작성일시:</strong> <span id="modalBrdPblsDtm"></span></p>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeReportDetailModalBtn">닫기</button>
@@ -188,11 +166,6 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script>
-    var contextPath = '${pageContext.request.contextPath}';
-</script>
-<script src="${pageContext.request.contextPath}/app/js/admin/businessads/businessAdsList.js"></script>
+
 </body>
 </html>

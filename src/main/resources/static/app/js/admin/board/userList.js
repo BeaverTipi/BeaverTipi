@@ -79,8 +79,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 탭 클릭 이벤트 처리 (Bootstrap shown.bs.tab 이벤트 사용)
-    // jQuery 사용 필수: <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    // <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     $('#reportTabs .nav-link').on('shown.bs.tab', function(e) {
         const rptCode = $(this).data('rpt-code');
         searchRptCodeInput.value = rptCode;
