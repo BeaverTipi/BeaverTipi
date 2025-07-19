@@ -265,7 +265,6 @@ window.showDetailModal = function(data) {
 	`;
 
 	setupGalleryViewer();
-
 	setupHeartClickEvent(data);
 	
 	console.log('받은 상세 데이터:', data);
