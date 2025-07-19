@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.building.mapper.AccountBillWriteMapper">
+											
+<insert id="insertManagementFee" parameterType = "IntegratedManagementFeeVO">
+insert into integrated_management_fee(INT_MAN_FEE_CD
+,UNIT_ID
+,BLDG_ID
+,RENTAL_PTY_ID
+,INTG_FEE_AMOUNT 
+)values (
+#{intManFeeCd}
+,#{unitId}
+,#{bldgId}
+,#{rentalPtyId}
+,#{intgFeeAmount})
+
+</insert>
+
+<insert id="insertEnergyUsage" parameterType = "HouseholdEnergyMonthlyUsageVO">
+insert into HOUSEHOLD_ENERGY_MONTHLY_USAGE(
+unit_id
+,bldg_id
+,rental_pty_id
+,dum_month
+,dum_comp
+,total_energy_charge_amt
+,total_energy_usage_qty
+,eneg_type) values (
+#{unitId}
+,#{bldgId}
+,#{rentalPtyId}
+,#{dumMonth}
+,#{dumComp}
+,#{totalEnergyChargeAmt}
+,#{totalEnergyUsageQty}
+,#{enegType}
+)
+
+</insert>
+
+<insert id="insertChargeBill" parameterType="ChargeBillVO">
+insert into charge_bill (CHGBILL_CHARGE_MONTH
+,RENTAL_PTY_ID
+,UNIT_ID
+,BLDG_ID
+,CHGBILL_AMOUNT
+,CHGBILL_DUE_DATE
+,CHGBILL_DESC
+,CHGBILL_ACC_NUM) VALUES (
+to_char(sysdate,'yyyymm') || LPAD(SEQ_CHGBILL_ID.nextval,'4','0')
+,#{rentalPtyId}
+,#{unitId}
+,#{bldgId}
+,#{chgbillAmount}
+,#{chgbillDueDate}
+,#{chgbillDesc}
+,#{chgbillAccNum})
+</insert>
+
+<select id="selectAccounts" resultType="TenancyAccountVO">
+select *
+from tenancy_account
+where mbr_cd = #{mbrCd}
+</select>
+
+<select id="selectOwnBuildings" resultType="BuildingVO">
+select a.bldg_id, a.bldg_nm 
+from building a
+inner join tenancy b on (a.rental_pty_id = b.rental_pty_id)
+inner join member c on (b.mbr_cd = c.mbr_cd)
+where c.mbr_cd = #{mbrCd}
+</select>
+<select id="selectOwnUsage" resultType ="ManagementEntityMonthlyChargeAggregationVO">
+select USAGE_VALUE as 사용량 , UNIT_CHARGE_INFO as 청구금액
+from MANAGEMENT_ENTITY_MONTHLY_CHARGE_AGGREGATION
+where dum_month = to_char(sysdate, 'yyyymm')
+and unit_id = #{unitId}
+</select>
+
+<select id="selectUnits" resultType="UnitVO">
+select a.unit_id, a.unit_room
+from unit a
+inner join unit_resident b on (a.unit_id = b.unit_id)
+inner join building c on (a.bldg_id = c.bldg_id and a.rental_pty_id = c.rental_pty_id)
+where c.bldg_id = #{bldgId}
+and c.rental_pty_id = #{rentalPtyId}
+and b.unit_del_yn ='N'
+</select>
+
+<select id="selectRentalPty" resultType= "string">
+select rental_pty_id
+from tenancy
+where mbr_cd = #{mbrCd}
+</select>
+
+</mapper>

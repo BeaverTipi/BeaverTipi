@@ -1,0 +1,199 @@
+@charset "UTF-8";
+
+body {
+  font-family: 'Pretendard', sans-serif;
+  font-size: 14px;
+  background-color: #f2f4f6;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.charge-wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.charge-section {
+  margin-bottom: 1.2rem;
+}
+
+.charge-section h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.0rem;
+  border-left: 4px solid #007bff;
+  padding-left: 0.5rem;
+}
+
+/* 셀렉트 + 버튼 한 줄 */
+.control-row {
+  display: flex;
+  align-items: center;
+  gap: 2.0rem;
+  margin: 0.4rem 0;
+  flex-wrap: wrap;
+}
+
+.control-row label {
+  width: auto;
+  font-weight: 500;
+  margin-right: 0.4rem;
+}
+
+/* 🚀 폭만 키움 + 좌우 여백 */
+.control-row select,
+.control-row input[type="date"],
+.control-row button {
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+/* 셀렉트 */
+.control-row select {
+  width: 250px;
+  height: 34px;
+  padding: 0 0.4rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+/* 버튼 */
+.control-row button {
+  min-width: 130px;
+  height: 34px;
+  padding: 0 0.8rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #00aaff;
+  color: white;
+  cursor: pointer;
+}
+
+/* 납기일 */
+.control-row input[type="date"] {
+  width: 180px;
+  height: 34px;
+  padding: 0 0.4rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+/* 공용 관리비 항목 (절대 건드리지 않음!) */
+.charge-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 2rem;
+  margin-bottom: 0.8rem;
+}
+
+.charge-item {
+  display: flex;
+  align-items: center;
+}
+
+.charge-item label {
+  width: 140px;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-right: 0.6rem;
+}
+
+.charge-item input {
+  flex: 1;
+  height: 32px;
+  padding: 0 0.6rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+.charge-item span {
+  margin-left: 0.4rem;
+  font-size: 1rem;
+  color: #555;
+}
+
+/* 입주민 카드 */
+.resident-block {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #f7f9fc;
+  border-radius: 8px;
+  border: 1px solid #e0e4ea;
+}
+
+.resident-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.resident-header h4 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.resident-header button {
+  margin-left: 0.3rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.85rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-fetch {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* 하단 버튼 */
+.charge-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 1.6rem;
+  flex-wrap: wrap;
+}
+
+.charge-buttons button {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  min-width: 100px;
+  text-align: center;
+}
+
+.btn-submit {
+  background-color: #00aaff;
+  color: white;
+}
+
+.btn-reset {
+  background-color: #6c757d;
+  color: white;
+}
