@@ -2,13 +2,12 @@ package kr.or.ddit.util.notifications.controller;
 
 import java.util.List;
 
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -61,7 +60,7 @@ public class NotificationController {
         List<NotificationVO> list = service.readNotificationList(member.getMbrCd(), paging);
 
         // 페이징 HTML
-        String pagingHTML = new DefaultPaginationRenderer().renderPagination(paging, "fnPaging");
+        String pagingHTML = new DefaultPaginationRenderer().renderPagination(paging, "fnPagingModal");
 
         model.addAttribute("notifications", list);
         model.addAttribute("pagingHTML", pagingHTML);
@@ -69,6 +68,12 @@ public class NotificationController {
         return "main/member/notification"; // JSP fragment
     }
 
+    @PostMapping("/ajax/notification/delete/{notifId}")
+    public String removeNotification(
+    		@PathVariable("notifId") String notifId
+    ) {
+    	return "";
+    }
     	
     
 

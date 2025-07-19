@@ -88,48 +88,77 @@
   white-space: nowrap;
 }
 /* 알림 한 항목당 세로 여백 추가 */
+/* 알림 항목 전체 여백 축소 */
 #notificationListFragment .list-group-item {
-  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  padding: 12px 10px;
   border-bottom: 1px solid var(--color-border);
 }
 
-/* 텍스트와 아이콘 사이 여백 */
-#notificationListFragment .row.align-items-center > .col {
-  padding-left: 12px;
-}
-#notificationListFragment .list-group-item:first-child {
-  padding-top: 0 !important;
-}
-/* 타이틀 영역 내부 정렬 */
-.notif-title-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px; /* 타이틀과 배지 간격 */
-}
-
-/* 알림 메시지 여백 */
+/* 알림 메시지 여백 축소 */
 #notificationListFragment .list-group-item p {
-  font-size: 14px;
-  margin-top: 6px;
-  margin-bottom: 14px;
+  font-size: 13px; /* ↓ 줄임 */
+  margin-top: 2px;
+  margin-bottom: 2px; /* ↓ 줄임 */
   color: #333;
-  line-height: 1.5;
+  line-height: 1.4; /* ↓ 줄임 */
 }
 
-/* 알림 배지 */
+#notificationListFragment .row {
+  flex-wrap: wrap !important;
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* 텍스트와 아이콘 사이 여백 축소 */
+#notificationListFragment .row.align-items-center > .col {
+  padding-left: 8px; /* ↓ 줄임 */
+}
+
+/* 타이틀과 뱃지 간격 축소 */
+.notif-title-wrapper {
+  gap: 4px; /* ↓ 줄임 */
+}
+
+
+/* 뱃지 사이즈 축소 */
 .notif-badge {
-  background-color: #e6f2ff;
-  color: #007bff;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 12px;
-  white-space: nowrap;
+  font-size: 11px; /* ↓ 줄임 */
+  padding: 1px 6px; /* ↓ 줄임 */
+  border-radius: 10px; /* ↓ 줄임 */
 }
 
-/* 모바일 대응 여백 축소 */
+/* 모바일 대응 여백 추가 축소 */
 @media (max-width: 768px) {
   #notificationListFragment .list-group-item {
-    padding: 16px 12px;
+    padding: 10px 8px;
   }
 }
+
+.btn-delete-icon {
+  font-size: 14px;
+  padding: 2px 4px;
+  border: none;
+  background: transparent;
+  color: var(--color-btn-danger);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.btn-delete-icon:hover {
+  color: white;
+  background-color: var(--color-btn-danger);
+  border-radius: 4px;
+}
+
+.modal-body{
+	margin-top : 0px;
+	padding-top : 0px;
+}
+
+

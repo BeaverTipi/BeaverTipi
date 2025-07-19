@@ -54,4 +54,22 @@ document.addEventListener('DOMContentLoaded', () => {
 	    });
 	  }
   }
+  
+window.fnPagingModal = function(page) {
+  axios.get(`/ajax/notification/list?page=${page}`, {
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  })
+  .then(resp => {
+    const container = document.querySelector('#notificationModalContent');
+    if (container) container.innerHTML = resp.data;
+  })
+  .catch(error => {
+    console.error(error);
+    alert('알림을 불러오는 중 오류가 발생했습니다.');
+  });
+};
+
 });
+
