@@ -54,7 +54,7 @@ public class RsdDataStateController {
 
         String chargeMonth;
         if (yearSelect != null && monthSelect != null &&
-            !yearSelect.equals("년도 선택") && !monthSelect.equals("월 선택")) {
+            !"년도 선택".equals(yearSelect) && !monthSelect.equals("월 선택")) {
             
             String paddedMonth = String.format("%02d", Integer.parseInt(monthSelect));
             chargeMonth = yearSelect + paddedMonth;  // ex: "202507"

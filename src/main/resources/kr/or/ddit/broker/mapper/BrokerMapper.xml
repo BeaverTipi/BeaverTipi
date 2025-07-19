@@ -89,6 +89,11 @@
 		<result property="facTypeGrpCd" column="FAC_TYPE_GRP_CD" />
 	</collection>
 </resultMap>
+
+<resultMap id="ContractMap" type="ContractVO" autoMapping="true">
+	<id property="contId" column="CONT_ID" />
+	<association property="listingInfo" resultMap="ListingMap" />
+</resultMap>
 <sql id="selectLstgList">
 	SELECT L.*
 	       ,TI.*
@@ -190,9 +195,23 @@
 	   SET LSTG_PROD_STAT = '002'
 	 WHERE LSTG_ID = #{lstgId}
 </update>
-<select id="selectProceedingContractsList" parameterType="String" resultType="ContractVO">
-	SELECT *
-	  FROM CONTRACT
+<select id="selectProceedingContractsList" parameterType="String" resultMap="ContractMap">
+	SELECT
+		C.CONT_ID
+		, C.MBR_CD
+		, C.MBR_CD_BROK
+		, C.LSTG_ID
+		, L.LSTG_NM
+		, C.CONT_TYPE_CODE
+		, C.CONT_DEPOSIT
+		, C.CONT_TAX_AMOUNT
+		, C.CONT_AMOUNT
+		, C.CONT_STAT_CD
+		, C.CONT_DTM
+		, C.CONT_TYPE_GROUP_CD
+		, C.CONT_STAT_GROUP_CD
+	  FROM CONTRACT C
+	 INNER JOIN LISTING L ON(C.LSTG_ID = L.LSTG_ID)
 	 WHERE MBR_CD_BROK = #{mbrCd}
 	   AND CONT_STAT_CD = '001'
 	 ORDER BY CONT_DTM DESC

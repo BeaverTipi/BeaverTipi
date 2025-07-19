@@ -11,6 +11,7 @@
  */
 package kr.or.ddit.broker.service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -62,5 +63,5 @@ public interface BrokerContractService {
 	/** 컨트롤러 다이어트 들어가야지...
 	 * @return
 	 */
-	public ResponseEntity<?> processOfCreatingContract();
+	public ResponseEntity<?> processOfCreatingContract(String decryptedJson, Principal principal);
 }

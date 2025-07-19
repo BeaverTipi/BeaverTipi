@@ -142,115 +142,125 @@ public class RestBrokerContractNewController {
 	
 
 	@PostMapping("/submit")
-	public ResponseEntity<?> encryptedNewContract(Principal principal,
-			@RequestBody Map<String, String> payload) {
-		try {
-			/** 1. 복호화 */
-			String iv = payload.get("iv");
-			String encrypted = payload.get("encrypted");
-			if (encrypted == null)
-				throw new IllegalArgumentException("암호화된 요청 없음");
-			String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
+	public ResponseEntity<?> encryptedNewContract(
+			Principal principal,
+			@RequestBody Map<String, String> payload
+	) {
+		/** 1. 복호화 */
+		String iv = payload.get("iv");
+		String encrypted = payload.get("encrypted");
+		if (encrypted == null)
+			throw new IllegalArgumentException("암호화된 요청 없음");
+		String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
+		
+		return contService.processOfCreatingContract(decryptedJson, principal);
+		
+//		try {
 
-			/** 2. JSON -> POJO 매핑 */
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-			mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-			mapper.registerModule(new JavaTimeModule());
-			mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-			Map<String, Object> parsedRequest = mapper.readValue(decryptedJson, new TypeReference<>() {
-			});
-			StandardLeaseFormDTO contractInfo = mapper.convertValue(parsedRequest.get("contractInfo"),
-					StandardLeaseFormDTO.class);
-			List<Map<String, String>> base64Files = mapper.convertValue(parsedRequest.get("base64Files"),
-					new TypeReference<List<Map<String, String>>>() {
-					});
-			List<FileVO> files = mapper.convertValue(parsedRequest.get("files"), new TypeReference<List<FileVO>>() {
-			});
-			log.info(">ㅂ< contractInfo {}", contractInfo);
-			log.info(">ㅂ< files {}", files);
-
-			/** 3. 계약서류 통합PDF 만들기 */
-			List<MultipartFile> multipartFiles = new ArrayList<>();
-			for (Map<String, String> fileMap : base64Files) {
-				String fileName = fileMap.get("name");
-				String content = fileMap.get("content");
-				String savedFileName = "";
-
-				// Base64 문자열에서 MIME 헤더(data URI scheme) 제거 후
-				// -> BINARY 데이터로 디코딩
-				// -> MultipartFile 객체로 감싸 파일화.
-				String base64 = content.contains(",") ? content.split(",")[1] : content;
-				byte[] data = Base64.getDecoder().decode(base64);
-				MultipartFile multipartFile = new Base64DecodedMultipartFile(data, savedFileName, fileName,
-						Files.probeContentType(Paths.get(fileName)));
-				multipartFiles.add(multipartFile);
-			}
-			File merged = pdfService.mergeToSinglePdf(multipartFiles);
-			MultipartFile multipartMerged = FileToMultipartFileUtil.convert(merged);
-			
-
-			
-			/** 4. DB에 계약정보 레코드 입력 */
-			ContractVO contract = ContractVO.builder()
-					.mbrCd(String.valueOf(contractInfo.getLesseeMbrCd()))
-					.mbrCdBrok(authUnpack.getMbrCd(principal.getName()))
-					.lstgId(contractInfo.getListingId())
-					.contTypeCode(contractInfo.getListingTypeCode1())
-					.contDeposit(/*deposit*/
-							SafeParse.safeParseLong(
-								Optional.ofNullable(contractInfo.getListingTypeCode1())
-							    .map(type -> {
-							        // 전세 계약일 경우
-							        if ("001".equals(type)) {
-							            return contractInfo.getListingLease(); // 전세금 (String)
-							        }
-							        // 월세 계약일 경우
-							        if ("002".equals(type)) {
-							            return contractInfo.getListingLeaseAmt(); // 보증금 (String)
-							        }
-							        // 매칭되는 타입이 없으면 null 반환
-							        return null;
-							    })
-							    .orElse("0") // null이면 "0"으로 대체
-							)
-					)
-					.contTaxAmount(null)
-					.contAmount(SafeParse.safeParseLong(contractInfo.getListingLeaseM()))
-					.contStatCd("001")
-					.contDtm(null)
-					.contTypeGroupCd(null)
-					.contStatGroupCd(null)
-					.build();
-			log.debug("(ಥ﹏ಥ) {}", contractInfo.getListingTypeCode1());
-			log.debug("(ಥ﹏ಥ) {}", contractInfo.getListingLease());
-			log.debug("(ಥ﹏ಥ) {}", contractInfo.getListingLeaseAmt());
-			log.debug("(ಥ﹏ಥ) {}", contractInfo.getListingLeaseM());
-			log.debug("(ಥ﹏ಥ) {}", contract);
-			String contId = contService.createProceedingContract(contract);
-			
-			/** 5. S3 파일서버에 통합PDF 업로드 및 DB에 파일정보 레코드 입력 */
-			FileVO result = fileService.uploadAndSave(multipartMerged, "contract", "CONTR", contId,
-					multipartMerged.getContentType());
-			
-			/** DEBUG__병합된 파일 디렉토리에서 확인하기 ^0^ */
-			File debugCopy = new File("D:/debug/merged-" + System.currentTimeMillis() + ".pdf");
-			Files.copy(merged.toPath(), debugCopy.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-			
-			/** 0. 응답신호 내보내기 */
-	        return ResponseEntity.ok(Map.of(
-	            "success", true,
-	            "mergedPath", merged.getAbsolutePath(),
-	            "debugPath", debugCopy.getAbsolutePath(),
-	            "contId", contId
-	        ));
-		} catch (Exception e) {
-			e.printStackTrace();
-			/*  0. 응답신호 내보내기 */
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	            .body(Map.of("success", false, "error", e.getMessage()));
-		}
+//			/** 2. JSON -> POJO 매핑 */
+//			ObjectMapper mapper = new ObjectMapper();
+//			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//			mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+//			mapper.registerModule(new JavaTimeModule());
+//			mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+//
+//			Map<String, Object> parsedRequest = mapper.readValue(decryptedJson, new TypeReference<>() {
+//			});
+//			StandardLeaseFormDTO contractInfo = mapper.convertValue(parsedRequest.get("contractInfo"),
+//					StandardLeaseFormDTO.class);
+//			List<Map<String, String>> base64Files = mapper.convertValue(parsedRequest.get("base64Files"),
+//					new TypeReference<List<Map<String, String>>>() {
+//					});
+//			List<FileVO> files = mapper.convertValue(parsedRequest.get("files"), new TypeReference<List<FileVO>>() {
+//			});
+//			log.info(">ㅂ< contractInfo {}", contractInfo);
+//			log.info(">ㅂ< files {}", files);
+//
+//			/** 3. 계약서류 통합PDF 만들기 */
+//			List<MultipartFile> multipartFiles = new ArrayList<>();
+//			for (Map<String, String> fileMap : base64Files) {
+//				String fileName = fileMap.get("name");
+//				String content = fileMap.get("content");
+//				String savedFileName = "";
+//
+//				// Base64 문자열에서 MIME 헤더(data URI scheme) 제거 후
+//				// -> BINARY 데이터로 디코딩
+//				// -> MultipartFile 객체로 감싸 파일화.
+//				String base64 = content.contains(",") ? content.split(",")[1] : content;
+//				byte[] data = Base64.getDecoder().decode(base64);
+//				MultipartFile multipartFile = new Base64DecodedMultipartFile(data, savedFileName, fileName,
+//						Files.probeContentType(Paths.get(fileName)));
+//				multipartFiles.add(multipartFile);
+//			}
+//			File merged = pdfService.mergeToSinglePdf(multipartFiles);
+//			MultipartFile multipartMerged = FileToMultipartFileUtil.convert(merged);
+//			
+//
+//			
+//			/** 4. DB에 계약정보 레코드 입력 */
+//			ContractVO contract = ContractVO.builder()
+//					.mbrCd(String.valueOf(contractInfo.getLesseeMbrCd()))
+//					.mbrCdBrok(authUnpack.getMbrCd(principal.getName()))
+//					.lstgId(contractInfo.getListingId())
+//					.contTypeCode(contractInfo.getListingTypeCode1())
+//					.contDeposit(/*deposit*/
+//							SafeParse.safeParseLong(
+//								Optional.ofNullable(contractInfo.getListingTypeCode1())
+//							    .map(type -> {
+//							        // 전세 계약일 경우
+//							        if ("001".equals(type)) {
+//							            return contractInfo.getListingLease(); // 전세금 (String)
+//							        }
+//							        // 월세 계약일 경우
+//							        if ("002".equals(type)) {
+//							            return contractInfo.getListingLeaseAmt(); // 보증금 (String)
+//							        }
+//							        // 매칭되는 타입이 없으면 null 반환
+//							        return null;
+//							    })
+//							    .orElse("0") // null이면 "0"으로 대체
+//							)
+//					)
+//					.contTaxAmount(null)
+//					.contAmount(SafeParse.safeParseLong(contractInfo.getListingLeaseM()))
+//					.contStatCd("001")
+//					.contDtm(null)
+//					.contTypeGroupCd(null)
+//					.contStatGroupCd(null)
+//					.build();
+//			log.debug("(ಥ﹏ಥ) {}", contractInfo.getListingTypeCode1());
+//			log.debug("(ಥ﹏ಥ) {}", contractInfo.getListingLease());
+//			log.debug("(ಥ﹏ಥ) {}", contractInfo.getListingLeaseAmt());
+//			log.debug("(ಥ﹏ಥ) {}", contractInfo.getListingLeaseM());
+//			log.debug("(ಥ﹏ಥ) {}", contract);
+//			String contId = contService.createProceedingContract(contract);
+//			
+//			/** 5. S3 파일서버에 통합PDF 업로드 및 DB에 파일정보 레코드 입력 */
+//			FileVO result = fileService.uploadAndSave(multipartMerged, "contract", "CONTR", contId,
+//					multipartMerged.getContentType());
+//			
+//			/** 6. 매물의 계약상태 정보 변경하기 */
+//			
+//			
+//			
+//			
+//			/** DEBUG__병합된 파일 디렉토리에서 확인하기 ^0^ */
+//			File debugCopy = new File("D:/debug/merged-" + System.currentTimeMillis() + ".pdf");
+//			Files.copy(merged.toPath(), debugCopy.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+//			
+//			/** 0. 응답신호 내보내기 */
+//	        return ResponseEntity.ok(Map.of(
+//	            "success", true,
+//	            "mergedPath", merged.getAbsolutePath(),
+//	            "debugPath", debugCopy.getAbsolutePath(),
+//	            "contId", contId
+//	        ));
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			/*  0. 응답신호 내보내기 */
+//	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//	            .body(Map.of("success", false, "error", e.getMessage()));
+//		}
 	}
 	
 	

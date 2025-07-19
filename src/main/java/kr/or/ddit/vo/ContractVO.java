@@ -27,4 +27,6 @@ public class ContractVO implements Serializable{
 	private String contStatCd;
 	private String contDtm;
 	private String contStatGroupCd;
+	
+	private transient ListingVO listingInfo;
 }
