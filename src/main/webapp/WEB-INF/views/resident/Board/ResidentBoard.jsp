@@ -179,6 +179,12 @@
 	    </option>
 	  </c:forEach>
 	</select>
+	<script>
+  document.querySelector('select[name="bldgIdParam"]').addEventListener('change', function(event) {
+    console.log("Selected Building ID:", event.target.value);  // 로그 추가
+  });
+</script>
+	
   </div>
 
   <!-- 일자 -->
@@ -283,25 +289,9 @@
     </main>
   </div>
 
-  <script>
-    function fnPaging(pageNo) {
-      const form = document.getElementById('searchForm');
-      form.page.value = pageNo;
-      form.submit();
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const currentPage = "${pagingInfo.currentPageNo}";
-      document.querySelectorAll(".pagination-wrapper a").forEach(a => {
-        if (a.textContent.trim() === currentPage) {
-          a.classList.add("bg-primary");
-        }
-      });
-    });
-  </script>
  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="${pageContext.request.contextPath}/app/js/resident/residentBuilding.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/resident/commonBuildingSelect.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/resident/residentBuilding.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     setupGlobalBuildingSelector({
@@ -311,6 +301,13 @@
     });
   });
 </script>
+  <script>
+    function fnPaging(pageNo) {
+      const form = document.getElementById('searchForm');
+      form.page.value = pageNo;
+      form.submit();
+    }
+  </script>
 
 
 

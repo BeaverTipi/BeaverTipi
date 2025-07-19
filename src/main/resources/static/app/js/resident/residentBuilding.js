@@ -1,6 +1,6 @@
 // /app/js/resident/residentBuilding.js
 
-function loadPosts(bldgId) {
+function loadPosts(bldgId, page = 1, pageSize = 10) {
   if (!bldgId) return;
 
   const postListContainer = document.querySelector('.post-list');
@@ -9,10 +9,14 @@ function loadPosts(bldgId) {
     return;
   }
 
+  postListContainer.innerHTML = '<div class="loading">로딩 중...</div>';
 
-  axios.get(`/ajax/resident/api/board?bldgIdParam=${bldgId}`)
+	 console.log(`Loading posts for building ID: ${bldgId}, Page: ${page}, Page Size: ${pageSize}`);
+
+  // Ajax 요청에 페이지와 페이지 크기 추가
+  axios.get(`/ajax/resident/api/board?bldgIdParam=${bldgId}&page=${page}&pageSize=${pageSize}`)
     .then(response => {
-      displayPosts(response.data);
+      displayPosts(response.data, page);
     })
     .catch(error => {
       console.error("게시글 로드 중 오류 발생:", error);
@@ -20,7 +24,7 @@ function loadPosts(bldgId) {
     });
 }
 
-function displayPosts(posts) {
+function displayPosts(posts, currentPage) {
   const tableBody = document.querySelector('#boardTableBody');
   if (!tableBody) return;
 
@@ -36,7 +40,7 @@ function displayPosts(posts) {
     posts.forEach((post, index) => {
       const row = document.createElement('tr');
       row.innerHTML = `
-        <td>${index + 1}</td>
+        <td>${(currentPage - 1) * 10 + index + 1}</td>  <!-- 페이지 번호에 맞춰 인덱스 수정 -->
         <td>${post.rsdBrdTitl}</td>
         <td>${post.mbrNnm}</td>
         <td>${new Date(post.rsdBrdPblsDtm).toLocaleDateString()}</td>
@@ -54,5 +58,3 @@ function displayPosts(posts) {
   }
 }
 
-// 외부에서 사용 가능하게 export
-window.loadPosts = loadPosts;

@@ -3,6 +3,7 @@ package kr.or.ddit.resident.board.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,8 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 import kr.or.ddit.resident.board.service.ResidentBoardService;
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.util.page.SimpleSearch;
+import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.ResidentBoardVO;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/ajax/resident/api/board")
 public class RsdBoardRestController {
@@ -21,9 +26,15 @@ public class RsdBoardRestController {
     private ResidentBoardService boardService;
 
     @GetMapping
-    public List<ResidentBoardVO> getBoardsByBuilding(@RequestParam("bldgIdParam") String bldgIdParam,
-                                                      @RequestParam(value = "page", defaultValue = "1") int page) {
-        // SimpleSearch 객체 생성 및 bldgIdParam 설정
+    public List<ResidentBoardVO> getBoardsByBuilding(
+    		@RequestParam("bldgIdParam") String bldgIdParam,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
+    		) {
+    	
+    	log.info("Received request with bldgIdParam: {}, page: {}", bldgIdParam, page);
+        
+    	// SimpleSearch 객체 생성 및 bldgIdParam 설정
         SimpleSearch search = new SimpleSearch();
         search.setBldgId(bldgIdParam);  // URL 파라미터로 받은 bldgIdParam을 설정
 
@@ -33,7 +44,10 @@ public class RsdBoardRestController {
         paging.setCurrentPageNo(page);  // 요청받은 페이지 설정
         paging.setRecordCountPerPage(10);
         paging.setPageSize(5);   
-
+        
+        List<ResidentBoardVO> boardList = boardService.getBoardList(paging);
+        log.info("Returning {} boards", boardList.size());
+        
         // 게시글 목록을 반환
         return boardService.getBoardList(paging);  // 게시글 목록 반환 (JSON으로 자동 변환)
     }
