@@ -190,7 +190,7 @@
         <!-- 건물 선택 -->
         <div class="search-item">
           <label for="bldgIdParam">건물</label>
-          <select name="bldgIdParam" class="select-field">
+          <select name="bldgIdParam" id="bldgSelect" class="select-field">
             <c:forEach var="unit" items="${unitList}">
               <option value="${unit.bldgId}" <c:if test="${selectedBldgId eq unit.bldgId}">selected</c:if>>
                 ${unit.building.bldgNm}
@@ -257,7 +257,7 @@
         <!-- 버튼 -->
 		<div class="search-item search-buttons" style="grid-column: span 2; display: flex; justify-content: flex-end; align-items: end;">
 		  <button type="submit" class="search-button">검색</button>
-		  <a href="${pageContext.request.contextPath}/resident/complaint?bldgIdParam=${selectedBldgId}" class="btn-reset">초기화</a>
+		  <a href="#" class="btn-reset" onclick="clearForm(event)">초기화</a>
 		</div>
       </form>
     </div>
@@ -281,7 +281,7 @@
           <th>보기</th>
         </tr>
       </thead>
-     <tbody>
+     <tbody id="boardTableBody" class="post-list">
   <c:forEach var="vo" items="${boardList}">
     <tr>
       <td>${vo.mbrNnm}</td>
@@ -374,7 +374,22 @@
     });
   }
 </script>
+<script src="${pageContext.request.contextPath}/app/js/resident/commonBuildingSelect.js"></script>
+<script>
+  // 페이지 로드 시 자동 건물 선택 적용
+  setupGlobalBuildingSelector({
+    param: 'bldgIdParam',
+    storageKey: 'selectedBuildingId',
+    onChange: (bldgId) => {
+      // 해당 빌딩 ID가 선택되었을 때 form 제출
+      const form = document.getElementById('searchForm');
+      if (form) {
+        form.querySelector('input[name="page"]').value = 1;
+        form.submit();
+      }
+    }
+  });
+</script>
 
-<script src="${pageContext.request.contextPath}/app/js/resident/residentBuilding.js"></script>
 </body>
 </html>

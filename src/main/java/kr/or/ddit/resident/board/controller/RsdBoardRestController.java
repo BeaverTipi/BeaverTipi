@@ -31,6 +31,8 @@ public class RsdBoardRestController {
         PaginationInfo<ResidentBoardVO> paging = new PaginationInfo<>();
         paging.setSimpleSearch(search);  // simpleSearch 객체를 세팅
         paging.setCurrentPageNo(page);  // 요청받은 페이지 설정
+        paging.setRecordCountPerPage(10);
+        paging.setPageSize(5);   
 
         // 게시글 목록을 반환
         return boardService.getBoardList(paging);  // 게시글 목록 반환 (JSON으로 자동 변환)

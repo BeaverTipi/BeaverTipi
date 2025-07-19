@@ -91,6 +91,7 @@
     });
   });
 </script>
-<script src="${pageContext.request.contextPath}/app/js/resident/residentBuliding.js"></script>
+<!-- JSP 파일의 하단 -->
+
 </body>
 </html>

@@ -281,6 +281,6 @@
   });
 </script>
 
-<script src="${pageContext.request.contextPath}/app/js/resident/residentBuilding.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/resident/commonBuildingSelect.js"></script>
 </body>
 </html>

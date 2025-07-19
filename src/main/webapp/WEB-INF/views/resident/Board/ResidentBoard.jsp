@@ -170,15 +170,15 @@
   <!-- 건물 -->
   <div class="search-item">
     <label for="bldgIdParam">건물</label>
-    <select name="search.bldgId" class="select-field" onchange="loadPosts(this.value)">
-      <option value="">건물 선택</option>
-      <c:forEach var="unit" items="${unitList}">
-      	<option value="${unit.bldgId}" 
-		  <c:if test="${unit.bldgId eq search.bldgId or (empty search.bldgId and unit.bldgId eq selectedBldgId)}">selected</c:if>>
-		  ${unit.building.bldgNm}
-		</option>
-      </c:forEach>
-    </select>
+    <select name="bldgIdParam" class="select-field">
+	  <option value="">건물 선택</option>
+	  <c:forEach var="unit" items="${unitList}">
+	    <option value="${unit.bldgId}" 
+	      <c:if test="${unit.bldgId eq param.bldgIdParam or unit.bldgId eq selectedBldgId}">selected</c:if>>
+	      ${unit.building.bldgNm}
+	    </option>
+	  </c:forEach>
+	</select>
   </div>
 
   <!-- 일자 -->
@@ -228,7 +228,7 @@
             <th>보기</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="boardTableBody">
           <c:forEach var="board" items="${boardList}" varStatus="status">
             <tr>
               <td>${pagingInfo.firstRecordIndex + status.index}</td>
@@ -301,5 +301,18 @@
   </script>
  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/resident/residentBuilding.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/resident/commonBuildingSelect.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    setupGlobalBuildingSelector({
+      param: 'bldgIdParam',
+      storageKey: 'selectedBuildingId',
+      onChange: loadPosts
+    });
+  });
+</script>
+
+
+
 </body>
 </html>

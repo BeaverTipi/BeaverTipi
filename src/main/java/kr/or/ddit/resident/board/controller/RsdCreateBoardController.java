@@ -77,7 +77,7 @@ public class RsdCreateBoardController {
         model.addAttribute("unitList", units);
 
         ResidentBoardVO board = (ResidentBoardVO) model.asMap().get("board");
-
+        
         if ("edit".equals(mode)) {
             ResidentBoardVO original = boardService.getBoardById(rsdBrdId);
             if (original == null || !member.getMbrCd().equals(original.getMbrCd())) {

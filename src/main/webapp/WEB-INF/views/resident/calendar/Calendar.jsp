@@ -122,7 +122,6 @@
 
   <!-- ✅ 외부 JS 연결 -->
   <script src="${pageContext.request.contextPath}/app/js/resident/residentCalendar.js"></script>
-  <script src="${pageContext.request.contextPath}/app/js/resident/residentBuliding.js"></script>
-  
+  <script src="${pageContext.request.contextPath}/app/js/resident/residentBuilding.js"></script>
 </body>
 </html>

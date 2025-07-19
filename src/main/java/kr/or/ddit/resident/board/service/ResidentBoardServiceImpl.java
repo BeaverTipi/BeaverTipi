@@ -44,8 +44,11 @@ public class ResidentBoardServiceImpl implements ResidentBoardService {
 
 	@Override
 	public List<ResidentBoardVO> getBoardList(PaginationInfo paging) {
-		// TODO Auto-generated method stub
-		return mapper.selectBoardList(paging);
+		int totalRecord = mapper.selectTotalCount(paging);
+		paging.setTotalRecordCount(totalRecord);
+		
+		List<ResidentBoardVO> list = mapper.selectBoardList(paging);
+		return list;
 	}
 
 	@Override
