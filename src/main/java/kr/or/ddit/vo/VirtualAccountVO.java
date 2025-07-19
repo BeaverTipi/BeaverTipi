@@ -15,5 +15,5 @@ public class VirtualAccountVO {
 	private String expired;
 	private String settlementStatus;
 	private String secret;
-	private String paymentKey;
+	private String mbrCd;
 }

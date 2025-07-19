@@ -4,12 +4,14 @@ import java.util.List;
 
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.CardVO;
+import kr.or.ddit.vo.EasyPayVO;
 import kr.or.ddit.vo.RoleAchievedVO;
 import kr.or.ddit.vo.SolutionSubscriptionPaymentVO;
 import kr.or.ddit.vo.SolutionSubscriptionVO;
 import kr.or.ddit.vo.SolutionVO;
 import kr.or.ddit.vo.SolutionnSubscriptionAutopayMethodVO;
 import kr.or.ddit.vo.TenancyVO;
+import kr.or.ddit.vo.VirtualAccountVO;
 
 public interface SubscribeSubsriptionService {
 	public SolutionSubscriptionVO readSolutionSubscription(String username);
@@ -28,4 +30,7 @@ public interface SubscribeSubsriptionService {
 	public void savePaymentResult(SolutionSubscriptionPaymentVO paymentVO ,RoleAchievedVO roleAchievedVO,SolutionSubscriptionVO solutionSubVO);
 	public void saveAutopayAndFirstPayment(SolutionnSubscriptionAutopayMethodVO methodVO,
 			SolutionSubscriptionPaymentVO paymentVO,RoleAchievedVO roleAchievedVO,SolutionSubscriptionVO solutionSubVO, CardVO cardVO);
+	public void createCard(CardVO card);
+	public void createEasyPay(EasyPayVO easyPay);
+	public void createVirtualAccount(VirtualAccountVO va);
 }

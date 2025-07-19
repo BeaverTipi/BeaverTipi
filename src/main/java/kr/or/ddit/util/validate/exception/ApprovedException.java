@@ -16,4 +16,5 @@ public class ApprovedException extends RuntimeException{
     public ApprovedException(Throwable cause) {
         super(cause);  // 예외 원인만
     }
+
 }

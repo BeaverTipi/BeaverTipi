@@ -123,11 +123,11 @@
                               <c:set var="userType" value="tenancy"/>
                             </c:when>
                             <c:when test="${subscription.solution.solCcCd eq '002'}">
-                              <c:url var="payActionUrl" value="/payment/bussiness/broker" />
+                              <c:url var="payActionUrl" value="/payment/business/broker" />
                               <c:set var="userType" value="broker"/>
                             </c:when>
                             <c:otherwise>
-                              <c:url var="payActionUrl" value="/payment/bussiness" />
+                              <c:url var="payActionUrl" value="/payment/business" />
                               <c:set var="userType" value="unknown"/>
                             </c:otherwise>
                           </c:choose>
@@ -141,23 +141,23 @@
                         <c:when test="${(member.broker.authApprYn eq 'Y' or member.tenancy.authApprYn eq 'Y') and subscription.subsStatus eq '001'}">
                           <c:choose>
                             <c:when test="${subscription.solution.solCcCd eq '001'}">
-                              <c:url var="payActionUrl" value="/payment/bussiness/tenancy" />
+                              <c:url var="payActionUrl" value="/payment/business/tenancy" />
                             </c:when>
                             <c:when test="${subscription.solution.solCcCd eq '002'}">
-                              <c:url var="payActionUrl" value="/payment/bussiness/broker" />
+                              <c:url var="payActionUrl" value="/payment/business/broker" />
                             </c:when>
                             <c:otherwise>
-                              <c:url var="payActionUrl" value="/payment/bussiness" />
+                              <c:url var="payActionUrl" value="/payment/business" />
                             </c:otherwise>
                           </c:choose>
                           <div class="inline-payment-form">
                             ${subscription.solution.solPrice} 원
                             <form action="${payActionUrl}" method="get" style="display: inline;">
-                              <input type="hidden" name="solId" value="${subscription.subsId}" />
+                              <input type="hidden" name="solId" value="${subscription.solId}" />
                               <button type="submit" class="btn btn-primary btn-sm">구독 변경</button>
                             </form>
                             <form action="${pageContext.request.contextPath}/subscription/cancel" method="post" style="display: inline;">
-                              <input type="hidden" name="solId" value="${subscription.solution.solId}" />
+                              <input type="hidden" name="solId" value="${subscription.solId}" />
                               <button type="submit" class="btn btn-outline-danger btn-sm">구독 취소</button>
                             </form>
                           </div>

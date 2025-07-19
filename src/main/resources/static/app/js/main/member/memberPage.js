@@ -6,42 +6,60 @@
  */
 
 function openTab(tabId) {
-  const buttons = document.querySelectorAll('.tab-button');
-  const contents = document.querySelectorAll('.tab-content');
+	const buttons = document.querySelectorAll('.tab-button');
+	const contents = document.querySelectorAll('.tab-content');
 
-  // 모든 버튼과 콘텐츠에서 active 제거
-  buttons.forEach(btn => btn.classList.remove('active'));
-  contents.forEach(cont => cont.classList.remove('active'));
+	// 모든 버튼과 콘텐츠에서 active 제거
+	buttons.forEach(btn => btn.classList.remove('active'));
+	contents.forEach(cont => cont.classList.remove('active'));
 
-  // 선택된 버튼과 콘텐츠에 active 추가
-  const button = document.querySelector(`[onclick="openTab('${tabId}')"]`);
-  const content = document.getElementById(tabId);
+	// 선택된 버튼과 콘텐츠에 active 추가
+	const button = document.querySelector(`[onclick="openTab('${tabId}')"]`);
+	const content = document.getElementById(tabId);
 
-  if (button) button.classList.add('active');
-  if (content) content.classList.add('active');
+	if (button) button.classList.add('active');
+	if (content) content.classList.add('active');
 }
 function openPaymentModal(userType) {
-  const url = `/payment/business/${userType}?popup=true`; // 'broker' 또는 'tenancy'
+	const url = `/payment/business/${userType}?popup=true`; // 'broker' 또는 'tenancy'
 
-  fetch(url)
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("paymentModalContent").innerHTML = html;
-      const modal = new bootstrap.Modal(document.getElementById("paymentModal"));
-      modal.show();
-    })
-    .catch(err => {
-      console.error(err);
-      Swal.fire("오류", "결제창을 불러올 수 없습니다.", "error");
-    });
+	fetch(url)
+		.then(res => res.text())
+		.then(html => {
+			document.getElementById("paymentModalContent").innerHTML = html;
+			const modal = new bootstrap.Modal(document.getElementById("paymentModal"));
+			modal.show();
+		})
+		.catch(err => {
+			console.error(err);
+			Swal.fire("오류", "결제창을 불러올 수 없습니다.", "error");
+		});
 }
 
 // 페이지 로딩 시 defaultTab 자동 열기
-document.addEventListener("DOMContentLoaded", function () {
-  const wrapper = document.querySelector(".register-wrapper");
-  const defaultTabId = wrapper?.dataset?.defaultTab;
+document.addEventListener("DOMContentLoaded", function() {
+	const urlParams = new URLSearchParams(window.location.search);
+	if (urlParams.get("success") === "true") {
+		sessionStorage.removeItem("attemptedSolId");
+	}
+	const wrapper = document.querySelector(".register-wrapper");
+	const defaultTabId = wrapper?.dataset?.defaultTab;
 
-  if (defaultTabId) {
-    openTab(defaultTabId);
-  }
+	if (defaultTabId) {
+		openTab(defaultTabId);
+	}
+
+	document.querySelectorAll("form[action^='/payment/business']").forEach(form => {
+		const button = form.querySelector("button[type='submit']");
+		const solIdInput = form.querySelector("input[name='solId']");
+
+		if (button && solIdInput) {
+			button.addEventListener("click", () => {
+				const solId = solIdInput.value;
+				if (solId) {
+					sessionStorage.setItem("attemptedSolId", solId);
+				}
+			});
+		}
+	});
 });

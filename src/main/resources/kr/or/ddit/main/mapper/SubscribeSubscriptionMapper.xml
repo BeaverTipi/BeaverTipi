@@ -323,6 +323,46 @@ INSERT INTO CARD(
 	 , #{mbrCd}
 )
 </insert>
+<insert id="insertVirtualAccount">
+INSERT INTO VIRTUAL_ACCOUNT (
+    VIRTUAL_ACCOUNT_ID,
+    ACCOUNT_TYPE,
+    ACCOUNT_NUMBER,
+    BANK_CODE,
+    CUSTOMER_NAME,
+    DUE_DATE,
+    EXPIRED,
+    SETTLEMENT_STATUS,
+    SECRET,
+    MBR_CD
+) VALUES (
+	#{virtualAccountId}
+	, #{accountType}
+	, #{accountNumber}
+	, #{bankCode}
+	, #{customerName}
+	, #{dueDate}
+	, #{expired}
+	, #{settlementStatus}
+	, #{secret}
+	, #{mbrCd}
+)
+</insert>
+<insert id="insertEasyPay">
+INSERT INTO EASY_PAY (
+    EASY_PAY_ID,
+    PROVIDER,
+    AMOUNT,
+    DISCOUNT_AMOUNT,
+    PAYMENT_KEY
+) VALUES (
+	#{easyPayId}
+	, #{provider}
+	, #{amount}
+	, #{discountAmount}
+	, #{paymentKey}
+)
+</insert>
 <select id="selectTenancy">
 SELECT RENTAL_PTY_ID
 	, RENTAL_PTY_BIZ_REG_FILE_PATH

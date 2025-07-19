@@ -1,10 +1,29 @@
-// ✅ 토스 SDK 로딩 필요
-// <script src="https://js.tosspayments.com/v1/payment"></script> 는 HTML에서 로딩되어야 함
 
 document.addEventListener("DOMContentLoaded", () => {
 	initSolutionSelection();
 	initMethodSelection();
 	updateSolutionSummary();
+
+	const attemptedSolId = sessionStorage.getItem("attemptedSolId");
+	const currentSolInput = document.querySelector("input[name='solutionCode']:checked");
+
+	// ✅ attemptedSolId가 존재하고, 현재 체크된 게 없거나 다른 경우 → 해당 솔루션 강제 선택
+	if (attemptedSolId && (!currentSolInput || currentSolInput.value !== attemptedSolId)) {
+		const matchedRadio = document.querySelector(`input[name='solutionCode'][value='${attemptedSolId}']`);
+		if (matchedRadio) {
+			matchedRadio.checked = true;
+			document.querySelectorAll(".solution-card").forEach(label => label.classList.remove("selected"));
+			matchedRadio.closest("label").classList.add("selected");
+			updateSolutionSummary();
+		}
+	}
+
+	// ✅ 동일한 solId일 경우 결제 버튼 비활성화
+	const recheckedSol = document.querySelector("input[name='solutionCode']:checked");
+	if (recheckedSol && attemptedSolId && recheckedSol.value === attemptedSolId) {
+		const payBtn = document.querySelector("#payBtn");
+		if (payBtn) payBtn.disabled = true;
+	}
 });
 
 function initSolutionSelection() {
@@ -18,6 +37,8 @@ function initSolutionSelection() {
 			document.querySelectorAll(".solution-card").forEach(label => label.classList.remove("selected"));
 			radio.closest("label").classList.add("selected");
 			updateSolutionSummary();
+			const payBtn = document.querySelector("#payBtn");
+	if (payBtn) payBtn.disabled = false;
 		});
 	});
 }
@@ -70,6 +91,12 @@ function handlePayment() {
 	const selectedBilling = document.querySelector('input[name="billingMethod"]:checked');
 	const selectedNormal = document.querySelector('input[name="normalMethod"]:checked');
 
+	const attemptedSolId = sessionStorage.getItem("attemptedSolId");
+	if (attemptedSolId && selectedSolution && selectedSolution.value === attemptedSolId) {
+		Swal.fire("안내", "이미 선택된 요금제로 결제를 시도하고 있습니다.", "warning");
+		return;
+	}
+
 	let selectedPayment = null;
 	if (selectedBilling && selectedBilling.value.trim() !== '') {
 		selectedPayment = selectedBilling;
@@ -117,109 +144,108 @@ function requestPayment(selectedPayment) {
 		}
 		// 정기결제는 등록만 하고 끝
 	} else {
-const solId = selectedSolution.value;
-const currentPath = window.location.pathname;
-const role = currentPath.split("/").pop().toUpperCase();
-const currentUrl = window.location.href;
+		const solId = selectedSolution.value;
+		const currentPath = window.location.pathname;
+		const role = currentPath.split("/").pop().toUpperCase();
 
-const methodMap = {
-  "카드": {
-    method: "CARD",
-    options: { card: {} }
-  },
-  "가상계좌": {
-    method: "VIRTUAL_ACCOUNT",
-    options: {
-      virtualAccount: {
-        cashReceipt: { type: "소득공제" } // 필요 시
-      }
-    }
-  },
-  "토스": {
-    method: "TRANSFER",
-    options: { transfer: {} }
-  },
-  "계좌이체": {
-    method: "TOSS_MONEY",
-    options: { tossMoney: {} }
-  }
-};
+		const methodMap = {
+			"카드": {
+				method: "CARD",
+				options: { card: {} }
+			},
+			"가상계좌": {
+				method: "VIRTUAL_ACCOUNT",
+				options: {
+					virtualAccount: {
+						cashReceipt: { type: "소득공제" } // 필요 시
+					}
+				}
+			},
+			"계좌이체": {
+				method: "TRANSFER",
+				options: { transfer: {} }
+			},
+			"토스머니": {
+				method: "TOSS_MONEY",
+				options: { tossMoney: {} }
+			}
+		};
 
-const methodTypeKey = selectedPayment.value;
-const mapped = methodMap[methodTypeKey] || {};
-const methodType = mapped.method;
-const methodOptions = mapped.options || {};
+		const methodTypeKey = selectedPayment.value;
+		const mapped = methodMap[methodTypeKey] || {};
+		const methodType = mapped.method;
+		const methodOptions = mapped.options || {};
 
-axios.post("/ajax/toss/ready", { solId })
-  .then(res => {
-    const data = res.data;
-    const tossPayments = TossPayments(data.clientKey);
-    const customerKey = data.customerKey;
-    const payment = tossPayments.payment({ customerKey });
+		axios.post("/ajax/toss/ready", { solId })
+			.then(res => {
+				const data = res.data;
+				const tossPayments = TossPayments(data.clientKey);
+				const customerKey = data.customerKey;
+				const payment = tossPayments.payment({ customerKey });
 
-    console.log("✅ methodType:", methodType);
-    console.log("✅ methodOptions:", methodOptions);
+				console.log("✅ methodType:", methodType);
+				console.log("✅ methodOptions:", methodOptions);
 
-    return payment.requestPayment({
-      method: methodType,
-      amount: {
-        value: Number(solPrice),
-        currency: "KRW"
-      },
-      orderId: data.orderId,
-      orderName: solName,
-      customerName: data.customerName,
-      successUrl: data.successUrl + "?role=" + role + "&solId=" + solId,
-      failUrl: currentUrl + "?fail=true",
-      ...methodOptions
-    });
-  })
-  .catch(err => {
-    console.error("❌ 결제 오류:", err);
-    Swal.fire("결제 실패", "일반결제 처리 중 오류가 발생했습니다.", "error");
-  });
+				return payment.requestPayment({
+					method: methodType,
+					amount: {
+						value: Number(solPrice),
+						currency: "KRW"
+					},
+					orderId: data.orderId,
+					orderName: solName,
+					customerName: data.customerName,
+					successUrl: data.successUrl + "?role=" + role + "&solId=" + solId + "&current=" +currentUrl,
+					failUrl: currentUrl + "?fail=true",
+					...methodOptions
+				});
+			})
+			.catch(err => {
+				console.error("❌ 결제 오류:", err);
+				Swal.fire("결제 실패", "일반결제 처리 중 오류가 발생했습니다.", "error");
+			});
 
 
 	}
 }
 
 function openBillingModal() {
-const currentPath = window.location.pathname;
-const role = currentPath.split("/").pop().toUpperCase();
+	const currentPath = window.location.pathname;
+	const role = currentPath.split("/").pop().toUpperCase();
 
-  const selectedSol = document.querySelector('input[name="solutionCode"]:checked');
-  if (!selectedSol) {
-    Swal.fire("안내", "요금제를 선택해주세요.", "warning");
-    return;
-  }
+	const selectedSol = document.querySelector('input[name="solutionCode"]:checked');
+	if (!selectedSol) {
+		Swal.fire("안내", "요금제를 선택해주세요.", "warning");
+		return;
+	}
 
-  const solId = selectedSol.value;
+	const solId = selectedSol.value;
 
-  axios.post("/ajax/toss/billing-ready", { solId })
-    .then(async (res) => {
-      const { clientKey, customerKey, successUrl, customerName, customerEmail } = res.data;
+	axios.post("/ajax/toss/billing-ready", { solId })
+		.then(async (res) => {
+			const { clientKey, customerKey, successUrl, customerName, customerEmail } = res.data;
 
-      if (!clientKey || !customerKey || !successUrl) {
-        console.error("⚠️ 누락된 필수 값 있음", res.data);
-        return;
-      }
+			if (!clientKey || !customerKey || !successUrl) {
+				console.error("⚠️ 누락된 필수 값 있음", res.data);
+				return;
+			}
 
-      // ✅ TossPayments 초기화
-      const tossPayments = TossPayments(clientKey);
-      const payment = tossPayments.payment({ customerKey });
+			// ✅ TossPayments 초기화
+			const tossPayments = TossPayments(clientKey);
+			const payment = tossPayments.payment({ customerKey });
 
-      // ✅ requestBillingAuth는 payment 인스턴스를 통해 호출
-      await payment.requestBillingAuth({
-        method: "CARD", // 자동결제는 카드 고정
-        successUrl: successUrl  + "?role=" + role + "&solId=" +solId,
-        failUrl: window.location.href + "?fail=true",
-        customerName: customerName,
-        customerEmail: customerEmail
-      });
+			// ✅ requestBillingAuth는 payment 인스턴스를 통해 호출
+			await payment.requestBillingAuth({
+				method: "CARD", // 자동결제는 카드 고정
+				successUrl: successUrl + "?role=" + role + "&solId=" + solId +"&current=" +  window.location.href,
+				failUrl: window.location.href + "?fail=true",
+				customerName: customerName,
+				customerEmail: customerEmail
+			});
 
-    })
-    .catch((err) => {
-      console.error(err);
-      Swal.fire("실패", "정기결제 준비 중 오류가 발생했습니다.", "error");
-    });
+		})
+		.catch((err) => {
+			console.error(err);
+			Swal.fire("실패", "정기결제 준비 중 오류가 발생했습니다.", "error");
+		});
 }

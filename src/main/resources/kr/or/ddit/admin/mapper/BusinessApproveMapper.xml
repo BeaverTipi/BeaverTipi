@@ -101,7 +101,7 @@
       AND M.MBR_NM LIKE '%' || #{detailSearch.mbrNm} || '%'
     </if>
     <if test="detailSearch.mbrCd != null and detailSearch.mbrCd != ''">
-      AND M.MBR_CD = #{detailSearch.mbrCd}
+      AND M.MBR_CD LIKE '%' ||#{detailSearch.mbrCd}||'%'
     </if>
     <if test="detailSearch.role != null and detailSearch.role != ''">
       <choose>

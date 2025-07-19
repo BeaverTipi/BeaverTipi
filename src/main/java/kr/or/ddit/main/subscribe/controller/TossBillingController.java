@@ -26,6 +26,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import kr.or.ddit.main.subscribe.service.SubscribeSubsriptionService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.CardVO;
+import kr.or.ddit.vo.EasyPayVO;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.PaymentTosspamentsRawVO;
 import kr.or.ddit.vo.RoleAchievedVO;
@@ -33,6 +34,7 @@ import kr.or.ddit.vo.SolutionSubscriptionPaymentVO;
 import kr.or.ddit.vo.SolutionSubscriptionVO;
 import kr.or.ddit.vo.SolutionVO;
 import kr.or.ddit.vo.SolutionnSubscriptionAutopayMethodVO;
+import kr.or.ddit.vo.VirtualAccountVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -153,8 +155,9 @@ public class TossBillingController {
     @GetMapping("/billing-success")
     public RedirectView handleTossBillingSuccess(@RequestParam String customerKey,
                                                  @RequestParam String authKey,
-                                                 @RequestParam String role,
-                                                 @RequestParam String solId,
+                                                 @RequestParam("role") String role,
+                                                 @RequestParam("solId") String solId,
+                                                 @RequestParam("current") String current,
                                                  @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
                                                  RedirectAttributes redirectAttributes) {
         try {
@@ -177,7 +180,7 @@ public class TossBillingController {
             );
 
             if (!response.getStatusCode().is2xxSuccessful()) {
-                return new RedirectView("/account/read?fail=true");
+                return new RedirectView(current +"?fail=true");
             }
 
             Map<String, Object> result = response.getBody();
@@ -191,8 +194,6 @@ public class TossBillingController {
             // 2. 사용자 정보 추출
             String mbrCd = principal.getRealUser().getMbrCd();
 
-            // ⚠️ role과 solId는 Toss에서 제공되지 않기 때문에 세션이나 파라미터로 추가 필요
-            // 임시로 기본값 지정 (필요시 프론트에서 함께 전달)
 
             // 3. DB 저장 처리
             SolutionnSubscriptionAutopayMethodVO methodVO = new SolutionnSubscriptionAutopayMethodVO();
@@ -237,7 +238,7 @@ public class TossBillingController {
         } catch (Exception e) {
             log.error("billing-success 처리 오류", e);
             redirectAttributes.addFlashAttribute("message", e.getMessage());
-            return new RedirectView("/account/read?fail=true");
+            return new RedirectView(current+"?fail=true");
         }
     }
 
@@ -249,6 +250,7 @@ public class TossBillingController {
                                                    @RequestParam int amount,
                                                    @RequestParam("role") String role,
                                                    @RequestParam("solId") String solId,
+                                                   @RequestParam("current") String current,
                                                    @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
                                                    RedirectAttributes redirectAttributes) {
         try {
@@ -268,16 +270,13 @@ public class TossBillingController {
                 request,
                 Map.class
             );
-
+            
             if (response.getStatusCode().is2xxSuccessful()) {
                 Map<String, Object> data = response.getBody();
-                log.info(data.toString());
                 String approvedAtRaw = (String) data.get("approvedAt");
                 LocalDate approvedAt = LocalDate.parse(approvedAtRaw.substring(0, 10));
-
-                Map<String, Object> card = (Map<String, Object>) data.get("card");
                 String mbrCd = principal.getRealUser().getMbrCd();
-
+           
                 SolutionSubscriptionPaymentVO paymentVO = new SolutionSubscriptionPaymentVO();
                 paymentVO.setCustomerKey("CUST-" + mbrCd);
                 paymentVO.setMbrCd(mbrCd);
@@ -294,16 +293,51 @@ public class TossBillingController {
                 subscriptionVO.setSolution(solutionVO);
 
                 service.savePaymentResult(paymentVO, roleAchievedVO, subscriptionVO);
+                
+                Map<String, Object> cardMap = (Map<String, Object>) data.get("card");
+                Map<String, Object> easyPayMap = (Map<String, Object>) data.get("easyPay");
+                Map<String, Object> vaMap = (Map<String, Object>) data.get("virtualAccount");
+                if( cardMap !=null && !cardMap.isEmpty() ) {
+                	CardVO card = new CardVO();
+                	card.setIssuerCode(cardMap.get("issuerCode").toString());
+                	card.setAcquirerCode(cardMap.get("acquirerCode").toString());
+                	card.setCardNumber(cardMap.get("number").toString());
+                	card.setCardType(cardMap.get("cardType").toString());
+                	card.setOwnerType(cardMap.get("ownerType").toString());
+                	card.setMbrCd(mbrCd);
+                	service.createCard(card);
+                }
+                if(easyPayMap != null && !easyPayMap.isEmpty()) {
+                	EasyPayVO easyPay = new EasyPayVO();	
+                	easyPay.setProvider(easyPayMap.get("provider").toString());
+                	easyPay.setAmount((Integer)easyPayMap.get("amount"));
+                	easyPay.setDiscountAmount((Integer)easyPayMap.get("discountAmount"));
+                	easyPay.setMbrCd(mbrCd);
+                	service.createEasyPay(easyPay);
+                }
+                if (vaMap != null && !vaMap.isEmpty()) {
+                	VirtualAccountVO va = new VirtualAccountVO();
+                	va.setAccountNumber((String) vaMap.get("accountNumber"));
+                	va.setBankCode((String) vaMap.get("bankCode"));
+                	va.setCustomerName((String) vaMap.get("customerName"));
+                	va.setAccountType((String) vaMap.get("accountType"));
+                	va.setDueDate((String) vaMap.get("dueDate"));
+                	va.setExpired((String) vaMap.get("expired"));
+                	va.setSettlementStatus((String) vaMap.get("settlementStatus"));
+                	va.setSecret((String) vaMap.get("secret"));
+                	va.setMbrCd(mbrCd);
+                	service.createVirtualAccount(va);
+                }
                 redirectAttributes.addFlashAttribute("message", "결제에 성공했습니다.");
                 return new RedirectView("/account/read?success=true");
             } else {
             	redirectAttributes.addFlashAttribute("message", "결제에 실패했습니다.");
-                return new RedirectView("/account/read?fail=true");
+                return new RedirectView(current+"?fail=true");
             }
         } catch (Exception e) {
             log.error("일반결제 처리 중 오류", e);
             redirectAttributes.addFlashAttribute("message", e.getMessage());
-            return new RedirectView("/account/read?fail=true");
+            return new RedirectView(current+"?fail=true");
         }
     }
 }

@@ -9,11 +9,15 @@ import org.springframework.web.multipart.MultipartFile;
 import kr.or.ddit.main.mapper.SubscribeSubscriptionMapper;
 import kr.or.ddit.util.file.service.FileService;
 import kr.or.ddit.util.validate.exception.BrokerException;
+import kr.or.ddit.util.validate.exception.CardException;
+import kr.or.ddit.util.validate.exception.EasyPayException;
 import kr.or.ddit.util.validate.exception.FileIOException;
 import kr.or.ddit.util.validate.exception.SubscriptionException;
 import kr.or.ddit.util.validate.exception.TenancyException;
+import kr.or.ddit.util.validate.exception.VirtualAccountException;
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.CardVO;
+import kr.or.ddit.vo.EasyPayVO;
 import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.RoleAchievedVO;
 import kr.or.ddit.vo.SolutionSubscriptionPaymentVO;
@@ -21,6 +25,7 @@ import kr.or.ddit.vo.SolutionSubscriptionVO;
 import kr.or.ddit.vo.SolutionVO;
 import kr.or.ddit.vo.SolutionnSubscriptionAutopayMethodVO;
 import kr.or.ddit.vo.TenancyVO;
+import kr.or.ddit.vo.VirtualAccountVO;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -160,6 +165,29 @@ public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionServ
 	public TenancyVO readTenancy(String username) {
 		// TODO Auto-generated method stub
 		return mapper.selectTenancy(username);
+	}
+
+	@Override
+	public void createCard(CardVO card) {
+		if(mapper.insertCard(card)<1) {
+			throw new CardException();
+		}
+		
+	}
+
+	@Override
+	public void createEasyPay(EasyPayVO easyPay) {
+		if(mapper.insertEasyPay(easyPay)<1) {
+			throw new EasyPayException();
+		}
+		
+	}
+
+	@Override
+	public void createVirtualAccount(VirtualAccountVO va) {
+		if(mapper.insertVirtualAccount(va)<1) {
+			throw new VirtualAccountException();
+		}
 	}
 	
 
