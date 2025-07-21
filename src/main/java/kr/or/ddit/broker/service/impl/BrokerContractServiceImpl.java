@@ -190,9 +190,11 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 			MultipartFile multipartMerged = FileToMultipartFileUtil.convert(merged);
 
 			/** 4. DB에 계약정보 레코드 입력 */
-			ContractVO contract = ContractVO.builder().mbrCd(String.valueOf(contractInfo.getLesseeMbrCd()))
-					.mbrCdBrok(authUnpack.getMbrCd(principal.getName())).lstgId(contractInfo.getListingId())
-					.contTypeCode(contractInfo.getListingTypeCode1())
+			ContractVO contract = ContractVO.builder()
+					.mbrCd(String.valueOf(contractInfo.getLesseeMbrCd()))
+					.mbrCdBrok(authUnpack.getMbrCd(principal.getName()))
+					.lstgId(contractInfo.getListingId())
+					.contTypeCode(contractInfo.getListingTypeSale())
 					.contDeposit(/* deposit */
 						SafeParse.safeParseLong(
 								Optional.ofNullable(contractInfo.getListingTypeCode1())
@@ -228,13 +230,14 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 			String lstgId = contract.getLstgId();
 			int lstgRec = mapper.updateListingProdStat(lstgId);
 
-			/** DEBUG__병합된 파일 디렉토리에서 확인하기 ^0^ */
-			File debugCopy = new File("D:/debug/merged-" + System.currentTimeMillis() + ".pdf");
-			Files.copy(merged.toPath(), debugCopy.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+//			/** DEBUG__병합된 파일 디렉토리에서 확인하기 ^0^ */
+//			File debugCopy = new File("D:/debug/merged-" + System.currentTimeMillis() + ".pdf");
+//			Files.copy(merged.toPath(), debugCopy.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
 			/** 0. 응답신호 내보내기 */
-			return ResponseEntity.ok(Map.of("success", true, "mergedPath", merged.getAbsolutePath(), "debugPath",
-					debugCopy.getAbsolutePath(), "contId", contId));
+			return ResponseEntity.ok(Map.of("success", true, "mergedPath", merged.getAbsolutePath(),
+//					"debugPath", debugCopy.getAbsolutePath(),
+					"contId", contId));
 		} catch (Exception e) {
 			e.printStackTrace();
 			/* 0. 응답신호 내보내기 */

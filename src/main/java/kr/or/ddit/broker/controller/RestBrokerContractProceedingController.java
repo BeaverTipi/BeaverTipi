@@ -28,6 +28,8 @@ public class RestBrokerContractProceedingController {
 	AES256Util aes256Util;
 	@Autowired
 	BrokerContractService contService;
+	@Autowired
+	ObjectMapper objectMapper; 
 	
 	@PostMapping("/list")
 	public Map<String, String> contractList(
@@ -39,9 +41,8 @@ public class RestBrokerContractProceedingController {
 		BrokerVO broker = authService.getRealUser(principal);
 		proceedingContractsList = contService.readProceedingContractsList(broker.getMbrCd());
 		
-	    ObjectMapper mapper = new ObjectMapper();
 	    try {
-	        String resultJson = mapper.writeValueAsString(proceedingContractsList);
+	        String resultJson = objectMapper.writeValueAsString(proceedingContractsList);
 	        Map<String, String> encryptedResponse = aes256Util.encryptWithDynamicIV(resultJson);
 	        return encryptedResponse;
 	    } catch (Exception e) {

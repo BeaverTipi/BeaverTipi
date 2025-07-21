@@ -90,10 +90,43 @@
 	</collection>
 </resultMap>
 
+<resultMap id="LesseeMemberMap" type="MemberVO">
+	<result property="mbrCd" column="MBR_CD_LS" />
+	<result property="mbrId" column="MBR_ID_LS" />
+	<result property="mbrPw" column="MBR_PW_LS" />
+	<result property="mbrNm" column="MBR_NM_LS" />
+	<result property="mbrNnm" column="MBR_NNM_LS" />
+	<result property="mbrTelno" column="MBR_TELNO_LS" />
+	<result property="mbrEmlAddr" column="MBR_EML_ADDR_LS" />
+	<result property="mbrBasicAddr" column="MBR_BASIC_ADDR_LS" />
+	<result property="mbrDetailAddr" column="MBR_DETAIL_ADDR_LS" />
+	<result property="mbrProfilImage" column="MBR_PROFIL_IMAGE_LS" />
+	<result property="mbrFrstRegDt" column="MBR_FRST_REG_DT_LS" />
+	<result property="mbrStatusCode" column="MBR_STATUS_CODE_LS" />
+	<result property="mbrDeleteDate" column="MBR_DELETE_DATE_LS" />
+	<result property="mbrZip" column="MBR_ZIP_LS" />
+</resultMap>
+
 <resultMap id="ContractMap" type="ContractVO" autoMapping="true">
 	<id property="contId" column="CONT_ID" />
+	<result property="mbrCd" column="MBR_CD" />
+	<result property="mbrCdBrok" column="MBR_CD_BROK" />
+	<result property="lstgId" column="LSTG_ID" />
+	<result property="contTypeCode" column="CONT_TYPE_CODE" />
+	<result property="contTypeGroupCd" column="CONT_TYPE_GROUP_CD" />
+	<result property="contDeposit" column="CONT_DEPOSIT" />
+	<result property="contTaxAmount" column="CONT_TAX_AMOUNT" />
+	<result property="contAmount" column="CONT_AMOUNT" />
+	<result property="contStatCd" column="CONT_STAT_CD" />
+	<result property="contDtm" column="CONT_DTM" />
+	<result property="contStatGroupCd" column="CONT_STAT_GROUP_CD" />
+
+	<association property="brokerInfo" resultMap="BrokerMap" />
+	<association property="tenancyInfo" resultMap="TenancyMap" />
+	<association property="lesseeInfo" resultMap="LesseeMemberMap" />
 	<association property="listingInfo" resultMap="ListingMap" />
 </resultMap>
+
 <sql id="selectLstgList">
 	SELECT L.*
 	       ,TI.*
@@ -195,25 +228,7 @@
 	   SET LSTG_PROD_STAT = '002'
 	 WHERE LSTG_ID = #{lstgId}
 </update>
-<select id="selectProceedingContractsList" parameterType="String" resultMap="ContractMap">
-	SELECT
-		C.CONT_ID
-		, C.MBR_CD
-		, C.MBR_CD_BROK
-		, C.LSTG_ID
-		, L.LSTG_NM
-		, C.CONT_TYPE_CODE
-		, C.CONT_DEPOSIT
-		, C.CONT_TAX_AMOUNT
-		, C.CONT_AMOUNT
-		, C.CONT_STAT_CD
-		, C.CONT_DTM
-		, C.CONT_TYPE_GROUP_CD
-		, C.CONT_STAT_GROUP_CD
-	  FROM CONTRACT C
-	 INNER JOIN LISTING L ON(C.LSTG_ID = L.LSTG_ID)
-	 WHERE MBR_CD_BROK = #{mbrCd}
-	   AND CONT_STAT_CD = '001'
-	 ORDER BY CONT_DTM DESC
+<select id="selectProceedingContractsList" resultMap="ContractMap">
+  SELECT * FROM V_CONTRACT_INFO
 </select>
 </mapper>
