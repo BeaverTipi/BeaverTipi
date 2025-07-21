@@ -2,6 +2,13 @@ window.renderListPage = function(data, map, page = 1, perPage = 5) {
 	const listContainer = document.getElementById('listing-list');
 	const paginationContainer = document.getElementById('pagination');
 
+	if (!data || data.length === 0) {
+		listContainer.innerHTML = "<p style='text-align:center; padding:20px;'>조회된 매물이 없습니다.</p>";
+		if (paginationContainer) paginationContainer.innerHTML = ""; // ✅ 추가
+		return;
+	}
+
+
 	const getSaleTypeText = (code) => {
 		switch (code) {
 			case '001': return '전세';
@@ -56,7 +63,7 @@ window.renderListPage = function(data, map, page = 1, perPage = 5) {
 	if (paginationContainer) {
 		const totalPages = Math.ceil(data.length / perPage);
 		const maxVisiblePages = 5;
-		
+
 		const currentBlock = Math.floor((page - 1) / maxVisiblePages);
 		const startPage = currentBlock * maxVisiblePages + 1;
 		let endPage = startPage + maxVisiblePages - 1;
@@ -136,7 +143,7 @@ window.renderListPage = function(data, map, page = 1, perPage = 5) {
 window.openDetailModal = function(lstgId) {
 	const mbrCd = window.loggedInUserId || '';
 	const url = `/map/api/detail?lstgId=${lstgId}&mbrCd=${encodeURIComponent(mbrCd)}`;
-	
+
 	fetch(url)
 		.then(res => res.json())
 		.then(data => {
@@ -149,7 +156,7 @@ window.showDetailModal = function(data) {
 	const modal = document.getElementById('side-detail-modal');
 	const body = document.getElementById('sideModalBody');
 	modal.classList.add('active');
-	
+
 	const getDealType = (code) => ({
 		'001': '전세',
 		'002': '월세',
@@ -247,8 +254,8 @@ window.showDetailModal = function(data) {
 		     src="/volt/assets/img/heart-svgrepo-com.svg"
 		     data-active="false"
 		     data-lstg-id="${data.LSTG_ID || data.lstgId}" />
+			<div id="wishlist-count-text" class="wishlist-tooltip"></div>
 		</div>
-		<div id="wishlist-count-text"></div>
 	</div>
 	
 	<div id="galleryModal" class="gallery-modal" style="display: none;">
@@ -266,7 +273,7 @@ window.showDetailModal = function(data) {
 
 	setupGalleryViewer();
 	setupHeartClickEvent(data);
-	
+
 	console.log('받은 상세 데이터:', data);
 	console.log('찜 여부 판단 결과:', isWishlisted);
 

@@ -31,14 +31,14 @@
 						  <div class="popup-body">
 						    <button class="popup-option" data-type="saleType" data-value="">전체</button>
 						    <c:forEach var="item" items="${saleTypeList}">
-							  <c:if test="${not empty item.codeValue && item.codeValue ne ''}">
-							    <button class="popup-option"
-							            data-type="saleType"
-							            data-value="${item.codeValue}">
-							      ${item.codeName}
-							    </button>
-							  </c:if>
-							</c:forEach>
+					  <c:if test="${not empty item.codeValue && item.codeName ne '전체'}">
+					    <button class="popup-option"
+					            data-type="saleType"
+					            data-value="${item.codeValue}">
+					      ${item.codeName}
+					    </button>
+					  </c:if>
+					</c:forEach>
 						  </div>
 						</div>
 					<input type="hidden" id="saleTypeFilter" />
@@ -51,12 +51,12 @@
 						  <div class="popup-body">
 						    <button class="popup-option" data-type="saleDetailType" data-value="">전체</button>
 						    <c:forEach var="item" items="${saleDetailTypeList}">
-						      <button class="popup-option"
-						              data-type="saleType"
-						              data-value="${item.codeValue}">
-						        ${item.codeName}
-						      </button>
-						    </c:forEach>
+							  <button class="popup-option"
+							          data-type="saleDetailType"
+							          data-value="${item.codeValue}">
+							    ${item.codeName}
+							  </button>
+							</c:forEach>
 						  </div>
 						</div>
 					<input type="hidden" id="saleDetailTypeFilter" />
@@ -152,7 +152,7 @@
 					<div id="listing-list" class="listing-list"></div>
 					<div class="pagination-container" id="pagination"></div>
 				</div>
-	
+				
 				<!-- 3. 상세 모달 -->
 				<div id="side-detail-modal" class="side-modal">
 					<div class="side-modal-header">
