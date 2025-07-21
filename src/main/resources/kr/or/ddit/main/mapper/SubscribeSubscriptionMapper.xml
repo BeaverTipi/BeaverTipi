@@ -354,13 +354,13 @@ INSERT INTO EASY_PAY (
     PROVIDER,
     AMOUNT,
     DISCOUNT_AMOUNT,
-    PAYMENT_KEY
+    MBR_CD
 ) VALUES (
 	#{easyPayId}
 	, #{provider}
 	, #{amount}
 	, #{discountAmount}
-	, #{paymentKey}
+	, #{mbrCd}
 )
 </insert>
 <select id="selectTenancy">

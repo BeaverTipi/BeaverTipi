@@ -79,12 +79,18 @@
       </div>
       <!-- 버튼 영역을 명확히 분리 -->
       <div class="subscription-footer">
-        <c:if test="${member.broker.authApprYn eq 'Y' and showPaymentBtnBroker}">
-          <form action="/payment/business/broker" method="get">
-            <button type="submit" class="btn btn-primary">결제하기</button>
-          </form>
-        </c:if>
-      </div>
+  <c:choose>
+    <c:when test="${member.broker.authApprYn eq 'Y' and showPaymentBtnBroker}">
+      <form action="/payment/business/broker" method="get">
+        <button type="submit" class="btn btn-primary">결제하기</button>
+      </form>
+    </c:when>
+    <c:otherwise>
+      <div class="empty-button-space"></div>
+    </c:otherwise>
+  </c:choose>
+</div>
+
     </div>
   </c:if>
   <!-- 임대인 승인 정보 카드 -->
@@ -107,46 +113,62 @@
       </div>
       <!-- 버튼 영역을 명확히 분리 -->
       <div class="subscription-footer">
-        <c:if test="${member.tenancy.authApprYn eq 'Y' and showPaymentBtnTenancy}">
-          <form action="/payment/business/tenancy" method="get">
-            <button type="submit" class="btn btn-primary">결제하기</button>
-          </form>
-        </c:if>
-      </div>
+  <c:choose>
+    <c:when test="${member.tenancy.authApprYn eq 'Y' and showPaymentBtnTenancy}">
+      <form action="/payment/business/tenancy" method="get">
+        <button type="submit" class="btn btn-primary">결제하기</button>
+      </form>
+    </c:when>
+    <c:otherwise>
+      <div class="empty-button-space"></div>
+    </c:otherwise>
+  </c:choose>
+</div>
+
     </div>
   </c:if>
-</div>
 
 <!-- 구독 정보 카드 -->
 <c:forEach var="sub" items="${solutionSubscriptionList}">
   <div class="subscription-card">
     <div class="subscription-header">
-      <h5 class="subscription-title">${sub.solution.solName} - 구독 정보</h5>
+      <h5 class="subscription-title">구독정보</h5>
     </div>
-    <div class="subscription-content">
-      <strong>상태:</strong>
-      <c:choose>
-        <c:when test="${sub.subsStatus eq '001'}"><span class="text-success">✅ 사용 가능</span></c:when>
-        <c:when test="${sub.subsStatus eq '002'}"><span class="text-muted">⏸ 일시 정지</span></c:when>
-        <c:when test="${sub.subsStatus eq '003'}"><span class="text-muted">❌ 취소</span></c:when>
-        <c:when test="${sub.subsStatus eq '004'}"><span class="text-muted">⏳ 결제 대기</span></c:when>
-        <c:otherwise><span class="text-danger">⛔ 사용 불가</span></c:otherwise>
-      </c:choose>
 
-      <c:if test="${sub.subsStatus eq '001'}">
-        <div class="subscription-footer">
-          <form action="/payment/business/${sub.solution.solCcCd eq '001' ? 'tenancy' : 'broker'}" method="get" style="display:inline;">
-            <button type="submit" class="btn-primary-custom">구독 변경</button>
-          </form>
-          <form action="${pageContext.request.contextPath}/subscription/cancel" method="post" style="display:inline;">
-            <input type="hidden" name="subsId" value="${sub.subsId}" />
-            <button type="submit" class="btn-outline-danger-custom">구독 취소</button>
-          </form>
-        </div>
-      </c:if>
+    <div class="subscription-content">
+      <ul class="subscription-info-list">
+        <li>
+          <span class="label">구독 타이틀:</span>
+          <span class="value">${sub.solution.solName}</span>
+        </li>
+        <li>
+          <span class="label">상태:</span>
+          <c:choose>
+            <c:when test="${sub.subsStatus eq '001'}"><span class="value text-success">✅ 사용 가능</span></c:when>
+            <c:when test="${sub.subsStatus eq '002'}"><span class="value text-muted">⏸ 일시 정지</span></c:when>
+            <c:when test="${sub.subsStatus eq '003'}"><span class="value text-muted">❌ 취소</span></c:when>
+            <c:when test="${sub.subsStatus eq '004'}"><span class="value text-muted">⏳ 결제 대기</span></c:when>
+            <c:otherwise><span class="value text-danger">⛔ 사용 불가</span></c:otherwise>
+          </c:choose>
+        </li>
+      </ul>
     </div>
+
+    <c:if test="${sub.subsStatus eq '001'}">
+      <div class="subscription-footer">
+        <form action="/payment/business/${sub.solution.solCcCd eq '001' ? 'tenancy' : 'broker'}" method="get" style="display:inline;">
+          <button type="submit" class="btn-primary-custom">구독 변경</button>
+        </form>
+        <form action="${pageContext.request.contextPath}/subscription/cancel" method="post" style="display:inline;">
+          <input type="hidden" name="subsId" value="${sub.subsId}" />
+          <button type="submit" class="btn-outline-danger-custom">구독 취소</button>
+        </form>
+      </div>
+    </c:if>
   </div>
 </c:forEach>
+</div>
+
 
 
       <c:if test="${not empty member.broker or not empty member.tenancy}">

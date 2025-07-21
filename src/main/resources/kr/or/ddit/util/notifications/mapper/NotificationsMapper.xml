@@ -4,19 +4,24 @@
 	namespace="kr.or.ddit.util.notifications.mapper.NotificationsMapper">
 	
 <select id="selectNotificationList">
-  SELECT NOTIF_ID
-		  , MBR_CD
-		  , NOTIF_TITLE
-		  , NOTIF_MSG
-		  , NOTIF_DT
-		  , NOTIF_TYPE_CD
-		  , NOTIF_TYPE_GROUP_CD
-		  , NOTIF_REF_URL
-		  , NOTIF_READ_YN
-		  , NOTIF_DEL_YN
-  FROM NOTIFICATIONS
-  WHERE MBR_CD = #{username}
-  AND NOTIF_READ_YN ='N'
+SELECT A.*
+FROM (	SELECT NOTIF_ID
+			  , MBR_CD
+		 	  , NOTIF_TITLE
+		      , NOTIF_MSG
+		  	  , NOTIF_DT
+		      , NOTIF_TYPE_CD
+		  	  , NOTIF_TYPE_GROUP_CD
+		  	  , NOTIF_REF_URL
+		  	  , NOTIF_READ_YN
+		  	  , NOTIF_DEL_YN
+		FROM NOTIFICATIONS
+        WHERE MBR_CD = 'M2507000146'
+        AND NOTIF_READ_YN ='N'
+        AND NOTIF_DEL_YN = 'N'
+        ORDER BY NOTIF_DT DESC
+  		) A
+WHERE ROWNUM BETWEEN 1 AND 5
 </select>
 <select id="selectNotificationListPaging">
   SELECT *
@@ -37,6 +42,7 @@
 				  , NOTIF_DEL_YN
 		  FROM NOTIFICATIONS
 		  WHERE MBR_CD = #{username}
+		  AND NOTIF_DEL_YN = 'N'
 		  )
       ORDER BY NOTIF_DT DESC
     ) A
