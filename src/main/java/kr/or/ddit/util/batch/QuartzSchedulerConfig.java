@@ -15,9 +15,15 @@ package kr.or.ddit.util.batch;
 
 import kr.or.ddit.util.batch.idseq.ContractIdSequenceResetJob;
 import kr.or.ddit.util.batch.idseq.DefaultIdSequenceResetJob;
+
+import javax.sql.DataSource;
+
 import org.quartz.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 
@@ -33,6 +39,9 @@ import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties
 @Configuration
 public class QuartzSchedulerConfig {
 
+    @Autowired
+    private DataSource dataSource;
+	
     @Bean
     public JobDetail defaultIdResetJobDetail() {
         return JobBuilder.newJob(DefaultIdSequenceResetJob.class)
@@ -73,4 +82,24 @@ public class QuartzSchedulerConfig {
                 .build();
     }
 
+    
+    /**
+     * Scheduler 상태	✅ 정상 생성 → standby → started → graceful shutdown
+     * ThreadPool 종료	✅ 모든 worker thread 정상 종료
+     * Lock 처리		✅ TRIGGER_ACCESS 락 획득 및 반납 정상
+     * Shutdown 처리	✅ shutdown complete까지 확인됨
+     */
+    @Bean
+    @DependsOn("dataSource")
+    public SchedulerFactoryBean schedulerFactoryBean(Trigger defaultIdResetTrigger,
+                                                      Trigger contractIdResetTrigger,
+                                                      JobDetail defaultIdResetJobDetail,
+                                                      JobDetail contractIdResetJobDetail) {
+        SchedulerFactoryBean factory = new SchedulerFactoryBean();
+        factory.setDataSource(dataSource); // DB 연결 순서 보장
+        factory.setJobDetails(defaultIdResetJobDetail, contractIdResetJobDetail);
+        factory.setTriggers(defaultIdResetTrigger, contractIdResetTrigger);
+        factory.setWaitForJobsToCompleteOnShutdown(true); // ✨ 이 옵션도 함께 추천
+        return factory;
+    }
 }
