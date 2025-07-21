@@ -163,7 +163,6 @@ window.showDetailModal = function(data) {
 		'003': '매매'
 	}[code] || '미정');
 
-
 	const getDepositText = (item) => {
 		const type = String(item.LSTG_TYPE_SALE);
 		const lease = item.LSTG_LEASE || 0;
@@ -189,26 +188,48 @@ window.showDetailModal = function(data) {
  	 `;
 	};
 
-	const renderImageSlider = () => {
+	const renderImageGallery = () => {
 		const imageUrls = [
 			'/volt/assets/img/images/room1.png',
 			'/volt/assets/img/images/room2.png',
 			'/volt/assets/img/images/room3.png'
 		];
 
+		const fallback = '/volt/assets/img/illustrations/no-image.png';
+		const padded = [...imageUrls];
+		while (padded.length < 5) padded.push(fallback);
+
+		const moreCount = imageUrls.length > 5 ? imageUrls.length - 4 : 0;
+		galleryImages = imageUrls; // 확대 뷰어용 배열
+
 		return `
-    <div class="image-slider">
-      ${imageUrls.map(url => `
-        <div class="image-item">
-          <img src="${url}" alt="매물 이미지" />
-        </div>
-      `).join('')}
-    </div>
-  `;
+		    <div class="image-slider">
+		      <div class="image-gallery">
+		        <div class="main-image image-item">
+		          <img src="${padded[0]}" alt="대표 이미지" onerror="this.src='${fallback}'" />
+		        </div>
+		        <div class="thumbnail-grid">
+		          ${padded.slice(1, 4).map((url, idx) => `
+		            <div class="image-item">
+		              <img src="${url}" alt="썸네일 ${idx + 1}" onerror="this.src='${fallback}'" />
+		            </div>
+		          `).join('')}
+		          <div class="image-item thumbnail-more">
+		            <img src="${padded[4]}" alt="썸네일 4" onerror="this.src='${fallback}'" />
+		            ${moreCount > 0 ? `<div class="more-count">+${moreCount}</div>` : ''}
+		          </div>
+		        </div>
+		      </div>
+		    </div>
+		  `;
 	};
 
+
+
+
+
 	body.innerHTML = `
-	${renderImageSlider()}
+	${renderImageGallery()}
 	
 	  <div class="detail-modal">
 	    <!-- 상단 헤더 -->
@@ -254,6 +275,7 @@ window.showDetailModal = function(data) {
 		     src="/volt/assets/img/heart-svgrepo-com.svg"
 		     data-active="false"
 		     data-lstg-id="${data.LSTG_ID || data.lstgId}" />
+			<img id="warningIcon" src="/volt/assets/img/icons/warning-svgrepo-com.svg">
 			<div id="wishlist-count-text" class="wishlist-tooltip"></div>
 		</div>
 	</div>
@@ -274,8 +296,13 @@ window.showDetailModal = function(data) {
 	setupGalleryViewer();
 	setupHeartClickEvent(data);
 
+	if (window._map) {
+		const center = window._map.getCenter();
+		window._map.relayout();
+		window._map.setCenter(center);
+	}
+
 	console.log('받은 상세 데이터:', data);
-	console.log('찜 여부 판단 결과:', isWishlisted);
 
 };
 
@@ -283,5 +310,11 @@ window.showDetailModal = function(data) {
 window.setupModalCloseBtn = function() {
 	document.getElementById('sideModalClose')?.addEventListener('click', () => {
 		document.getElementById('side-detail-modal')?.classList.remove('active');
+
+		if (window._map) {
+			const center = window._map.getCenter();  // 현재 중심 저장
+			window._map.relayout();                  // 지도 컨테이너 리사이즈 반영
+			window._map.setCenter(center);           // 중심 복원
+		}
 	});
 };

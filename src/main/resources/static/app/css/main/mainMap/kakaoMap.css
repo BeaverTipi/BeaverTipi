@@ -24,7 +24,6 @@ html, body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
-	overflow: hidden;
 	font-family: 'Malgun Gothic', sans-serif;
 }
 
@@ -44,11 +43,13 @@ body {
 	flex-direction: column;
 	flex: 1;
 	padding-top: 55px;
+	height: 100vh;
 }
 
 .main-section {
 	display: flex;
-	flex: 1;
+	flex-direction: row;
+	height: calc(100vh - 120px); /* 헤더 + 필터 높이 제외 */
 	overflow: hidden;
 }
 
@@ -60,10 +61,12 @@ body {
 }
 
 .list-panel {
+	width: 300px;
+	position: relative;
 	display: flex;
 	flex-direction: column;
-	height: calc(100vh - 160px); /* 헤더+필터 높이 고려해서 조절 */
-	overflow: hidden; /* 하위 요소가 스크롤 담당 */
+	height: calc(100vh - 160px);
+	overflow: hidden;
 }
 
 #listing-list {
@@ -75,13 +78,14 @@ body {
 /* 지도 */
 .map-area {
 	flex: 1;
+	min-width: 600px; /* ✅ 핵심 */
 	position: relative;
 	display: flex;
 }
 
 #map {
-	flex: 1;
-	transition: all 0.3s ease;
+	width: 100%;
+	height: 100%;
 }
 
 /* 리스트 */
@@ -120,14 +124,12 @@ body {
 
 /* 모달 */
 .side-modal {
-	width: 300px;
-	min-width: 300px;
-	background-color: #fff;
-	border-right: 1px solid #ccc;
-	box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+	width: 400px;
+	height: 100%;
 	overflow-y: auto;
-	display: none; /* 기본은 감춤 */
-	position: relative;
+	display: none;
+	background: #fff;
+	border-left: 1px solid #ddd;
 }
 
 .side-modal.active {
@@ -901,11 +903,18 @@ body {
 	background-color: #0056b3;
 }
 
-#heartIcon {
+#heartIcon, #warningIcon {
 	width: 30px;
 	height: 30px;
 	cursor: pointer;
+}
+
+#heartIcon {
 	margin-left: 16px;
+}
+
+#warningIcon {
+	margin-left: 4px; /* 하트 바로 옆에 조금만 띄움 */
 }
 
 .image-slider {
@@ -922,7 +931,7 @@ body {
 	object-fit: cover;
 }
 
-/* 상세 모달 이미지 */
+/* 확대 이미지 모달 전체 */
 .gallery-modal {
 	position: fixed;
 	top: 0;
@@ -932,107 +941,195 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	background-color: rgba(0, 0, 0, 0.7);
 	z-index: 9999;
 }
 
+/* 오버레이 (닫기 영역) */
 .gallery-overlay {
 	position: absolute;
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0, 0, 0, 0.7);
 	top: 0;
 	left: 0;
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
 }
 
+/* 확대된 이미지 컨테이너 */
 .gallery-content {
 	position: relative;
-	max-width: 80vw;
-	max-height: 80vh;
-	z-index: 10000;
+	max-width: 90vw;
+	max-height: 90vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	z-index: 10000;
 }
 
+/* 이미지 스타일 */
 .gallery-content img {
 	max-width: 100%;
 	max-height: 100%;
 	object-fit: contain;
-	border-radius: 10px;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+	border-radius: 12px;
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
 }
 
+/* 닫기 버튼 */
 .gallery-close {
 	position: absolute;
-	top: -20px;
-	right: -20px;
-	font-size: 30px;
-	background: #000;
-	color: white;
-	width: 40px;
-	height: 40px;
+	top: 10px;
+	right: 10px;
+	font-size: 24px;
+	width: 36px;
+	height: 36px;
 	border-radius: 50%;
+	background: rgba(0, 0, 0, 0.6);
+	color: #fff;
 	text-align: center;
-	line-height: 40px;
+	line-height: 36px;
 	cursor: pointer;
 	z-index: 10100;
+	transition: background 0.2s;
+}
+.gallery-close:hover {
+	background: rgba(255, 255, 255, 0.9);
+	color: #000;
 }
 
+/* 좌우 네비게이션 버튼 */
 .gallery-nav {
 	position: absolute;
 	top: 50%;
-	width: 100%;
+	left: 0;
+	right: 0;
 	display: flex;
 	justify-content: space-between;
-	transform: translateY(-50%);
+	align-items: center;
 	padding: 0 20px;
-	box-sizing: border-box;
+	transform: translateY(-50%);
 	z-index: 10100;
 }
 
 .gallery-nav button {
 	background: rgba(0, 0, 0, 0.5);
-	color: white;
-	font-size: 40px;
-	width: 50px;
-	height: 50px;
+	color: #fff;
+	font-size: 28px;
+	width: 48px;
+	height: 48px;
 	border: none;
 	border-radius: 50%;
 	cursor: pointer;
 	display: flex;
-	justify-content: center;
 	align-items: center;
+	justify-content: center;
+	transition: background 0.2s;
+}
+
+.gallery-nav button:hover {
+	background: rgba(255, 255, 255, 0.8);
+	color: #000;
+}
+
+.image-slider {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* 핵심 구조를 가로로 */
+.image-gallery {
+  display: flex;
+  gap: 15px;
+  align-items: stretch;
+}
+
+.main-image {
+  width: 50%;
+  max-width: 420px; /* 원하는 대표 이미지 크기 */
+  aspect-ratio: 4 / 3;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.main-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+.thumbnail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 6px;
+  width: 160px;
+  flex-shrink: 0;
+}
+
+.thumbnail-grid img,
+.thumbnail-more img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.thumbnail-more {
+  position: relative;
+}
+
+.more-count {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
 }
 
 /* 찜 좋아요 말풍선  */
 .detail-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  position: relative;
+	position: relative; /* 기준 컨테이너로 설정 */
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-top: 20px;
 }
 
+/* 말풍선 기본 숨김 및 스타일 */
 #wishlist-count-text.wishlist-tooltip {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #333;
-  color: #fff;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 13px;
-  white-space: nowrap;
-  z-index: 1000;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+	position: absolute;
+	bottom: 130%; /* 하트 위에 뜨도록 조정 */
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: #333;
+	color: #fff;
+	padding: 6px 10px;
+	border-radius: 6px;
+	font-size: 13px;
+	white-space: nowrap;
+	z-index: 1000;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+	display: none; /* 기본은 안보이게 */
 }
 
 #wishlist-count-text.wishlist-tooltip::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 6px;
-  border-style: solid;
-  border-color: #333 transparent transparent transparent;
+	content: '';
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	transform: translateX(-50%);
+	border-width: 6px;
+	border-style: solid;
+	border-color: #333 transparent transparent transparent;
 }

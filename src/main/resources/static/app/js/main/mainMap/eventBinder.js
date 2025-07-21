@@ -152,7 +152,6 @@ window.setupFilterOptionClick = function(map, clusterer) {
 	});
 };
 
-// 모달창 열기 / 닫기 함수
 window.toggleFilterPopup = function(type, btn) {
 	const popup = document.getElementById('popup-' + type);
 	const allPopups = document.querySelectorAll('.filter-popup');
@@ -327,8 +326,14 @@ window.setupHeartClickEvent = function(data) {
 					? "/volt/assets/img/heart-filled.svg"
 					: "/volt/assets/img/heart-svgrepo-com.svg";
 
-				const countText = document.getElementById("wishlist-count-text");
-				if (countText) countText.innerText = `${count}명이 관심을 가지고 있습니다.`;
+				const tooltip = document.getElementById("wishlist-count-text");
+				if (tooltip) {
+					tooltip.innerText = `${count}명이 관심을 가지고 있습니다.`;
+					tooltip.style.display = "block";
+					setTimeout(() => {
+						tooltip.style.display = "none";
+					}, 2000);
+				}
 
 				// 🟡 최신 상태로 다시 렌더링
 				refreshDetailModal(lstgId);
@@ -352,10 +357,21 @@ window.setupGalleryViewer = function() {
 	});
 };
 
-function openGalleryModal() {
+function openGalleryModal(index) {
 	const modal = document.getElementById('galleryModal');
 	const imgEl = document.getElementById('galleryImage');
-	imgEl.setAttribute('src', galleryImages[currentIndex]);
+	const fallback = '/volt/assets/img/illustrations/no-image.png';
+
+	currentIndex = index;
+
+	imgEl.onerror = null; // 기존 onerror 초기화
+	imgEl.src = galleryImages[currentIndex];
+	imgEl.onerror = function() {
+		if (imgEl.src !== fallback) {
+			imgEl.src = fallback;
+		}
+	};
+
 	modal.style.display = 'flex';
 }
 
@@ -365,7 +381,15 @@ window.changeGalleryImage = function(delta) {
 	if (currentIndex >= galleryImages.length) currentIndex = 0;
 
 	const imgEl = document.getElementById('galleryImage');
-	imgEl.setAttribute('src', galleryImages[currentIndex]);
+	const fallback = '/volt/assets/img/illustrations/no-image.png';
+
+	imgEl.onerror = null; // 이전 핸들러 제거
+	imgEl.src = galleryImages[currentIndex];
+	imgEl.onerror = function() {
+		if (imgEl.src !== fallback) {
+			imgEl.src = fallback;
+		}
+	};
 };
 
 window.closeGalleryModal = function() {

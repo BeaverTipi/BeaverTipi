@@ -141,7 +141,7 @@
 							</div>
 						</div>
 					</div>
-					<input type="text" id="keywordFilter" placeholder="키워드 검색" /> 
+					<input type="text" id="keywordFilter" placeholder="매물명 검색" /> 
 					<button id="keywordSearchBtn">검색하기</button>
 				</div>
 			</div>
@@ -165,6 +165,7 @@
 				<div class="map-area">
 					<div id="map"></div>
 				</div>
+			</div>
 			</div>
 	</div>
 </div>

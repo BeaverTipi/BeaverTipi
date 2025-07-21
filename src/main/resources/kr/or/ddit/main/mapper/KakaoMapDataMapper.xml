@@ -93,10 +93,7 @@
 	
 	    <if test="keyword != null and keyword != ''">
 	      AND (
-	        LI.LSTG_ADD LIKE '%' || #{keyword} || '%'
-	        OR LI.LSTG_ADD2 LIKE '%' || #{keyword} || '%'
-	        OR TO_CHAR(LI.LSTG_GR_AREA) LIKE '%' || #{keyword} || '%'
-	        OR LI.LSTG_NM LIKE '%' || #{keyword} || '%'
+	    	 LI.LSTG_NM LIKE '%' || #{keyword} || '%'
 	      )
 	    </if>
 	
