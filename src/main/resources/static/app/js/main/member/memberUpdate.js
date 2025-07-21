@@ -1,6 +1,16 @@
 // ✅ 전화번호 인증 UI 전체 스크립트
 
 document.addEventListener("DOMContentLoaded", () => {
+	  const verified = sessionStorage.getItem("passwordVerified");
+  if (!verified) {
+     Swal.fire({
+            icon: 'warning',
+            title: '알림',
+            text: "비밀번호 확인 후 접근 가능합니다.",
+            confirmButtonText: '확인'
+          });
+    window.location.href = "/account/read";
+  }
   const telInput = document.querySelector("#mbrTelno");
   const requestBtn = document.querySelector("#requestAuthBtn");
   const group = document.querySelector(".phone-auth-group");
@@ -10,14 +20,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetBtn = document.querySelector("#resetBtn");
   const baseURL = window.location.origin;
   
-  let verified = false;
   let failCount = 0;
   let timer = null;
   let remainingTime = 300;
 
   const originalTel = telInput.value;
+  
 resetBtn.addEventListener("click", () => {
- location.href =`${baseURL}/account/read`;
+	 sessionStorage.removeItem("passwordVerified");
+	 location.href =`${baseURL}/account/read`;
 });
 
 function toggleButtonVisibility() {

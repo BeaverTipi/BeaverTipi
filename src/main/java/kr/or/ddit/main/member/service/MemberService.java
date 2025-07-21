@@ -11,4 +11,5 @@ public interface MemberService {
 	public MemberVO readMemberByAll(String username);
 	public void modifyMember(MemberVO member);
 	public void removeMember(String username, String password);
+	public boolean checkedPassword(String username, String inputPassword);
 }

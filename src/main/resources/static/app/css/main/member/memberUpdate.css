@@ -4,12 +4,6 @@
 
 /* ✅ Update 페이지 전용 스타일 */
 
-.phone-auth-group {
-  display: flex;
-  gap: 10px;
-  align-items: stretch;
-}
-
 .phone-auth-group.full-width input {
   flex: 1 1 100%;
 }
@@ -249,6 +243,27 @@
 
 .btn:hover {
   opacity: 0.9;
+}
+.phone-auth-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+   flex-wrap: nowrap; /* ✅ 줄바꿈 방지 */
+}
+
+.phone-auth-group .form-control {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.auth-code-input {
+  width: 140px;
+  flex-shrink: 0;
+}
+
+.auth-code-input.hidden {
+  display: none;
 }
 
 

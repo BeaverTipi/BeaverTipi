@@ -88,7 +88,18 @@
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 						<span class="text-dark">${principal.realUser.mbrNm}</span>
-						<img class="avatar rounded-circle" alt="Profile" src="${pageContext.request.contextPath}/volt/assets/img/team/profile-picture-3.jpg" height="32" width="32">
+							<c:choose>
+								<c:when test="${not empty principal.realUser.memberFile}">
+									<img class="avatar rounded-circle" alt="Profile"
+										src="${principal.realUser.memberFile.filePathUrl}"
+										height="32" width="32">
+								</c:when>
+								<c:otherwise>
+									<img class="avatar rounded-circle" alt="Default Profile"
+										src="${pageContext.request.contextPath}/volt/assets/img/team/beaver.png"
+										height="32" width="32">
+								</c:otherwise>
+							</c:choose>
 					</a>
 					<ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="userDropdown">
 						<li><a class="dropdown-item" href="${pageContext.request.contextPath}/resident/myhouse">마이하우스(입주민)</a></li>

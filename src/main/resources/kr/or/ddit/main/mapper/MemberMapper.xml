@@ -17,6 +17,7 @@
 			<result property="lsrYnTypeCd" column="LSR_YN_TYPE_CD" />
 			<result property="mbrCd" column="T_MBR_CD" />
 			<result property="authApprYn" column="T_AUTH_APPR_YN" />
+			<result property="authApprDt" column="T_AUTH_APPR_DT" />
 		</association>
 		<association property="broker" javaType="BrokerVO">
 			<id property="mbrCd" column="B_MBR_CD" />
@@ -30,6 +31,21 @@
 			<result property="brokAddr1" column="BROK_ADDR1" />
 			<result property="brokZip" column="BROK_ZIP" />
 			<result property="authApprYn" column="B_AUTH_APPR_YN" />
+			<result property="authApprDt" column="B_AUTH_APPR_DT" />
+		</association>
+		<association property="memberFile" javaType="FileVO">
+			<id property="fileId" column="FILE_ID"/>
+			<result property="fileAttachSeq" column="FILE_ATTACH_SEQ"/>
+			<result property="fileSourceRef" column="FILE_SOURCE_REF"/>
+			<result property="fileSavedname" column="FILE_SAVEDNAME"/>
+			<result property="fileMime" column="FILE_MIME"/>
+			<result property="fileSize" column="FILE_SIZE"/>
+			<result property="docTypeCd" column="DOC_TYPE_CD"/>
+			<result property="filePathUrl" column="FILE_PATH_URL"/>
+			<result property="regDtm" column="REG_DTM"/>
+			<result property="fileSourceId" column="FILE_SOURCE_ID"/>
+			<result property="fileDir" column="FILE_DIR"/>
+			<result property="fileOriginalname" column="FILE_ORIGINALNAME"/>
 		</association>
 		<collection property="memRoleList" javaType="list"
 			ofType="RoleAchievedVO">
@@ -84,6 +100,7 @@
 		, B.BROK_ADDR1
 		, B.BROK_ZIP
 		, B.AUTH_APPR_YN B_AUTH_APPR_YN
+		, B.AUTH_APPR_DT B_AUTH_APPR_DT
 		, T.MBR_CD T_MBR_CD
 		, T.RENTAL_PTY_REG_BLDG_CNT
 		, T.RENTAL_PTY_BIZ_REG_NO
@@ -94,6 +111,19 @@
 		, T.LSR_YN_TYPE_CD
 		, T.LSR_TYPE_GROUP_CD
 		, T.AUTH_APPR_YN T_AUTH_APPR_YN
+		, T.AUTH_APPR_DT T_AUTH_APPR_DT
+		, F.FILE_ID
+		, F.FILE_ATTACH_SEQ
+		, F.FILE_SOURCE_REF
+		, F.FILE_SAVEDNAME
+		, F.FILE_MIME
+		, F.FILE_SIZE
+		, F.DOC_TYPE_CD
+		, F.FILE_PATH_URL
+		, F.REG_DTM
+		, F.FILE_SOURCE_ID
+		, F.FILE_DIR
+		, F.FILE_ORIGINALNAME
 		FROM
 		MEMBER M
 		LEFT OUTER JOIN ROLE_ACHIEVED RA ON (M.MBR_CD=RA.MBR_CD)
@@ -104,6 +134,7 @@
 		ON(M.MBR_CD=T.MBR_CD) AND T.AUTH_APPR_YN='Y'
 		LEFT OUTER JOIN UNIT_RESIDENT UR ON
 		(M.MBR_CD=UR.MBR_CD)
+		LEFT OUTER JOIN FILES F ON (F.FILE_ID=M.MBR_PROFIL_IMAGE)
 		WHERE M.MBR_ID = #{username}
 
 	</select>
@@ -143,6 +174,7 @@
 		, B.BROK_ADDR1
 		, B.BROK_ZIP
 		, B.AUTH_APPR_YN B_AUTH_APPR_YN
+		, B.AUTH_APPR_DT B_AUTH_APPR_DT
 		, T.MBR_CD T_MBR_CD
 		, T.RENTAL_PTY_REG_BLDG_CNT
 		, T.RENTAL_PTY_BIZ_REG_NO
@@ -153,6 +185,7 @@
 		, T.LSR_YN_TYPE_CD
 		, T.LSR_TYPE_GROUP_CD
 		, T.AUTH_APPR_YN T_AUTH_APPR_YN
+		, T.AUTH_APPR_DT T_AUTH_APPR_DT
 		FROM
 		MEMBER M
 		LEFT OUTER JOIN ROLE_ACHIEVED RA ON (M.MBR_CD=RA.MBR_CD)
@@ -163,7 +196,7 @@
 		ON(M.MBR_CD=T.MBR_CD)
 		LEFT OUTER JOIN UNIT_RESIDENT UR ON
 		(M.MBR_CD=UR.MBR_CD)
-		WHERE M.MBR_ID = #{username}
+		WHERE M.MBR_CD = #{username}
 
 	</select>
 
@@ -201,6 +234,7 @@
 		, B.BROK_ADDR2
 		, B.BROK_ADDR1
 		, B.AUTH_APPR_YN B_AUTH_APPR_YN
+		, B.AUTH_APPR_DT B_AUTH_APPR_DT
 		, B.BROK_ZIP
 		, T.MBR_CD T_MBR_CD
 		, T.RENTAL_PTY_REG_BLDG_CNT
@@ -212,6 +246,7 @@
 		, T.LSR_YN_TYPE_CD
 		, T.LSR_TYPE_GROUP_CD
 		, T.AUTH_APPR_YN T_AUTH_APPR_YN
+		, T.AUTH_APPR_DT T_AUTH_APPR_DT
 		FROM
 		MEMBER M
 		LEFT OUTER JOIN ROLE_ACHIEVED RA ON (M.MBR_CD=RA.MBR_CD)
@@ -287,7 +322,7 @@
 		, MBR_DETAIL_ADDR = #{mbrDetailAddr}
 		</if>
 		<if test="mbrProfilImage neq null">
-			MBR_PROFIL_IMAGE = #{mbrProfilImage}
+		,	MBR_PROFIL_IMAGE = #{mbrProfilImage}
 		</if>
 		WHERE MBR_CD = #{mbrCd}
 	</update>

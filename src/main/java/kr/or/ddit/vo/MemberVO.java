@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -28,7 +29,7 @@ public class MemberVO implements Serializable {
 	private String mbrId;
 
 	// 일반 회원가입/수정
-	@NotBlank(groups = {InsertGroup.class, UpdateGroup.class})
+	@NotBlank(groups = {InsertGroup.class})
 	private String mbrPw;
 
 	// 일반 회원가입/수정
@@ -49,6 +50,8 @@ public class MemberVO implements Serializable {
 	private String mbrBasicAddr;
 	private String mbrDetailAddr;
 	private String mbrProfilImage;
+	
+	private MultipartFile mbrProfilImg;
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate mbrFrstRegDt;
@@ -68,4 +71,6 @@ public class MemberVO implements Serializable {
 	
 	private List<FileVO> fileListBroker;
 	private List<FileVO> fileListTenancy;
+	
+	private FileVO memberFile;
 }

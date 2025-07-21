@@ -1,29 +1,32 @@
-
 document.addEventListener("DOMContentLoaded", () => {
-	initSolutionSelection();
-	initMethodSelection();
-	updateSolutionSummary();
+  initSolutionSelection();
+  initMethodSelection();
+  updateSolutionSummary();
 
-	const attemptedSolId = sessionStorage.getItem("attemptedSolId");
-	const currentSolInput = document.querySelector("input[name='solutionCode']:checked");
+  // ✅ 새 구조: selectedSubscription에서 solId 추출
+  const subInfoRaw = sessionStorage.getItem("selectedSubscription");
+  if (subInfoRaw) {
+    const subInfo = JSON.parse(subInfoRaw);
+    const attemptedSolId = subInfo.solId;
 
-	// ✅ attemptedSolId가 존재하고, 현재 체크된 게 없거나 다른 경우 → 해당 솔루션 강제 선택
-	if (attemptedSolId && (!currentSolInput || currentSolInput.value !== attemptedSolId)) {
-		const matchedRadio = document.querySelector(`input[name='solutionCode'][value='${attemptedSolId}']`);
-		if (matchedRadio) {
-			matchedRadio.checked = true;
-			document.querySelectorAll(".solution-card").forEach(label => label.classList.remove("selected"));
-			matchedRadio.closest("label").classList.add("selected");
-			updateSolutionSummary();
-		}
-	}
+    const currentSolInput = document.querySelector("input[name='solutionCode']:checked");
+    if (attemptedSolId && (!currentSolInput || currentSolInput.value !== attemptedSolId)) {
+      const matchedRadio = document.querySelector(`input[name='solutionCode'][value='${attemptedSolId}']`);
+      if (matchedRadio) {
+        matchedRadio.checked = true;
+        document.querySelectorAll(".solution-card").forEach(label => label.classList.remove("selected"));
+        matchedRadio.closest("label").classList.add("selected");
+        updateSolutionSummary();
+      }
+    }
 
-	// ✅ 동일한 solId일 경우 결제 버튼 비활성화
-	const recheckedSol = document.querySelector("input[name='solutionCode']:checked");
-	if (recheckedSol && attemptedSolId && recheckedSol.value === attemptedSolId) {
-		const payBtn = document.querySelector("#payBtn");
-		if (payBtn) payBtn.disabled = true;
-	}
+    // ✅ 동일한 경우 결제버튼 비활성화
+    const recheckedSol = document.querySelector("input[name='solutionCode']:checked");
+    if (recheckedSol && attemptedSolId && recheckedSol.value === attemptedSolId) {
+      const payBtn = document.querySelector("#payBtn");
+      if (payBtn) payBtn.disabled = true;
+    }
+  }
 });
 
 function initSolutionSelection() {
@@ -91,7 +94,17 @@ function handlePayment() {
 	const selectedBilling = document.querySelector('input[name="billingMethod"]:checked');
 	const selectedNormal = document.querySelector('input[name="normalMethod"]:checked');
 
-	const attemptedSolId = sessionStorage.getItem("attemptedSolId");
+	const subInfoRaw = sessionStorage.getItem("selectedSubscription");
+	let attemptedSolId = null;
+	if (subInfoRaw) {
+		try {
+			const subInfo = JSON.parse(subInfoRaw);
+			attemptedSolId = subInfo.solId;
+		} catch (e) {
+			console.warn("sessionStorage selectedSubscription 파싱 실패", e);
+		}
+	}
+
 	if (attemptedSolId && selectedSolution && selectedSolution.value === attemptedSolId) {
 		Swal.fire("안내", "이미 선택된 요금제로 결제를 시도하고 있습니다.", "warning");
 		return;

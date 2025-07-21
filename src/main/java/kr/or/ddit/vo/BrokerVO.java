@@ -61,6 +61,7 @@ public class BrokerVO extends MemberVO implements Serializable {
     @Pattern(regexp = "^[YN]$", message = "권한 승인 여부는 'Y' 또는 'N'만 가능합니다.",
              groups = {BrokerInsertGroup.class, BrokerUpdateGroup.class})
     private String authApprYn;
+    
     private String authApprDt;
 
     private MultipartFile brokFile;

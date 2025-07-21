@@ -102,7 +102,7 @@
   display: grid;
   grid-template-rows: auto 1fr auto; /* 헤더, 본문, 푸터 영역 분리 */
   box-sizing: border-box;
-  
+  font-size: 15px;   
   /* 내부 정렬을 자연스럽게 */
   justify-content: stretch;
   align-content: stretch;
@@ -117,7 +117,7 @@
 }
 
 .subscription-title {
-  font-size: 1.1rem;
+  font-size: 18px;  
   font-weight: bold;
   color: #333;
   margin: 0;
@@ -168,6 +168,8 @@
   min-width: 80px;
   white-space: nowrap;
   vertical-align: middle;
+    font-size: 14px;
+  padding: 6px 16px;
 }
 
 /* === 텍스트 컬러 === */
@@ -268,3 +270,12 @@
 .text-danger {
   color: #dc3545;
 }
+/* === 모달 백드롭과 모달의 z-index 우선순위 고정 === */
+.modal-backdrop {
+  z-index: 1050 !important;
+}
+
+.modal {
+  z-index: 1055 !important;
+}
+

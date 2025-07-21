@@ -16,7 +16,7 @@ FROM (	SELECT NOTIF_ID
 		  	  , NOTIF_READ_YN
 		  	  , NOTIF_DEL_YN
 		FROM NOTIFICATIONS
-        WHERE MBR_CD = 'M2507000146'
+        WHERE MBR_CD = #{username}
         AND NOTIF_READ_YN ='N'
         AND NOTIF_DEL_YN = 'N'
         ORDER BY NOTIF_DT DESC
