@@ -17,6 +17,8 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import kr.or.ddit.vo.ContractVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
@@ -58,10 +60,11 @@ public interface BrokerContractService {
 	
 	public List<ContractVO> readProceedingContractsList(String mbrCd);
 	
-	
-	
 	/** 컨트롤러 다이어트 들어가야지...
 	 * @return
+	 * @throws JsonProcessingException 
 	 */
-	public ResponseEntity<?> processOfCreatingContract(String decryptedJson, Principal principal);
+	public ResponseEntity<?> processOfCreatingContract(String decryptedJson, Principal principal) throws JsonProcessingException;
+	
+	public void readContractPDF(String contId);
 }

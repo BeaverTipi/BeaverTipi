@@ -21,6 +21,7 @@ import org.apache.ibatis.annotations.Param;
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.ContractVO;
+import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
 import kr.or.ddit.vo.MemberVO;
@@ -79,6 +80,8 @@ public interface BrokerMapper {
 	 * @return 진행중인 계약 리스트
 	 */
 	public List<ContractVO> selectProceedingContractsList(String mbrCd);
+	
+	public FileVO selectContractFile(String contId); 
 	
 	public List<CommonCodeVO> selectBankList();
 	public List<CommonCodeVO> selectLesserTypeList();

@@ -229,6 +229,6 @@
 	 WHERE LSTG_ID = #{lstgId}
 </update>
 <select id="selectProceedingContractsList" resultMap="ContractMap">
-  SELECT * FROM V_CONTRACT_INFO
+  SELECT * FROM V_CONTRACT_INFO ORDER BY CONT_ID DESC
 </select>
 </mapper>

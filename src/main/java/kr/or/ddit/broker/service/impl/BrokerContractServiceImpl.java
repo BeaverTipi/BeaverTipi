@@ -21,22 +21,31 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import kr.or.ddit.broker.mapper.BrokerMapper;
 import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
 import kr.or.ddit.broker.service.BrokerContractService;
+import kr.or.ddit.util.crypto.AES256Util;
 import kr.or.ddit.util.file.Base64DecodedMultipartFile;
 import kr.or.ddit.util.file.FileToMultipartFileUtil;
 import kr.or.ddit.util.file.service.FileService;
@@ -62,12 +71,18 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	private final BrokerMapper mapper;
 
 	@Autowired
-	PDFService pdfService;
+	private PDFService pdfService;
 	@Autowired
-	BrokerAuthUnpackingService authUnpack;
+	private BrokerAuthUnpackingService authUnpack;
 	@Autowired
-	FileService fileService;
-
+	private FileService fileService;
+	@Autowired
+	private ObjectMapper objectMapper;
+	@Autowired
+	private Validator validator;
+	@Autowired
+	private AES256Util aes256Util;
+	
 	/**
 	 * @param principal 내에서 불러온 Broker의 mbrCd
 	 * @return Broker가 가진 매물(LSTG)의 리스트
@@ -146,21 +161,26 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 		return proceedingContractsList;
 	}
 
+	@Transactional
 	@Override
-	public ResponseEntity<?> processOfCreatingContract(String decryptedJson, Principal principal) {
+	public ResponseEntity<?> processOfCreatingContract(String decryptedJson, Principal principal) throws JsonProcessingException {
 		// TODO 컨트롤러 다이어트 들어가야지...
 		try {
 			/** 2. JSON -> POJO 매핑 */
-			ObjectMapper objectMapper = new ObjectMapper();
-			objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-			objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-			objectMapper.registerModule(new JavaTimeModule());
-			objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
 			Map<String, Object> parsedRequest = objectMapper.readValue(decryptedJson, new TypeReference<>() {
 			});
 			StandardLeaseFormDTO contractInfo = objectMapper.convertValue(parsedRequest.get("contractInfo"),
 					StandardLeaseFormDTO.class);
+			Set<ConstraintViolation<StandardLeaseFormDTO>> violations = validator.validate(contractInfo);
+	
+			if (!violations.isEmpty()) {
+			    StringBuilder errorMsg = new StringBuilder("검증 실패 항목:\n");
+			    for (ConstraintViolation<StandardLeaseFormDTO> violation : violations) {
+			        errorMsg.append("- ").append(violation.getPropertyPath()).append(": ").append(violation.getMessage()).append("\n");
+			    }
+			    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMsg.toString());
+			}
+			
 			List<Map<String, String>> base64Files = objectMapper.convertValue(parsedRequest.get("base64Files"),
 					new TypeReference<List<Map<String, String>>>() {
 					});
@@ -225,6 +245,7 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 			String contId = contract.getContId();
 			FileVO result = fileService.uploadAndSave(multipartMerged, "contract", "CONTR", contId,
 					multipartMerged.getContentType());
+			//S3 업로드 이후 예외 발생 시, 업로드 파일 삭제 로직도 고려해볼 것
 
 			/** 6. 매물의 계약상태 정보 변경하기 */
 			String lstgId = contract.getLstgId();
@@ -235,15 +256,24 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 //			Files.copy(merged.toPath(), debugCopy.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
 			/** 0. 응답신호 내보내기 */
-			return ResponseEntity.ok(Map.of("success", true, "mergedPath", merged.getAbsolutePath(),
+			String resultJson = objectMapper.writeValueAsString(Map.of("success", true, "mergedPath", merged.getAbsolutePath(),
 //					"debugPath", debugCopy.getAbsolutePath(),
 					"contId", contId));
+			
+			return ResponseEntity.ok(aes256Util.encryptWithDynamicIV(resultJson));
 		} catch (Exception e) {
 			e.printStackTrace();
 			/* 0. 응답신호 내보내기 */
+			String resultJson = objectMapper.writeValueAsString(Map.of("success", false, "error", e.getMessage()));
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(Map.of("success", false, "error", e.getMessage()));
+					.body(aes256Util.encryptWithDynamicIV(resultJson));
 		}
 
+	}
+
+	@Override
+	public void readContractPDF(String contId) {
+		// TODO Auto-generated method stub
+		
 	}
 }
