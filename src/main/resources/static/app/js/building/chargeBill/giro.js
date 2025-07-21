@@ -21,11 +21,11 @@ function openUnitPopup() {
 }
 
 // 🔹 입주민 입력 블록 추가
-function addResidentBlock(id, bldgNm, residentNm) {
+function addResidentBlock(id, bldgNm) {
   const html = `
     <div class="resident-block" id="resident_${id}">
       <div class="resident-header">
-        <h4>${bldgNm} / ${residentNm}</h4>
+        <h4>${bldgNm} </h4>
         <div>
           <button class="btn-fetch" onclick="loadUsage('${id}')">사용량 불러오기</button>
           <button class="btn-delete" onclick="removeResident('${id}')">삭제</button>
@@ -94,6 +94,11 @@ function fetchBuildings() {
         opt.value = b.bldgId;
         opt.textContent = b.bldgNm;
         sel.appendChild(opt);
+      });
+
+      sel.addEventListener("change", () => {
+        const container = document.getElementById("residentContainer");
+        if (container) container.innerHTML = "";
       });
     });
 }
