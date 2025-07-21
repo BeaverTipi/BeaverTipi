@@ -12,6 +12,7 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/common_admin.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/businessads/businessAdsList.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/business/filePopup.css">
 </head>
 <body>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -19,6 +20,7 @@
 <script>
     var contextPath = '${pageContext.request.contextPath}';
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/admin/businessads/businessAdsList.js"></script>
 
 <h2 class="board-title">광고 관리</h2>
@@ -164,6 +166,30 @@
                 <p><strong>작성자 ID:</strong> <span id="modalMbrCd"></span></p>
                 <p><strong>작성일시:</strong> <span id="modalBrdPblsDtm"></span></p>
 
+				<!-- 파일 미리보기 영역 추가 -->
+                <hr>
+                <h5>첨부파일</h5>
+                <div id="fileDataHolder" data-filelist=''></div> <!-- JS에서 JSON.stringify된 파일 목록을 여기에 설정 -->
+                <div class="file-preview-area">
+                    <div class="file-list-section">
+                        <button id="toggleFileListBtn" type="button" class="btn btn-sm btn-info mb-2">첨부파일 목록 보기</button>
+                        <table border="1" id="fileTable" class="table table-bordered table-sm">
+                            <thead>
+                                <tr><th>파일명</th><th>크기</th></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="file-display-section">
+                        <canvas id="pdfCanvas" class="img-fluid border"></canvas>
+                        <div id="pdf-controls" class="d-flex justify-content-center mt-2">
+                            <button id="prevBtn" class="btn btn-sm btn-outline-secondary mr-1">이전</button>
+                            <span>페이지 <span id="fileIndex">0</span> / <span id="totalCount">0</span></span>
+                            <button id="nextBtn" class="btn btn-sm btn-outline-secondary ml-1">다음</button>
+                        </div>
+                    </div>
+                </div>
+				
             </div>
             <div class="modal-footer">
             	<button type="button" class="btn btn-primary" id="saveAdsStatusBtn">저장</button>
@@ -173,6 +199,7 @@
     </div>
 </div>
 
-
+<!-- businessAdsList.js를 body 끝에 위치시켜 DOM 로드 후 실행되도록 함 -->
+<script src="${pageContext.request.contextPath}/app/js/admin/businessads/businessAdsList.js"></script>
 </body>
 </html>

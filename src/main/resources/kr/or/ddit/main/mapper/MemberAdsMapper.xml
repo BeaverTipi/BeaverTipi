@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.ddit.main.mapper.MemberAdsMapper">
+
+    <insert id="insertBoard" parameterType="boardVO">
+        <selectKey keyProperty="brdNo" order="BEFORE" resultType="String">
+			SELECT TO_CHAR(SEQ_BRD_NO.NEXTVAL) FROM DUAL
+		</selectKey>
+        INSERT INTO BOARD (
+            BRD_NO
+            ,BRD_CODE
+            ,MBR_CD
+            ,BRD_TITL_NM
+            ,BRD_CONT
+            ,BRD_PBLS_DTM
+            ,BRD_VW_CNT
+            , BRD_DEL_YN
+        ) VALUES (
+            #{brdNo}
+            ,'A0001'
+            ,#{mbrCd}
+            ,#{brdTitlNm}
+            ,#{brdCont}
+            ,SYSDATE
+            ,0
+            ,'N'
+        )
+    </insert>
+
+    <insert id="insertAdsClient" parameterType="adsClientVO">
+        <selectKey keyProperty="adsId" order="BEFORE" resultType="String">
+			SELECT TO_CHAR(SEQ_ADS_ID.NEXTVAL) FROM DUAL
+		</selectKey>
+        INSERT INTO ADS (
+            ADS_ID
+            ,BRD_NO
+            ,ADS_STATUS_CODE
+            ,ADS_BP
+            ,ADS_PIC
+            ,ADS_PIC_TELNO
+            ,ADS_REQ_PBLS_START_DT
+            ,ADS_REQ_PBLS_END_DT
+        ) VALUES (
+            #{adsId}
+            ,#{brdNo}
+            ,'대기'
+            ,#{adsBp}
+            ,#{adsPic}
+            ,#{adsPicTelno}
+            ,#{adsReqPblsStartDt}
+            ,#{adsReqPblsEndDt}
+        )
+    </insert>
+
+</mapper>

@@ -20,7 +20,7 @@ function formatDateString(dateString) {
     }
 }
 
-// 날짜+시간 포맷팅 헬퍼 함수 (기존과 동일)
+// 날짜+시간 포맷팅 헬퍼 함수
 function formatDateTimeString(dateTimeString) {
     if (!dateTimeString) return 'N/A';
     try {
@@ -40,7 +40,7 @@ function formatDateTimeString(dateTimeString) {
     }
 }
 
-// 전화번호 포맷팅 헬퍼 함수 추가
+// 전화번호 포맷팅 헬퍼 함수
 function formatPhoneNumber(phoneNumber) {
     if (!phoneNumber) return 'N/A';
     // 숫자만 추출
@@ -91,6 +91,166 @@ function fn_paging(pageNo) {
     $('#searchForm').submit();
 }
 
+// --- 파일 미리보기 관련 전역 변수 (filePopup.js에서 가져옴) ---
+let currentFileList = [];
+let currentFileIds = [];
+let currentIndex = 0;
+let isRendering = false;
+// --- 파일 미리보기 관련 전역 변수 끝 ---
+
+
+// --- 파일 미리보기 관련 함수 (filePopup.js에서 가져옴) ---
+function renderFileTable() {
+    const tbody = document.querySelector("#adsDetailModal #fileTable tbody"); // 모달 내부의 테이블
+    tbody.innerHTML = "";
+    if (currentFileList.length === 0) {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td colspan="2" class="text-center">첨부파일이 없습니다.</td>`;
+        tbody.appendChild(row);
+        return;
+    }
+    currentFileList.forEach(file => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${file.fileOriginalname || '파일명 없음'}</td><td>${file.fileSize || 0} bytes</td>`;
+        tbody.appendChild(row);
+    });
+}
+
+function fetchPdfOrImage(file) {
+    const canvas = document.querySelector("#adsDetailModal #pdfCanvas");
+    const ctx = canvas.getContext("2d");
+
+    if (!file || !file.fileMime) {
+        // 파일 정보가 없으면 캔버스 초기화
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.width = 1; // 캔버스 크기를 최소화
+        canvas.height = 1;
+        alert("유효하지 않은 파일 정보입니다.");
+        isRendering = false;
+        return;
+    }
+    if (isRendering) return;
+    isRendering = true;
+
+    if (file.fileMime === 'application/pdf') {
+        fetchPdf(file.fileId);
+    } else if (file.fileMime.startsWith('image/')) {
+        renderImage(file.fileId);
+    } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 초기화
+        canvas.width = 1;
+        canvas.height = 1;
+        alert("미리보기 지원하지 않는 파일 형식입니다.");
+        isRendering = false;
+    }
+}
+
+function fetchPdf(fileId) {
+    const canvas = document.querySelector("#adsDetailModal #pdfCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // PDF 로드 전 캔버스 클리어
+
+    // axios 라이브러리가 필요합니다. <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    // businessAdsList.jsp <head> 또는 <body> 하단에 추가해주세요.
+    axios({
+        method: 'get',
+        url: contextPath + `/admin/business/file/preview/${fileId}`,
+        responseType: 'blob'
+    })
+    .then(response => {
+        const contentType = response.headers['content-type'];
+        if (!contentType || !contentType.includes('pdf')) {
+            throw new Error('PDF 파일이 아닙니다.');
+        }
+        const blob = response.data;
+        const url = URL.createObjectURL(blob);
+        // pdfjsLib는 businessAdsList.jsp에 로드되어 있어야 합니다.
+        return pdfjsLib.getDocument(url).promise;
+    })
+    .then(pdf => pdf.getPage(1))
+    .then(page => {
+        const scale = 1.5;
+        const viewport = page.getViewport({ scale });
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        return page.render({ canvasContext: ctx, viewport }).promise;
+    })
+    .catch(err => {
+        console.error("PDF 로딩 오류:", err);
+        alert("PDF 미리보기 중 오류가 발생했습니다.");
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // 오류 시 캔버스 초기화
+        canvas.width = 1;
+        canvas.height = 1;
+    })
+    .finally(() => {
+        updatePageIndicator();
+        isRendering = false;
+    });
+}
+
+function renderImage(fileId) {
+    const canvas = document.querySelector("#adsDetailModal #pdfCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // 이미지 로드 전 캔버스 클리어
+
+    const img = new Image();
+    img.onload = () => {
+        const maxWidth = 800;
+        const maxHeight = 600;
+
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth) {
+            height = height * (maxWidth / width);
+            width = maxWidth;
+        }
+        if (height > maxHeight) {
+            width = width * (maxHeight / height);
+            height = maxHeight;
+        }
+        // 캔버스 크기를 이미지에 맞게 조절
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        updatePageIndicator();
+        isRendering = false;
+    };
+    img.onerror = () => {
+        alert("이미지 로드 실패");
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // 오류 시 캔버스 초기화
+        canvas.width = 1;
+        canvas.height = 1;
+        isRendering = false;
+    };
+    // contextPath를 사용하여 절대 경로로 요청
+    img.src = contextPath + `/admin/business/file/preview/${fileId}`;
+}
+
+function nextFile() { // 함수명 충돌 방지를 위해 next -> nextFile 변경
+    if (currentIndex < currentFileIds.length - 1) {
+        currentIndex++;
+        fetchPdfOrImage(currentFileList[currentIndex]);
+    }
+}
+
+function prevFile() { // 함수명 충돌 방지를 위해 prev -> prevFile 변경
+    if (currentIndex > 0) {
+        currentIndex--;
+        fetchPdfOrImage(currentFileList[currentIndex]);
+    }
+}
+
+function updatePageIndicator() {
+    const indicator = document.querySelector("#adsDetailModal #fileIndex");
+    const total = document.querySelector("#adsDetailModal #totalCount");
+    if (indicator && total) {
+        indicator.innerText = currentFileIds.length > 0 ? currentIndex + 1 : 0;
+        total.innerText = currentFileIds.length;
+    }
+}
+
 // 모달 관련 JavaScript - 행 클릭 이벤트
 $(document).ready(function() {
     $('.view-detail-btn').on('click', function() {
@@ -124,6 +284,54 @@ $(document).ready(function() {
                 $('#modalMbrCd').text(data.mbrCd);
                 
 				$('#adsDetailModal').data('brdNo', data.brdNo); 
+				
+				 // 파일 미리보기 초기화 로직 추가
+                const fileDataHolder = document.querySelector("#adsDetailModal #fileDataHolder");
+                const fileListJson = JSON.stringify(data.attachFiles || []); // attachFiles가 null일 경우 빈 배열
+                fileDataHolder.setAttribute("data-filelist", fileListJson);
+
+                // 파일 미리보기 전역 변수 초기화
+                currentFileList = JSON.parse(fileListJson);
+                currentFileIds = currentFileList.map(f => f.fileId);
+                currentIndex = 0;
+                isRendering = false; // 렌더링 상태 초기화
+
+                // 파일 미리보기 UI 초기화 및 첫 파일 렌더링
+                renderFileTable(); // 파일 목록 테이블 렌더링
+                updatePageIndicator(); // 페이지 인디케이터 업데이트
+
+                // 파일이 있을 경우 첫 번째 파일 미리보기
+                if (currentFileIds.length > 0) {
+                    fetchPdfOrImage(currentFileList[currentIndex]);
+                } else {
+                    // 파일이 없을 경우 캔버스 초기화
+                    const canvas = document.querySelector("#adsDetailModal #pdfCanvas");
+                    const ctx = canvas.getContext("2d");
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    canvas.width = 1;
+                    canvas.height = 1;
+                }
+
+                // 파일 미리보기 컨트롤 버튼 이벤트 리스너 재등록 (모달이 열릴 때마다)
+                // 기존에 이미 등록되어 있을 수 있으므로, .off()로 제거 후 .on()으로 다시 등록
+                $('#adsDetailModal #prevBtn').off('click').on('click', prevFile);
+                $('#adsDetailModal #nextBtn').off('click').on('click', nextFile);
+                
+                const toggleBtn = document.querySelector("#adsDetailModal #toggleFileListBtn");
+                const fileTable = document.querySelector("#adsDetailModal #fileTable");
+                // 초기 상태는 숨김
+                fileTable.style.display = "none";
+                toggleBtn.innerText = "첨부파일 목록 보기";
+
+                $(toggleBtn).off('click').on('click', () => {
+                    if (fileTable.style.display === "none" || fileTable.style.display === "") {
+                        fileTable.style.display = "table";
+                        toggleBtn.innerText = "첨부파일 목록 숨기기";
+                    } else {
+                        fileTable.style.display = "none";
+                        toggleBtn.innerText = "첨부파일 목록 보기";
+                    }
+                });
 
             },
             error: function(xhr, status, error) {
@@ -171,4 +379,20 @@ $(document).ready(function() {
 	        });
 	    }
 	});
+	
+	// 모달이 닫힐 때 파일 미리보기 상태 초기화
+    $('#adsDetailModal').on('hidden.bs.modal', function () {
+        currentFileList = [];
+        currentFileIds = [];
+        currentIndex = 0;
+        isRendering = false;
+        // 캔버스 내용 지우기
+        const canvas = document.querySelector("#adsDetailModal #pdfCanvas");
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.width = 1; // 캔버스 크기 초기화
+        canvas.height = 1;
+        renderFileTable(); // 파일 목록 테이블도 초기화
+        updatePageIndicator(); // 페이지 인디케이터 초기화
+    });
 });
