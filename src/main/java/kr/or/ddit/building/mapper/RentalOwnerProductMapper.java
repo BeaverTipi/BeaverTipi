@@ -3,32 +3,36 @@ package kr.or.ddit.building.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.FacilityOptionVO;
+import kr.or.ddit.vo.ListingOptionVO;
 import kr.or.ddit.vo.ListingVO;
 
 @Mapper
 public interface RentalOwnerProductMapper {
 
     // 매물 등록
-	int insertProduct(ListingVO listing);
+	public Integer insertProduct(ListingVO listing);
 
     // 매물 목록 조회
-	List<ListingVO> selectProductList(String mbrCd);
+	public List<ListingVO> selectProductList(String mbrCd);
 
     // 매물 상세 조회
-	ListingVO selectProductById(String lstgId);
+	public ListingVO selectProductById(String lstgId);
 
     // 매물 수정
-	int updateProduct(ListingVO listing);
+	public Integer updateProduct(ListingVO listing);
 
     // 매물 삭제
-	int deleteProduct(String lstgId);
+	public Integer deleteProduct(String lstgId);
     
     // 시설 옵션 전체 조회
-	List<FacilityOptionVO> selectAllFacilityOptions();
+	public List<FacilityOptionVO> selectAllFacilityOptions();
 
-	List<CommonCodeVO> commonCodeLstg1List();
-	List<CommonCodeVO> commonCodeLstg2List();
+	public List<CommonCodeVO> commonCodeLstg1List();
+	public List<CommonCodeVO> commonCodeLstg2List();
+	public String selectNextLstgId();
+	public Integer insertOptionList(@Param("list") List<ListingOptionVO> optionList);
 }

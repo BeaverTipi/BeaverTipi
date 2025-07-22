@@ -15,12 +15,16 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,8 +32,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
 import kr.or.ddit.broker.service.BrokerListingService;
 import kr.or.ddit.util.crypto.AES256Util;
+import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.FacilityOptionVO;
+import kr.or.ddit.vo.ListingOptionVO;
 import kr.or.ddit.vo.ListingVO;
+import kr.or.ddit.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -104,6 +111,37 @@ public class RestBrokerListingController {
 	    } catch (Exception e) {
 	        throw new RuntimeException("응답 암호화 실패", e);
 	    }
+	}
+
+	@PostMapping("/product/add")
+	public ResponseEntity<?> addListing(
+	  @ModelAttribute ListingVO listing,
+	  @RequestParam("facilities") List<String> facOptIds,
+	  @RequestParam(value = "imageUpload", required = false) List<MultipartFile> imageFiles,
+	  Principal principal
+			) {
+		String username = principal.getName();
+		String mbrCd = authUnpack.getMbrCd(username);
+		listing.setMbrCd(mbrCd);
+	  // 👉 imageFiles 처리
+	  for (MultipartFile file : imageFiles) {
+	    log.info("파일명: {}", file.getOriginalFilename());
+	    // S3 또는 로컬에 저장 후 URL 저장
+	  }
+
+	  // 👉 facOptIds 처리 (List<ListingOptionVO> 구성)
+	  List<ListingOptionVO> optionList = facOptIds.stream().map(id -> {
+	    ListingOptionVO vo = new ListingOptionVO();
+	    vo.setLstgId(listing.getLstgId());
+	    vo.setFacOptId(id);
+	    return vo;
+	  }).toList();
+
+
+	  // 서비스 호출
+	  service.createListing(listing, imageFiles,optionList);
+
+	  return ResponseEntity.ok().build();
 	}
 
 

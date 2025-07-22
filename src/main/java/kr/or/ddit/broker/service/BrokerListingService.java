@@ -14,7 +14,10 @@ package kr.or.ddit.broker.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import kr.or.ddit.vo.FacilityOptionVO;
+import kr.or.ddit.vo.ListingOptionVO;
 import kr.or.ddit.vo.ListingVO;
 
 /**
@@ -31,4 +34,6 @@ public interface BrokerListingService {
 	public ListingVO readLstgDetails(ListingVO listing);
 	
 	public List<FacilityOptionVO> readFacilityOptionList();
+	
+	public void createListing(ListingVO listing, List<MultipartFile> imageFiles, List<ListingOptionVO> optionList);
 }

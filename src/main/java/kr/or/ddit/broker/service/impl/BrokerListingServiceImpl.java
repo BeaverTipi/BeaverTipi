@@ -14,11 +14,17 @@ package kr.or.ddit.broker.service.impl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.ddit.broker.mapper.BrokerMapper;
-import kr.or.ddit.broker.mapper.ListingMapper;
 import kr.or.ddit.broker.service.BrokerListingService;
+import kr.or.ddit.building.mapper.RentalOwnerProductMapper;
+import kr.or.ddit.util.file.service.FileService;
+import kr.or.ddit.util.validate.exception.ListingException;
+import kr.or.ddit.util.validate.exception.ListingOptionException;
 import kr.or.ddit.vo.FacilityOptionVO;
+import kr.or.ddit.vo.ListingOptionVO;
 import kr.or.ddit.vo.ListingVO;
 import lombok.RequiredArgsConstructor;
 
@@ -30,7 +36,8 @@ import lombok.RequiredArgsConstructor;
 public class BrokerListingServiceImpl implements BrokerListingService{
 
 	private final BrokerMapper mapper;
-	private final ListingMapper listMapper;
+	private final RentalOwnerProductMapper productMapper;
+	private final FileService fileService;
 
 	@Override
 	public List<ListingVO> readLstgList(String mbrCd) {
@@ -46,7 +53,31 @@ public class BrokerListingServiceImpl implements BrokerListingService{
 	@Override
 	public List<FacilityOptionVO> readFacilityOptionList() {
 		// TODO Auto-generated method stub
-		return listMapper.selectfacilityOptionList();
+		return productMapper.selectAllFacilityOptions();
+	}
+
+
+	@Override
+	@Transactional
+	public void createListing(ListingVO listing, List<MultipartFile> imageFiles, List<ListingOptionVO> optionList) {
+		// TODO Auto-generated method stub		productMapper.insertProduct(listing);
+		String lstgId = productMapper.selectNextLstgId();
+		listing.setLstgId(lstgId);
+		if(productMapper.insertProduct(listing)<1){
+			throw new ListingException();
+		}
+	    if (optionList != null && !optionList.isEmpty()) {
+	        for (ListingOptionVO option : optionList) {
+	            option.setLstgId(lstgId);
+	        }
+	        if( productMapper.insertOptionList(optionList)<1){
+				throw new ListingOptionException();
+			};
+	    }
+	     
+		if( imageFiles !=null && imageFiles.size() > 0) {
+			fileService.uploadMultipleFiles(imageFiles, "public/broker/listing", "LISTING", lstgId, "listingIMG");
+		}
 	}
 	
 }

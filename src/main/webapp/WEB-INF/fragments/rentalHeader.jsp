@@ -81,9 +81,9 @@
 					<a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 						<span class="text-dark">${principal.realUser.mbrNm}</span>
 						<c:choose>
-								<c:when test="${not empty member.memberFile}">
+								<c:when test="${not empty principal.realUser.memberFile}">
 									<img class="avatar rounded-circle" alt="Profile"
-										src="${member.memberFile.filePathUrl}"
+										src="${principal.realUser.memberFile.filePathUrl}"
 										height="32" width="32">
 								</c:when>
 								<c:otherwise>
