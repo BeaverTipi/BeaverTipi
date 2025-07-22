@@ -42,22 +42,23 @@
 						  </div>
 						</div>
 					<input type="hidden" id="saleTypeFilter" />
-				<button class="filter-toggle-btn" onclick="toggleFilterPopup('saleDetailType', this)">매물상세유형</button>
-					<div class="filter-popup" id="popup-saleDetailType">
-						  <div class="popup-header">
-						    매물상세유형
-						    <button class="close-btn" onclick="closeFilterPopup('saleDetailType')">×</button>
-						  </div>
-						  <div class="popup-body">
-						    <button class="popup-option" data-type="saleDetailType" data-value="">전체</button>
-						    <c:forEach var="item" items="${saleDetailTypeList}">
-							  <button class="popup-option"
-							          data-type="saleDetailType"
-							          data-value="${item.codeValue}">
-							    ${item.codeName}
-							  </button>
-							</c:forEach>
-						  </div>
+					<button id="saleDetailTypeBtn" class="filter-toggle-btn" onclick="toggleFilterPopup('saleDetailType', this)">매물상세유형</button>
+						<div class="filter-popup" id="popup-saleDetailType">
+							  <div class="popup-header">
+							    매물상세유형
+							    <button class="close-btn" onclick="closeFilterPopup('saleDetailType')">×</button>
+							  </div>
+							  <div class="popup-body">
+							    <button class="popup-option" data-type="saleDetailType" data-value="">전체</button>
+							    <c:forEach var="item" items="${saleDetailTypeList}">
+								  <button class="popup-option"
+								          data-type="saleDetailType"
+								          data-value="${item.codeValue}"
+								          data-parent="${item.parentCodeValue}">
+								    ${item.codeName}
+								  </button>
+								</c:forEach>
+							  </div>
 						</div>
 					<input type="hidden" id="saleDetailTypeFilter" />
 					

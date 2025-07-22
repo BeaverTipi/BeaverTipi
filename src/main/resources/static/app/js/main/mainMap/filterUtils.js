@@ -1,3 +1,6 @@
+function pyToM2(py) {
+	return Math.round(py * 3.3);
+}
 window.getFilterParams = function() {
 	const params = {};
 
@@ -16,12 +19,24 @@ window.getFilterParams = function() {
 	const areaCode = document.querySelector('#areaFilter')?.value;
 	if (areaCode && areaCode.trim() !== "") {
 		switch (areaCode) {
-			case '1': params.minArea = 0; params.maxArea = 33; break;
-			case '2': params.minArea = 33; params.maxArea = 66; break;
-			case '3': params.minArea = 66; params.maxArea = 99; break;
-			case '4': params.minArea = 99; break;
+			case '1':
+				params.minArea = 0;
+				params.maxArea = pyToM2(10); // 10평 이하
+				break;
+			case '2':
+				params.minArea = pyToM2(10);
+				params.maxArea = pyToM2(20); // 10~20평
+				break;
+			case '3':
+				params.minArea = pyToM2(20);
+				params.maxArea = pyToM2(30); // 20~30평
+				break;
+			case '4':
+				params.minArea = pyToM2(30); // 30평 이상
+				break;
 		}
 	}
+
 
 	if (document.querySelector('#parkingYn:checked')) {
 		params.parkingYn = 'Y';
@@ -32,12 +47,6 @@ window.getFilterParams = function() {
 
 	const maxFloor = document.querySelector('#maxFloor')?.value;
 	if (maxFloor && maxFloor.trim() !== "") params.maxFloor = maxFloor;
-
-	const minArea = document.querySelector('#minArea')?.value;
-	if (minArea && minArea.trim() !== "") params.minGrArea = minArea;
-
-	const maxArea = document.querySelector('#maxArea')?.value;
-	if (maxArea && maxArea.trim() !== "") params.maxGrArea = maxArea;
 
 	const facilityOpts = Array.from(document.querySelectorAll('.facilityOpt:checked')).map(el => el.value);
 	if (facilityOpts.length > 0) {

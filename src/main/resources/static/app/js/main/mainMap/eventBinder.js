@@ -9,6 +9,51 @@ window.setupCategoryButtonHandler = function(map, clusterer) {
 			document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
 			if (window.currentCategory) btn.classList.add('active');
 
+			document.querySelectorAll('.popup-option[data-type="saleDetailType"]').forEach(option => {
+				const isAll = option.dataset.value === "";
+				const parent = option.dataset.parent;
+
+				if (isAll || parent === window.currentCategory) {
+					option.style.display = "inline-block";
+				} else {
+					option.style.display = "none";
+					option.classList.remove("active");
+				}
+			});
+
+			const saleDetailBtn = document.getElementById('saleDetailTypeBtn');
+			const allOptions = document.querySelectorAll('.popup-option[data-type="saleDetailType"]');
+
+			if (window.currentCategory === '001') {
+				allOptions.forEach(option => {
+					const parent = option.dataset.parent;
+					const isAll = option.dataset.value === "";
+
+					if (isAll || parent === '001') {
+						option.style.display = 'inline-block';
+					} else {
+						option.style.display = 'none';
+					}
+				});
+
+				saleDetailBtn.classList.remove('disabled');
+				saleDetailBtn.disabled = false;
+
+			} else {
+				allOptions.forEach(option => {
+					const isAll = option.dataset.value === "";
+					option.style.display = isAll ? 'inline-block' : 'none';
+					option.classList.remove('active');
+				});
+
+				saleDetailBtn.classList.add('disabled');
+				saleDetailBtn.disabled = true;
+				closeFilterPopup('saleDetailType');
+			}
+
+			const detailFilter = document.getElementById('saleDetailTypeFilter');
+			if (detailFilter) detailFilter.value = "";
+
 			const bounds = map.getBounds();
 			const url = buildUrl(bounds, window.currentCategory);
 			fetch(url).then(res => res.json()).then(data => {
@@ -86,13 +131,42 @@ window.setupClusterClick = function(map, clusterer) {
 
 window.initCategoryFromParam = function(map, clusterer) {
 	const category = new URLSearchParams(location.search).get('category');
-	if (!category) return;
-	window.currentCategory = category;
+	window.currentCategory = category || null;
 
+	// ✅ 카테고리 버튼 active 클래스 적용
 	document.querySelectorAll('.category-btn').forEach(btn => {
 		btn.classList.toggle('active', btn.dataset.category === category);
 	});
 
+	// ✅ 상세유형 필터 표시/숨김 처리 (카테고리 클릭 시 로직과 동일)
+	const saleDetailBtn = document.getElementById('saleDetailTypeBtn');
+	const allOptions = document.querySelectorAll('.popup-option[data-type="saleDetailType"]');
+
+	if (window.currentCategory === '001') {
+		allOptions.forEach(option => {
+			const parent = option.dataset.parent;
+			const isAll = option.dataset.value === "";
+
+			option.style.display = (isAll || parent === '001') ? 'inline-block' : 'none';
+		});
+		saleDetailBtn.classList.remove('disabled');
+		saleDetailBtn.disabled = false;
+	} else {
+		allOptions.forEach(option => {
+			const isAll = option.dataset.value === "";
+			option.style.display = isAll ? 'inline-block' : 'none';
+			option.classList.remove('active');
+		});
+		saleDetailBtn.classList.add('disabled');
+		saleDetailBtn.disabled = true;
+		closeFilterPopup('saleDetailType');
+	}
+
+	// ✅ 상세 필터 초기화
+	const detailFilter = document.getElementById('saleDetailTypeFilter');
+	if (detailFilter) detailFilter.value = "";
+
+	// ✅ 마커/리스트 로딩
 	const bounds = map.getBounds();
 	const url = buildUrl(bounds, window.currentCategory);
 	fetch(url).then(res => res.json()).then(data => {
@@ -100,6 +174,7 @@ window.initCategoryFromParam = function(map, clusterer) {
 		renderListPage(data, map);
 	});
 };
+
 
 window.buildUrl = function(bounds, category) {
 	const sw = bounds.getSouthWest();
@@ -155,6 +230,10 @@ window.setupFilterOptionClick = function(map, clusterer) {
 window.toggleFilterPopup = function(type, btn) {
 	const popup = document.getElementById('popup-' + type);
 	const allPopups = document.querySelectorAll('.filter-popup');
+
+	if (type === 'saleDetailType' && (btn.classList.contains('disabled') || btn.disabled)) {
+		return;
+	}
 
 	// 다른 팝업 닫기
 	allPopups.forEach(p => {

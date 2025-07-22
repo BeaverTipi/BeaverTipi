@@ -4,18 +4,8 @@
 
 	<resultMap type="BoardVO" id="boardMap" autoMapping="true">
 		<id property="brdNo" column="BRD_NO" />
-		<association property="member"
-			javaType="kr.or.ddit.vo.MemberVO" autoMapping="true" />
-		<association property="boardCartegory"
-			javaType="kr.or.ddit.vo.BoardCartegoryVO">
-			<result property="brdCtgry" column="BDC_BRD_CTGRY" />
-			<result property="brdCmntYn" column="BDC_BRD_CMNT_YN" />
-			<result property="brdCode" column="BDC_BRD_CODE" />
-		</association>
-		<association property="notice"
-		  javaType="java.util.List"
-		  columnPrefix="N_"
-		  resultMap="noticeMap" />
+		<association property="member" javaType="kr.or.ddit.vo.MemberVO" autoMapping="true" />
+		<association property="notice" javaType="java.util.List" columnPrefix="N_" resultMap="noticeMap" />
 	</resultMap>
 	
 	<resultMap id="noticeMap" type="kr.or.ddit.vo.NoticeVO" autoMapping="true">
@@ -24,64 +14,45 @@
 	</resultMap>
 
 	<select id="selectBoardList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultMap="boardMap">
-	  SELECT *
-	  FROM (
-	    SELECT ROWNUM rn, inner.*
-	    FROM (
-	      SELECT
-	        BD.BRD_NO,
-	        BD.BRD_TITL_NM,
-	        BD.BRD_CONT,
-	        BD.BRD_PBLS_DTM,
-	        BD.BRD_VW_CNT,
-	        BD.BRD_MOD_DTM,
-	        BD.BRD_DEL_YN,
-	        BDC.BRD_CODE AS BDC_BRD_CODE,
-	        BDC.BRD_CTGRY AS BDC_BRD_CTGRY,
-	        BDC.BRD_CMNT_YN AS BDC_BRD_CMNT_YN,
-	        MEM.MBR_CD,
-	
-	        -- 공지 정보
-	        N.NOTICE_TYPE AS N_NOTICE_TYPE,
-	        C.CODE_NAME AS N_NOTICE_TYPE_NAME
-	
-	      FROM BOARD BD
-	      LEFT JOIN MEMBER MEM ON BD.MBR_CD = MEM.MBR_CD
-	      LEFT JOIN BOARD_CARTEGORY BDC ON BD.BRD_CODE = BDC.BRD_CODE
-	      LEFT JOIN NOTICE N ON N.NOTICE_NO = BD.BRD_NO
-	      LEFT JOIN COMMON_CODE C 
-	        ON C.CODE_GROUP = N.NOTICE_TYPE_GRP_CD 
-	       AND C.CODE_VALUE = N.NOTICE_TYPE
-	      WHERE BD.BRD_DEL_YN = 'N'
-	      ORDER BY BD.BRD_PBLS_DTM DESC
-	    ) inner
-	    WHERE ROWNUM &lt;= #{lastRecordIndex}
-	  )
-	  WHERE rn &gt;= #{firstRecordIndex}
+		SELECT *
+		FROM (
+			SELECT ROWNUM rn, inner.*
+			FROM (
+				SELECT
+					BD.BRD_NO,
+					BD.BRD_TITL_NM,
+					BD.BRD_CONT,
+					BD.BRD_PBLS_DTM,
+					BD.BRD_VW_CNT,
+					BD.BRD_MOD_DTM,
+					BD.BRD_DEL_YN,
+					BDC.BRD_CODE AS BDC_BRD_CODE,
+					BDC.BRD_CTGRY AS BDC_BRD_CTGRY,
+					BDC.BRD_CMNT_YN AS BDC_BRD_CMNT_YN,
+					MEM.MBR_CD,
+
+					-- 공지 정보
+					N.NOTICE_TYPE AS N_NOTICE_TYPE,
+					C.CODE_NAME AS N_NOTICE_TYPE_NAME
+
+				FROM BOARD BD
+				LEFT JOIN MEMBER MEM ON BD.MBR_CD = MEM.MBR_CD
+				LEFT JOIN BOARD_CARTEGORY BDC ON BD.BRD_CODE = BDC.BRD_CODE
+				LEFT JOIN NOTICE N ON N.NOTICE_NO = BD.BRD_NO
+				LEFT JOIN COMMON_CODE C 
+					ON C.CODE_GROUP = N.NOTICE_TYPE_GRP_CD 
+					AND C.CODE_VALUE = N.NOTICE_TYPE
+				WHERE BD.BRD_DEL_YN = 'N'
+				<if test="detailSearch.brdCode != null and detailSearch.brdCode != ''">
+					AND BD.BRD_CODE = #{detailSearch.brdCode}
+				</if>
+				ORDER BY BD.BRD_PBLS_DTM DESC
+			) inner
+			WHERE ROWNUM &lt;= #{lastRecordIndex}
+		)
+		WHERE rn &gt;= #{firstRecordIndex}
 	</select>
 
-
-
-	<select id="selectBoardById" resultMap="boardMap">
-		SELECT
-		BD.BRD_NO,
-		BDC.BRD_CODE AS BDC_BRD_CODE,
-		MEM.MBR_CD,
-		BD.BRD_TITL_NM,
-		BD.BRD_CONT,
-		BD.BRD_PBLS_DTM,
-		BD.BRD_VW_CNT,
-		BD.BRD_MOD_DTM,
-		BD.BRD_DEL_YN,
-		BDC.BRD_CTGRY AS BDC_BRD_CTGRY,
-		BDC.BRD_CMNT_YN AS BDC_BRD_CMNT_YN
-		FROM BOARD BD
-		LEFT JOIN MEMBER MEM ON BD.MBR_CD =
-		MEM.MBR_CD
-		LEFT JOIN BOARD_CARTEGORY BDC ON BD.BRD_CODE = BDC.BRD_CODE
-		WHERE BD.BRD_NO = #{brdNo}
-		AND BD.BRD_DEL_YN = 'N'
-	</select>
 
 	<insert id="insertBoard" parameterType="kr.or.ddit.vo.BoardVO">
 		<selectKey keyProperty="brdNo" order="BEFORE"
@@ -130,10 +101,14 @@
 		AND BRD_DEL_YN = 'N'
 	</update>
 
-	<select id="selectTotalBoardRecord" resultType="int">
+	<select id="selectTotalBoardRecord" resultType="int" parameterType="kr.or.ddit.util.page.PaginationInfo">
 		SELECT COUNT(*)
 		FROM BOARD
 		WHERE BRD_DEL_YN = 'N'
+		<if test="detailSearch.brdCode != null and detailSearch.brdCode != ''">
+			AND BRD_CODE = #{detailSearch.brdCode}
+		</if>
 	</select>
+
 
 </mapper>

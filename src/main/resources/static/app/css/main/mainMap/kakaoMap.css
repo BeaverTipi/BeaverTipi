@@ -319,6 +319,12 @@ body {
 	z-index: 10;
 }
 
+.filter-toggle-btn.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
 .filter-group>* {
 	margin-right: 12px;
 	font-size: 14px;
