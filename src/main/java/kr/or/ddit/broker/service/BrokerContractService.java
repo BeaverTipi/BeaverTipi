@@ -77,7 +77,7 @@ public interface BrokerContractService {
 	
 	
 	/**
-	 * 서명페이지 개설 여부 확인
+	 * 서명페이지 개설
 	 * @param contId
 	 * @return
 	 */
@@ -88,4 +88,9 @@ public interface BrokerContractService {
 	 * @return
 	 */
 	public int expireContractSignaturePage(String contId);
+	/**
+	 * 서명페이지 개설 여부 확인
+	 * @param contId
+	 */
+	public String checkIsSignPageOpened(String contId);
 }

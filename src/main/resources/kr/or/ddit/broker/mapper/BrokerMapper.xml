@@ -257,5 +257,10 @@
 	   AND CONT_DEL_YN = 'N'
 	   AND CONT_SIGN_YN = 'Y'
 </update>
-
+<select id="selectContractSignatureYn" resultType="String">
+	SELECT CONT_SIGN_YN
+	  FROM CONTRACT
+	 WHERE CONT_ID = #{contId}
+	   AND CONT_DEL_YN = 'N' 
+</select>
 </mapper>

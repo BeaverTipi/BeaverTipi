@@ -325,4 +325,14 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 			throw new IllegalStateException("전자서명 상태 업데이트 실패: contId=" + contId);
 		return rec;
 	}
+
+	@Override
+	public String checkIsSignPageOpened(String contId) {
+		if(contId == null || contId.trim().isEmpty())
+			throw new IllegalArgumentException("계약 ID(contId)는 필수입니다.");
+		String isSignPageOpened = mapper.selectContractSignatureYn(contId);
+		if(isSignPageOpened == null || isSignPageOpened.isEmpty())
+			throw new IllegalStateException("전자서명 상태 업데이트 실패: contId=" + contId);
+		return isSignPageOpened;
+	}
 }

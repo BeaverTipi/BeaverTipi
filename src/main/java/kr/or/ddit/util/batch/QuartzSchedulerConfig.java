@@ -15,14 +15,18 @@ package kr.or.ddit.util.batch;
 
 import kr.or.ddit.util.batch.idseq.ContractIdSequenceResetJob;
 import kr.or.ddit.util.batch.idseq.DefaultIdSequenceResetJob;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 
 import org.quartz.*;
+import org.quartz.spi.JobFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
@@ -35,13 +39,27 @@ import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties
  *
  *
  */
-@EnableEncryptableProperties
+@Slf4j
 @Configuration
+@EnableEncryptableProperties
 public class QuartzSchedulerConfig {
 
     @Autowired
     private DataSource dataSource;
-	
+
+    /**
+     * Autowiring 가능한 JobFactory 등록
+     */
+    @Bean
+    public JobFactory jobFactory(ApplicationContext applicationContext) {
+        AutowiringSpringBeanJobFactory jobFactory = new AutowiringSpringBeanJobFactory();
+        jobFactory.setApplicationContext(applicationContext);
+        return jobFactory;
+    }
+
+    /**
+     * 매월 1일 자정에 실행되는 기본 ID 리셋 Job 등록
+     */
     @Bean
     public JobDetail defaultIdResetJobDetail() {
         return JobBuilder.newJob(DefaultIdSequenceResetJob.class)
@@ -49,7 +67,6 @@ public class QuartzSchedulerConfig {
                 .storeDurably()
                 .build();
     }
-
     @Bean
     public Trigger defaultIdResetTrigger(JobDetail defaultIdResetJobDetail) {
         return TriggerBuilder.newTrigger()
@@ -62,6 +79,9 @@ public class QuartzSchedulerConfig {
                 .build();
     }
     
+    /**
+     * 매일 자정에 실행되는 계약 ID 리셋 Job 등록
+     */
     @Bean
     public JobDetail contractIdResetJobDetail() {
         return JobBuilder.newJob(ContractIdSequenceResetJob.class)
@@ -69,7 +89,6 @@ public class QuartzSchedulerConfig {
                 .storeDurably()
                 .build();
     }
-
     @Bean
     public Trigger contractIdResetTrigger(JobDetail contractIdResetJobDetail) {
         return TriggerBuilder.newTrigger()
@@ -82,24 +101,45 @@ public class QuartzSchedulerConfig {
                 .build();
     }
 
+
     
     /**
      * Scheduler 상태	✅ 정상 생성 → standby → started → graceful shutdown
      * ThreadPool 종료	✅ 모든 worker thread 정상 종료
      * Lock 처리		✅ TRIGGER_ACCESS 락 획득 및 반납 정상
      * Shutdown 처리	✅ shutdown complete까지 확인됨
+     * 
+     * 정적(SeqReset), 동적(Expire_) Job 등록 모두 지원
      */
     @Bean
     @DependsOn("dataSource")
-    public SchedulerFactoryBean schedulerFactoryBean(Trigger defaultIdResetTrigger,
-                                                      Trigger contractIdResetTrigger,
-                                                      JobDetail defaultIdResetJobDetail,
-                                                      JobDetail contractIdResetJobDetail) {
+    public SchedulerFactoryBean schedulerFactoryBean(
+            Trigger defaultIdResetTrigger,
+            Trigger contractIdResetTrigger,
+            JobDetail defaultIdResetJobDetail,
+            JobDetail contractIdResetJobDetail,
+            JobFactory jobFactory
+    ) {
         SchedulerFactoryBean factory = new SchedulerFactoryBean();
-        factory.setDataSource(dataSource); // DB 연결 순서 보장
+        factory.setDataSource(dataSource);
+        factory.setJobFactory(jobFactory);
         factory.setJobDetails(defaultIdResetJobDetail, contractIdResetJobDetail);
         factory.setTriggers(defaultIdResetTrigger, contractIdResetTrigger);
-        factory.setWaitForJobsToCompleteOnShutdown(true); // ✨ 이 옵션도 함께 추천
+        factory.setOverwriteExistingJobs(true);
+        factory.setWaitForJobsToCompleteOnShutdown(true);
+
+        log.debug("✅ [QuartzConfig] 설정된 JobFactory 클래스: {}", jobFactory.getClass().getName());
         return factory;
+    }
+
+    /**
+     * Scheduler Bean 등록 - @Qualifier로 명시적으로 주입 가능하도록 이름 지정
+     */
+    @Bean(name = "customQuartzScheduler")
+    @Primary
+    public Scheduler scheduler(SchedulerFactoryBean factory) throws SchedulerException {
+        Scheduler scheduler = factory.getScheduler();
+        scheduler.start();
+        return scheduler;
     }
 }

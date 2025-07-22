@@ -12,8 +12,10 @@ import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
+import org.quartz.Trigger.TriggerState;
 import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,6 +49,7 @@ public class RestBrokerContractProceedingController {
 	@Autowired
 	ObjectMapper objectMapper; 
 	@Autowired
+	@Qualifier("customQuartzScheduler")
 	private Scheduler scheduler;
 	
 	@PostMapping("/list")
@@ -115,6 +118,7 @@ public class RestBrokerContractProceedingController {
 			Principal principal
 			, @RequestBody Map<String, String> payload
 	) {
+//		log.debug("🔍 현재 Scheduler 인스턴스의 JobFactory 클래스: {}", scheduler.getJobFactory().getClass().getName());
 		try {
 			/** 1. 복호화 */
 	        String iv = payload.get("iv");
@@ -132,29 +136,81 @@ public class RestBrokerContractProceedingController {
 	        
 	        /** 3. 실제 업데이트 처리 */
 	        int updatedCount = contService.openContractSignaturePage(contId);
-	        if (updatedCount == 0) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 계약을 찾을 수 없거나 이미 개설된 상태입니다.");
+	        if(updatedCount == 0) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 계약을 찾을 수 없거나 이미 개설된 상태입니다.");
 	        
 	        /** 4. Quartz Job 예약 (10분 후 서명 만료) */
+//	        log.debug("✅ [QuartzConfig] Scheduler가 사용하는 JobFactory: {}", scheduler.getJobFactory().getClass().getName());
+	        
 	        JobDetail jobDetail = JobBuilder.newJob(ContractSignatureExpireJob.class)
-	            .withIdentity("expireSignPage-" + contId, "signpage") // 중복 방지
-	            .usingJobData("contId", contId)
-	            .build();
+        	    .withIdentity("expireSignPage-" + contId, "signpage")
+        	    .usingJobData("contId", contId)
+        	    .storeDurably()
+        	    .build();
+        	scheduler.addJob(jobDetail, true);  // << 명시적으로 Job 먼저 등록
 
-	        Trigger trigger = TriggerBuilder.newTrigger()
-	            .forJob(jobDetail)
-	            .withIdentity("expireSignPageTrigger-" + contId, "signpage")
-	            .startAt(Date.from(Instant.now().plus(10, ChronoUnit.MINUTES)))
-	            .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-	                .withMisfireHandlingInstructionFireNow()) // 누락 시 즉시 실행
-	            .build();
+
+        	Trigger trigger = TriggerBuilder.newTrigger()
+        	    .forJob(jobDetail)
+        	    .withIdentity("expireSignPageTrigger-" + contId, "signpage")
+        	    .startAt(new Date(System.currentTimeMillis() + 5000))
+//        	    .startAt(Date.from(Instant.now().plus(600, ChronoUnit.SECONDS)))
+        	    .withSchedule(SimpleScheduleBuilder.simpleSchedule()
+        	        .withMisfireHandlingInstructionFireNow())
+        	    .build();
+        	scheduler.scheduleJob(trigger);
 
 	        log.debug("🕒 서명 만료 Job 예약 완료 → contId: {}, 실행시각: {}", contId, trigger.getStartTime());
-	        scheduler.scheduleJob(jobDetail, trigger);
+	        log.debug("🔧 JobDetail: {}", jobDetail);
+	        log.debug("🔧 Trigger: {}", trigger);
+
+	        
+	        //DEBUG
+	        Instant now = Instant.now();
+	        Instant fireTime = now.plus(90, ChronoUnit.SECONDS);
+	        log.debug("🕒 현재 시각: {}, 예약 시각: {}", now, fireTime);
+	        TriggerState state = scheduler.getTriggerState(trigger.getKey());
+	        log.debug("📌 트리거 상태: {}", state);  // BLOCKED, COMPLETE, PAUSED, NONE, NORMAL 중 하나
+	        Date prevFire = scheduler.getTrigger(trigger.getKey()).getPreviousFireTime();
+	        log.debug("📅 이전 실행 시각: {}", prevFire);
+	        log.debug("🟢 Quartz 시작 여부: {}, 상태: {}", scheduler.isStarted(), scheduler.isInStandbyMode());
+
 	        
 	        /** 5. ResponseEntity */
 	        return ResponseEntity.ok(Map.of("message", "서명 페이지가 성공적으로 개설되었습니다.", "updatedCount", updatedCount));   
 		}
 		catch (JsonProcessingException e) {log.error("JSON 파싱 실패", e); return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청 형식입니다.");}
 		catch (Exception e) {log.error("서명 페이지 개설 중 예외 발생", e); return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서명 페이지 개설 중 오류가 발생했습니다.");}
+	}
+	
+	@PostMapping("/{contId}/sign-status")
+	public ResponseEntity<?> signPageStatus(
+			Principal principal
+			, @RequestBody Map<String, String> payload
+	) {
+		try {
+		/** 1. 복호화 */
+        String iv = payload.get("iv");
+        String encrypted = payload.get("encrypted");
+        if (encrypted == null || iv == null) return ResponseEntity.badRequest().body("암호화된 요청 또는 IV 누락");
+        String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
+        
+        /** 2. JSON -> POJO 매핑 */
+        Map<String, Object> parsedRequest = objectMapper.readValue(decryptedJson, new TypeReference<>() {});
+        String method = String.valueOf(parsedRequest.get("_method"));
+        if (!"GET".equalsIgnoreCase(method)) return ResponseEntity.badRequest().body("지원하지 않는 요청 방식입니다.");
+        
+        String contId = String.valueOf(parsedRequest.get("contId"));
+        if (contId == null || contId.isEmpty()) return ResponseEntity.badRequest().body("서명 페이지가 개설된 계약 ID가 없습니다.");
+        
+        /** 3. 개설 여부 조회 */
+        String signYn = contService.checkIsSignPageOpened(contId); // Y/N 조회
+        
+        /** 4. ResponseEntity */
+        if (signYn == "N") return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 만료된 접근입니다."); 
+        else if(signYn == "Y") return ResponseEntity.ok(Map.of("message", "서명 페이지로 이동합니다.", "signYn", signYn));
+        else return ResponseEntity.badRequest().body("contSignYn 값이 누락되어 있습니다.");
+		}
+		catch(JsonProcessingException e) {log.error("JSON 파싱 실패", e); return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청 형식입니다.");}
+		catch(Exception e) {log.error("서명 페이지 개설 중 예외 발생", e); return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서명 페이지 개설 중 오류가 발생했습니다.");}
 	}
 }

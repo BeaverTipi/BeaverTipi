@@ -88,6 +88,12 @@ public interface BrokerMapper {
 	public int deleteProceedingContract(String contId);
 	public int updateProceedingContractSignYnToY(String contId);
 	public int updateProceedingContractSignYnToN(String contId);
+	/**
+	 * 서명페이지 개설 여부 컬럼값 반환
+	 * @param contId
+	 * @return
+	 */
+	public String selectContractSignatureYn(String contId);
 	
 	public FileVO selectContractFile(String contId); 
 	
