@@ -62,6 +62,7 @@ public class RestBrokerNameCardController {
     ) {
         Map<String, Object> result = new HashMap<>();
         try {
+        	log.info(docTypeCd);
             FileVO savedFile = nameCardService.uploadAndSave(file, "public/broker/namecard", sourceRef, sourceId, docTypeCd);
             result.put("result", "success");
             result.put("file", savedFile);
