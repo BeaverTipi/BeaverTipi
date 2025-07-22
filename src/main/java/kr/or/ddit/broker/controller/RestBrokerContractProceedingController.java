@@ -9,11 +9,13 @@ import java.util.Map;
 
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.Trigger.TriggerState;
 import org.quartz.TriggerBuilder;
+import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -118,6 +120,7 @@ public class RestBrokerContractProceedingController {
 			Principal principal
 			, @RequestBody Map<String, String> payload
 	) {
+		String resultJson = "";
 //		log.debug("🔍 현재 Scheduler 인스턴스의 JobFactory 클래스: {}", scheduler.getJobFactory().getClass().getName());
 		try {
 			/** 1. 복호화 */
@@ -140,9 +143,19 @@ public class RestBrokerContractProceedingController {
 	        
 	        /** 4. Quartz Job 예약 (10분 후 서명 만료) */
 //	        log.debug("✅ [QuartzConfig] Scheduler가 사용하는 JobFactory: {}", scheduler.getJobFactory().getClass().getName());
+	        JobKey jobKey = JobKey.jobKey("expireSignPage-" + contId, "signpage");
+	        TriggerKey triggerKey = TriggerKey.triggerKey("expireSignPageTrigger-" + contId, "signpage");
+
+	        // 🔁 기존 Job/Trigger 제거
+	        if (scheduler.checkExists(triggerKey)) {
+	            scheduler.unscheduleJob(triggerKey); // 트리거만 제거
+	        }
+	        if (scheduler.checkExists(jobKey)) {
+	            scheduler.deleteJob(jobKey); // JobDetail도 제거 (옵션)
+	        }
 	        
 	        JobDetail jobDetail = JobBuilder.newJob(ContractSignatureExpireJob.class)
-        	    .withIdentity("expireSignPage-" + contId, "signpage")
+        	    .withIdentity(jobKey)
         	    .usingJobData("contId", contId)
         	    .storeDurably()
         	    .build();
@@ -151,9 +164,9 @@ public class RestBrokerContractProceedingController {
 
         	Trigger trigger = TriggerBuilder.newTrigger()
         	    .forJob(jobDetail)
-        	    .withIdentity("expireSignPageTrigger-" + contId, "signpage")
+        	    .withIdentity(triggerKey)
         	    .startAt(new Date(System.currentTimeMillis() + 5000))
-//        	    .startAt(Date.from(Instant.now().plus(600, ChronoUnit.SECONDS)))
+//        	    .startAt(new Date(System.currentTimeMillis() + 600_000))
         	    .withSchedule(SimpleScheduleBuilder.simpleSchedule()
         	        .withMisfireHandlingInstructionFireNow())
         	    .build();
@@ -176,39 +189,56 @@ public class RestBrokerContractProceedingController {
 
 	        
 	        /** 5. ResponseEntity */
-	        return ResponseEntity.ok(Map.of("message", "서명 페이지가 성공적으로 개설되었습니다.", "updatedCount", updatedCount));   
+	        
+	        resultJson = objectMapper.writeValueAsString(Map.of("message", "서명 페이지가 성공적으로 개설되었습니다.", "updatedCount", updatedCount));
+	        return ResponseEntity.ok(aes256Util.encryptWithDynamicIV(resultJson));
+
 		}
 		catch (JsonProcessingException e) {log.error("JSON 파싱 실패", e); return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청 형식입니다.");}
 		catch (Exception e) {log.error("서명 페이지 개설 중 예외 발생", e); return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서명 페이지 개설 중 오류가 발생했습니다.");}
 	}
 	
-	@PostMapping("/{contId}/sign-status")
+	@PostMapping("/sign-status")
 	public ResponseEntity<?> signPageStatus(
 			Principal principal
 			, @RequestBody Map<String, String> payload
-	) {
+	) throws JsonProcessingException {
+        String resultJson = "";
 		try {
 		/** 1. 복호화 */
         String iv = payload.get("iv");
         String encrypted = payload.get("encrypted");
-        if (encrypted == null || iv == null) return ResponseEntity.badRequest().body("암호화된 요청 또는 IV 누락");
+        if (encrypted == null || iv == null) {
+        	resultJson = objectMapper.writeValueAsString(Map.of("success", false, "message", "암호화된 요청 또는 IV 누락", "signYn", "N"));
+        	return ResponseEntity.ok(aes256Util.encryptWithDynamicIV(resultJson));
+        }
         String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
         
         /** 2. JSON -> POJO 매핑 */
         Map<String, Object> parsedRequest = objectMapper.readValue(decryptedJson, new TypeReference<>() {});
         String method = String.valueOf(parsedRequest.get("_method"));
-        if (!"GET".equalsIgnoreCase(method)) return ResponseEntity.badRequest().body("지원하지 않는 요청 방식입니다.");
+        if (!"GET".equalsIgnoreCase(method)) {
+        	resultJson = objectMapper.writeValueAsString(Map.of("success", false, "message", "지원하지 않는 요청 방식입니다.", "signYn", "N"));
+        	return ResponseEntity.ok(aes256Util.encryptWithDynamicIV(resultJson));
+        }
         
         String contId = String.valueOf(parsedRequest.get("contId"));
-        if (contId == null || contId.isEmpty()) return ResponseEntity.badRequest().body("서명 페이지가 개설된 계약 ID가 없습니다.");
+        if (contId == null || contId.isEmpty()) {
+        	resultJson = objectMapper.writeValueAsString(Map.of("success", false, "message", "서명 페이지가 개설된 계약 ID가 없습니다.", "signYn", "N"));
+        	return ResponseEntity.ok(aes256Util.encryptWithDynamicIV(resultJson));
+        }
         
         /** 3. 개설 여부 조회 */
         String signYn = contService.checkIsSignPageOpened(contId); // Y/N 조회
         
         /** 4. ResponseEntity */
-        if (signYn == "N") return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 만료된 접근입니다."); 
-        else if(signYn == "Y") return ResponseEntity.ok(Map.of("message", "서명 페이지로 이동합니다.", "signYn", signYn));
-        else return ResponseEntity.badRequest().body("contSignYn 값이 누락되어 있습니다.");
+        if ("N".equals(signYn)) resultJson = objectMapper.writeValueAsString(
+        		Map.of("success", false, "message", "이미 만료된 접근입니다.", "signYn", "N")); 
+        else if("Y".equals(signYn))  resultJson = objectMapper.writeValueAsString(
+        		Map.of("success", true, "message", "서명 페이지로 이동합니다.", "signYn", "Y"));
+        else resultJson = objectMapper.writeValueAsString(
+        		Map.of("success", false, "message", "contSignYn 값이 누락되어 있습니다."));
+        return ResponseEntity.ok(aes256Util.encryptWithDynamicIV(resultJson));
 		}
 		catch(JsonProcessingException e) {log.error("JSON 파싱 실패", e); return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청 형식입니다.");}
 		catch(Exception e) {log.error("서명 페이지 개설 중 예외 발생", e); return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서명 페이지 개설 중 오류가 발생했습니다.");}
