@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -19,12 +20,17 @@
   <!-- 카테고리 + 배너 -->
   <div class="category-banner">
     <div class="categories">
-      <button class="category-btn" onclick="location.href='/main/map?category=001'">원룸,투룸<br><i class="bi bi-house-door"></i></button>
-      <button class="category-btn" onclick="location.href='/main/map?category=002'">주택/빌라<br><i class="bi bi-house"></i></button>
-      <button class="category-btn" onclick="location.href='/main/map?category=003'">오피스텔<br><i class="bi bi-buildings"></i></button>
-      <button class="category-btn" onclick="location.href='/main/map?category=004'">아파트/신축<br><i class="bi bi-building"></i></button>
-      <button class="category-btn" onclick="location.href='/main/map?category=005'">신축분양<br><i class="bi bi-building-check"></i></button>
-    </div>
+	  <c:forEach var="code" items="${categoryList}">
+	    <c:if test="${not empty code.codeValue and code.codeName ne '전체'}">
+	      <button class="category-btn" onclick="location.href='/main/map?category=${code.codeValue}'">
+	        <img id="mainCategoryImg"
+	          src="${pageContext.request.contextPath}/volt/assets/img/icons/${code.codeValue}.svg" 
+	          alt="${code.codeName}" />
+	        <span>${code.codeName}</span>
+	      </button>
+	    </c:if>
+	  </c:forEach>
+	</div>
     <div class="banner">
       <img src="/volt/assets/img/images/ourads.png" alt="광고 배너">
     </div>
