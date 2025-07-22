@@ -7,17 +7,16 @@
 <head>
   <meta charset="UTF-8">
   <title>main</title>
+
 </head>
 <body>
 <div class="container py-4">
 
 <div class="search-section">
-  <!-- 검색창 -->
   <div class="search-box">
     <input type="text" class="search-input" placeholder="지역, 지하철, 단지명 또는 매물번호를 입력해주세요...">
   </div>
 
-  <!-- 카테고리 + 배너 -->
   <div class="category-banner">
     <div class="categories">
 	  <c:forEach var="code" items="${categoryList}">
@@ -32,20 +31,18 @@
 	  </c:forEach>
 	</div>
     <div class="banner">
-      <img src="/volt/assets/img/images/ourads.png" alt="광고 배너">
+      <img src="${pageContext.request.contextPath}/volt/assets/img/images/ourads.png" alt="광고 배너">
     </div>
   </div>
 </div>
 
-  <!-- 태그 -->
   <div class="mb-5 text-center tag-box">
     <button class="tag-btn">#원룸</button>
     <button class="tag-btn">#인기매물</button>
     <button class="tag-btn">#안심</button>
   </div>
 
-  <!-- 매물 슬라이더 -->
-  <div id="roomCarousel" class="carousel slide" data-bs-ride="carousel">
+  <div id="roomCarousel" class="carousel slide" data-bs-ride="carousel"> 
     <div class="carousel-inner">
 
       <div class="carousel-item active">
@@ -104,10 +101,10 @@
       </div>
 
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#roomCarousel" data-bs-slide="prev">
+    <button class="carousel-control-prev" type="button" data-bs-target="#roomCarousel" data-bs-slide="prev"> 
       <span class="carousel-control-prev-icon"></span>
     </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#roomCarousel" data-bs-slide="next">
+    <button class="carousel-control-next" type="button" data-bs-target="#roomCarousel" data-bs-slide="next"> 
       <span class="carousel-control-next-icon"></span>
     </button>
   </div>
@@ -116,62 +113,26 @@
 
 <div id="adSlider" class="carousel slide" data-bs-ride="carousel">
   <div class="carousel-inner">
-
-    <!-- 슬라이드 1 -->
-    <div class="carousel-item active">
-      <div class="d-flex justify-content-center align-items-center ad-slide-box">
-        <div class="ad-left-box">
-          <img src="/volt/assets/img/images/여운선.png" alt="여운선 로고" class="ad-logo">
-          <div class="ad-title">여운선</div>
-          <div class="ad-desc">나베가 맛있고 술이 맛있는<br>언덕 위의 작은 요리주점</div>
-        </div>
-        <div class="ad-right-box">
-          <img src="/volt/assets/img/images/여운선배경.png" class="ad-image" alt="여운선 배경">
-        </div>
-      </div>
     </div>
 
-    <!-- 슬라이드 2 -->
-    <div class="carousel-item">
-      <div class="d-flex justify-content-center align-items-center ad-slide-box">
-     
-        <div class="ad-right-box">
-          <img src="/volt/assets/img/images/여운선2.png" class="ad-image" alt="여운선 배경">
-        </div>
-      </div>
-    </div>
-
-    <!-- 슬라이드 3 -->
-    <div class="carousel-item">
-      <div class="d-flex justify-content-center align-items-center ad-slide-box">
-   
-        <div class="ad-right-box">
-          <img src="/volt/assets/img/images/여운선3.png" class="ad-image" alt="여운선 배경">
-        </div>
-      </div>
-    </div>
-    <div class="carousel-item">
-      <div class="d-flex justify-content-center align-items-center ad-slide-box">
-   
-        <div class="ad-right-box">
-          <img src="/volt/assets/img/images/여운선4.png" class="ad-image" alt="여운선 배경">
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- 컨트롤 버튼 -->
-  <button class="carousel-control-prev" type="button" data-bs-target="#adSlider" data-bs-slide="prev">
+  <button class="carousel-control-prev" type="button" data-bs-target="#adSlider" data-bs-slide="prev"> 
     <span class="carousel-control-prev-icon"></span>
   </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#adSlider" data-bs-slide="next">
+  <button class="carousel-control-next" type="button" data-bs-target="#adSlider" data-bs-slide="next"> 
     <span class="carousel-control-next-icon"></span>
   </button>
 </div>
 
+</div> <%-- container py-4 끝 --%>
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+<script>
+    // contextPath 변수는 JSP에서 직접 정의하여 JavaScript에서 사용 가능하게 합니다.
+    var contextPath = '${pageContext.request.contextPath}';
+    console.log("Debug Context Path: " + contextPath);
+</script>
 
+<script src="${pageContext.request.contextPath}/app/js/main/mainPageView.js"></script>
 </body>
 </html>
