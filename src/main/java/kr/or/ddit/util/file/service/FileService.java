@@ -19,7 +19,7 @@ public interface FileService {
 	
 	public String generatePresignedDownloadUrl(String fileId, int expireMinutes);
 	public FileVO readFile(String fileId);
-
+	public List<FileVO> updateMultipleFiles(List<MultipartFile> newFiles, String dir, String sourceRef, String sourceId, String docTypeCd);
 	public List<FileVO> readFileList(String sourceRef, String sourceId);
 	public InputStream getFileStream(String fileId); // S3 파일 스트림 제공
     public String getPresignedUrl(String fileId, int expireMinutes); // Presigned URL 제공

@@ -88,6 +88,20 @@
 		<result property="facTypeCcCd" column="FAC_TYPE_CC_CD" />
 		<result property="facTypeGrpCd" column="FAC_TYPE_GRP_CD" />
 	</collection>
+	<collection property="listingFiles" javaType="List" ofType="FileVO">
+		<id property="fileId" column="FILE_ID"/>
+		<result property="fileAttachSeq" column="FILE_ATTACH_SEQ"/>
+		<result property="fileSourceRef" column="FILE_SOURCE_REF"/>
+		<result property="fileSavedname" column="FILE_SAVEDNAME"/>
+		<result property="fileMime" column="FILE_MIME"/>
+		<result property="fileSize" column="FILE_SIZE"/>
+		<result property="docTypeCd" column="DOC_TYPE_CD"/>
+		<result property="filePathUrl" column="FILE_PATH_URL"/>
+		<result property="regDtm" column="REG_DTM"/>
+		<result property="fileSourceId" column="FILE_SOURCE_ID"/>
+		<result property="fileDir" column="FILE_DIR"/>
+		<result property="fileOriginalname" column="FILE_ORIGINALNAME"/>
+	</collection>
 </resultMap>
 
 <resultMap id="LesseeMemberMap" type="MemberVO">

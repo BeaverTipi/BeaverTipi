@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,11 +31,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
 import kr.or.ddit.broker.service.BrokerListingService;
 import kr.or.ddit.util.crypto.AES256Util;
-import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.util.validate.exception.FileIOException;
+import kr.or.ddit.util.validate.exception.ListingException;
+import kr.or.ddit.util.validate.exception.ListingOptionException;
 import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingOptionVO;
 import kr.or.ddit.vo.ListingVO;
-import kr.or.ddit.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -115,34 +115,80 @@ public class RestBrokerListingController {
 
 	@PostMapping("/product/add")
 	public ResponseEntity<?> addListing(
-	  @ModelAttribute ListingVO listing,
-	  @RequestParam("facilities") List<String> facOptIds,
-	  @RequestParam(value = "imageUpload", required = false) List<MultipartFile> imageFiles,
-	  Principal principal
-			) {
-		String username = principal.getName();
-		String mbrCd = authUnpack.getMbrCd(username);
-		listing.setMbrCd(mbrCd);
-	  // 👉 imageFiles 처리
-	  for (MultipartFile file : imageFiles) {
-	    log.info("파일명: {}", file.getOriginalFilename());
-	    // S3 또는 로컬에 저장 후 URL 저장
-	  }
+	    @ModelAttribute ListingVO listing,
+	    @RequestParam("facilities") List<String> facOptIds,
+	    @RequestParam(value = "imageUpload", required = false) List<MultipartFile> imageFiles,
+	    Principal principal
+	) {
+	    try {
+	        String username = principal.getName();
+	        String mbrCd = authUnpack.getMbrCd(username);
+	        listing.setMbrCd(mbrCd);
 
-	  // 👉 facOptIds 처리 (List<ListingOptionVO> 구성)
-	  List<ListingOptionVO> optionList = facOptIds.stream().map(id -> {
-	    ListingOptionVO vo = new ListingOptionVO();
-	    vo.setLstgId(listing.getLstgId());
-	    vo.setFacOptId(id);
-	    return vo;
-	  }).toList();
+	        List<ListingOptionVO> optionList = facOptIds.stream().map(id -> {
+	            ListingOptionVO vo = new ListingOptionVO();
+	            vo.setLstgId(listing.getLstgId());
+	            vo.setFacOptId(id);
+	            return vo;
+	        }).toList();
 
+	        service.createListing(listing, imageFiles, optionList);
+	        return ResponseEntity.ok(Map.of("success", true, "message", "매물 등록이 완료되었습니다."));
 
-	  // 서비스 호출
-	  service.createListing(listing, imageFiles,optionList);
-
-	  return ResponseEntity.ok().build();
+	    } catch (ListingOptionException e) {
+	        log.error("옵션 처리 오류", e);
+	        return ResponseEntity.status(500).body(Map.of("success", false, "message", "선택한 옵션 처리 중 오류가 발생했습니다."));
+	    } catch (ListingException e) {
+	        log.error("매물 등록 실패", e);
+	        return ResponseEntity.status(500).body(Map.of("success", false, "message", "매물 등록 처리 중 오류가 발생했습니다."));
+	    } catch (FileIOException e) {
+	        log.error("파일 업로드 오류", e);
+	        return ResponseEntity.status(500).body(Map.of("success", false, "message", "파일 업로드 중 오류가 발생했습니다."));
+	    } catch (Exception e) {
+	        log.error("알 수 없는 오류", e);
+	        return ResponseEntity.status(500).body(Map.of("success", false, "message", "예기치 못한 오류가 발생했습니다."));
+	    }
 	}
+
+
+
+	@PostMapping("/product/update")
+	public ResponseEntity<?> updateListing(
+	    @ModelAttribute ListingVO listing,
+	    @RequestParam("facilities") List<String> facOptIds,
+	    @RequestParam(value = "imageUpload", required = false) List<MultipartFile> imageFiles,
+	    Principal principal
+	) {
+	    try {
+	        String username = principal.getName();
+	        String mbrCd = authUnpack.getMbrCd(username);
+	        listing.setMbrCd(mbrCd);
+
+	        List<ListingOptionVO> optionList = facOptIds.stream().map(id -> {
+	            ListingOptionVO vo = new ListingOptionVO();
+	            vo.setLstgId(listing.getLstgId());
+	            vo.setFacOptId(id);
+	            return vo;
+	        }).toList();
+
+	        service.modifyListing(listing, imageFiles, optionList);
+	        return ResponseEntity.ok(Map.of("success", true, "message", "매물 수정이 완료되었습니다."));
+
+	    } catch (ListingOptionException e) {
+	        log.error("옵션 수정 오류", e);
+	        return ResponseEntity.status(500).body(Map.of("success", false, "message", "옵션 수정 처리 중 오류가 발생했습니다."));
+	    } catch (ListingException e) {
+	        log.error("매물 수정 실패", e);
+	        return ResponseEntity.status(500).body(Map.of("success", false, "message", "매물 수정 처리 중 오류가 발생했습니다."));
+	    } catch (FileIOException e) {
+	        log.error("파일 처리 오류", e);
+	        return ResponseEntity.status(500).body(Map.of("success", false, "message", "파일 처리 중 오류가 발생했습니다."));
+	    } catch (Exception e) {
+	        log.error("알 수 없는 오류", e);
+	        return ResponseEntity.status(500).body(Map.of("success", false, "message", "예기치 못한 오류가 발생했습니다."));
+	    }
+	}
+
 
 
 }

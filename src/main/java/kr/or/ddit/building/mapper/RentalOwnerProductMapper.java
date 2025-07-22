@@ -35,4 +35,6 @@ public interface RentalOwnerProductMapper {
 	public List<CommonCodeVO> commonCodeLstg2List();
 	public String selectNextLstgId();
 	public Integer insertOptionList(@Param("list") List<ListingOptionVO> optionList);
+
+	public Integer deleteOptionByLstgId(String lstgId);
 }

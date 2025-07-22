@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.model.S3Object;
@@ -154,6 +155,26 @@ public class FileServiceImpl implements FileService {
 
 	    mapper.updateFile(oldFile);
 		
+	}
+	
+	@Override
+	@Transactional
+	public List<FileVO> updateMultipleFiles(List<MultipartFile> newFiles, String dir, String sourceRef, String sourceId, String docTypeCd) {
+	    // 1. 기존 파일 조회
+	    List<FileVO> existingFiles = readFileList(sourceRef, sourceId);
+
+	    // 2. 기존 파일 S3 + DB 삭제
+	    for (FileVO file : existingFiles) {
+	        try {
+	            s3Uploader.fileDelete(file.getFileDir() + "/" + file.getFileSavedname());
+	            mapper.deleteFileById(file.getFileId());
+	        } catch (Exception e) {
+	            throw new FileIOException("기존 파일 삭제 실패", e);
+	        }
+	    }
+
+	    // 3. 새 파일 등록 (기존 uploadMultipleFiles 재사용)
+	    return uploadMultipleFiles(newFiles, dir, sourceRef, sourceId, docTypeCd);
 	}
 	
 	@Override

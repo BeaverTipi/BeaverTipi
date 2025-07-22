@@ -36,4 +36,6 @@ public interface BrokerListingService {
 	public List<FacilityOptionVO> readFacilityOptionList();
 	
 	public void createListing(ListingVO listing, List<MultipartFile> imageFiles, List<ListingOptionVO> optionList);
+
+	public void modifyListing(ListingVO listing, List<MultipartFile> imageFiles, List<ListingOptionVO> optionList);
 }

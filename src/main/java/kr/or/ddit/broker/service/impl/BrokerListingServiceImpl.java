@@ -33,7 +33,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
-public class BrokerListingServiceImpl implements BrokerListingService{
+public class BrokerListingServiceImpl implements BrokerListingService {
 
 	private final BrokerMapper mapper;
 	private final RentalOwnerProductMapper productMapper;
@@ -44,7 +44,7 @@ public class BrokerListingServiceImpl implements BrokerListingService{
 		List<ListingVO> lstgList = mapper.selectLstgList(mbrCd);
 		return lstgList;
 	}
-	
+
 	public ListingVO readLstgDetails(ListingVO listing) {
 		ListingVO lstg = mapper.selectLstgDetails(listing);
 		return lstg;
@@ -56,28 +56,56 @@ public class BrokerListingServiceImpl implements BrokerListingService{
 		return productMapper.selectAllFacilityOptions();
 	}
 
-
 	@Override
 	@Transactional
 	public void createListing(ListingVO listing, List<MultipartFile> imageFiles, List<ListingOptionVO> optionList) {
-		// TODO Auto-generated method stub		productMapper.insertProduct(listing);
+		// TODO Auto-generated method stub productMapper.insertProduct(listing);
 		String lstgId = productMapper.selectNextLstgId();
 		listing.setLstgId(lstgId);
-		if(productMapper.insertProduct(listing)<1){
+		if (productMapper.insertProduct(listing) < 1) {
 			throw new ListingException();
 		}
-	    if (optionList != null && !optionList.isEmpty()) {
-	        for (ListingOptionVO option : optionList) {
-	            option.setLstgId(lstgId);
-	        }
-	        if( productMapper.insertOptionList(optionList)<1){
+		if (optionList != null && !optionList.isEmpty()) {
+			for (ListingOptionVO option : optionList) {
+				option.setLstgId(lstgId);
+			}
+			if (productMapper.insertOptionList(optionList) < 1) {
 				throw new ListingOptionException();
-			};
-	    }
-	     
-		if( imageFiles !=null && imageFiles.size() > 0) {
+			}
+			;
+		}
+
+		if (imageFiles != null && imageFiles.size() > 0) {
 			fileService.uploadMultipleFiles(imageFiles, "public/broker/listing", "LISTING", lstgId, "listingIMG");
 		}
 	}
-	
+
+	@Override
+	@Transactional
+	public void modifyListing(ListingVO listing, List<MultipartFile> imageFiles, List<ListingOptionVO> optionList) {
+		// 매물 정보 수정
+		if (productMapper.updateProduct(listing) < 1) {
+			throw new ListingException("매물 수정 처리중 오류 발생");
+		}
+
+		// 기존 옵션 삭제
+		if (productMapper.deleteOptionByLstgId(listing.getLstgId()) < 1) {
+			throw new ListingOptionException("옵션 삭제 처리중 오류 발생");
+		}
+		;
+
+		// 새로운 옵션 등록
+		if (optionList != null && !optionList.isEmpty()) {
+			if (productMapper.insertOptionList(optionList) < 1) {
+				throw new ListingOptionException();
+			}
+			;
+		}
+		// 이미지 처리 (기존 이미지 삭제는 선택적으로)
+		if (imageFiles != null && !imageFiles.isEmpty()) {
+			fileService.updateMultipleFiles(imageFiles, "public/broker/listing", "LISTING", listing.getLstgId(),
+					"listingIMG");
+		}
+	}
+
 }

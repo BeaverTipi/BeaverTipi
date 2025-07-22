@@ -100,6 +100,9 @@ public class ListingVO implements Serializable {
 
     // 시설 옵션
     private List<FacilityOptionVO> facOptions;
+    
+    // 
+    private List<FileVO> listingFiles;
 
     // 연관 정보
     private transient TenancyVO tenancyInfo;

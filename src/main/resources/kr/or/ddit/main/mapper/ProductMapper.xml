@@ -188,5 +188,9 @@
     	select * from common_code
 		where code_group = 'LSTG2'
     </select>
-
+<delete id="deleteOptionByLstgId">
+DELETE
+FROM LISTING_OPTION
+WHERE LSTG_ID=#{lstgId}
+</delete>
 </mapper>
