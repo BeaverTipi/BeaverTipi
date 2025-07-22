@@ -137,11 +137,11 @@
 	  LEFT OUTER JOIN V_BROKER_INFO BI ON(L.MBR_CD = BI.MBR_CD_B)
 	  LEFT OUTER JOIN V_LISTING_FACILITY LF ON(L.LSTG_ID = LF.LSTG_ID_LF)
 	 WHERE L.MBR_CD = #{mbrCd}
-	 ORDER BY L.LSTG_REG_DATE DESC
 </sql>
 
 <select id="selectLstgList" parameterType="String" resultMap="ListingMap">
 	<include refid="selectLstgList" />
+	 ORDER BY L.LSTG_REG_DATE DESC
 </select>
 <select id="selectLstgListForContract" parameterType="String" resultMap="ListingMap">
 	<include refid="selectLstgList" />
