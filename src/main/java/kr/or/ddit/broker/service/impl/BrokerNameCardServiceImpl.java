@@ -12,7 +12,8 @@ import kr.or.ddit.broker.mapper.BrokerNameCardMapper;
 import kr.or.ddit.broker.service.BrokerNameCardService;
 import kr.or.ddit.util.file.service.FileService;
 import kr.or.ddit.vo.FileVO;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Service
 public class BrokerNameCardServiceImpl implements BrokerNameCardService {
 
@@ -33,9 +34,30 @@ public class BrokerNameCardServiceImpl implements BrokerNameCardService {
     }
 
     @Override
+    @Transactional
     public int deleteFileById(Map<String, Object> params) {
-        return mapper.deleteFileById(params);
+        String fileId = (String) params.get("fileId");
+        Integer fileAttachSeq = (Integer) params.get("fileAttachSeq");
+
+        // 삭제 전 파일 정보 조회 (대표명함 여부 확인용)
+        FileVO file = mapper.selectNameCardDetail(params);
+
+        // 실제 삭제
+        int result = mapper.deleteFileById(params);
+
+        // 대표명함이 삭제된 경우
+        if (file != null && "NAMECARD_MAIN".equals(file.getDocTypeCd())) {
+            // 해당 회원의 남아있는 명함 중 최신 한 건을 대표로 지정
+            List<FileVO> remains = mapper.selectNameCardListByMember(file.getFileSourceId());
+            if (!remains.isEmpty()) {
+                FileVO newest = remains.get(0); 
+                mapper.setMainNameCard(newest.getFileId(), newest.getFileSourceId());
+            }
+        }
+
+        return result;
     }
+
 
     @Override
     public FileVO selectNameCardDetail(Map<String, Object> params) {
@@ -45,6 +67,7 @@ public class BrokerNameCardServiceImpl implements BrokerNameCardService {
     @Override
     @Transactional
     public void setMainNameCard(String mbrCd, String nameCardId) {
+    	log.info("[setMainNameCard-Service] nameCardId={}, mbrCd={}", nameCardId, mbrCd);
         // 기존 대표명함 해제
         mapper.unsetMainNameCard(mbrCd);
         // 새 대표명함 지정

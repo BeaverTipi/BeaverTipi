@@ -7,9 +7,9 @@
   <select id="selectNameCardListByMember" parameterType="string" resultType="kr.or.ddit.vo.FileVO">
     SELECT *
       FROM FILES
-     WHERE FILE_SOURCE_REF = 'NAMECARD'
+     WHERE FILE_SOURCE_REF = 'BROKER'
        AND FILE_SOURCE_ID = #{mbrCd}
-       AND DOC_TYPE_CD = 'NAMECARD'
+       AND DOC_TYPE_CD IN ('NAMECARD', 'NAMECARD_MAIN')
      ORDER BY REG_DTM DESC
   </select>
 
@@ -41,21 +41,22 @@
        AND FILE_ATTACH_SEQ = #{fileAttachSeq}
   </select>
   
-	  <!-- 기존 대표명함 해제 -->
-	<update id="unsetMainNameCard">
-	  UPDATE FILES
-	  SET DOC_TYPE_CD = 'NAMECARD'
-	  WHERE FILE_SOURCE_ID = #{mbrCd}
-	    AND DOC_TYPE_CD = 'NAMECARD_MAIN'
-	</update>
-	
-	<!-- 새 대표명함 지정 -->
-	<update id="setMainNameCard">
-	  UPDATE FILES
-	  SET DOC_TYPE_CD = 'NAMECARD_MAIN'
-	  WHERE FILE_ID = #{nameCardId}
-	    AND FILE_SOURCE_ID = #{mbrCd}
-	</update>
+  <!-- 기존 대표명함 해제 -->
+  <update id="unsetMainNameCard">
+    UPDATE FILES
+      SET DOC_TYPE_CD = 'NAMECARD'
+    WHERE FILE_SOURCE_REF = 'BROKER'
+      AND FILE_SOURCE_ID = #{mbrCd}
+      AND DOC_TYPE_CD = 'NAMECARD_MAIN'
+  </update>
   
+  <!-- 새 대표명함 지정 -->
+  <update id="setMainNameCard" parameterType="map">
+    UPDATE FILES
+      SET DOC_TYPE_CD = 'NAMECARD_MAIN'
+    WHERE FILE_SOURCE_REF = 'BROKER'
+      AND FILE_ID = #{nameCardId}
+      AND FILE_SOURCE_ID = #{mbrCd}
+  </update>
 
 </mapper>
