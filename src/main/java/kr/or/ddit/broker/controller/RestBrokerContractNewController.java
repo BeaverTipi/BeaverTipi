@@ -142,12 +142,10 @@ public class RestBrokerContractNewController {
 			rentalPtyId = String.valueOf(parsedRequest.get("rentalPtyId"));
 		} catch(JsonProcessingException e) { e.printStackTrace(); }
 		
-		log.debug("------<><><><> {}", rentalPtyId);
-		
+//		log.debug("------<><><><> {}", rentalPtyId);
 		return contService.readTenancyList(rentalPtyId);
 	}
 	
-
 	@PostMapping("/submit")
 	public ResponseEntity<?> encryptedNewContract(
 			Principal principal,
@@ -193,6 +191,4 @@ public class RestBrokerContractNewController {
 	        .map(SafeParse::safeParseLong)
 	        .orElse(0L);
 	}
-
-
 }

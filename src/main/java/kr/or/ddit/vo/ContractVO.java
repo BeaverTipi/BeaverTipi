@@ -27,6 +27,8 @@ public class ContractVO implements Serializable{
 	private String contStatCd;
 	private String contDtm;
 	private String contStatGroupCd;
+	private String contDelYn;
+	private String contSignYn;
 	
 	private transient MemberVO lesseeInfo;   // 임차인
 	private transient BrokerVO brokerInfo;   // 중개인

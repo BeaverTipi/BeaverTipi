@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
+import kr.or.ddit.main.member.service.MemberService;
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.MemberVO;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,9 @@ import lombok.extern.slf4j.Slf4j;
 public class RestRealUserReadController {
 
 	@Autowired
-	BrokerAuthUnpackingService authUnpack;
+	private BrokerAuthUnpackingService authUnpack;
+	@Autowired
+	private MemberService memService;
 	
 	@GetMapping("/read")
 	public MemberVO realUser(
@@ -42,8 +45,9 @@ public class RestRealUserReadController {
 		
 //		MemberVO broker  = principal.getRealUser();
 		String username = principal.getName();
-		BrokerVO broker = authUnpack.getBroker(username);
-		log.info("회원정보 toString(): {} ", broker);
-		return broker;
+//		BrokerVO broker = authUnpack.getBroker(username);
+		MemberVO member = memService.readMember(username);
+		log.info("회원정보 toString(): {} ", /*broker*/ member);
+		return /*broker*/ member;
 	}	
 }

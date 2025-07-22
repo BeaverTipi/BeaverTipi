@@ -48,6 +48,7 @@ public class DefaultIdSequenceResetJob extends AbstractSequenceResetJob {
                 .filter(s -> !s.isEmpty())
                 .toList();
     }
+}
 //    
 //    private static final Logger log = Logger.getLogger(DefaultIdSequenceResetJob.class.getName());
 //
@@ -90,4 +91,4 @@ public class DefaultIdSequenceResetJob extends AbstractSequenceResetJob {
 //    private String truncate(String str, int maxLength) {
 //        return (str != null && str.length() > maxLength) ? str.substring(0, maxLength) : str;
 //    }
-}
+

@@ -41,6 +41,7 @@ public class ContractIdSequenceResetJob extends AbstractSequenceResetJob {
     protected List<String> getTargetSequences() {
         return List.of("seq_contr_id");
     }
+}
 //	
 //    @Autowired
 //    private DataSource dataSource;
@@ -82,4 +83,4 @@ public class ContractIdSequenceResetJob extends AbstractSequenceResetJob {
 //    private String truncate(String str, int maxLength) {
 //        return (str != null && str.length() > maxLength) ? str.substring(0, maxLength) : str;
 //    }
-}
+

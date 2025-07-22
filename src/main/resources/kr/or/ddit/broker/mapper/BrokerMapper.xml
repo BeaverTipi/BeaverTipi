@@ -228,7 +228,33 @@
 	   SET LSTG_PROD_STAT = '002'
 	 WHERE LSTG_ID = #{lstgId}
 </update>
-<select id="selectProceedingContractsList" resultMap="ContractMap">
-  SELECT * FROM V_CONTRACT_INFO ORDER BY CONT_ID DESC
+<select id="selectProceedingContractsList" parameterType="String" resultMap="ContractMap">
+	SELECT *
+	  FROM V_CONTRACT_INFO
+	 WHERE MBR_CD_B = #{mbrCd}
+	   AND CONT_STAT_CD = '001'
+	   AND CONT_DEL_YN = 'N'
+	 ORDER BY CONT_ID DESC
 </select>
+<update id="deleteProceedingContract" parameterType="String">
+	UPDATE CONTRACT
+	   SET CONT_DEL_YN = 'Y'
+	 WHERE CONT_ID = #{contId}
+	   AND CONT_SIGN_YN = 'N'
+</update>
+<update id="updateProceedingContractSignYnToY" parameterType="String">
+	UPDATE CONTRACT
+	   SET CONT_SIGN_YN = 'Y'
+	 WHERE CONT_ID = #{contId}
+	   AND CONT_DEL_YN = 'N'
+	   AND CONT_SIGN_YN = 'N'
+</update>
+<update id="updateProceedingContractSignYnToN" parameterType="String">
+	UPDATE CONTRACT
+	   SET CONT_SIGN_YN = 'N'
+	 WHERE CONT_ID = #{contId}
+	   AND CONT_DEL_YN = 'N'
+	   AND CONT_SIGN_YN = 'Y'
+</update>
+
 </mapper>

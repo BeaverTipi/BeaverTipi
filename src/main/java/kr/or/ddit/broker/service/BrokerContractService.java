@@ -67,4 +67,25 @@ public interface BrokerContractService {
 	public ResponseEntity<?> processOfCreatingContract(String decryptedJson, Principal principal) throws JsonProcessingException;
 	
 	public void readContractPDF(String contId);
+	
+	/**
+	 * 계약 정보 단건 삭제
+	 * @param selectedContractIds
+	 * @return
+	 */
+	public int removeProceedingContractBulk(List<String> selectedContractIds);
+	
+	
+	/**
+	 * 서명페이지 개설 여부 확인
+	 * @param contId
+	 * @return
+	 */
+	public int openContractSignaturePage(String contId);
+	/**
+	 * 일정 시간 후 알아서 닫히게끔
+	 * @param contId
+	 * @return
+	 */
+	public int expireContractSignaturePage(String contId);
 }

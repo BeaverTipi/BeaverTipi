@@ -13,7 +13,6 @@
 package kr.or.ddit.broker.mapper;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -81,7 +80,18 @@ public interface BrokerMapper {
 	 */
 	public List<ContractVO> selectProceedingContractsList(String mbrCd);
 	
+	/**
+	 * 단건 삭제 매퍼
+	 * @param contId
+	 * @return
+	 */
+	public int deleteProceedingContract(String contId);
+	public int updateProceedingContractSignYnToY(String contId);
+	public int updateProceedingContractSignYnToN(String contId);
+	
 	public FileVO selectContractFile(String contId); 
+	
+	
 	
 	public List<CommonCodeVO> selectBankList();
 	public List<CommonCodeVO> selectLesserTypeList();

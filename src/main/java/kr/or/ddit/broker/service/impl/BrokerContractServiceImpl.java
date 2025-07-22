@@ -33,15 +33,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
 import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 import kr.or.ddit.broker.mapper.BrokerMapper;
 import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
 import kr.or.ddit.broker.service.BrokerContractService;
@@ -275,5 +270,59 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	public void readContractPDF(String contId) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Transactional
+	@Override
+	public int removeProceedingContractBulk(List<String> selectedContractIds) {
+		if (selectedContractIds == null || selectedContractIds.isEmpty())
+		throw new IllegalArgumentException("삭제할 계약 ID 리스트가 비어 있습니다.");
+		
+		int expectedCount = selectedContractIds.size();
+		int deletedCount = 0;
+		
+		for (String id : selectedContractIds) {
+		    int result = mapper.deleteProceedingContract(id);
+		    if (result == 0) {
+		        throw new IllegalStateException("계약 ID " + id + "에 대한 삭제가 실패했습니다.");
+		    }
+		    deletedCount += result;
+		}
+		
+		if (deletedCount != expectedCount)
+		throw new IllegalStateException("일부 계약 삭제에 실패했습니다. 요청: " + expectedCount + ", 삭제: " + deletedCount);
+		
+		
+		return deletedCount;
+	}
+
+	/**
+	 * 서명페이지 개설 여부 확인
+	 * 
+	 */
+	@Override
+	public int openContractSignaturePage(String contId) {
+		if (contId == null || contId.trim().isEmpty()) 
+		    throw new IllegalArgumentException("계약 ID(contId)는 필수입니다.");
+		
+		int rec = mapper.updateProceedingContractSignYnToY(contId);
+		
+		if (rec == 0) 
+		    throw new IllegalStateException("전자서명 상태 업데이트 실패: contId=" + contId);
+		
+		return rec;
+	}
+
+	/**
+	 * 일정 시간 후 알아서 닫히게끔
+	 */
+	@Override
+	public int expireContractSignaturePage(String contId) {
+		if (contId == null || contId.trim().isEmpty())
+			throw new IllegalArgumentException("계약 ID(contId)는 필수입니다.");
+		int rec = mapper.updateProceedingContractSignYnToN(contId);
+		if (rec == 0)
+			throw new IllegalStateException("전자서명 상태 업데이트 실패: contId=" + contId);
+		return rec;
 	}
 }
