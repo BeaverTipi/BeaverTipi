@@ -1,56 +1,75 @@
 package kr.or.ddit.resident.calendar.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import kr.or.ddit.resident.mapper.ScheduleMapper;
-import kr.or.ddit.vo.ScheduleVO;
+import kr.or.ddit.resident.mapper.BuildingScheduleMapper;
+import kr.or.ddit.resident.mapper.TenancyMapper;
+import kr.or.ddit.vo.BuildingScheduleVO;
 
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
 
 	@Autowired
-	private ScheduleMapper scheduleMapper;
+	private BuildingScheduleMapper buildingScheduleMapper;
+	
+	@Autowired
+	private TenancyMapper tenancyMapper;
 	
 	@Override
-	public List<ScheduleVO> getAllSchedules() {
-		// TODO Auto-generated method stub
-		return scheduleMapper.getAllSchedules();
+	public List<BuildingScheduleVO> getSchedulesByBuilding(String bldgId, String rentalPtyId) {
+	    Map<String, Object> paramMap = new HashMap<>();
+	    paramMap.put("bldgId", bldgId);
+	    if (rentalPtyId != null) {
+	        paramMap.put("rentalPtyId", rentalPtyId);
+	    }
+	    return buildingScheduleMapper.selectSchedulesByBuilding(paramMap);
 	}
 
 	@Override
-	public void createSchedule(ScheduleVO schedule) {
-		String maxId = scheduleMapper.selectMaxScheduleId();
-		int nextSeq = 1;
-		
-		if(maxId != null && maxId.length() == 8) {
-			String numberPart = maxId.substring(1);
-			nextSeq = Integer.parseInt(numberPart)+1;
-		}
-		
-		String newId = String.format("S%07d", nextSeq);
-		schedule.setScdId(newId);
-		scheduleMapper.createSchedule(schedule);
+	public void createSchedule(BuildingScheduleVO schedule) {
+	    String maxId = buildingScheduleMapper.selectMaxScheduleId();
+	    int nextSeq = (maxId != null && maxId.length() == 8)
+	                    ? Integer.parseInt(maxId.substring(1)) + 1 : 1;
+	    String newId = String.format("B%07d", nextSeq);
+	    schedule.setBscId(newId);
+
+	    // ✅ rentalPtyId 보정 추가해야 함
+	    if (schedule.getRentalPtyId() != null && schedule.getRentalPtyId().startsWith("M")) {
+	        String resolved = tenancyMapper.selectRentalPtyIdByMbrCd(schedule.getRentalPtyId());
+	        if (resolved == null) {
+	            throw new IllegalArgumentException("임대인 MBR_CD에 해당하는 RENTAL_PTY_ID를 찾을 수 없습니다.");
+	        }
+	        schedule.setRentalPtyId(resolved);
+	    }
+
+	    buildingScheduleMapper.insertSchedule(schedule);
 	}
 
 	@Override
-	public void updateSchedule(ScheduleVO schedule) {
-		// TODO Auto-generated method stub
-		scheduleMapper.updateSchedule(schedule);
+	public void updateSchedule(BuildingScheduleVO schedule) {
+		buildingScheduleMapper.updateSchedule(schedule);
 	}
 
 	@Override
-	public void deleteSchedule(String scdId) {
-		// TODO Auto-generated method stub
-		scheduleMapper.deleteSchedule(scdId);
+	public void deleteSchedule(String bscId) {
+		buildingScheduleMapper.deleteSchedule(bscId);
 	}
 
 	@Override
-	public ScheduleVO getScheduleById(String scdId) {
-		// TODO Auto-generated method stub
-		return scheduleMapper.getScheduleById(scdId);
+	public BuildingScheduleVO getScheduleById(String bscId) {
+		return buildingScheduleMapper.selectScheduleById(bscId);
 	}
+
+	@Override
+	public String getRentalPtyIdByMbrCd(String mbrCd) {
+		return tenancyMapper.selectRentalPtyIdByMbrCd(mbrCd);
+	}
+
+
 
 }

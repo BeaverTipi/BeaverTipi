@@ -20,6 +20,7 @@ public class UnitResidentVO implements Serializable {
 	private String mbrCd;
 	
 	
+	private String bldgNm;
 	
 	private BuildingVO building;
 	private MemberVO member;

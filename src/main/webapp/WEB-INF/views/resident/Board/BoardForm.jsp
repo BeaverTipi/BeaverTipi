@@ -178,64 +178,90 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.querySelector("form");
-    const saveBtn = document.querySelector(".save-btn");
-    const cancelBtn = document.querySelector(".cancel-btn");
-    const mode = "${mode}";
 
-    // 저장(등록/수정) 버튼
-    saveBtn.addEventListener("click", function (e) {
-      e.preventDefault();
+const form = document.querySelector("form");
+const saveBtn = document.querySelector(".save-btn");
 
-      if (mode !== 'edit') {
-        const buildingSelect = document.querySelector("select[name='bldgId']");
-        if (buildingSelect && buildingSelect.value === "") {
-          Swal.fire({
-            icon: 'warning',
-            title: '건물 선택이 필요합니다',
-            text: '건물을 선택해주세요.',
-            confirmButtonColor: '#E17100'
-          });
-          return;
-        }
-      }
+saveBtn.addEventListener("click", function (e) {
+	  e.preventDefault();
 
-      Swal.fire({
-        title: mode === 'edit' ? '게시글을 수정하시겠습니까?' : '게시글을 등록하시겠습니까?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#E17100',
-        cancelButtonColor: '#aaa',
-        confirmButtonText: '네, 진행합니다',
-        cancelButtonText: '취소'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          form.submit();
-        }
-      });
-    });
+	  const mode = "${mode}";
+	  const buildingSelect = document.querySelector("select[name='bldgId']");
+	  const titleInput = document.querySelector("input[name='rsdBrdTitl']");
+	  const content = $('#summernote').summernote('code');
 
-    // 취소 버튼
-    cancelBtn.addEventListener("click", function (e) {
-      e.preventDefault();
-      Swal.fire({
-        title: mode === 'edit' ? '게시글 수정을 취소하시겠습니까?' : '게시글 작성을 취소하시겠습니까?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#E17100',
-        cancelButtonColor: '#aaa',
-        confirmButtonText: '네, 취소합니다',
-        cancelButtonText: '아니요'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.href = cancelBtn.getAttribute("href");
-        }
-      });
+	  // ✅ 건물 선택 필수 (글쓰기 모드일 때만)
+	  if (mode !== 'edit' && buildingSelect && buildingSelect.value === "") {
+	    Swal.fire({
+	      icon: 'warning',
+	      title: '건물 선택이 필요합니다',
+	      text: '건물을 선택해주세요.',
+	      confirmButtonColor: '#E17100'
+	    });
+	    return;
+	  }
+
+	  // ✅ 제목 필수
+	  if (!titleInput.value.trim()) {
+	    Swal.fire({
+	      icon: 'warning',
+	      title: '제목이 비어있습니다',
+	      text: '제목을 입력해주세요.',
+	      confirmButtonColor: '#E17100'
+	    });
+	    return;
+	  }
+
+	  // ✅ 내용 필수 (summernote는 <p><br></p> 처럼 내용 없는 HTML도 있음 → 제거 후 확인)
+	  const plainText = $('<div>').html(content).text().trim();
+	  if (!plainText) {
+	    Swal.fire({
+	      icon: 'warning',
+	      title: '내용이 비어있습니다',
+	      text: '내용을 입력해주세요.',
+	      confirmButtonColor: '#E17100'
+	    });
+	    return;
+	  }
+
+	  // ✅ 모두 통과 → 저장 확인창
+	  Swal.fire({
+	    title: mode === 'edit' ? '게시글을 수정하시겠습니까?' : '게시글을 등록하시겠습니까?',
+	    icon: 'question',
+	    showCancelButton: true,
+	    confirmButtonColor: '#E17100',
+	    cancelButtonColor: '#aaa',
+	    confirmButtonText: '네, 진행합니다',
+	    cancelButtonText: '취소'
+	  }).then((result) => {
+	    if (result.isConfirmed) {
+	      form.submit();
+	    }
+	  });
+	});
+
+</script>
+<script>
+  $(document).ready(function () {
+    $('#summernote').summernote({
+      height: 300,
+      placeholder: '내용을 입력하세요...',
+      lang: 'ko-KR'
     });
   });
 </script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const buildingSelect = document.querySelector("select[name='bldgId']");
+    const selectedBldgId = localStorage.getItem("selectedBuildingId");
 
-<script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
+    // 페이지가 '글쓰기' 모드이고, selectedBldgId가 존재한다면 선택 처리
+    if (buildingSelect && selectedBldgId) {
+      buildingSelect.value = selectedBldgId;
+    }
+  });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/lang/summernote-ko-KR.min.js"></script>
 </body>
 </html>

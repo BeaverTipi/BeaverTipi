@@ -334,6 +334,5 @@ function validateForm() {
     });
   });
 </script>
-<script src="${pageContext.request.contextPath}/app/js/resident/residentBuliding.js"></script>
 </body>
 </html>

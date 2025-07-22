@@ -183,7 +183,7 @@
 
     <!-- 검색 영역 -->
     <div class="search-area">
-      <form id="searchForm" method="get" action="${pageContext.request.contextPath}/resident/complaint" class="search-form">
+    	<form id="searchForm" method="get" class="search-form">
         <input type="hidden" name="page" value="${pagingInfo.currentPageNo}" />
         <input type="hidden" name="brdCode" value="M0001" />
 
@@ -282,61 +282,61 @@
         </tr>
       </thead>
      <tbody id="boardTableBody" class="post-list">
-  <c:forEach var="vo" items="${boardList}">
-    <tr>
-      <td>${vo.mbrNnm}</td>
+<%--   <c:forEach var="vo" items="${boardList}"> --%>
+<!--     <tr> -->
+<%--       <td>${vo.mbrNnm}</td> --%>
 
-      <!-- ✅ 제목 처리: 비공개 + 권한 없는 경우 가림 -->
-      <td>
-        <c:choose>
-          <c:when test="${vo.openYn == 'N' and vo.mbrCd ne loginMember.mbrCd}">
-            <span class="text-muted">비공개 글입니다.</span>
-          </c:when>
-          <c:otherwise>
-            <c:out value="${vo.rsdBrdTitl}" />
-          </c:otherwise>
-        </c:choose>
-      </td>
+<!--       ✅ 제목 처리: 비공개 + 권한 없는 경우 가림 -->
+<!--       <td> -->
+<%--         <c:choose> --%>
+<%--           <c:when test="${vo.openYn == 'N' and vo.mbrCd ne loginMember.mbrCd}"> --%>
+<!--             <span class="text-muted">비공개 글입니다.</span> -->
+<%--           </c:when> --%>
+<%--           <c:otherwise> --%>
+<%--             <c:out value="${vo.rsdBrdTitl}" /> --%>
+<%--           </c:otherwise> --%>
+<%--         </c:choose> --%>
+<!--       </td> -->
 
-      <!-- 공개여부 -->
-      <td>
-        <c:choose>
-          <c:when test="${vo.openYn == 'Y'}"><span class="badge badge-blue">공개</span></c:when>
-          <c:otherwise><span class="badge badge-dark">비공개</span></c:otherwise>
-        </c:choose>
-      </td>
+<!--       공개여부 -->
+<!--       <td> -->
+<%--         <c:choose> --%>
+<%--           <c:when test="${vo.openYn == 'Y'}"><span class="badge badge-blue">공개</span></c:when> --%>
+<%--           <c:otherwise><span class="badge badge-dark">비공개</span></c:otherwise> --%>
+<%--         </c:choose> --%>
+<!--       </td> -->
 
-      <!-- 처리상태 -->
-      <td>
-        <c:forEach var="code" items="${reqStatusList}">
-          <c:if test="${code.codeValue eq vo.reqStatus}">
-            <c:choose>
-              <c:when test="${code.codeValue == '001'}"><span class="badge badge-orange">${code.codeName}</span></c:when>
-              <c:when test="${code.codeValue == '002'}"><span class="badge badge-green">${code.codeName}</span></c:when>
-            </c:choose>
-          </c:if>
-        </c:forEach>
-      </td>
+<!--       처리상태 -->
+<!--       <td> -->
+<%--         <c:forEach var="code" items="${reqStatusList}"> --%>
+<%--           <c:if test="${code.codeValue eq vo.reqStatus}"> --%>
+<%--             <c:choose> --%>
+<%--               <c:when test="${code.codeValue == '001'}"><span class="badge badge-orange">${code.codeName}</span></c:when> --%>
+<%--               <c:when test="${code.codeValue == '002'}"><span class="badge badge-green">${code.codeName}</span></c:when> --%>
+<%--             </c:choose> --%>
+<%--           </c:if> --%>
+<%--         </c:forEach> --%>
+<!--       </td> -->
 
-      <!-- 게시일 -->
-      <td><fmt:formatDate value="${vo.rsdBrdPblsDate}" pattern="yyyy-MM-dd"/></td>
+<!--       게시일 -->
+<%--       <td><fmt:formatDate value="${vo.rsdBrdPblsDate}" pattern="yyyy-MM-dd"/></td> --%>
 
-      <!-- ✅ 보기 버튼 처리 -->
-      <td>
-        <c:choose>
-          <c:when test="${vo.openYn == 'N' and vo.mbrCd ne loginMember.mbrCd}">
-            <button type="button" class="btn-view" onclick="showPrivateAlert()">보기</button>
-          </c:when>
-          <c:otherwise>
-            <form method="get" action="${pageContext.request.contextPath}/resident/complaint/view" style="display:inline;">
-              <input type="hidden" name="rsdBrdId" value="${vo.rsdBrdId}" />
-              <button type="submit" class="btn-view">보기</button>
-            </form>
-          </c:otherwise>
-        </c:choose>
-      </td>
-    </tr>
-  </c:forEach>
+<!--       ✅ 보기 버튼 처리 -->
+<!--       <td> -->
+<%--         <c:choose> --%>
+<%--           <c:when test="${vo.openYn == 'N' and vo.mbrCd ne loginMember.mbrCd}"> --%>
+<!--             <button type="button" class="btn-view" onclick="showPrivateAlert()">보기</button> -->
+<%--           </c:when> --%>
+<%--           <c:otherwise> --%>
+<%--             <form method="get" action="${pageContext.request.contextPath}/resident/complaint/view" style="display:inline;"> --%>
+<%--               <input type="hidden" name="rsdBrdId" value="${vo.rsdBrdId}" /> --%>
+<!--               <button type="submit" class="btn-view">보기</button> -->
+<!--             </form> -->
+<%--           </c:otherwise> --%>
+<%--         </c:choose> --%>
+<!--       </td> -->
+<!--     </tr> -->
+<%--   </c:forEach> --%>
   <c:if test="${empty boardList}">
     <tr><td colspan="6" class="no-data-center">검색 결과가 없습니다.</td></tr>
   </c:if>
@@ -344,10 +344,7 @@
     </table>
 
     <!-- 페이징 -->
-    <div class="pagination-wrapper">
-      <c:out value="${pagingHtml}" escapeXml="false"/>
-    </div>
-
+	<div class="pagination-wrapper"></div>
     <!-- 글쓰기 버튼 -->
     <div class="write-buttons">
       <a class="btn-success" href="${pageContext.request.contextPath}/resident/complaint/form?bldgIdParam=${selectedBldgId}">글쓰기</a>
@@ -355,12 +352,40 @@
 
   </main>
 </div>
+<!-- ✅ axios CDN 추가 (필수) -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/resident/commonBuildingSelect.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/resident/residentComplaint.js"></script>
+<script>
+  setupGlobalBuildingSelector({
+    param: 'bldgIdParam',
+    storageKey: 'selectedBuildingId',
+    onChange: loadComplaints // residentComplaint.js 안에 정의된 함수
+  });
+</script>
 
 <script>
   function fnPaging(pageNo) {
     const form = document.getElementById('searchForm');
     form.page.value = pageNo;
     form.submit();
+  }
+</script>
+<script>
+  function clearForm(e) {
+    e.preventDefault();
+
+    const form = document.getElementById("searchForm");
+    if (!form) return;
+
+    // input, select, radio 초기화
+    form.reset();
+
+    // hidden 필드(page 등)는 기본값으로 수동 초기화
+    form.page.value = 1;
+
+    // 로컬스토리지에 저장된 selectedBuildingId는 유지하되, 검색 조건만 초기화
+    loadComplaints(currentBuildingId, 1); // 검색 조건 비운 상태로 목록 재조회
   }
 </script>
 
@@ -374,22 +399,16 @@
     });
   }
 </script>
-<script src="${pageContext.request.contextPath}/app/js/resident/commonBuildingSelect.js"></script>
 <script>
-  // 페이지 로드 시 자동 건물 선택 적용
   setupGlobalBuildingSelector({
     param: 'bldgIdParam',
     storageKey: 'selectedBuildingId',
-    onChange: (bldgId) => {
-      // 해당 빌딩 ID가 선택되었을 때 form 제출
-      const form = document.getElementById('searchForm');
-      if (form) {
-        form.querySelector('input[name="page"]').value = 1;
-        form.submit();
-      }
+    onChange: (bldgId, pageNo) => {
+      loadComplaints(bldgId, pageNo);  // ✅ 새로고침 없이 AJAX 호출
     }
   });
 </script>
+
 
 </body>
 </html>

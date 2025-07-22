@@ -4,57 +4,106 @@ function loadPosts(bldgId, page = 1, pageSize = 10) {
   if (!bldgId) return;
 
   const postListContainer = document.querySelector('.post-list');
-  if (!postListContainer) {
-    console.error('게시글 목록을 표시할 요소가 없습니다.');
-    return;
-  }
+  const tableBody = document.querySelector('#boardTableBody');
+  const paginationWrapper = document.querySelector('.pagination-wrapper');
 
-  postListContainer.innerHTML = '<div class="loading">로딩 중...</div>';
+//  postListContainer.innerHTML = '<div class="loading">로딩 중...</div>';
+  tableBody.innerHTML = '';
+  paginationWrapper.innerHTML = '';
 
-	 console.log(`Loading posts for building ID: ${bldgId}, Page: ${page}, Page Size: ${pageSize}`);
+  // 검색 조건 가져오기
+  const searchType = document.querySelector('select[name="searchType"]').value;
+  const searchWord = document.querySelector('input[name="searchWord"]').value;
+  const searchStartDate = document.querySelector('input[name="searchStartDate"]').value;
+  const searchEndDate = document.querySelector('input[name="searchEndDate"]').value;
 
-  // Ajax 요청에 페이지와 페이지 크기 추가
-  axios.get(`/ajax/resident/api/board?bldgIdParam=${bldgId}&page=${page}&pageSize=${pageSize}`)
+  // 쿼리 구성
+  const params = new URLSearchParams({
+    bldgIdParam: bldgId,
+    page,
+    pageSize,
+    searchType,
+    searchWord,
+    searchStartDate,
+    searchEndDate
+  });
+
+  axios.get(`/ajax/resident/api/board?${params.toString()}`)
     .then(response => {
-      displayPosts(response.data, page);
+      const { postList, pagination } = response.data;
+      displayPosts(postList, pagination);
+      renderPagination(pagination);
     })
     .catch(error => {
-      console.error("게시글 로드 중 오류 발생:", error);
-      postListContainer.innerHTML = '<p>게시글을 불러오는 데 실패했습니다.</p>';
+      console.error("게시글 로드 실패:", error);
+      tableBody.innerHTML = `<tr><td colspan="6">불러오는 데 실패했습니다.</td></tr>`;
     });
 }
 
-function displayPosts(posts, currentPage) {
+function displayPosts(posts, pagination) {
   const tableBody = document.querySelector('#boardTableBody');
-  if (!tableBody) return;
-
   tableBody.innerHTML = '';
 
   if (!posts || posts.length === 0) {
     tableBody.innerHTML = `
       <tr>
         <td colspan="6" class="no-data-center">게시글이 없습니다.</td>
-      </tr>
-    `;
-  } else {
-    posts.forEach((post, index) => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${(currentPage - 1) * 10 + index + 1}</td>  <!-- 페이지 번호에 맞춰 인덱스 수정 -->
-        <td>${post.rsdBrdTitl}</td>
-        <td>${post.mbrNnm}</td>
-        <td>${new Date(post.rsdBrdPblsDtm).toLocaleDateString()}</td>
-        <td>${post.rsdBrdCnt || 0}</td>
-        <td>
-          <form method="get" action="/resident/board/detail" style="display:inline;">
-            <input type="hidden" name="rsdBrdId" value="${post.rsdBrdId}" />
-            <input type="hidden" name="bldgIdParam" value="${post.bldgId}" />
-            <button type="submit" class="btn-view">보기</button>
-          </form>
-        </td>
-      `;
-      tableBody.appendChild(row);
-    });
+      </tr>`;
+    return;
   }
+
+  posts.forEach((post, index) => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${pagination.firstRecordIndex + index}</td>
+      <td>${post.rsdBrdTitl}</td>
+      <td>${post.mbrNnm}</td>
+      <td>${new Date(post.rsdBrdPblsDtm).toLocaleDateString()}</td>
+      <td>${post.rsdBrdCnt || 0}</td>
+      <td>
+        <form method="get" action="/resident/board/detail" style="display:inline;">
+          <input type="hidden" name="rsdBrdId" value="${post.rsdBrdId}" />
+          <input type="hidden" name="bldgIdParam" value="${post.bldgId}" />
+          <button type="submit" class="btn-view">보기</button>
+        </form>
+      </td>
+    `;
+    tableBody.appendChild(row);
+  });
 }
+
+function renderPagination(pagination) {
+  const wrapper = document.querySelector('.pagination-wrapper');
+  wrapper.innerHTML = '';
+
+  const ul = document.createElement('ul');
+  ul.className = 'pagination';
+
+  // 이전 페이지
+  if (pagination.currentPageNo > 1) {
+    const prevLi = document.createElement('li');
+    prevLi.innerHTML = `<a href="#">«</a>`;
+    prevLi.addEventListener('click', () => loadPosts(pagination.simpleSearch.bldgId, pagination.currentPageNo - 1));
+    ul.appendChild(prevLi);
+  }
+
+  for (let i = pagination.firstPageNoOnPageList; i <= pagination.lastPageNoOnPageList; i++) {
+    const li = document.createElement('li');
+    li.className = (i === pagination.currentPageNo) ? 'active' : '';
+    li.innerHTML = `<a href="#">${i}</a>`;
+    li.addEventListener('click', () => loadPosts(pagination.simpleSearch.bldgId, i));
+    ul.appendChild(li);
+  }
+
+  // 다음 페이지
+  if (pagination.currentPageNo < pagination.totalPageCount) {
+    const nextLi = document.createElement('li');
+    nextLi.innerHTML = `<a href="#">»</a>`;
+    nextLi.addEventListener('click', () => loadPosts(pagination.simpleSearch.bldgId, pagination.currentPageNo + 1));
+    ul.appendChild(nextLi);
+  }
+
+  wrapper.appendChild(ul);
+}
+
 

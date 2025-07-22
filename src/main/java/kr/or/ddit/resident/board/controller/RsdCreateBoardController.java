@@ -67,8 +67,9 @@ public class RsdCreateBoardController {
             @RequestParam(value = "rsdBrdId", required = false) String rsdBrdId,
             @RequestParam(value = "bldgIdParam", required = false) String bldgIdParam,
             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
-            Model model) {
-
+            Model model,
+            @ModelAttribute("board") ResidentBoardVO board // ⬅️ 이걸 반드시 명시적으로 받기
+    ) {
         String mode = (rsdBrdId != null && !rsdBrdId.isEmpty()) ? "edit" : "new";
         model.addAttribute("mode", mode);
 
@@ -76,11 +77,10 @@ public class RsdCreateBoardController {
         List<UnitResidentVO> units = unitResidentService.getUnitsByMember(member.getMbrCd());
         model.addAttribute("unitList", units);
 
-        ResidentBoardVO board = (ResidentBoardVO) model.asMap().get("board");
-        
+        // ❌ 중복 조회 제거
         if ("edit".equals(mode)) {
-            ResidentBoardVO original = boardService.getBoardById(rsdBrdId);
-            if (original == null || !member.getMbrCd().equals(original.getMbrCd())) {
+            // 작성자 본인 확인
+            if (board == null || !member.getMbrCd().equals(board.getMbrCd())) {
                 return """
                     <script>
                       alert('작성자 본인만 수정할 수 있습니다.');
@@ -90,6 +90,7 @@ public class RsdCreateBoardController {
             }
         }
 
+        // 선택된 건물 이름 세팅
         if (board != null && board.getBldgId() != null) {
             for (UnitResidentVO unit : units) {
                 if (unit.getBldgId().equals(board.getBldgId())) {
@@ -99,7 +100,7 @@ public class RsdCreateBoardController {
             }
         }
 
-        model.addAttribute("selectedBldgId", bldgIdParam);
+        model.addAttribute("selectedBldgId", bldgIdParam); // ⬅️ 선택된 건물 유지
         return "resident/Board/BoardForm";
     }
 
@@ -139,7 +140,9 @@ public class RsdCreateBoardController {
 	        } else {
 	            boardService.updateBoard(board);
 	        }
-	        return "redirect:/resident/board/detail?rsdBrdId=" + board.getRsdBrdId() + "&bldgIdParam=" + bldgIdParam;
+	        return "redirect:/resident/board/detail?rsdBrdId=" + board.getRsdBrdId()
+	        + "&bldgIdParam=" + bldgIdParam
+	        + "&page=" + model.asMap().getOrDefault("page", "1");
 	    }
 	    
 	    

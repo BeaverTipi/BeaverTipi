@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.resident.mapper.ScheduleMapper">
-    <!-- 일정 목록 조회 -->
-    <select id="getAllSchedules" resultType="kr.or.ddit.vo.ScheduleVO">
-        SELECT * FROM SCHEDULE
-         ORDER BY scd_str_dtm DESC
-    </select>
 
     <!-- 일정 생성 -->
-    <insert id="createSchedule">
-        INSERT INTO SCHEDULE (
-	    scd_id, mbr_cd, scd_titl_nm, scd_cont, scd_str_dtm, scd_end_dtm, scd_rpt_set_cont
+	<insert id="createSchedule">
+	  INSERT INTO SCHEDULE (
+	    scd_id, mbr_cd, scd_titl_nm, scd_cont, 
+	    scd_str_dtm, scd_end_dtm, scd_rpt_set_cont,
+	    scd_del_yn
 	  )
 	  VALUES (
-	    #{scdId}, #{mbrCd}, #{scdTitlNm}, 
-	    #{scdCont,jdbcType=VARCHAR}, 
-	    #{scdStrDtm}, 
-	    #{scdEndDtm}, 
-	    #{scdRptSetCont,jdbcType=VARCHAR}
+	    #{scdId}, #{mbrCd}, #{scdTitlNm}, #{scdCont,jdbcType=VARCHAR},
+	    #{scdStrDtm}, #{scdEndDtm}, #{scdRptSetCont,jdbcType=VARCHAR},
+	    'N'
 	  )   
-  </insert>
+	</insert>
 
     <!-- 일정 수정 -->
     <update id="updateSchedule">
@@ -32,12 +27,21 @@
             scd_rpt_set_cont = #{scdRptSetCont}
         WHERE scd_id = #{scdId}
     </update>
-
+    
     <!-- 일정 삭제 -->
-    <delete id="deleteSchedule">
-        DELETE FROM SCHEDULE WHERE scd_id = #{scdId}
-    </delete>
-
+    <update id="deleteSchedule">
+		  UPDATE SCHEDULE
+		  SET scd_del_yn = 'Y'
+		  WHERE scd_id = #{scdId}
+		</update>
+    
+	<select id="getAllSchedules" resultType="kr.or.ddit.vo.ScheduleVO">
+	  SELECT *
+	  FROM SCHEDULE
+	  WHERE scd_del_yn = 'N'
+	  ORDER BY scd_str_dtm DESC
+	</select>
+    
     <!-- 일정 상세 조회 -->
     <select id="getScheduleById" resultType="kr.or.ddit.vo.ScheduleVO">
         SELECT * FROM SCHEDULE WHERE scd_id = #{scdId}

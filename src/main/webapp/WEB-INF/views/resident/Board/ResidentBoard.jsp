@@ -292,6 +292,16 @@
  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/resident/commonBuildingSelect.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/resident/residentBuilding.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/resident/commonBuildingSelect.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/resident/residentBoard.js"></script>
+<script>
+  setupGlobalBuildingSelector({
+    param: 'bldgIdParam',
+    storageKey: 'selectedBuildingId',
+    onChange: loadPosts // residentBoard.js 안에 정의된 함수
+  });
+</script>
+
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     setupGlobalBuildingSelector({
@@ -308,6 +318,17 @@
       form.submit();
     }
   </script>
+<script>
+  document.querySelector('.search-form').addEventListener('submit', function (e) {
+    e.preventDefault(); // 기본 제출 막기
+
+    const selectedBldgId = document.querySelector('select[name="bldgIdParam"]').value;
+    if (selectedBldgId) {
+      sessionStorage.removeItem('alreadyLoaded'); // 새로 검색이므로 초기화
+      loadPosts(selectedBldgId, 1);
+    }
+  });
+</script>
 
 
 

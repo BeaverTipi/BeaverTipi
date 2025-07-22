@@ -195,92 +195,53 @@
     </form>
   </div>
 
-  <!-- 📋 공지 목록 -->
-  <table class="table">
-    <thead>
-      <tr>
-        <th>번호</th>
-        <th>유형</th>
-        <th>제목</th>
-        <th>작성자</th>
-        <th>게시일</th>
-        <th>조회수</th>
-        <th>보기</th>
-      </tr>
-    </thead>
-    <tbody>
-      <c:forEach var="notice" items="${boardList}" varStatus="status">
-        <tr>
-          <td>
-            <c:choose>
-              <c:when test="${notice.noticeType=='002' || notice.noticeType=='003' || notice.noticeType=='004'}">
-                &#128204;
-              </c:when>
-              <c:otherwise>
-                ${pagingInfo.firstRecordIndex + status.index}
-              </c:otherwise>
-            </c:choose>
-          </td>
-          <td>${notice.noticeTypeCode.codeName}</td>
-          <td title="${notice.brdTitlNm}">
-            <c:choose>
-              <c:when test="${fn:length(notice.brdTitlNm) > 30}">${fn:substring(notice.brdTitlNm, 0, 30)}...</c:when>
-              <c:otherwise>${notice.brdTitlNm}</c:otherwise>
-            </c:choose>
-          </td>
-          <td>${notice.member.mbrNnm}</td>
-          <td>${notice.formattedBrdPblsDtm}</td>
-          <td>${notice.brdVwCnt}</td>
-          <td>
-            <form method="get" action="${pageContext.request.contextPath}/resident/notice/detail" style="display:inline;">
-              <input type="hidden" name="noticeNo" value="${notice.noticeNo}" />
-              <input type="hidden" name="bldgIdParam" value="${selectedBldgId}" />
-              <input type="hidden" name="noticeType" value="${simpleSearch.noticeType}" />
-              <input type="hidden" name="page" value="${pagingInfo.currentPageNo}" />
-              <input type="hidden" name="searchType" value="${simpleSearch.searchType}" />
-              <input type="hidden" name="searchWord" value="${simpleSearch.searchWord}" />
-              <button type="submit" class="btn-view">보기</button>
-            </form>
-          </td>
-        </tr>
-      </c:forEach>
+<!-- 📋 공지 목록 -->
+<table class="table">
+  <thead>
+    <tr>
+      <th>번호</th>
+      <th>유형</th>
+      <th>제목</th>
+      <th>작성자</th>
+      <th>게시일</th>
+      <th>조회수</th>
+      <th>보기</th>
+    </tr>
+  </thead>
+  <tbody id="noticeTableBody">
+    <!-- 비동기 렌더링 영역 -->
+  </tbody>
+</table>
 
-      <c:if test="${empty boardList}">
-        <tr><td colspan="7" class="no-data-center">등록된 공지사항이 없습니다.</td></tr>
-      </c:if>
-    </tbody>
-  </table>
+<!-- 📄 페이징 -->
+<div class="pagination-wrapper">
+  <!-- 비동기 페이징 영역 -->
+</div>
 
-  <!-- 📄 페이징 -->
-  <div class="pagination-wrapper">
-    <c:out value="${pagingHTML}" escapeXml="false"/>
-  </div>
-
-  <!-- ✏️ 등록 버튼 -->
-  <div class="write-buttons">
-    <sec:authorize access="hasAuthority('ADMIN') or hasAuthority('TENANCY')">
-      <a href="/resident/notice/form" class="btn-success">글쓰기</a>
-    </sec:authorize>
-  </div>
-
-</main>
+<!-- ✏️ 등록 버튼 -->
+<div class="write-buttons">
+  <sec:authorize access="hasAuthority('ADMIN') or hasAuthority('TENANCY')">
+    <a href="/resident/notice/form" class="btn-success">글쓰기</a>
+  </sec:authorize>
 </div>
 
 <script>
-  function fnPaging(pageNo) {
-    const form = document.getElementById('noticeSearchForm');
-    form.page.value = pageNo;
-    form.submit();
-  }
-
   document.addEventListener("DOMContentLoaded", () => {
-    const bldgSelect = document.querySelector('select[name="bldgIdParam"]');
-    bldgSelect?.addEventListener("change", () => {
-      document.getElementById("noticeSearchForm").submit();
+    setupGlobalBuildingSelector({
+      param: "bldgIdParam",
+      storageKey: "selectedBuildingId",
+      onChange: (bldgId, page) => {
+        loadNotices(page);
+      },
+      pageParam: "page",
+      pageSize: 10
     });
   });
 </script>
-
+<!-- ✅ axios CDN 추가 (필수) -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/resident/commonBuildingSelect.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/resident/residentNotice.js"></script>
+
 </body>
 </html>

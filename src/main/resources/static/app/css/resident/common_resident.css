@@ -157,11 +157,13 @@ input[type="date"],
   color: var(--color-text);
 }
 
-.pagination-wrapper span.bg-primary {
-  background-color: #777;
-  color: #fff;
+.paging-active {
+  background-color: #E17100;
+  color: white;
+  font-weight: bold;
+  border-radius: 6px;
+  padding: 6px 12px;
 }
-
 /* ✅ 하단 글쓰기 버튼 */
 .write-buttons {
   display: flex;
@@ -201,6 +203,72 @@ input[type="date"],
   padding: 9px 18px;
   border-radius: 4px;
   text-decoration: none;
+}
+/* ✅ 비동기 페이징 버튼 스타일 - 오렌지 테마 */
+ul.pagination {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding-left: 0;
+  margin-top: 20px;
+}
+
+ul.pagination li {
+  margin: 0 4px;
+}
+
+ul.pagination li a {
+  display: block;
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background-color: #fff;
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: var(--font-base);
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+ul.pagination li a:hover {
+  background-color: #fef4ec;
+  color: #E17100;
+  border-color: #E17100;
+}
+
+/* 현재 페이지 강조 */
+ul.pagination li.active a {
+  background-color: #E17100;
+  color: #fff;
+  border: 1px solid #E17100;
+  font-weight: bold;
+}
+/* ✅ JavaScript에서 사용하는 .page-btn 전용 스타일 추가 */
+.page-btn {
+  padding: 6px 12px;
+  margin: 0 6px;
+  border-radius: 6px;
+  font-size: var(--font-base);
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.page-btn:hover {
+  background-color: #fef4ec;
+  color: #E17100;
+  border-color: #E17100;
+}
+
+.page-btn.active {
+  background-color: #E17100;
+  color: #fff;
+  border: 1px solid #E17100;
+  font-weight: bold;
 }
 
 /* ✅ 반응형 (모바일 대응) */

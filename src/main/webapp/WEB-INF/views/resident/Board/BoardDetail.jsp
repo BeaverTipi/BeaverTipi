@@ -49,16 +49,10 @@
 
     <!-- 🔸 버튼 영역 -->
     <div class="btn-group">
-      <a href="<c:url value='/resident/board'>
-                 <c:param name='bldgIdParam' value='${selectedBldgId}' />
-                 <c:param name='page' value='${page}' />
-               </c:url>">목록으로</a>
+		<a href="#" id="goListBtn">목록</a>
 
       <c:if test="${board.mbrCd eq loginUser.mbrCd}">
-        <a href="<c:url value='/resident/board/form'>
-                   <c:param name='rsdBrdId' value='${board.rsdBrdId}' />
-                   <c:param name='bldgIdParam' value='${selectedBldgId}' />
-                 </c:url>">수정</a>
+		<a href="${pageContext.request.contextPath}/resident/board/form?rsdBrdId=${board.rsdBrdId}&bldgIdParam=${selectedBldgId}&page=${page}" id="goEditBtn">수정</a>
 
         <!-- 삭제 버튼 -->
 		<form id="deleteForm" method="post" action="${pageContext.request.contextPath}/resident/board/delete" style="display:inline;">
@@ -91,6 +85,24 @@
     });
   });
 </script>
+
+<script>
+  document.getElementById("goListBtn").addEventListener("click", function (e) {
+    e.preventDefault();
+
+    const selectedBldgId = localStorage.getItem("selectedBuildingId") || "${selectedBldgId}";
+    const page = "${page}" || "1"; // 기본값 1
+
+    // 이동
+    const url = `${pageContext.request.contextPath}/resident/board?bldgIdParam=${selectedBldgId}&page=${page}`;
+    window.location.href = url;
+  });
+</script>
+
+
+
+
+
 <!-- JSP 파일의 하단 -->
 
 </body>

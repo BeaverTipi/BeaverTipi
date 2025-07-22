@@ -28,6 +28,13 @@
 	</style>
 </head>
 <body>
+<script>
+  // 📌 상세보기에서 돌아올 때 건물 정보 localStorage에 저장
+  const bldgIdFromUrl = new URLSearchParams(window.location.search).get("bldgIdParam");
+  if (bldgIdFromUrl) {
+    localStorage.setItem("selectedBuildingId", bldgIdFromUrl);
+  }
+</script>
   <div class="detail-container">
     <!-- 제목 및 메타 정보 -->
     <h2><c:out value="${notice.brdTitlNm}"/></h2>
@@ -42,9 +49,9 @@
     <hr/>
 
     <!-- 내용 -->
-    <div class="detail-content">
-      <p><c:out value="${notice.brdCont}"/></p>
-    </div>
+<div class="notice-content">
+  ${notice.brdCont}
+</div>
 	
     <!-- 권한 기반 수정/삭제 버튼 -->
     <c:set var="isAdmin" value="false"/>
@@ -97,6 +104,7 @@
   
   
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
   document.getElementById('deleteBtn')?.addEventListener('click', function () {
     Swal.fire({
@@ -116,6 +124,5 @@
   });
 </script>
 
-<script src="${pageContext.request.contextPath}/app/js/resident/residentBuliding.js"></script>
 </body>
 </html>

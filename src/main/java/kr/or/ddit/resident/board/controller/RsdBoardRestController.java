@@ -1,6 +1,8 @@
 package kr.or.ddit.resident.board.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,29 +28,34 @@ public class RsdBoardRestController {
     private ResidentBoardService boardService;
 
     @GetMapping
-    public List<ResidentBoardVO> getBoardsByBuilding(
-    		@RequestParam("bldgIdParam") String bldgIdParam,
+    public Map<String, Object> getBoardsByBuilding(
+            @RequestParam("bldgIdParam") String bldgIdParam,
             @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "searchType", required = false) String searchType,
+            @RequestParam(value = "searchWord", required = false) String searchWord,
+            @RequestParam(value = "searchStartDate", required = false) String searchStartDate,
+            @RequestParam(value = "searchEndDate", required = false) String searchEndDate,
             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
-    		) {
-    	
-    	log.info("Received request with bldgIdParam: {}, page: {}", bldgIdParam, page);
-        
-    	// SimpleSearch 객체 생성 및 bldgIdParam 설정
+    ) {
         SimpleSearch search = new SimpleSearch();
-        search.setBldgId(bldgIdParam);  // URL 파라미터로 받은 bldgIdParam을 설정
+        search.setBldgId(bldgIdParam);
+        search.setSearchType(searchType);
+        search.setSearchWord(searchWord);
+        search.setSearchStartDate(searchStartDate);
+        search.setSearchEndDate(searchEndDate);
 
-        // PaginationInfo 객체 생성 및 검색 정보 설정
         PaginationInfo<ResidentBoardVO> paging = new PaginationInfo<>();
-        paging.setSimpleSearch(search);  // simpleSearch 객체를 세팅
-        paging.setCurrentPageNo(page);  // 요청받은 페이지 설정
+        paging.setSimpleSearch(search);
+        paging.setCurrentPageNo(page);
         paging.setRecordCountPerPage(10);
-        paging.setPageSize(5);   
-        
+        paging.setPageSize(5);
+
         List<ResidentBoardVO> boardList = boardService.getBoardList(paging);
-        log.info("Returning {} boards", boardList.size());
-        
-        // 게시글 목록을 반환
-        return boardService.getBoardList(paging);  // 게시글 목록 반환 (JSON으로 자동 변환)
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("postList", boardList);
+        result.put("pagination", paging); // JS에서 totalPageCount, currentPageNo 등을 활용 가능
+
+        return result;
     }
 }

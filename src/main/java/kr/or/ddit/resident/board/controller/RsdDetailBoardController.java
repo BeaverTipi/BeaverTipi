@@ -67,7 +67,8 @@ public class RsdDetailBoardController {
         model.addAttribute("board", board);
         model.addAttribute("loginUser", member);
         model.addAttribute("page", page);
-        
+        model.addAttribute("bldgIdParam", bldgIdParam);
+
         return "resident/Board/BoardDetail";
     }
     
@@ -77,6 +78,7 @@ public class RsdDetailBoardController {
     			@RequestParam("rsdBrdId") String rsdBrdId,
     			@RequestParam("bldgIdParam") String bldgIdParam,
     			@AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
+    			@RequestParam(value = "page", required = false, defaultValue = "1") int page,
     			Model model
     		) {
     		MemberVO loginMember = principal.getRealUser();
@@ -98,9 +100,9 @@ public class RsdDetailBoardController {
     	return """
     	        <script>
     	          alert('삭제되었습니다.');
-    	          location.href='/resident/board?bldgIdParam=%s';
+    	          location.href='/resident/board?bldgIdParam=%s&page=%d';
     	        </script>
-    	        """.formatted(bldgIdParam);
+    	        """.formatted(bldgIdParam,page);
     }
 }
 

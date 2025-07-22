@@ -1,6 +1,7 @@
 package kr.or.ddit.vo;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,8 +12,9 @@ public class BuildingScheduleVO implements Serializable{
 	private String bldgId;
 	private String bscTitlNm;
 	private String bscCont;
-	private String bscStrDtm;
-	private String bscEndDtm;
+	private LocalDateTime bscStrDtm;
+	private LocalDateTime bscEndDtm;
 	private String bscRptSetCont;
 	private String rentalPtyId;
+	private String bscDelYn;
 }
