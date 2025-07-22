@@ -4,8 +4,10 @@ import java.io.Serializable;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(of= {"intgFeeId","intManFeeCd","unitId","bldgId","rentalPtyId"})
 public class IntegratedManagementFeeVO implements Serializable{
 	private String intgFeeId;

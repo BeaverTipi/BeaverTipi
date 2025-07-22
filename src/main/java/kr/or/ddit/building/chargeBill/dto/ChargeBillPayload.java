@@ -3,14 +3,18 @@ package kr.or.ddit.building.chargeBill.dto;
 import java.io.Serializable;
 import java.util.List;
 
-import kr.or.ddit.vo.HouseholdEnergyMonthlyUsageVO;
-import kr.or.ddit.vo.IntegratedManagementFeeVO;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class ChargeBillPayload implements Serializable{
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ChargeBillPayload {
     private List<ChargeBillCreateDTO> chargeBillList;
-    private List<HouseholdEnergyMonthlyUsageVO> energyUsageList;
-    private List<IntegratedManagementFeeVO> intgfeeList;
+    private List<EnergyUsageDTO> energyUsageList;
+    private List<IntegratedMgmtFeeDTO> intgfeeList;
 }
 

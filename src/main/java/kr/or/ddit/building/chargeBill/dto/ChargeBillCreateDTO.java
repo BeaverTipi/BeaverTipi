@@ -1,16 +1,26 @@
 package kr.or.ddit.building.chargeBill.dto;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class ChargeBillCreateDTO implements Serializable {
-    private String rentalPtyId;       // 임대 주체 ID
-    private String unitId;            // 세대 ID
-    private String bldgId;            // 건물 ID
-    private Long chgbillAmount;       // 청구 총금액
-    private String chgbillDueDate;    // 납부기한 (yyyyMMdd)
-    private String chgbillDesc;       // 청구 설명 (공통 + 개인)
-    private String chgbillAccNum;     // 입금 계좌번호
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ChargeBillCreateDTO {
+    private String rentalPtyId;
+    private String unitId;
+    private String bldgId;
+    private Long chgbillAmount;
+
+
+    private String chgbillDueDate;
+
+    private String chgbillDesc;
+    private String chgbillAccNum;
 }

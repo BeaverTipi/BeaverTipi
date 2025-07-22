@@ -3,6 +3,8 @@ package kr.or.ddit.building.chargeBill.service;
 import java.util.List;
 
 import kr.or.ddit.building.chargeBill.dto.ChargeBillCreateDTO;
+import kr.or.ddit.building.chargeBill.dto.EnergyUsageDTO;
+import kr.or.ddit.building.chargeBill.dto.IntegratedMgmtFeeDTO;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.HouseholdEnergyMonthlyUsageVO;
 import kr.or.ddit.vo.IntegratedManagementFeeVO;
@@ -24,6 +26,6 @@ public interface AccountBillWriteService {
 	
 	public void createChargeBill(
 			List<ChargeBillCreateDTO> chargeBillList,
-			List<HouseholdEnergyMonthlyUsageVO> energyUsageList,
-			List<IntegratedManagementFeeVO> intgfeeList);
+			List<EnergyUsageDTO> energyUsageList,
+			List<IntegratedMgmtFeeDTO> intgfeeList);
 }

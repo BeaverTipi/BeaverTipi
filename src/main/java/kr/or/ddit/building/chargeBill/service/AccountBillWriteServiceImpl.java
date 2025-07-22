@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.or.ddit.building.chargeBill.dto.ChargeBillCreateDTO;
+import kr.or.ddit.building.chargeBill.dto.EnergyUsageDTO;
+import kr.or.ddit.building.chargeBill.dto.IntegratedMgmtFeeDTO;
 import kr.or.ddit.building.mapper.AccountBillWriteMapper;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.HouseholdEnergyMonthlyUsageVO;
@@ -53,18 +55,18 @@ public class AccountBillWriteServiceImpl implements AccountBillWriteService {
 	}
 	@Transactional
 	@Override
-	public void createChargeBill(List<ChargeBillCreateDTO> chargeBillList, List<HouseholdEnergyMonthlyUsageVO> energyUsageList,
-			List<IntegratedManagementFeeVO> intgfeeList) {
+	public void createChargeBill(List<ChargeBillCreateDTO> chargeBillList, List<EnergyUsageDTO> energyUsageList,
+			List<IntegratedMgmtFeeDTO> intgfeeList) {
 		for (ChargeBillCreateDTO dto : chargeBillList) {
 		    mapper.insertChargeBill(dto);
 		}
 
-		for (HouseholdEnergyMonthlyUsageVO vo : energyUsageList) {
-		    mapper.insertEnergyUsage(vo);
+		for (EnergyUsageDTO dto : energyUsageList) {
+		    mapper.insertEnergyUsage(dto);
 		}
 
-		for (IntegratedManagementFeeVO vo : intgfeeList) {
-		    mapper.insertManagementFee(vo);
+		for (IntegratedMgmtFeeDTO dto : intgfeeList) {
+		    mapper.insertManagementFee(dto);
 		}
 		
 	}

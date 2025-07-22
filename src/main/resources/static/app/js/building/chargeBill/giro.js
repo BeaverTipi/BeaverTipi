@@ -179,37 +179,32 @@ function fetchAccounts() {
 
 // 🔹 청구 저장 기능 추가 
 async function saveChargeData() {
- const feeCodeMap = {
-   cleanFee: "001",
-   elevatorFee: "002",
-   publicElectricFee: "003",
-   publicWaterFee: "004",
-   operationFee: "005",
-   guardFee: "006",
-   disinfectionFee: "007",
-   supplyFee: "008",
-   fireSafetyFee: "009",
-   securityFee: "010"
- };
- 
- const intgfeeList = Object.entries(feeCodeMap).map(([field, code]) => {
-   const value = parseInt(document.querySelector(`input[name="${field}"]`)?.value || "0", 10);
-   return {
-     mgmtFeeCd: code,
-     chargeAmt: value
-   };
-})
+  const feeCodeMap = {
+    cleanFee: "001",
+    elevatorFee: "002",
+    publicElectricFee: "003",
+    publicWaterFee: "004",
+    operationFee: "005",
+    guardFee: "006",
+    disinfectionFee: "007",
+    supplyFee: "008",
+    fireSafetyFee: "009",
+    securityFee: "010"
+  };
+
   const bldgSelect = document.querySelector('select[name="bldgId"]');
   const bldgId = bldgSelect.value;
   const rentalPtyId = bldgSelect.options[bldgSelect.selectedIndex]?.dataset?.pty || "";
 
-  const chgbillDueDate = document.querySelector('input[name="dueDate"]')?.value || "";
+  const rawDueDate = document.querySelector('input[name="dueDate"]')?.value.trim() || "";
   const chgbillAccNum = document.querySelector('select[name="depositAccount"]')?.value || "";
   const chgbillGlobalDesc = document.querySelector('textarea[name="globalDesc"]')?.value.trim() || "";
 
   const residentBlocks = document.querySelectorAll('.resident-block');
+
   const chargeBillList = [];
   const energyUsageList = [];
+  const intgfeeList = [];
 
   residentBlocks.forEach(block => {
     const unitId = block.id.replace("resident_", "");
@@ -233,15 +228,32 @@ async function saveChargeData() {
       });
     });
 
-    chargeBillList.push({
+    // 관리비 항목 리스트 (세대별 생성)
+    Object.entries(feeCodeMap).forEach(([field, code]) => {
+      const value = parseInt(document.querySelector(`input[name="${field}"]`)?.value || "0", 10);
+      intgfeeList.push({
+        intManFeeCd: code,
+        intgFeeAmount: value,
+        unitId,
+        bldgId,
+        rentalPtyId
+      });
+    });
+
+    const billEntry = {
       rentalPtyId,
       unitId,
       bldgId,
       chgbillAmount,
-      chgbillDueDate,
       chgbillDesc,
       chgbillAccNum
-    });
+    };
+
+    if (rawDueDate !== "") {
+      billEntry.chgbillDueDate = rawDueDate;
+    }
+
+    chargeBillList.push(billEntry);
   });
 
   const payload = {
@@ -250,17 +262,19 @@ async function saveChargeData() {
     intgfeeList
   };
 
+  console.log("payload to send:", JSON.stringify(payload, null, 2));
+
   try {
     const res = await fetch("/building/accountBill/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
+
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    alert(" 청구 저장 완료!");
-    window.location.href = "/building/accountBill/write"
+    alert("청구 저장 완료!");
   } catch (err) {
-    console.error(" 저장 실패:", err);
+    console.error("저장 실패:", err);
     alert("저장 중 오류 발생");
   }
 }

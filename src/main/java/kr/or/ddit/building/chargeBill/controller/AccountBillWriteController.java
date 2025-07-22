@@ -1,6 +1,8 @@
 package kr.or.ddit.building.chargeBill.controller;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.servlet.http.HttpServletRequest;
+import kr.or.ddit.building.chargeBill.dto.ChargeBillCreateDTO;
 import kr.or.ddit.building.chargeBill.dto.ChargeBillPayload;
+import kr.or.ddit.building.chargeBill.dto.EnergyUsageDTO;
+import kr.or.ddit.building.chargeBill.dto.IntegratedMgmtFeeDTO;
 import kr.or.ddit.building.chargeBill.service.AccountBillWriteService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.BuildingVO;
@@ -73,18 +81,28 @@ public class AccountBillWriteController {
 			@RequestParam List<String> unitIds) {
 	    return service.getOwnUsage(unitIds);
 	}
+	
+	
 	@PostMapping("/create")
-	public ResponseEntity<String> saveChargeBill(@RequestBody ChargeBillPayload payload) {
-		log.info("payload {} ", payload.getClass().getName());
-		log.info(" ChargeBillList : {}", payload.getChargeBillList());
-		log.info(" EnergyUsageList : {}", payload.getEnergyUsageList());
-		log.info(" IntgfeeList : {}", payload.getIntgfeeList());
+	@ResponseBody
+	public ResponseEntity<String> saveChargeBill(HttpServletRequest request) throws IOException {
+	    String requestBody = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+	    log.info("Raw JSON: {}", requestBody);
+
+	    ObjectMapper mapper = new ObjectMapper(); // Jackson 직접 사용, Spring MVC에서 분리됨
+	    ChargeBillPayload payload = mapper.readValue(requestBody, ChargeBillPayload.class); // 수동 파싱
+
+	    log.info("ChargeBillList: {}", payload.getChargeBillList());
+	    log.info("EnergyUsageList: {}", payload.getEnergyUsageList());
+	    log.info("IntgfeeList: {}", payload.getIntgfeeList());
+
 	    service.createChargeBill(
 	        payload.getChargeBillList(),
 	        payload.getEnergyUsageList(),
 	        payload.getIntgfeeList()
 	    );
-	    return ResponseEntity.ok("청구 저장 완료");
+
+	    return ResponseEntity.ok("청구 저장 완료!");
 	}	
 
 	
