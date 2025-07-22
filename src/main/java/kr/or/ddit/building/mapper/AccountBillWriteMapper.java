@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import kr.or.ddit.building.chargeBill.dto.ChargeBillCreateDTO;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.ChargeBillVO;
 import kr.or.ddit.vo.HouseholdEnergyMonthlyUsageVO;
@@ -20,7 +21,7 @@ public interface AccountBillWriteMapper {
 
 	public int insertEnergyUsage(HouseholdEnergyMonthlyUsageVO hemuVO);
 	
-	public int insertChargeBill(ChargeBillVO cbVO);
+	public int insertChargeBill(ChargeBillCreateDTO cbcDTO);
 	
 	public List<BuildingVO> selectOwnBuildings(String mbrCd);
 	
@@ -28,7 +29,7 @@ public interface AccountBillWriteMapper {
 	
 	public List<TenancyAccountVO> selectAccounts(String mbrCd);
 	
-	public List<ManagementEntityMonthlyChargeAggregationVO> selectOwnUsage(String unitId);
+	public List<ManagementEntityMonthlyChargeAggregationVO> selectOwnUsage(List<String> unitIds);
 	
 	public String selectRentalPty(String mbrCd);
 }

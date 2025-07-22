@@ -35,7 +35,7 @@ h2 {
   padding-left: 0.5rem;
 }
 
-/* 셀렉트 + 버튼 한 줄 */
+/* 🔹 셀렉트 + 버튼 한 줄 */
 .control-row {
   display: flex;
   align-items: center;
@@ -50,7 +50,6 @@ h2 {
   margin-right: 0.4rem;
 }
 
-/* 🚀 폭만 키움 + 좌우 여백 */
 .control-row select,
 .control-row input[type="date"],
 .control-row button {
@@ -58,7 +57,6 @@ h2 {
   margin-right: 4px;
 }
 
-/* 셀렉트 */
 .control-row select {
   width: 250px;
   height: 34px;
@@ -69,7 +67,6 @@ h2 {
   background-color: #fff;
 }
 
-/* 버튼 */
 .control-row button {
   min-width: 130px;
   height: 34px;
@@ -82,7 +79,6 @@ h2 {
   cursor: pointer;
 }
 
-/* 납기일 */
 .control-row input[type="date"] {
   width: 180px;
   height: 34px;
@@ -93,7 +89,7 @@ h2 {
   background-color: #fff;
 }
 
-/* 공용 관리비 항목 (절대 건드리지 않음!) */
+/* 🔹 입력 영역 레이아웃 */
 .charge-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -106,10 +102,13 @@ h2 {
   align-items: center;
 }
 
-.charge-item label {
+.charge-item label,
+.charge-row label {
   width: 140px;
   font-weight: 600;
   font-size: 1rem;
+  font-family: 'Pretendard', sans-serif;
+  color: #333;
   margin-right: 0.6rem;
 }
 
@@ -129,7 +128,7 @@ h2 {
   color: #555;
 }
 
-/* 입주민 카드 */
+/* 🔹 세대 블록 카드 */
 .resident-block {
   padding: 1rem;
   margin-bottom: 1rem;
@@ -169,7 +168,7 @@ h2 {
   color: white;
 }
 
-/* 하단 버튼 */
+/* 🔹 하단 버튼 */
 .charge-buttons {
   display: flex;
   justify-content: center;
@@ -196,4 +195,22 @@ h2 {
 .btn-reset {
   background-color: #6c757d;
   color: white;
+}
+
+/* ✅ 설명란 스타일 통일 */
+textarea[name^="desc_"],
+textarea[name="globalDesc"] {
+  width: 100%;
+  min-height: 80px;
+  padding: 0.8rem;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 0.9rem;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+  background-color: #fff;
+  box-sizing: border-box;
+  line-height: 1.5;
+  grid-column: 1 / -1;
 }

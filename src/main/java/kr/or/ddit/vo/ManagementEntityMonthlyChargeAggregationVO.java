@@ -15,4 +15,5 @@ public class ManagementEntityMonthlyChargeAggregationVO implements Serializable{
 	private String enegType;
 	private String meterReadDt;
 	private String enegTypeGrpCd;
+	private String unitChargeInfo;
 }

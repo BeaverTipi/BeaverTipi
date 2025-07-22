@@ -1,13 +1,3 @@
-/**
- * <pre>
- * << 개정이력(Modification Information) >>
- *   
- *   수정일      			수정자           수정내용
- *  -----------   	-------------    ---------------------------
- * 2025. 7. 19.     	     김재윤            최초작성
- * </pre>
- */
-
 // 🔹 세대 선택 팝업 열기
 function openUnitPopup() {
   const bldgId = document.querySelector('select[name="bldgId"]').value;
@@ -15,37 +5,52 @@ function openUnitPopup() {
     alert("건물을 먼저 선택해주세요.");
     return;
   }
-
   const url = `/building/accountBill/unitPopup?bldgId=${encodeURIComponent(bldgId)}&popup=true`;
   window.open(url, "unitPopup", "width=600,height=400");
 }
 
-// 🔹 입주민 입력 블록 추가
-function addResidentBlock(id, bldgNm) {
+// 🔹 입주민 블록 추가
+function addResidentBlock(id, ho) {
+  if (document.getElementById(`resident_${id}`)) return;
+
   const html = `
     <div class="resident-block" id="resident_${id}">
       <div class="resident-header">
-        <h4>${bldgNm} </h4>
+        <h4>${ho}호</h4>
+        <small id="usageMonth_${id}" class="usage-month"></small>
         <div>
-          <button class="btn-fetch" onclick="loadUsage('${id}')">사용량 불러오기</button>
-          <button class="btn-delete" onclick="removeResident('${id}')">삭제</button>
+          <button type="button" class="btn-fetch" data-id="${id}">사용량 불러오기</button>
+          <button type="button" class="btn-delete" data-id="${id}">삭제</button>
         </div>
       </div>
+
+      ${["gas", "water", "electric"].map(type => `
+        <div class="charge-row">
+          <div class="charge-item">
+            <label>${type === "gas" ? "가스" : type === "water" ? "수도" : "전기"} 사용량</label>
+            <input name="${type}Usage_${id}">
+          </div>
+          <div class="charge-item">
+            <label>${type === "gas" ? "가스" : type === "water" ? "수도" : "전기"} 요금</label>
+            <input name="${type}Fee_${id}">
+          </div>
+        </div>
+      `).join("")}
+
       <div class="charge-row">
-        <div class="charge-item"><label>가스 사용량</label><input name="gasUsage_${id}"></div>
-        <div class="charge-item"><label>가스 요금</label><input name="gasFee_${id}"></div>
-      </div>
-      <div class="charge-row">
-        <div class="charge-item"><label>수도 사용량</label><input name="waterUsage_${id}"></div>
-        <div class="charge-item"><label>수도 요금</label><input name="waterFee_${id}"></div>
-      </div>
-      <div class="charge-row">
-        <div class="charge-item"><label>전기 사용량</label><input name="electricUsage_${id}"></div>
-        <div class="charge-item"><label>전기 요금</label><input name="electricFee_${id}"></div>
+        <label>세대 설명</label>
+        <textarea name="desc_${id}" rows="2" placeholder="예: 전기료 7천원, 수도료 5천원 등"></textarea>
       </div>
     </div>
   `;
-  document.getElementById("residentContainer").insertAdjacentHTML("beforeend", html);
+
+  const container = document.getElementById("residentContainer");
+  container.insertAdjacentHTML("beforeend", html);
+
+  container.querySelector(`.btn-fetch[data-id="${id}"]`)
+    .addEventListener("click", () => loadUsage(id));
+  container.querySelector(`.btn-delete[data-id="${id}"]`)
+    .addEventListener("click", () => removeResident(id));
 }
 
 // 🔹 입주민 블록 제거
@@ -53,33 +58,88 @@ function removeResident(id) {
   document.getElementById(`resident_${id}`)?.remove();
 }
 
-// 🔹 단일 사용량 불러오기 (컨트롤러 연동)
-function loadUsage(id) {
-  fetch(`/building/accountBill/usage?unitId=${id}`)
-    .then(res => res.json())
-    .then(list => {
-      if (!list || list.length === 0) return;
-
-      const block = document.getElementById(`resident_${id}`);
-      const usage = list[0]; // 단일 DTO로 가정
-
-      block.querySelector(`input[name="gasUsage_${id}"]`).value = usage.gasUsage || "";
-      block.querySelector(`input[name="gasFee_${id}"]`).value = usage.gasFee || "";
-      block.querySelector(`input[name="waterUsage_${id}"]`).value = usage.waterUsage || "";
-      block.querySelector(`input[name="waterFee_${id}"]`).value = usage.waterFee || "";
-      block.querySelector(`input[name="electricUsage_${id}"]`).value = usage.electricUsage || "";
-      block.querySelector(`input[name="electricFee_${id}"]`).value = usage.electricFee || "";
-    })
-    .catch(err => {
-      console.error("사용량 조회 실패", err);
-      alert("사용량을 불러오는 데 실패했습니다.");
-    });
+// 🔹 단일 / 다건 통합 조회 함수
+async function loadUsageData(unitIds) {
+  const query = unitIds.map(id => `unitIds=${encodeURIComponent(id)}`).join("&");
+  const res = await fetch(`/building/accountBill/usage?${query}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.json();
 }
 
-// 🔹 전체 사용량 불러오기 (단순 Alert → 연동 가능성 있음)
-function loadAllUsage() {
-  alert("전체 세대 사용량 불러오기 실행");
+// 🔹 단일 사용량 불러오기
+async function loadUsage(id) {
+  const block = document.getElementById(`resident_${id}`);
+  const btn = block.querySelector(`.btn-fetch[data-id="${id}"]`);
 
+  btn.disabled = true;
+  btn.textContent = "불러오는 중...";
+
+  try {
+    const list = await loadUsageData([id]);
+    if (!list || list.length === 0) {
+      alert("사용량 데이터가 없습니다.");
+      return;
+    }
+
+    bindUsage(id, list);
+  } catch (err) {
+    console.error("단건 조회 실패:", err);
+    alert("사용량을 불러오는 데 실패했습니다.");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "사용량 불러오기";
+  }
+}
+
+// 🔹 전체 사용량 불러오기
+async function loadAllUsage() {
+  const ids = [...document.querySelectorAll(".resident-block")]
+    .map(el => el.id.replace("resident_", ""));
+
+  try {
+    const list = await loadUsageData(ids);
+    const groupMap = {};
+
+    list.forEach(item => {
+      if (!groupMap[item.unitId]) groupMap[item.unitId] = [];
+      groupMap[item.unitId].push(item);
+    });
+
+    Object.entries(groupMap).forEach(([id, data]) => {
+      bindUsage(id, data);
+    });
+  } catch (err) {
+    console.error("전체 조회 실패:", err);
+    alert("전체 사용량을 불러오는 데 실패했습니다.");
+  }
+}
+// 🔹 DOM 바인딩
+function bindUsage(id, dataList) {
+  const block = document.getElementById(`resident_${id}`);
+  if (!block || !dataList) return;
+
+  const monthElem = document.getElementById(`usageMonth_${id}`);
+  if (dataList[0].dumMonth) {
+    monthElem.textContent = `${dataList[0].dumMonth} 사용량`;
+  }
+
+  ["electric", "water", "gas"].forEach(type => {
+    block.querySelector(`input[name="${type}Usage_${id}"]`).value = "";
+    block.querySelector(`input[name="${type}Fee_${id}"]`).value = "";
+  });
+
+  dataList.forEach(({ dumComp, usageValue, unitChargeInfo }) => {
+    const map = {
+      "001": "electric",
+      "002": "water",
+      "003": "gas"
+    };
+    const type = map[dumComp];
+    if (!type) return;
+
+    block.querySelector(`input[name="${type}Usage_${id}"]`).value = usageValue;
+    block.querySelector(`input[name="${type}Fee_${id}"]`).value = unitChargeInfo;
+  });
 }
 
 // 🔹 건물 / 계좌 목록 초기 로딩
@@ -93,12 +153,11 @@ function fetchBuildings() {
         const opt = document.createElement("option");
         opt.value = b.bldgId;
         opt.textContent = b.bldgNm;
+        opt.dataset.pty = b.rentalPtyId;
         sel.appendChild(opt);
       });
-
       sel.addEventListener("change", () => {
-        const container = document.getElementById("residentContainer");
-        if (container) container.innerHTML = "";
+        document.getElementById("residentContainer").innerHTML = "";
       });
     });
 }
@@ -111,14 +170,102 @@ function fetchAccounts() {
       sel.innerHTML = '<option value="">선택</option>';
       list.forEach(acc => {
         const opt = document.createElement("option");
-        opt.value = acc.accNum; // 🔥 실제 필드 이름
-        opt.textContent = `${acc.accBank} ${acc.accNum}`; // 🔥 accBank + accNum
+        opt.value = acc.accNum;
+        opt.textContent = `${acc.accBank} ${acc.accNum}`;
         sel.appendChild(opt);
       });
     });
 }
 
-// 🔹 페이지 로딩 시 자동 실행
+// 🔹 청구 저장 기능 추가 
+async function saveChargeData() {
+ const feeCodeMap = {
+   cleanFee: "001",
+   elevatorFee: "002",
+   publicElectricFee: "003",
+   publicWaterFee: "004",
+   operationFee: "005",
+   guardFee: "006",
+   disinfectionFee: "007",
+   supplyFee: "008",
+   fireSafetyFee: "009",
+   securityFee: "010"
+ };
+ 
+ const intgfeeList = Object.entries(feeCodeMap).map(([field, code]) => {
+   const value = parseInt(document.querySelector(`input[name="${field}"]`)?.value || "0", 10);
+   return {
+     mgmtFeeCd: code,
+     chargeAmt: value
+   };
+})
+  const bldgSelect = document.querySelector('select[name="bldgId"]');
+  const bldgId = bldgSelect.value;
+  const rentalPtyId = bldgSelect.options[bldgSelect.selectedIndex]?.dataset?.pty || "";
+
+  const chgbillDueDate = document.querySelector('input[name="dueDate"]')?.value || "";
+  const chgbillAccNum = document.querySelector('select[name="depositAccount"]')?.value || "";
+  const chgbillGlobalDesc = document.querySelector('textarea[name="globalDesc"]')?.value.trim() || "";
+
+  const residentBlocks = document.querySelectorAll('.resident-block');
+  const chargeBillList = [];
+  const energyUsageList = [];
+
+  residentBlocks.forEach(block => {
+    const unitId = block.id.replace("resident_", "");
+    const chgbillPersonalDesc = block.querySelector(`textarea[name="desc_${unitId}"]`)?.value.trim() || "";
+    const chgbillDesc = `${chgbillGlobalDesc}\n${chgbillPersonalDesc}`.trim();
+
+    let chgbillAmount = 0;
+
+    ["gas", "water", "electric"].forEach(type => {
+      const usageQty = parseFloat(block.querySelector(`input[name="${type}Usage_${unitId}"]`)?.value || "0");
+      const chargeAmt = parseInt(block.querySelector(`input[name="${type}Fee_${unitId}"]`)?.value.replace(/,/g, "") || "0", 10);
+      chgbillAmount += chargeAmt;
+
+      energyUsageList.push({
+        unitId,
+        bldgId,
+        rentalPtyId,
+        dumComp: type === "gas" ? "003" : type === "water" ? "002" : "001",
+        totalEnergyUsageQty: usageQty,
+        totalEnergyChargeAmt: chargeAmt
+      });
+    });
+
+    chargeBillList.push({
+      rentalPtyId,
+      unitId,
+      bldgId,
+      chgbillAmount,
+      chgbillDueDate,
+      chgbillDesc,
+      chgbillAccNum
+    });
+  });
+
+  const payload = {
+    chargeBillList,
+    energyUsageList,
+    intgfeeList
+  };
+
+  try {
+    const res = await fetch("/building/accountBill/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    alert(" 청구 저장 완료!");
+    window.location.href = "/building/accountBill/write"
+  } catch (err) {
+    console.error(" 저장 실패:", err);
+    alert("저장 중 오류 발생");
+  }
+}
+
+// 🔹 페이지 로딩 시 초기 실행
 document.addEventListener("DOMContentLoaded", () => {
   fetchBuildings();
   fetchAccounts();

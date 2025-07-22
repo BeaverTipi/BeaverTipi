@@ -2,8 +2,8 @@ package kr.or.ddit.building.chargeBill.service;
 
 import java.util.List;
 
+import kr.or.ddit.building.chargeBill.dto.ChargeBillCreateDTO;
 import kr.or.ddit.vo.BuildingVO;
-import kr.or.ddit.vo.ChargeBillVO;
 import kr.or.ddit.vo.HouseholdEnergyMonthlyUsageVO;
 import kr.or.ddit.vo.IntegratedManagementFeeVO;
 import kr.or.ddit.vo.ManagementEntityMonthlyChargeAggregationVO;
@@ -18,7 +18,12 @@ public interface AccountBillWriteService {
 	
 	public List<TenancyAccountVO> getAccounts(String mbrCd);
 	
-	public List<ManagementEntityMonthlyChargeAggregationVO> getOwnUsage(String unitId);
+	public List<ManagementEntityMonthlyChargeAggregationVO> getOwnUsage(List<String> unitIds);
 	
 	public String getRentalPty(String mbrCd);
+	
+	public void createChargeBill(
+			List<ChargeBillCreateDTO> chargeBillList,
+			List<HouseholdEnergyMonthlyUsageVO> energyUsageList,
+			List<IntegratedManagementFeeVO> intgfeeList);
 }

@@ -70,7 +70,7 @@
       selected.forEach(cb => {
         const id = cb.dataset.id;
         const ho = cb.dataset.name;
-
+	
         if (window.opener && window.opener.addResidentBlock) {
           if (!window.opener.document.getElementById(`resident_${id}`)) {
             window.opener.addResidentBlock(id, ho);

@@ -10,41 +10,38 @@
   <div class="charge-wrap">
     <h2>관리비 청구 등록</h2>
 
-<form action="/charge/register" method="post">
+<form id="chargeForm">
 
-  <!-- 셀렉트 + 버튼 4종 한 줄 배치 -->
-<!-- 🔹 1열: 건물 + 세대 버튼 + 사용량 불러오기 버튼 -->
-<div class="charge-section">
-  <div class="control-row">
-    <label>건물</label>
-    <select name="bldgId">
-      <option value="">선택</option>
-      <c:forEach var="b" items="${bldgList}">
-        <option value="${b.id}">${b.name}</option>
-      </c:forEach>
-    </select>
-
-    <button type="button" onclick="openUnitPopup()">세대</button>
-    <button type="button" onclick="loadAllUsage()">사용량 불러오기</button>
+  <div class="charge-section">
+    <div class="control-row">
+      <label>건물</label>
+      <select name="bldgId">
+        <option value="">선택</option>
+        <c:forEach var="b" items="${bldgList}">
+          <option value="${b.id}" data-pty="${b.rentalPtyId}">${b.name}</option>
+        </c:forEach>
+      </select>
+      <button type="button" onclick="openUnitPopup()">세대</button>
+      <button type="button" onclick="loadAllUsage()">사용량 불러오기</button>
+    </div>
   </div>
-</div>
 
-<!-- 🔹 2열: 계좌 + 납기일 -->
-<div class="charge-section">
-  <div class="control-row">
-    <label>계좌 선택</label>
-    <select name="depositAccount">
-      <option value="">선택</option>
-      <c:forEach var="acc" items="${accountList}">
-        <option value="${acc.accNum}">${acc.accBank} ${acc.accNum}</option>
-      </c:forEach>
-    </select>
 
-    <label>납기일</label>
-    <input type="date" name="dueDate">
+  <div class="charge-section">
+    <div class="control-row">
+      <label>계좌 선택</label>
+      <select name="depositAccount">
+        <option value="">선택</option>
+        <c:forEach var="acc" items="${accountList}">
+          <option value="${acc.accNum}">${acc.accBank} ${acc.accNum}</option>
+        </c:forEach>
+      </select>
+      <label>납기일</label>
+      <input type="date" name="dueDate">
+    </div>
   </div>
-</div>
-  <!-- 공용 관리비 항목 -->
+
+
   <div class="charge-section">
     <h3>공용 관리비 항목</h3>
 
@@ -70,15 +67,19 @@
     </div>
   </div>
 
-  <!-- 입주민 청구 정보 영역 -->
-  <div class="charge-section" id="residentContainer"></div>
 
-  <!-- 하단 버튼 -->
-  <div class="charge-buttons">
-    <button type="submit" class="btn-submit">청구</button>
-    <button type="reset" class="btn-reset">초기화</button>
+  <div class="charge-section">
+    <label>공용 설명</label>
+    <textarea name="globalDesc" rows="2" placeholder="예: 7월 청소비 포함 관리비 청구"></textarea>
   </div>
 
+
+  <div class="charge-section" id="residentContainer"></div>
+
+  <div class="charge-buttons">
+    <button type="button" class="btn-submit" onclick="saveChargeData()">청구</button>
+    <button type="reset" class="btn-reset">초기화</button>
+  </div>
 </form>
   </div>
 </body>
