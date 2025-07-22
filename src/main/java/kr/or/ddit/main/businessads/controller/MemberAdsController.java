@@ -58,7 +58,6 @@ public class MemberAdsController {
     public String processAdsRequest(
             @ModelAttribute("boardVO") @Valid BoardVO boardVO, // 폼 데이터 바인딩
             BindingResult bindingResult,
-            @ModelAttribute("adsClientVO") @Valid AdsClientVO adsClientVO, // 폼 데이터 바인딩
             @RequestPart(value = "attachFiles", required = false) List<MultipartFile> attachFiles, // 첨부 파일 리스트
             Model model,
             
@@ -66,6 +65,8 @@ public class MemberAdsController {
             Authentication auth, // 인증 객체
             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal // 사용자 상세 정보
     ) {
+    	
+    	AdsClientVO adsClientVO = boardVO.getAdsClientVO(); // BoardVO에서 AdsClientVO를 가져옴
     	// 1. 로그인한 사용자의 MBR_CD를 BoardVO에 설정
     	if (principal != null) { // principal 객체가 null이 아니라면 이미 인증된 것으로 간주할 수 있습니다.
     	    MemberVO member = principal.getRealUser();
@@ -91,7 +92,7 @@ public class MemberAdsController {
 
         // 실제 광고 요청 저장 로직은 Service 계층으로 위임합니다.
         // 서비스에서 brdNo 생성 및 AdsClientVO와 FileVO 연결까지 처리할 것입니다.
-        boolean success = memberAdsService.createAdsRequest(boardVO, adsClientVO, attachFiles);
+        boolean success = memberAdsService.createAdsRequest(boardVO, attachFiles);
 
         if (success) {
             return "redirect:/"; // 성공 시 메인페이지로

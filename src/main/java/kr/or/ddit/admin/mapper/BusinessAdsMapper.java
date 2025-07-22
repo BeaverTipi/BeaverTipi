@@ -16,4 +16,6 @@ public interface BusinessAdsMapper {
     BoardVO selectBusinessAdsDetail(String brdNo);
 
 	int updateAdsStatus(BoardVO boardToUpdate);
+	
+	List<BoardVO> selectApprovedAdsForMain(); // 메인 페이지에 표시할 승인된 광고 목록 조회
 }

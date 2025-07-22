@@ -14,4 +14,6 @@ public interface BusinessAdsService {
 	public BoardVO selectBusinessAdsDetail(String brdNo);
 	
 	public int updateAdsStatus(String brdNo, String adsStatusCode);
+	
+	public List<BoardVO> selectApprovedAdsForMain(); // 메인 페이지에 표시할 승인된 광고 목록 조회
 }

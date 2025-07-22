@@ -111,4 +111,22 @@ public class BusinessAdsController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // 500 Internal Server Error
         }
     }
+	
+	@GetMapping(value = "/approvedAds", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<List<BoardVO>> getApprovedAdsForMain() {
+        try {
+            List<BoardVO> approvedAds = businessAdsService.selectApprovedAdsForMain();
+            if (approvedAds != null && !approvedAds.isEmpty()) {
+                log.info("메인 페이지용 승인된 광고 {}개 조회 성공.", approvedAds.size());
+                return new ResponseEntity<>(approvedAds, HttpStatus.OK);
+            } else {
+                log.info("메인 페이지용 승인된 광고가 없습니다.");
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204 No Content
+            }
+        } catch (Exception e) {
+            log.error("메인 페이지용 승인된 광고 조회 중 오류 발생: ", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // 500 Internal Server Error
+        }
+    }
 }

@@ -59,9 +59,25 @@ public class BusinessAdsServiceImpl implements BusinessAdsService {
         
         AdsClientVO adsClientVO = new AdsClientVO(); // 실제 AdsClientVO 경로로 수정
         adsClientVO.setAdsStatusCode(adsStatusCode);
-        boardToUpdate.setAdsClient(adsClientVO); // BoardVO에 setAdsClient 메서드가 있어야 함
+        boardToUpdate.setAdsClientVO(adsClientVO); // BoardVO에 setAdsClient 메서드가 있어야 함
         
         int result = businessAdsMapper.updateAdsStatus(boardToUpdate);
         return result;
+    }
+	
+	@Override
+    public List<BoardVO> selectApprovedAdsForMain() {
+        // 현재 날짜를 기준으로 유효한 광고만 조회하도록 Mapper에 전달
+        // Mapper에서는 '승인' 상태와 날짜 조건을 모두 검사
+        List<BoardVO> approvedAds = businessAdsMapper.selectApprovedAdsForMain();
+
+        // 각 광고에 대해 첨부 파일 목록 조회 (이미지 파일만 필터링하는 로직 추가 필요)
+        for (BoardVO ad : approvedAds) {
+            List<FileVO> attachedFiles = fileService.readFileList(AD_FILE_SOURCE_REF, ad.getBrdNo());
+            // 이미지 파일만 필터링하는 로직 (선택 사항이지만 권장)
+            attachedFiles.removeIf(file -> !file.getFileMime().startsWith("image/"));
+            ad.setAttachFiles(attachedFiles);
+        }
+        return approvedAds;
     }
 }

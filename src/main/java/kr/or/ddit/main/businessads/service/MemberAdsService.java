@@ -16,5 +16,5 @@ public interface MemberAdsService {
      * @param attachFiles 첨부 파일 목록
      * @return 광고 요청 처리 성공 여부
      */
-    public boolean createAdsRequest(BoardVO boardVO, AdsClientVO adsClientVO, List<MultipartFile> attachFiles);
+    public boolean createAdsRequest(BoardVO boardVO, List<MultipartFile> attachFiles);
 }

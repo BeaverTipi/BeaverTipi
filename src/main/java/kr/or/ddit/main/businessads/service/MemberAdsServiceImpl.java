@@ -29,7 +29,7 @@ public class MemberAdsServiceImpl implements MemberAdsService {
 
     @Override
     @Transactional // 여러 DB 작업이 하나의 트랜잭션으로 묶이도록 설정 (게시글, 광고주 정보, 파일 저장)
-    public boolean createAdsRequest(BoardVO boardVO, AdsClientVO adsClientVO, List<MultipartFile> attachFiles) {
+    public boolean createAdsRequest(BoardVO boardVO, List<MultipartFile> attachFiles) {
         try {
             // 1. BoardVO 저장
             // 게시글 번호(brdNo)는 DB에서 시퀀스 등으로 자동 생성되거나, 삽입 전에 미리 할당되어야 합니다.
@@ -38,7 +38,9 @@ public class MemberAdsServiceImpl implements MemberAdsService {
             // boardVO.setBrdDelYn("N");   // 삭제 여부 기본값 N
             // boardVO.setBrdVwCnt(0);    // 조회수 0으로 초기화
             // boardVO.setBrdPblsDtm(LocalDateTime.now()); // 현재 시간으로 설정 (또는 DB에서 now())
-
+        	
+        	AdsClientVO adsClientVO = boardVO.getAdsClientVO();
+        	
             int boardResult = memberAdsMapper.insertBoard(boardVO);
             if (boardResult <= 0) {
                 log.error("광고 게시글 (BoardVO) 저장 실패: {}", boardVO);

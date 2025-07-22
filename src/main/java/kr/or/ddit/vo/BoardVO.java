@@ -82,7 +82,7 @@ public class BoardVO implements Serializable{
         return this.brdPblsDtm.format(formatter);
     }
     
-    private AdsClientVO adsClient;	// BoardVO에 AdsClientVO 객체를 포함시켜주는 필드
+    private AdsClientVO adsClientVO;	// BoardVO에 AdsClientVO 객체를 포함시켜주는 필드
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate adsReqPblsStartDtFrom; // 광고 요청 게재 시작날짜 From

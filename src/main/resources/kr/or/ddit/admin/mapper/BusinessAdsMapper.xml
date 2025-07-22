@@ -10,7 +10,7 @@
         <result property="brdPblsDtm" column="BRD_PBLS_DTM"/>
         <result property="brdVwCnt" column="BRD_VW_CNT"/>
 
-        <association property="adsClient" javaType="kr.or.ddit.vo.AdsClientVO">
+        <association property="adsClientVO" javaType="kr.or.ddit.vo.AdsClientVO">
             <id property="adsId" column="ADS_ID"/>
             <result property="adsStatusCode" column="ADS_STATUS_CODE"/>
             <result property="adsBp" column="ADS_BP"/>
@@ -143,8 +143,35 @@
     <update id="updateAdsStatus" parameterType="kr.or.ddit.vo.BoardVO">
         UPDATE ADS
         SET
-            ADS_STATUS_CODE = #{adsClient.adsStatusCode}
+            ADS_STATUS_CODE = #{adsClientVO.adsStatusCode}
         WHERE
             BRD_NO = #{brdNo}
     </update>
+    
+    <select id="selectApprovedAdsForMain" resultMap="BusinessAdsMap">
+        SELECT
+            B.BRD_NO,
+            B.BRD_TITL_NM,
+            B.BRD_CONT,
+            B.MBR_CD,
+            B.BRD_PBLS_DTM,
+            B.BRD_VW_CNT,
+            A.ADS_ID,
+            A.BRD_NO AS ADS_BRD_NO,
+            A.ADS_STATUS_CODE,
+            A.ADS_BP,
+            A.ADS_PIC,
+            A.ADS_PIC_TELNO,
+            A.ADS_REQ_PBLS_START_DT,
+            A.ADS_REQ_PBLS_END_DT
+        FROM
+            BOARD B
+        INNER JOIN
+            ADS A ON B.BRD_NO = A.BRD_NO
+        WHERE
+            A.ADS_STATUS_CODE = '승인'
+            AND A.ADS_REQ_PBLS_START_DT <![CDATA[ <= ]]> SYSDATE
+            AND A.ADS_REQ_PBLS_END_DT <![CDATA[ >= ]]> SYSDATE
+            AND B.BRD_DEL_YN = 'N' ORDER BY A.ADS_REQ_PBLS_START_DT DESC, B.BRD_NO DESC 
+    </select>
 </mapper>

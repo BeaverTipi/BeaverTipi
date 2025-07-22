@@ -265,17 +265,17 @@ $(document).ready(function() {
             success: function(data) {
                 console.log("AJAX 성공, 데이터:", data);
                 $('#modalBrdNo').text(data.brdNo);
-                $('#modalAdsStatusCodeSelect').val(data.adsClient ? data.adsClient.adsStatusCode : ''); 
-                $('#modalAdsBp').text(data.adsClient ? data.adsClient.adsBp : 'N/A');
+                $('#modalAdsStatusCodeSelect').val(data.adsClientVO ? data.adsClientVO.adsStatusCode : ''); 
+                $('#modalAdsBp').text(data.adsClientVO ? data.adsClientVO.adsBp : 'N/A');
                 $('#modalBrdTitlNm').text(data.brdTitlNm);
                 $('#modalBrdCont').text(data.brdCont);
-                $('#modalAdsPic').text(data.adsClient ? data.adsClient.adsPic : 'N/A');
+                $('#modalAdsPic').text(data.adsClientVO ? data.adsClientVO.adsPic : 'N/A');
                 //  담당자 연락처에 formatPhoneNumber 함수 적용 
-                $('#modalAdsPicTelno').text(formatPhoneNumber(data.adsClient ? data.adsClient.adsPicTelno : null));
+                $('#modalAdsPicTelno').text(formatPhoneNumber(data.adsClientVO ? data.adsClientVO.adsPicTelno : null));
 
                 //  희망 게재 시작일/종료일에 formatDateString 함수 적용 (함수 내부 변경으로 하이픈 적용) 
-                $('#modalAdsReqPblsStartDt').text(formatDateString(data.adsClient ? data.adsClient.adsReqPblsStartDt : null));
-                $('#modalAdsReqPblsEndDt').text(formatDateString(data.adsClient ? data.adsClient.adsReqPblsEndDt : null));
+                $('#modalAdsReqPblsStartDt').text(formatDateString(data.adsClientVO ? data.adsClientVO.adsReqPblsStartDt : null));
+                $('#modalAdsReqPblsEndDt').text(formatDateString(data.adsClientVO ? data.adsClientVO.adsReqPblsEndDt : null));
                 
                 //  작성일시는 서버에서 formattedBrdPblsDtm으로 받는다고 가정하고, 없으면 기존 brdPblsDtm으로 포맷팅 
                 // 이 부분은 서버에서 formattedBrdPblsDtm을 보내주는 것이 가장 좋습니다.

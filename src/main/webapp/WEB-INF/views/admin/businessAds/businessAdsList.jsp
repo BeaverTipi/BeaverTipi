@@ -100,12 +100,12 @@
                                 <td>${pagingVO.firstRecordIndex + status.index}</td>
                                 <td>${ad.brdTitlNm}</td>
                                 <td>${ad.mbrCd}</td>
-                                <td>${ad.adsClient.adsPic}</td>
-                                <td>${ad.adsClient.adsBp}</td>
-                                <td>${ad.adsClient.adsStatusCode}</td>
-                                <td class="ads-pic-telno" data-telno="${ad.adsClient.adsPicTelno}"></td>
-                                <td class="ads-start-dt" data-date="${ad.adsClient.adsReqPblsStartDt}"></td>
-                                <td class="ads-end-dt" data-date="${ad.adsClient.adsReqPblsEndDt}"></td>
+                                <td>${ad.adsClientVO.adsPic}</td>
+                                <td>${ad.adsClientVO.adsBp}</td>
+                                <td>${ad.adsClientVO.adsStatusCode}</td>
+                                <td class="ads-pic-telno" data-telno="${ad.adsClientVO.adsPicTelno}"></td>
+                                <td class="ads-start-dt" data-date="${ad.adsClientVO.adsReqPblsStartDt}"></td>
+                                <td class="ads-end-dt" data-date="${ad.adsClientVO.adsReqPblsEndDt}"></td>
                             </tr>
                         </c:forEach>
                     </c:when>
