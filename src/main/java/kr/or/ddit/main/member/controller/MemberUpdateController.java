@@ -75,7 +75,7 @@ public class MemberUpdateController {
 			@Validated(UpdateGroup.class) @ModelAttribute(MODELNAME) MemberVO member
 			, BindingResult errors
 			, RedirectAttributes redirectAttributes
-			,HttpSession session
+			, HttpSession session
 			) {
 		member.setMbrPw(session.getAttribute("verifiedPassword").toString());
 		String lvn = "redirect:/account/update";
@@ -83,6 +83,7 @@ public class MemberUpdateController {
 		if(!errors.hasErrors()) {
 				log.info("수정 하기 member 정보 : {}",member);
 				service.modifyMember(member);
+				 session.removeAttribute("verifiedPassword");
 				// 수정 성공 후? 새 mypage로 이동
 				lvn = "redirect:/account/read";
 		}else {

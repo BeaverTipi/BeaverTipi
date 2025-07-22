@@ -29,8 +29,9 @@ public class MemberVO implements Serializable {
 	private String mbrId;
 
 	// 일반 회원가입/수정
+	
 	@NotBlank(groups = {InsertGroup.class})
-	private String mbrPw;
+	private transient  String mbrPw;
 
 	// 일반 회원가입/수정
 	@NotBlank(groups = {InsertGroup.class, UpdateGroup.class, OAuth2UpdateGroup.class, OAuth2InsertGroup.class})
