@@ -2,8 +2,11 @@ package kr.or.ddit.main.businessads.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication; // 이 부분을 확인
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,10 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart; // 파일 처리를 위해 RequestPart 사용
 import org.springframework.web.multipart.MultipartFile; // 파일 처리를 위해 MultipartFile 사용
 
+import jakarta.validation.Valid;
 import jakarta.inject.Inject;
 import kr.or.ddit.main.businessads.service.MemberAdsService; // 새로운 서비스 인터페이스 주입
 import kr.or.ddit.vo.BoardVO; // BoardVO (광고 게시글 정보)
 import kr.or.ddit.vo.AdsClientVO; // AdsClientVO (광고주 정보)
+import kr.or.ddit.vo.MemberVO;	// 로그인 사용자 정보
+import kr.or.ddit.util.security.auth.RealUserWrapper;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -50,12 +56,34 @@ public class MemberAdsController {
      */
     @PostMapping("/request.do")
     public String processAdsRequest(
-            @ModelAttribute("boardVO") BoardVO boardVO, // 폼 데이터 바인딩
-            @ModelAttribute("adsClientVO") AdsClientVO adsClientVO, // 폼 데이터 바인딩
+            @ModelAttribute("boardVO") @Valid BoardVO boardVO, // 폼 데이터 바인딩
+            BindingResult bindingResult,
+            @ModelAttribute("adsClientVO") @Valid AdsClientVO adsClientVO, // 폼 데이터 바인딩
             @RequestPart(value = "attachFiles", required = false) List<MultipartFile> attachFiles, // 첨부 파일 리스트
-            Model model
+            Model model,
+            
+         // 현재 로그인한 사용자 정보를 받아옵니다.
+            Authentication auth, // 인증 객체
+            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal // 사용자 상세 정보
     ) {
-        log.info("광고 요청 데이터 접수: BoardVO={}, AdsClientVO={}", boardVO, adsClientVO);
+    	// 1. 로그인한 사용자의 MBR_CD를 BoardVO에 설정
+    	if (principal != null) { // principal 객체가 null이 아니라면 이미 인증된 것으로 간주할 수 있습니다.
+    	    MemberVO member = principal.getRealUser();
+    	    if (member != null && member.getMbrCd() != null) {
+    	        boardVO.setMbrCd(member.getMbrCd());
+    	        log.info("로그인 사용자 MBR_CD: {}", member.getMbrCd());
+    	    } else {
+    	        log.warn("로그인 사용자 MBR_CD를 가져올 수 없거나 member 객체가 null입니다.");
+    	        model.addAttribute("message", "로그인 정보가 올바르지 않습니다. 다시 로그인 해주세요.");
+    	        return "main/ads/adsForm";
+    	    }
+    	} else {
+    	    log.warn("로그인하지 않은 사용자의 광고 요청 시도.");
+    	    model.addAttribute("message", "로그인이 필요합니다.");
+    	    return "redirect:/login"; // 로그인 페이지로 리다이렉트 (경로에 맞게 수정)
+    	}
+        
+    	log.info("광고 요청 데이터 접수: BoardVO={}, AdsClientVO={}", boardVO, adsClientVO);
         if (attachFiles != null && !attachFiles.isEmpty()) {
             log.info("첨부 파일 개수: {}", attachFiles.size());
             // 여기서 파일 처리 로직도 memberAdsService로 위임할 것입니다.
@@ -66,12 +94,11 @@ public class MemberAdsController {
         boolean success = memberAdsService.createAdsRequest(boardVO, adsClientVO, attachFiles);
 
         if (success) {
-            model.addAttribute("message", "광고 요청이 성공적으로 접수되었습니다.");
-            return "redirect:/member/ads/requestSuccess"; // 성공 시 리다이렉트할 페이지 (예시)
+            return "redirect:/"; // 성공 시 메인페이지로
         } else {
             model.addAttribute("message", "광고 요청 처리 중 오류가 발생했습니다.");
-            // 오류 발생 시 다시 폼 페이지로 돌아가거나 오류 메시지를 표시할 수 있습니다.
-            return "main/businessads/adsRequestForm"; // 예시 JSP 경로
+            // 오류 발생 시 다시 폼 페이지로 돌아가고 오류 메시지를 표시
+            return "main/ads/adsForm"; // 폼 페이지 경로
         }
     }
 }

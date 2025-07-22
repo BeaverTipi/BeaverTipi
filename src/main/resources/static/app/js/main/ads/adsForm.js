@@ -336,7 +336,7 @@ $(document).ready(function() {
                 alert("광고 요청이 성공적으로 처리되었습니다.");
             }
             // 성공 시 페이지 이동 또는 폼 초기화
-            location.href = contextPath + "/member/ads/requestSuccess"; // 예시: 성공 페이지로 이동
+            location.href = contextPath + "/"; // 예시: 성공 페이지로 이동
         })
         .catch(error => {
             console.error("오류 발생:", error.response || error);

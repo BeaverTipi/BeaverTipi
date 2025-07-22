@@ -31,23 +31,11 @@ INSERT INTO FILES(
 		
 	)
 </insert>
-<select id="selectMaxAttachSeq" >
-SELECT 
-		MAX(FILE_ATTACH_SEQ)
-		, FILE_ATTACH_SEQ
-		, FILE_SOURCE_REF
-		, FILE_SAVEDNAME
-		, FILE_ORIGINALNAME
-		, FILE_MIME
-		, FILE_SIZE
-		, DOC_TYPE_CD
-		, FILE_PATH_URL
-		, REG_DTM
-		, FILE_SOURCE_ID
-		, FILE_DIR
-FROM FILES
-WHERE FILE_SOURCE_REF=#{fileSourceRef} 
-AND FILE_SOURCE_ID = #{fileSourceId}
+<select id="selectMaxAttachSeq" resultType="int">
+    SELECT MAX(FILE_ATTACH_SEQ)
+    FROM FILES
+    WHERE FILE_SOURCE_REF = #{fileSourceRef}
+      AND FILE_SOURCE_ID = #{fileSourceId}
 </select>
 <select id="selectFilesOlderThanFiveYears">
     SELECT

@@ -9,7 +9,7 @@ import kr.or.ddit.vo.FileVO;
 @Mapper
 public interface FileMapper {
 	public int insertFile(FileVO file);
-	public int selectMaxAttachSeq(FileVO file);
+	public Integer selectMaxAttachSeq(FileVO file);
 	public List<FileVO> selectFilesOlderThanFiveYears();
 	public int deleteFileById(String fileId);
 	public FileVO selectFile(String fileId);
