@@ -189,43 +189,54 @@ window.showDetailModal = function(data) {
 	};
 
 	const renderImageGallery = () => {
+		const fallback = '/volt/assets/img/illustrations/no-image.png';
+
 		const imageUrls = [
 			'/volt/assets/img/images/room1.png',
 			'/volt/assets/img/images/room2.png',
-			'/volt/assets/img/images/room3.png'
+			'/volt/assets/img/images/room3.png',
+			'/volt/assets/img/images/room4.png',
+			'/volt/assets/img/images/room5.png',
+			'/volt/assets/img/images/room6.png'
 		];
 
-		const fallback = '/volt/assets/img/illustrations/no-image.png';
-		const padded = [...imageUrls];
-		while (padded.length < 5) padded.push(fallback);
+		const totalImages = imageUrls.length;
+		const thumbnailsToShow = imageUrls.slice(1, 5); // 2~5번째 (썸네일 4개만)
 
-		const moreCount = imageUrls.length > 5 ? imageUrls.length - 4 : 0;
-		galleryImages = imageUrls; // 확대 뷰어용 배열
+		const hiddenCount = totalImages > 5 ? totalImages - 5 : 0;
 
 		return `
-		    <div class="image-slider">
-		      <div class="image-gallery">
-		        <div class="main-image image-item">
-		          <img src="${padded[0]}" alt="대표 이미지" onerror="this.src='${fallback}'" />
-		        </div>
-		        <div class="thumbnail-grid">
-		          ${padded.slice(1, 4).map((url, idx) => `
-		            <div class="image-item">
-		              <img src="${url}" alt="썸네일 ${idx + 1}" onerror="this.src='${fallback}'" />
-		            </div>
-		          `).join('')}
-		          <div class="image-item thumbnail-more">
-		            <img src="${padded[4]}" alt="썸네일 4" onerror="this.src='${fallback}'" />
-		            ${moreCount > 0 ? `<div class="more-count">+${moreCount}</div>` : ''}
-		          </div>
-		        </div>
-		      </div>
-		    </div>
-		  `;
+	<div class="image-gallery">
+		<!-- 대표 이미지 -->
+		<div class="main-image image-item">
+			<img src="${imageUrls[0]}" alt="대표 이미지" onerror="this.src='${fallback}'" />
+		</div>
+
+		<!-- 썸네일 4칸만 -->
+		<div class="thumbnail-grid">
+			${thumbnailsToShow.map((url, i) => {
+			const isLast = (i === thumbnailsToShow.length - 1);
+			const imageTag = `<img src="${url}" alt="썸네일" onerror="this.src='${fallback}'" />`;
+
+			if (isLast && hiddenCount > 0) {
+				return `
+						<div class="image-item thumbnail-more">
+							${imageTag}
+							<div class="more-count">+${hiddenCount}</div>
+						</div>
+					`;
+			}
+
+			return `
+					<div class="image-item">
+						${imageTag}
+					</div>
+				`;
+		}).join('')}
+		</div>
+	</div>
+	`;
 	};
-
-
-
 
 
 	body.innerHTML = `
@@ -256,7 +267,7 @@ window.showDetailModal = function(data) {
 	    <!-- 시설 옵션 -->
 	    <div class="option-section">
 	      <h4>시설 옵션</h4>
-	      ${renderFacilityOptions(data.facilityOptions)}
+	     ${renderFacilityOptions(data.facilityOptionList)}
 	    </div>
 	    
 	    <!-- 중개사 정보 -->

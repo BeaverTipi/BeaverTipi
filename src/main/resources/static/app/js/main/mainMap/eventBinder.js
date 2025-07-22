@@ -346,21 +346,42 @@ let galleryImages = [];
 let currentIndex = 0;
 
 window.setupGalleryViewer = function() {
-	const imageEls = document.querySelectorAll('.image-slider .image-item img');
-	galleryImages = Array.from(imageEls).map(el => el.getAttribute('src'));
+	const mainImg = document.querySelector('.main-image img'); // 대표 이미지
+	const thumbImgs = document.querySelectorAll('.thumbnail-grid .image-item img'); // 썸네일들
 
-	imageEls.forEach((imgEl, index) => {
-		imgEl.addEventListener('click', () => {
+	galleryImages = [];
+
+	if (mainImg) {
+		galleryImages.push(mainImg.getAttribute('src'));
+	}
+
+	thumbImgs.forEach(imgEl => {
+		const src = imgEl.getAttribute('src');
+		if (src && !src.includes('no-image.png')) {
+			galleryImages.push(src);
+		} else {
+			galleryImages.push('/volt/assets/img/illustrations/no-image.png');
+		}
+	});
+
+	// 클릭 이벤트 바인딩 (대표 + 썸네일)
+	[mainImg, ...thumbImgs].forEach((imgEl, index) => {
+		imgEl?.addEventListener('click', () => {
 			currentIndex = index;
-			openGalleryModal();
+			openGalleryModal(index);
 		});
 	});
 };
+
 
 function openGalleryModal(index) {
 	const modal = document.getElementById('galleryModal');
 	const imgEl = document.getElementById('galleryImage');
 	const fallback = '/volt/assets/img/illustrations/no-image.png';
+
+	if (typeof index !== 'number' || index < 0 || index >= galleryImages.length) {
+		index = 0;
+	}
 
 	currentIndex = index;
 

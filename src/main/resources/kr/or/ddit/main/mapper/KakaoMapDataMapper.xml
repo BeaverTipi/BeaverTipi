@@ -179,18 +179,24 @@
 </select>
 
 <select id="selectFacilityOptionsByListingId" resultType="kr.or.ddit.vo.FacilityOptionVO">
-	SELECT 
-		FO.FAC_OPT_ID, 
-		FO.FAC_OPT_TYPE_CD, 
-		FO.FAC_OPT_NM, 
-		FO.FAC_OPT_DESC, 
-		FO.FAC_TYPE_GROUP_CD
-	FROM 
-		LISTING_OPTION LOP
-		JOIN FACILITY_OPTION FO ON LOP.FAC_OPT_ID = FO.FAC_OPT_ID
-	WHERE 
-		LOP.LSTG_ID = #{lstgId}
+    SELECT 
+        FO.FAC_OPT_ID, 
+        FO.FAC_OPT_TYPE_CD, 
+        FO.FAC_OPT_NM, 
+        FO.FAC_OPT_DESC,
+        FO.FAC_TYPE_CC_CD,
+        FO.FAC_TYPE_GRP_CD,
+        CC.CODE_NAME AS FAC_TYPE_GROUP_NM
+    FROM 
+        LISTING_OPTION LOP
+        JOIN FACILITY_OPTION FO ON LOP.FAC_OPT_ID = FO.FAC_OPT_ID
+        JOIN COMMON_CODE CC 
+            ON FO.FAC_TYPE_GRP_CD = CC.CODE_GROUP 
+           AND FO.FAC_TYPE_CC_CD = CC.CODE_VALUE
+    WHERE 
+        LOP.LSTG_ID = #{lstgId}
 </select>
+
 
 <insert id="insertWishList" parameterType="kr.or.ddit.vo.ListingWishlistVO">
 	INSERT INTO LISTING_WISHLIST (

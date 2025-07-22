@@ -17,11 +17,9 @@
 			<th>No</th>
 			<th>제목</th>
 			<th>게시일자</th>
+			<th>종료일시</th>
 			<th>공지상태</th>
-			<th>조회수</th>
-			<th>댓글 허용</th>
 			<th>첨부</th>
-			<th><input type="checkbox" id="selectAllCheckbox" /></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -37,6 +35,7 @@
 								${board.brdTitlNm}
 							</a>
 						</td>
+						<td>${board.brdPblsDtmFormatted}</td>
 						<td>${board.brdPblsDtmFormatted}</td>
 						<td>
 						  <c:choose>
@@ -56,15 +55,11 @@
 						    </c:otherwise>
 						  </c:choose>
 						</td>
-						<td>${board.brdVwCnt}</td>
-						<td>
-							<c:out value="${board.boardCartegory.brdCmntYn == 'Y' ? '허용' : '비허용'}" />
-						</td>
 						<td>
 							<img src="${pageContext.request.contextPath}/volt/assets/img/file-download-svgrepo-com.svg" 
 							     width="20" height="20" alt="첨부파일" />
 						</td>
-						<td><input type="checkbox" class="rowCheckbox"></td>
+
 					</tr>
 				</c:forEach>
 			</c:when>

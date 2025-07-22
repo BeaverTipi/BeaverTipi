@@ -104,9 +104,6 @@
 	  </div>
 	</c:if>
 
-
-
-	
 	<!-- ✅ 버튼 영역 -->
 	<div class="write-buttons">
 	  <button class="btn-success"

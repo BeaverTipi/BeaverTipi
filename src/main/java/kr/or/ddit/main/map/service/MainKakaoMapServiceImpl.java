@@ -30,7 +30,14 @@ public class MainKakaoMapServiceImpl implements MainKakaoMapService {
 
 	@Override
 	public List<Map<String, Object>> selectListingDetailList(String lstgId, String mbrCd) {
-		return kakaoMapDataMapper.selectListingDetailList(lstgId, mbrCd);
+		List<Map<String, Object>> listingList = kakaoMapDataMapper.selectListingDetailList(lstgId, mbrCd);
+
+		List<FacilityOptionVO> options = kakaoMapDataMapper.selectFacilityOptionsByListingId(lstgId);
+		for (Map<String, Object> listing : listingList) {
+			listing.put("facilityOptionList", options);
+		}
+
+		return listingList;
 	}
 
 	@Override
