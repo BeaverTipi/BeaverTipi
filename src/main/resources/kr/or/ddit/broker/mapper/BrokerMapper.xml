@@ -81,7 +81,7 @@
 	<association property="brokerInfo" resultMap="BrokerMap" />
 	<collection property="facOptions" javaType="List" ofType="ListingOptionVO" >
 		<id property="lstgId" 			  column="LSTG_ID_LF" />
-		<result property="facOptId" 	  column="FAC_OPT_ID" /> 
+		<id property="facOptId" 	  column="FAC_OPT_ID" /> 
 		<result property="facOptTypeCd"   column="FAC_OPT_TYPE_CD" />
 		<result property="facOptNm" 	  column="FAC_OPT_NM" />
 		<result property="facOptDesc" 	  column="FAC_OPT_DESC" />
