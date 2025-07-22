@@ -21,6 +21,7 @@ public class ResidentBoardVO {
 	private String mbrCd;
 	private String openYn;
 	private String reqStatus;
+	private String replyCont;
 	
 	private String bldgId;
 	private String bldgNm;

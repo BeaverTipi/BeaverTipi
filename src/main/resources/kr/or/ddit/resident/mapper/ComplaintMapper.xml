@@ -241,12 +241,24 @@
   SELECT COUNT(*)
   FROM TENANCY T
   JOIN BUILDING B ON T.RENTAL_PTY_ID = B.RENTAL_PTY_ID
-  JOIN ROLE_ACHIEVED R ON R.MBR_CD = T.MBR_CD
   WHERE T.MBR_CD = #{mbrCd}
     AND B.BLDG_ID = #{bldgId}
-    AND R.USER_ROLE_ID = 'TENANCY'
+    AND T.RENTAL_PTY_ID = B.RENTAL_PTY_ID
 </select>
-  
+
+<update id="updateReplyToComplaint" parameterType="kr.or.ddit.vo.ResidentBoardVO">
+  UPDATE RESIDENT_BOARD
+     SET REPLY_CONT = #{replyCont},
+         REQ_STATUS = '002' <!-- 처리완료 -->
+   WHERE RSD_BRD_ID = #{rsdBrdId}
+</update>
+
+<select id="isBuildingOwner" resultType="int">
+  SELECT COUNT(*)
+  FROM BUILDING
+  WHERE BLDG_ID = #{bldgId}
+    AND RENTAL_PTY_ID = #{mbrCd}
+</select>
   
 
 </mapper>

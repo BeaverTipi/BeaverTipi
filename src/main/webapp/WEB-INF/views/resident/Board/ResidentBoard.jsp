@@ -292,7 +292,6 @@
  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/resident/commonBuildingSelect.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/resident/residentBuilding.js"></script>
-<script src="${pageContext.request.contextPath}/app/js/resident/commonBuildingSelect.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/resident/residentBoard.js"></script>
 <script>
   setupGlobalBuildingSelector({

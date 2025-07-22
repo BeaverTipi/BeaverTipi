@@ -43,5 +43,8 @@ public interface ComplaintMapper {
 
     public int isLandlordOfBuilding(@Param("mbrCd") String mbrCd, @Param("bldgId") String bldgId);
 
+    public void updateReplyToComplaint(ResidentBoardVO complaint);
+    // 건물의 임대인 확인 (임대인 MBR_CD가 일치하는지)
+    public int isBuildingOwner(@Param("bldgId") String bldgId, @Param("mbrCd") String mbrCd);
 
 }

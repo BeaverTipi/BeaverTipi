@@ -3,6 +3,8 @@ package kr.or.ddit.resident.calendar.fullcalendar;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
+import java.util.HashMap;
+import java.util.Map;
 
 import kr.or.ddit.vo.BuildingScheduleVO;
 
@@ -75,5 +77,14 @@ public class CalendarEvent extends AbstractFullCalendarEvent<BuildingScheduleVO>
     @Override
     public String getDisplay() {
         return "auto";
+    }
+    @Override
+    public Map<String, Object> getExtendedProps() {
+        Map<String, Object> props = new HashMap<>();
+        BuildingScheduleVO vo = getExtendsProps();
+
+        props.put("bscCont", vo.getBscCont());  // ✅ 메모
+        props.put("bscRptSetCont", vo.getBscRptSetCont()); // 🔄 반복 설정도 필요시
+        return props;
     }
 }

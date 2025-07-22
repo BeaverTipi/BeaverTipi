@@ -119,10 +119,22 @@
   <form action="${pageContext.request.contextPath}/resident/complaint/save" method="post">
     <!-- 기본 키값 -->
     <input type="hidden" name="rsdBrdId"    value="${complaint.rsdBrdId}" />
-    <input type="hidden" name="bldgId"      value="${complaint.bldgId}" />
     <input type="hidden" name="bldgIdParam" value="${selectedBldgId}" />
 
     <table>
+    <tr>
+	  <th>건물 선택</th>
+	  <td>
+		<select name="bldgId">
+		  <c:forEach var="unit" items="${unitList}">
+		    <option value="${unit.bldgId}" 
+		      <c:if test="${unit.bldgId eq selectedBldgId}">selected</c:if>>
+		      ${unit.building.bldgNm} <!-- 건물명 -->
+		    </option>
+		  </c:forEach>
+		</select>
+	  </td>
+	</tr>
       <tr>
         <th>제목</th>
         <td>
@@ -244,6 +256,5 @@
   });
 </script>
 
-<script src="${pageContext.request.contextPath}/app/js/resident/residentBuliding.js"></script>
 </body>
 </html>

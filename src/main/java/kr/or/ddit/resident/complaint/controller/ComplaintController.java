@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -131,17 +132,19 @@ public class ComplaintController {
 			    boolean isMine = vo.getMbrCd().equals(loginMember.getMbrCd());
 			    boolean isPublic = "Y".equals(vo.getOpenYn());
 			    
-			    boolean isLandlord = false;
-			    isLandlord = complaintService.isLandlordOfBuilding(loginMember.getMbrCd(), vo.getBldgId());
+			    boolean isLandlord = complaintService.isLandlordOfBuilding(loginMember.getMbrCd(),vo.getBldgId());
 			    
-			    if (!isMine && !isPublic) {
-			        return "redirect:/resident/complaint?unauthorized=true"; // 또는 에러 페이지
+			    if (!(isMine || isPublic || isLandlord)) {
+			        return "redirect:/resident/complaint?unauthorized=true"; // 임대인도 비공개 글을 볼 수 있도록 수정
 			    }
-			    if (!isMine && !isPublic && !isLandlord) {
-			        return "redirect:/resident/complaint?unauthorized=true";
-			    }
+			    
 			    List<CommonCodeVO> openYnList    = codeService.readCommonCodeList("OPYN");
 			    List<CommonCodeVO> reqStatusList = codeService.readCommonCodeList("PROC");
+			    
+			    log.info("로그인한 사용자 MBR_CD: {}", loginMember.getMbrCd());
+			    log.info("isLandlord flag: {}", isLandlord);
+			    log.info("불러온 민원 정보 - BLDG_ID: {}", vo.getBldgId());
+			    log.info("isLandlord: {}", isLandlord);
 			    
 			    model.addAttribute("openYnList", openYnList);
 			    model.addAttribute("reqStatusList", reqStatusList);
@@ -151,6 +154,35 @@ public class ComplaintController {
 			    model.addAttribute("bldgIdParam", bldgIdParam);
 			    return "resident/complaint/ComplaintDetail";
 			  }
+			
+			@PostMapping("/reply")
+			public String saveReply(
+			        @RequestParam("rsdBrdId") String rsdBrdId,
+			        @RequestParam("replyCont") String replyCont,
+			        @RequestParam("bldgIdParam") String bldgIdParam,
+			        @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
+			) {
+			    MemberVO landlord = principal.getRealUser();
 
+			    // 권한 확인: 로그인한 사용자가 해당 건물의 임대인인지 체크
+			    boolean isLandlord = complaintService.isLandlordOfBuilding(landlord.getMbrCd(), bldgIdParam);
 
+			    if (!isLandlord) {
+			        // 임대인이 아니면 권한 없음으로 처리
+			        return "redirect:/resident/complaint/view?rsdBrdId=" + rsdBrdId + "&bldgIdParam=" + bldgIdParam + "&unauthorized=true";
+			    }
+
+			    // 댓글 작성
+			    ResidentBoardVO reply = new ResidentBoardVO();
+			    reply.setRsdBrdId(rsdBrdId);
+			    reply.setReplyCont(replyCont);
+			    
+			    log.info("임대인 검증 결과: mbrCd={}, bldgId={}", landlord.getMbrCd(), bldgIdParam);
+			    log.info("댓글 내용: {}", replyCont);
+			    // 댓글 저장 처리
+			    complaintService.replyToComplaint(reply);
+
+			    // 댓글 작성 후 해당 민원 페이지로 리다이렉트
+			    return "redirect:/resident/complaint/view?rsdBrdId=" + rsdBrdId + "&bldgIdParam=" + bldgIdParam;
+			}
 }

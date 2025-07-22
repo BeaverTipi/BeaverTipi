@@ -22,7 +22,9 @@ import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.ResidentBoardVO;
 import kr.or.ddit.vo.UnitResidentVO;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequestMapping("/resident/complaint")
 public class ComplaintCreateController {
@@ -50,6 +52,10 @@ public class ComplaintCreateController {
         // 1-1) 로그인 사용자 입주 유닛 조회
         MemberVO member = principal.getRealUser();
         List<UnitResidentVO> units = unitResidentService.getUnitsByMember(member.getMbrCd());
+
+        // 로그 추가
+        log.info("[form] units size: {}", units.size());  // unitList 사이즈 로그
+
         if (units.isEmpty()) {
             // 단지 입주자가 아닐 경우 회원가입 페이지로
             return "redirect:/member/register";
@@ -59,9 +65,13 @@ public class ComplaintCreateController {
         String selectedBldg = (bldgIdParam != null && !bldgIdParam.isBlank())
                 ? bldgIdParam
                 : units.get(0).getBldgId();
-
+        
+        log.info("🏢 선택된 건물 ID: " + selectedBldg);
+        log.info("🏢 bldgIdParam: " + bldgIdParam);
+        
         List<CommonCodeVO> openYnList    = commonCodeService.readCommonCodeList("OPYN");
         List<CommonCodeVO> reqStatusList = commonCodeService.readCommonCodeList("PROC");
+
         // 모델에 공통으로 필요한 데이터
         model.addAttribute("unitList", units);
         model.addAttribute("selectedBldgId", selectedBldg);
@@ -82,6 +92,7 @@ public class ComplaintCreateController {
         return "resident/complaint/ComplaintForm";
     }
 
+
     /**
      * 2) 저장 처리 (등록 ↔ 수정 자동 분기)
      */
@@ -90,36 +101,39 @@ public class ComplaintCreateController {
             @ModelAttribute("complaint") ResidentBoardVO complaint,
             @RequestParam(value = "bldgIdParam", required = false) String bldgIdParam,
             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
-            RedirectAttributes ra  // ✅ Flash 메시지 전달을 위한 객체
+            RedirectAttributes ra, Model model
     ) {
-        String loginMbrCd = principal.getRealUser().getMbrCd();
+        MemberVO member = principal.getRealUser();
+        List<UnitResidentVO> units = unitResidentService.getUnitsByMember(member.getMbrCd());
 
-        // 신규 등록
-        if (complaint.getRsdBrdId() == null || complaint.getRsdBrdId().isBlank()) {
-            String nextId = complaintService.getNextComplaintId();
-            complaint.setRsdBrdId(nextId);
-            complaint.setBrdCode("M0001");
-            complaint.setMbrCd(loginMbrCd);
-            complaint.setReqStatus("001");
+        if (units.isEmpty()) {
+            model.addAttribute("unitList", units);
+            model.addAttribute("error", "입주 정보가 없습니다.");
+            return "resident/complaint/ComplaintForm";
+        }
+
+        // 건물 정보 확인
+        if (complaint.getBldgId() == null || complaint.getBldgId().isBlank()) {
+            model.addAttribute("unitList", units);
+            model.addAttribute("error", "건물을 선택해주세요.");
+            return "resident/complaint/ComplaintForm";
+        }
+
+        complaint.setMbrCd(member.getMbrCd());
+        complaint.setBrdCode("M0001"); // 민원 게시판 코드 고정
+
+        // 신규 등록/수정 처리
+        if (complaint.getRsdBrdId() == null || complaint.getRsdBrdId().isEmpty()) {
             complaintService.insertComplaint(complaint);
             ra.addFlashAttribute("saveMsg", "등록되었습니다.");
-        }
-        // 기존 글 수정
-        else {
-            ResidentBoardVO original = complaintService.selectComplaintById(complaint.getRsdBrdId());
-            if (!original.getMbrCd().equals(loginMbrCd)) {
-                ra.addFlashAttribute("saveMsg", "작성자 본인만 수정할 수 있습니다.");
-                return "redirect:/resident/complaint/form?rsdBrdId=" + complaint.getRsdBrdId()
-                        + "&bldgIdParam=" + bldgIdParam;
-            }
-
-            complaint.setMbrCd(loginMbrCd);
+        } else {
             complaintService.updateComplaint(complaint);
             ra.addFlashAttribute("saveMsg", "수정되었습니다.");
         }
 
         return "redirect:/resident/complaint?bldgIdParam=" + bldgIdParam;
     }
+
     @PostMapping("/delete")
     @ResponseBody
     public String delete(

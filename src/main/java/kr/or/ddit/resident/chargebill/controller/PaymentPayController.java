@@ -53,6 +53,7 @@ public class PaymentPayController {
         MemberVO member = principal.getRealUser();
         List<UnitResidentVO> units = unitResidentService.getUnitsByMember(member.getMbrCd());
         if (units == null || units.isEmpty()) {
+        	log.warn("유닛 정보가 없습니다. 회원 등록이 필요합니다.");
             return "resident:/member/register";
         }
 
@@ -65,6 +66,8 @@ public class PaymentPayController {
         }
         final String selectedBldgId = tempBldgId;
 
+        log.info("선택한 건물 : {}",selectedBldgId);
+        
         simpleSearch.setBldgId(selectedBldgId);
         log.info("📌 selectedBldgId: {}", selectedBldgId);
 
@@ -74,14 +77,19 @@ public class PaymentPayController {
             .map(UnitResidentVO::getUnitId)
             .orElse(units.get(0).getUnitId());
 
+        log.info("선택된 유닛 ID:{}",unitId);
+        
         String currentMonth = getCurrentMonth();
         String previousMonth = getPreviousMonth();
-
-        log.info("unitId={}, currentMonth={}, previousMonth={}", unitId, currentMonth, previousMonth);
+        
+        log.info("현재 월: {}, 이전 월: {}", currentMonth, previousMonth);
+        
 
         // ✅ DTO 기반 비교 결과 조회
         List<ChargeComparisonDto> comparisonList =
                 paymentService.getChargeComparisonList(unitId, currentMonth, previousMonth);
+        
+        log.info("청구 비교 리스트 사이즈: {}", comparisonList.size());
         
         Map<String, Map<String, Object>> energySummary =
                 paymentService.getEnergyUsageSummary(unitId, currentMonth, previousMonth);
@@ -92,6 +100,12 @@ public class PaymentPayController {
         	        Collectors.toMap(CommonCodeVO::getCodeName, c -> c, (a, b) -> a),
         	        map -> map.values().stream().toList()
         	    ));
+        
+        log.info("unitId: {}", unitId);
+        log.info("currentMonth: {}, previousMonth: {}", currentMonth, previousMonth);
+        log.info("energySummary: {}", energySummary);
+        
+        log.info("납부 관련 공통 코드: {}", payment);
         
         model.addAttribute("payment", payment);
         model.addAttribute("unitList", units);
@@ -108,11 +122,11 @@ public class PaymentPayController {
 
 
     private String getCurrentMonth() {
-        return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
+        return LocalDate.now().minusMonths(1).format(DateTimeFormatter.ofPattern("yyyyMM"));
     }
 
     private String getPreviousMonth() {
-        return LocalDate.now().minusMonths(1).format(DateTimeFormatter.ofPattern("yyyyMM"));
+        return LocalDate.now().minusMonths(2).format(DateTimeFormatter.ofPattern("yyyyMM"));
     }
 
 }

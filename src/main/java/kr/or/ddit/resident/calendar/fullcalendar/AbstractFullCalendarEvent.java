@@ -7,6 +7,10 @@ public abstract class AbstractFullCalendarEvent<T> {
 	
 	private transient T original;
 	
+	 public java.util.Map<String, Object> getExtendedProps() {
+	        return java.util.Collections.emptyMap();
+	    }
+	
 	public AbstractFullCalendarEvent(T original) {
 		this.original = original;
 	}
