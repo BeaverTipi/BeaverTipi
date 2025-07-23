@@ -17,4 +17,5 @@ public interface NotificationsMapper {
 		    @Param("lastRecordIndex") int lastRecordIndex);
 	public NotificationVO selectNotification(String notifId);
 	public Integer updateReadYn(String notifId);
+	public List<NotificationVO> selectNotificationListWithoutPaging(String username);
 }	

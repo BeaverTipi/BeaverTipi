@@ -72,5 +72,10 @@ public class NotificationsServiceImpl implements NotificationsService {
 		return mapper.selectNotificationList(username);
 	}
 
+	@Override
+	public List<NotificationVO> readNotificationListWithoutPaging(String username) {
+		return mapper.selectNotificationListWithoutPaging(username);
+	}
+
 
 }

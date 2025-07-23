@@ -28,6 +28,4 @@ public class WebSocketConfig implements WebSocketConfigurer {
         registry.addHandler(brokerChatHandler, "/ws/brokerChat");
         registry.addHandler(contractExpireWebSocketHandler, "/ws/contractExpire").setAllowedOrigins("*"); // ✅ 추가
     }
-    
-    
 }

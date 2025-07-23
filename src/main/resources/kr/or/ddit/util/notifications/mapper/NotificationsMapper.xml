@@ -127,4 +127,25 @@ INSERT INTO NOTIFICATIONS(
 	, 'N'
 )
 </insert>
+
+
+<!-- ^0^ -->
+<select id="selectNotificationListWithoutPaging">
+SELECT A.*
+FROM (	SELECT NOTIF_ID
+			  , MBR_CD
+		 	  , NOTIF_TITLE
+		      , NOTIF_MSG
+		  	  , NOTIF_DT
+		      , NOTIF_TYPE_CD
+		  	  , NOTIF_TYPE_GROUP_CD
+		  	  , NOTIF_REF_URL
+		  	  , NOTIF_READ_YN
+		  	  , NOTIF_DEL_YN
+		FROM NOTIFICATIONS
+        WHERE MBR_CD = #{username}
+        AND NOTIF_DEL_YN = 'N'
+        ORDER BY NOTIF_DT DESC
+  		) A
+</select>
 </mapper>

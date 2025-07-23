@@ -13,7 +13,7 @@ public interface NotificationsService {
 	
 	public List<NotificationVO> readNotificationList(String username,PaginationInfo<NotificationVO> paging);
 	public List<NotificationVO> readNotificationList(String username);
-	
+	public List<NotificationVO> readNotificationListWithoutPaging(String username);
 	public NotificationVO readAndReturn(String notifId);
 
 }

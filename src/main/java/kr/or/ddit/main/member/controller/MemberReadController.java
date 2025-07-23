@@ -1,5 +1,6 @@
 package kr.or.ddit.main.member.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.security.core.Authentication;
@@ -22,9 +23,13 @@ public class MemberReadController {
     private final SubscribeSubsriptionService subService;
 
 	@GetMapping("/account/read")
-	public String mypage(Model model, Authentication auth) {
-		Object principal = auth.getPrincipal();
-		String username = auth.getName();
+	public String mypage(Model model, Authentication auth, /*^0^*/Principal restAuth) {
+		Object principal = null; //^0^
+		String username = null; //^0^
+		if(auth!=null) {principal = auth.getPrincipal(); username = auth.getName();} //^0^
+		else {principal = restAuth; username = restAuth.getName();} //^0^
+//		Object principal = auth.getPrincipal();
+//		String username = auth.getName();
 		String logInfo = "LOCAL";
 
 		MemberVO member = service.readMemberByAll(username);
