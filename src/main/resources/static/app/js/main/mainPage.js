@@ -1,7 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const hostname = window.location.hostname;
+  let hostname = window.location.hostname;
   const reactPort = 81;
-  const brokerOfficeUrl = `http://${hostname}:${reactPort}/broker/myoffice`;
+  let brokerOfficeUrl = `http://${hostname}:${reactPort}/broker/myoffice`;
+  if(hostname =="beavertipi.com"){
+	hostname = "react.beavertipi.com";
+  	brokerOfficeUrl = `https://${hostname}/broker/myoffice`;
+  }
 
   // ✅ 마이오피스 링크 동적 할당
   const dropdownToggle = document.querySelector('[data-bs-toggle="dropdown"][id="userDropdown"]');

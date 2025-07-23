@@ -77,7 +77,10 @@ public class MemberLoginController {
 					.value(encodedToken)
 					.path("/")
 					.httpOnly(true)
-					.sameSite(SameSite.STRICT.attributeValue())
+					.domain(".beavertipi.com")
+					.secure(true) // ✅ HTTPS 통신 시 반드시 필요
+				    .sameSite("None")
+//					.sameSite(SameSite.STRICT.attributeValue()) // http..
 					.maxAge(JwtProvider.VALID_TERM / 1000)
 					.build().toString();
 		

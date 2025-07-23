@@ -87,3 +87,6 @@ buildNumber.properties
 .classpath
 
 PropertiesEncryptTest.java
+
+# 보안 인증서
+/src/main/resources/keystore.p12

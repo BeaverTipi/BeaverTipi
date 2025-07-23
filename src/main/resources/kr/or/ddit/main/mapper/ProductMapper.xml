@@ -65,9 +65,9 @@
             #{lstgParkYn},
             #{lstgLat},
             #{lstgLng},
-            #{lstgDel},
+            'N',
             SYSDATE,
-            #{lstgProdStat},
+            '001',
             #{lstgPostal},
             #{lstgFee}
         )
