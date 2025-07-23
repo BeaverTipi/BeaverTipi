@@ -110,34 +110,23 @@
 </div>
 
 <table id="paymentTable">
-  <thead>
-    <tr>
-      <th>No</th>
-      <th>건물명</th>
-      <th>층</th>
-      <th>호수</th>
-      <th>입차인명</th>
-      <th>청구서명</th>
-      <th class="sortable">청구금액(단위)</th>
-      <th class="sortable">납부상태</th>
-      <th class="sortable">납기일</th>
-      <th class="sortable">납부일</th>
-      <th>납부방법</th>
-      <th>증빙발행</th>
-      <th>태그</th>
-    </tr>
-  </thead>
+<thead>
+  <tr>
+    <th>No</th>
+    <th>건물명</th>
+    <th>층</th>
+    <th>호수</th>
+    <th>임차인명</th>
+    <th class="sortable">청구금액</th>
+    <th class="sortable">납부금액</th>
+    <th class="sortable">납부상태</th>
+    <th class="sortable">청구일</th>
+    <th class="sortable">납기일</th>
+    <th class="sortable">납부일</th>
+    <th>청구계좌</th>
+  </tr>
+</thead>
   <tbody>
-    <tr data-building="현대오피스텔" data-status="완납" data-method="계좌이체">
-      <td>1</td><td>현대오피스텔</td><td>3</td><td>301</td><td>홍길동</td>
-      <td>전기요금</td><td>200000</td><td>완납</td><td>2025-06-20</td>
-      <td>2025-06-18</td><td>계좌이체</td><td>세금계산서</td><td>전기</td>
-    </tr>
-    <tr data-building="마포상가" data-status="미납" data-method="카드">
-      <td>2</td><td>마포상가</td><td>5</td><td>503</td><td>이순신</td>
-      <td>임대료</td><td>140000</td><td>미납</td><td>2025-06-25</td>
-      <td>-</td><td>카드</td><td>현금영수증</td><td>임대</td>
-    </tr>
   </tbody>
 </table>
 

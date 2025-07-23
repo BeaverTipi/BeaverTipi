@@ -20,6 +20,7 @@ public class ChargeBillVO implements Serializable {
     private String chgbillPaidDate;  // yyyyMMdd
     private String chgbillDesc;
     private String chgbillAccNum;
+    private Long chgbillPayAmount;
     
     // 코드명 정보
     private String chgbillStatusName;

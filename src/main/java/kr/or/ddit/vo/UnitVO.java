@@ -25,4 +25,6 @@ public class UnitVO implements Serializable {
     private String unitDtlDescCn; // UNIT_DTL_DESC_CN - 상세 설명 (CLOB)
     private String unitStatCd;    // UNIT_STAT_CD - 상태 코드 (예: REGISTERED)
     private String unitRoom;
+    
+    private String mbrCd;		// 임차인
 }
