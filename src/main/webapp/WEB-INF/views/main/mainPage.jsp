@@ -5,6 +5,12 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<style>
+  #adSlider {
+    height: 500px;    /* 원하는 고정 높이 */
+    overflow: hidden; /* 넘치는 콘텐츠를 숨김 */
+  }
+</style>
   <meta charset="UTF-8">
   <title>main</title>
 
@@ -112,8 +118,7 @@
 <h5 class="ad-section-title"><i class="bi bi-megaphone"></i> 광고</h5>
 
 <div id="adSlider" class="carousel slide" data-bs-ride="carousel">
-  <div class="carousel-inner">
-    </div>
+  <div id="adsBox" class="carousel-inner"></div>
 
   <button class="carousel-control-prev" type="button" data-bs-target="#adSlider" data-bs-slide="prev"> 
     <span class="carousel-control-prev-icon"></span>
