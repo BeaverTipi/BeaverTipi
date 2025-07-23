@@ -32,18 +32,18 @@ import kr.or.ddit.vo.ResidentBoardVO;
 @Service
 public class ComplaintServiceImpl implements ComplaintService {
 
-	@Autowired
-	private ComplaintMapper mapper;
+    @Autowired
+    private ComplaintMapper mapper;
 
-	@Override
-	public ResidentBoardVO selectComplaintById(String rsdBrdId) {
-		return mapper.selectComplaintById(rsdBrdId);
-	}
+    @Override
+    public ResidentBoardVO selectComplaintById(String rsdBrdId) {
+        return mapper.selectComplaintById(rsdBrdId);
+    }
 
-	@Override
-	@Transactional
-	public void insertComplaint(ResidentBoardVO complaint) {
-		  // 1) PK 채번
+    @Override
+    @Transactional
+    public void insertComplaint(ResidentBoardVO complaint) {
+        // 1) PK 채번
         String nextId = mapper.getNextComplaintId();
         complaint.setRsdBrdId(nextId);
 
@@ -57,57 +57,59 @@ public class ComplaintServiceImpl implements ComplaintService {
         // 3) BOARD + RESIDENT_BOARD 동시 INSERT
         mapper.insertComplaintBoard(complaint);
         mapper.insertComplaint(complaint);
+    }
 
-	}
+    @Override
+    @Transactional
+    public void updateComplaint(ResidentBoardVO complaint) {
+        complaint.setRsdBrdModDtm(LocalDateTime.now());
+
+        mapper.updateComplaintBoard(complaint);
+        mapper.updateComplaint(complaint);
+    }
+
+    @Override
+    @Transactional
+    public void deleteComplaint(String rsdBrdId) {
+        mapper.softDeleteResidentBoard(rsdBrdId);
+        mapper.softDeleteComplaint(rsdBrdId);
+    }
+
+    @Override
+    public String getNextComplaintId() {
+        return mapper.getNextComplaintId();
+    }
+
+    @Override
+    public int selectComplaintCount(Map<String, Object> param) {
+        return mapper.selectComplaintTotalCount(param);
+    }
+
+    @Override
+    public List<ResidentBoardVO> selectComplaintList(Map<String, Object> param) {
+        // 비공개 글을 임대인과 작성자만 볼 수 있도록 하는 로직을 Mapper 쿼리에 반영
+        return mapper.selectComplaintList(param);
+    }
+
+    @Override
+    public boolean isBuildingOwner(String mbrCd, String bldgId) {
+        int count = mapper.isBuildingOwner(bldgId, mbrCd);
+        return count > 0;
+    }
+
+    @Override
+    @Transactional
+    public void replyToComplaint(ResidentBoardVO complaint) {
+        complaint.setReqStatus("002");
+        mapper.updateReplyToComplaint(complaint);
+    }
 
 	@Override
-	@Transactional
-	public void updateComplaint(ResidentBoardVO complaint) {
-		complaint.setRsdBrdModDtm(LocalDateTime.now());
-		
-		mapper.updateComplaintBoard(complaint);
-		mapper.updateComplaint(complaint);
+	public boolean canViewComplaint(String rsdBrdId, String mbrCd) {
+		int result = mapper.canViewComplaint(rsdBrdId, mbrCd);
+		return result ==1;
 	}
-
-	@Override
-	@Transactional
-	public void deleteComplaint(String rsdBrdId) {
-		mapper.softDeleteResidentBoard(rsdBrdId);
-		mapper.softDeleteComplaint(rsdBrdId);
-	}
-
-	@Override
-	public String getNextComplaintId() {
-		// TODO Auto-generated method stub
-		return mapper.getNextComplaintId();
-	}
-
-	@Override
-	public int selectComplaintCount(Map<String, Object> param) {
-		// TODO Auto-generated method stub
-		return mapper.selectComplaintTotalCount(param);
-	}
-
-	@Override
-	public List<ResidentBoardVO> selectComplaintList(Map<String, Object> param) {
-		// TODO Auto-generated method stub
-		return mapper.selectComplaintList(param);
-	}
-
-	@Override
-	public boolean isLandlordOfBuilding(String mbrCd, String bldgId) {
-		int count = mapper.isBuildingOwner(bldgId, mbrCd);
-		return count > 0;
-	}
-
-	@Override
-	@Transactional
-	public void replyToComplaint(ResidentBoardVO compaint) {
-		
-		compaint.setReqStatus("002");
-		mapper.updateReplyToComplaint(compaint);
-	}
-
-
-
 }
+
+
+

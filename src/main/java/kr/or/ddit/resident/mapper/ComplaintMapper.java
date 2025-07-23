@@ -47,4 +47,8 @@ public interface ComplaintMapper {
     // 건물의 임대인 확인 (임대인 MBR_CD가 일치하는지)
     public int isBuildingOwner(@Param("bldgId") String bldgId, @Param("mbrCd") String mbrCd);
 
-}
+    /** 게시글 조회 가능 여부 (작성자 또는 임대인 여부 판단) */
+    public int canViewComplaint(@Param("rsdBrdId") String rsdBrdId, @Param("mbrCd") String mbrCd);
+
+}	
+

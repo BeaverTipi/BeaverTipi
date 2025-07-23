@@ -21,19 +21,21 @@ import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.ResidentBoardVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/ajax/resident/api/complaints")
 @RequiredArgsConstructor
 public class ComplaintRestController {
 
-	@Autowired
+    @Autowired
     private ComplaintService complaintService;
-	@Autowired
+    @Autowired
     private UnitResidentService unitResidentService;
-	@Autowired
+    @Autowired
     private CommonCodeService codeService;
-	@Autowired
+    @Autowired
     private PaginationRenderer paginationRenderer;
 
     @GetMapping
@@ -50,7 +52,7 @@ public class ComplaintRestController {
     ) {
         MemberVO member = principal.getRealUser();
         SimpleSearch search = new SimpleSearch();
-        search.setLoginMbrCd(member.getMbrCd());
+        search.setLoginMbrCd(member.getMbrCd()); // 로그인한 사용자 ID 설정
         search.setBldgId(bldgIdParam);
         search.setSearchType(searchType);
         search.setSearchWord(searchWord);
@@ -67,17 +69,39 @@ public class ComplaintRestController {
 
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("search", search);
+
+        // 총 건수 조회
         int totalCount = complaintService.selectComplaintCount(paramMap);
         pagingInfo.setTotalRecordCount(totalCount);
         paramMap.put("paging", pagingInfo);
-
-        List<ResidentBoardVO> postList = complaintService.selectComplaintList(paramMap);
+        
+        
+        // 민원 목록 조회
+        List<ResidentBoardVO> rawPostList = complaintService.selectComplaintList(paramMap);
+        List<ResidentBoardVO> postList = rawPostList.stream()
+        								.filter(post->{
+        									boolean isPublic = "Y".equals(post.getOpenYn());
+        									boolean isMine = post.getMbrCd().equals(member.getMbrCd());
+        									boolean canView = complaintService.canViewComplaint(post.getRsdBrdId(), member.getMbrCd());
+        									return isPublic || isMine || canView;
+        								})
+        								.toList();
+        // 페이징 HTML 생성
         String pagingHtml = paginationRenderer.renderPagination(pagingInfo, "loadComplaints");
 
+        // 임대인 여부 확인
+        boolean isLandlord = complaintService.isBuildingOwner(member.getMbrCd(), bldgIdParam);
+
+        // 로그 추가
+        log.info("로그인한 사용자 ID: {}", member.getMbrCd());
+        log.info("서비스에서 전달된 loginMbrCd: {}", search.getLoginMbrCd());
+
+        // 결과 반환
         Map<String, Object> result = new HashMap<>();
         result.put("postList", postList);
         result.put("pagination", pagingHtml);
-        result.put("loginMbrCd", member.getMbrCd());
+        result.put("loginMbrCd", member.getMbrCd());  // 로그인한 사용자의 ID 포함
+        result.put("isLandlord", isLandlord);  // 임대인 여부 포함
         return result;
     }
 }

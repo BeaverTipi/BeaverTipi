@@ -120,7 +120,7 @@
     <!-- 기본 키값 -->
     <input type="hidden" name="rsdBrdId"    value="${complaint.rsdBrdId}" />
     <input type="hidden" name="bldgIdParam" value="${selectedBldgId}" />
-
+	<input type="hidden" name="reqStatus" value="${complaint.reqStatus}"/>
     <table>
     <tr>
 	  <th>건물 선택</th>

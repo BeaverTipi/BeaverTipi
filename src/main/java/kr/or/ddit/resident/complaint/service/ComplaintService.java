@@ -27,9 +27,12 @@ public interface ComplaintService {
     
     public String getNextComplaintId();
     
-    public boolean isLandlordOfBuilding(String mbrCd, String bldgId);
+    public boolean isBuildingOwner(String mbrCd, String bldgId);
+    
+//    public boolean isLandlordOfBuilding(String mbrCd, String bldgId);
     
     public void replyToComplaint(ResidentBoardVO compaint);
     
+    public boolean canViewComplaint(String rsdBrdId,String mbrCd);
     
 }

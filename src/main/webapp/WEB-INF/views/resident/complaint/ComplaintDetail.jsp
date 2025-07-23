@@ -30,11 +30,39 @@
 	  margin-top: 20px;
 	  border-radius: 6px;
 	}
+	.reply-toggle-btn {
+  background-color: #E17100;
+  color: #fff;
+  padding: 8px 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.reply-toggle-btn:hover {
+  background-color: #973C00;
+}
+	.reply-save-btn {
+  background-color: #E17100;
+  color: #fff;
+  padding: 8px 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  margin-top: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.reply-save-btn:hover {
+  background-color: #973C00;
+}
 	
 	</style>
 </head>
 <body>
-	<h5>임대인 여부: ${isLandlord}</h5>
   <div class="detail-container">
     <h2>${complaint.rsdBrdTitl}</h2>
 
@@ -46,101 +74,104 @@
       <p><span class="label">수정일:</span>
         <fmt:formatDate value="${complaint.rsdBrdModDate}" pattern="yyyy-MM-dd HH:mm"/>
       </p>
-      <p><span class="label label-dt">공개여부:</span>
-		  <c:forEach var="code" items="${openYnList}">
-		    <c:if test="${code.codeValue eq complaint.openYn}">
-		      ${code.codeName}
-		    </c:if>
-		  </c:forEach>
-		</p>
-      <p><span class="label label-sm">처리상태:</span>
-		  <c:forEach var="code" items="${reqStatusList}">
-		    <c:if test="${code.codeValue eq complaint.reqStatus}">
-		      ${code.codeName}
-		    </c:if>
-		  </c:forEach>
-		</p>
+      <p><span class="label">공개여부:</span>
+        <c:forEach var="code" items="${openYnList}">
+          <c:if test="${code.codeValue eq complaint.openYn}">
+            ${code.codeName}
+          </c:if>
+        </c:forEach>
+      </p>
+      <p><span class="label">처리상태:</span>
+        <c:forEach var="code" items="${reqStatusList}">
+          <c:if test="${code.codeValue eq complaint.reqStatus}">
+            ${code.codeName}
+          </c:if>
+        </c:forEach>
+      </p>
     </div>
 
     <hr/>
 
     <div class="detail-content">
-     <div class="content-html">${complaint.rsdBrdCont}</div>
+      <div class="content-html">${complaint.rsdBrdCont}</div>
     </div>
-	
-	<!-- ✅ 답변 내용 표시 -->
+
+    <!-- 답변 내용 표시 -->
 	<c:if test="${not empty complaint.replyCont}">
-	  <hr/>
-	  <div class="reply-box" style="margin-top: 20px; background: #f4fdf6; padding: 15px; border-radius: 8px; border-left: 5px solid #2a8a43;">
-	    <h4 style="margin-bottom: 10px; color: #2a8a43;">🛠 처리 답변</h4>
-	    <div class="reply-content" style="white-space: pre-wrap;">${complaint.replyCont}</div>
-	  </div>
+	    <hr/>
+	    <div class="reply-box">
+	        <h4>🛠 처리 답변</h4>
+	        <div class="reply-content">${complaint.replyCont}</div>
+	    </div>
 	</c:if>
-	
-	<!-- ✅ 답변 작성 폼: 임대인만 표시 -->
+
+    <!-- 답글 작성 폼: 임대인만 표시 -->
 	<c:if test="${isLandlord}">
-	  <button type="button" id="toggleReplyBtn" class="button button-orange" style="margin-top: 20px;">답글 달기</button>
-	
-	  <form id="replyForm"
-	        method="post"
-	        action="${pageContext.request.contextPath}/resident/complaint/reply"
-	        style="display: none; margin-top: 10px;">
-	    <textarea name="replyCont" rows="5" style="width: 100%; padding: 8px;"></textarea>
-	    <input type="hidden" name="rsdBrdId" value="${complaint.rsdBrdId}" />
-	    <input type="hidden" name="bldgIdParam" value="${complaint.bldgId}" />
-	    <button type="submit" class="button button-success" style="margin-top: 8px;">답글 저장</button>
-	  </form>
+	    <button type="button" id="toggleReplyBtn" class="reply-toggle-btn">답글 달기</button>
+	    <form id="replyForm" method="post" action="${pageContext.request.contextPath}/resident/complaint/reply" style="display: none; margin-top: 10px;">
+	        <textarea name="replyCont" rows="5" style="width: 100%; padding: 8px;"></textarea>
+	        <input type="hidden" name="rsdBrdId" value="${complaint.rsdBrdId}" />
+	        <input type="hidden" name="bldgIdParam" value="${complaint.bldgId}" />
+	        <button type="submit" class="reply-save-btn">답글 저장</button>
+	    </form>
 	</c:if>
 	
-    <div class="btn-group">
-      <c:if test="${loginMember.mbrCd == complaint.mbrCd}">
-        <a class="button button-success"
-           href="${pageContext.request.contextPath}/resident/complaint/form?rsdBrdId=${complaint.rsdBrdId}&bldgIdParam=${complaint.bldgId}">수정</a>
-
-       <form id="deleteForm" action="${pageContext.request.contextPath}/resident/complaint/delete" method="post" style="display:inline;">
-		  <input type="hidden" name="rsdBrdId" value="${complaint.rsdBrdId}"/>
-		  <input type="hidden" name="bldgIdParam" value="${complaint.bldgId}"/>
-		  <button type="button" class="button button-danger" id="deleteBtn">삭제</button>
-		</form>
-      </c:if>
-
-      <a class="button button-primary"
-         href="${pageContext.request.contextPath}/resident/complaint?bldgIdParam=${complaint.bldgId}">목록</a>
-    </div>
+		<div class="btn-group">
+		  <!-- ✅ 수정 버튼: 작성자 & 처리중 상태일 때만 노출 -->
+		  <c:if test="${loginMember.mbrCd == complaint.mbrCd and complaint.reqStatus != '002'}">
+		    <a class="button button-success"
+		       href="${pageContext.request.contextPath}/resident/complaint/form?rsdBrdId=${complaint.rsdBrdId}&bldgIdParam=${complaint.bldgId}">수정</a>
+		  </c:if>
+		
+		  <!-- ✅ 삭제 버튼: 작성자이면 항상 표시 -->
+		  <c:if test="${loginMember.mbrCd == complaint.mbrCd}">
+		    <form id="deleteForm"
+		          action="${pageContext.request.contextPath}/resident/complaint/delete"
+		          method="post"
+		          style="display:inline;">
+		      <input type="hidden" name="rsdBrdId" value="${complaint.rsdBrdId}" />
+		      <input type="hidden" name="bldgIdParam" value="${complaint.bldgId}" />
+		      <button type="button" class="button button-danger" id="deleteBtn">삭제</button>
+		    </form>
+		  </c:if>
+		
+		  <!-- 목록 버튼은 항상 보이도록 -->
+		  <a class="button button-primary"
+		     href="${pageContext.request.contextPath}/resident/complaint?bldgIdParam=${complaint.bldgId}">목록</a>
+		</div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    const toggleBtn = document.getElementById("toggleReplyBtn");
+    if (toggleBtn) {
+      toggleBtn.addEventListener("click", function () {
+        const form = document.getElementById("replyForm");
+        if (form) {
+          form.style.display = form.style.display === "none" ? "block" : "none";
+        }
+      });
+    }
+  </script>
 
-<script>
-  const toggleBtn = document.getElementById("toggleReplyBtn");
-  if (toggleBtn) {
-    toggleBtn.addEventListener("click", function () {
-      const form = document.getElementById("replyForm");
-      if (form) {
-        form.style.display = form.style.display === "none" ? "block" : "none";
-      }
+  <script>
+    document.getElementById('deleteBtn').addEventListener('click', function () {
+      Swal.fire({
+        title: '정말 삭제하시겠습니까?',
+        text: '삭제 후에는 해당 게시글이 삭제됩니다!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#E17100',
+        cancelButtonColor: '#aaa',
+        confirmButtonText: '네, 삭제합니다',
+        cancelButtonText: '취소'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById('deleteForm').submit();
+        }
+      });
     });
-  }
-</script>
-
-<script>
-  document.getElementById('deleteBtn').addEventListener('click', function () {
-    Swal.fire({
-      title: '정말 삭제하시겠습니까?',
-      text: '삭제 후에는 해당 게시글이 삭제됩니다!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#E17100',
-      cancelButtonColor: '#aaa',
-      confirmButtonText: '네, 삭제합니다',
-      cancelButtonText: '취소'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        document.getElementById('deleteForm').submit();
-      }
-    });
-  });
-</script>
+  </script>
 </body>
 </html>

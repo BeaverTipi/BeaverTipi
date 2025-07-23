@@ -20,6 +20,8 @@
     <result column="BRD_DEL_YN"       property="brdDelYn"/>        <!-- BOARD 삭제 플래그 -->
     <result column="RSD_BRD_DEL_YN"   property="rsdBrdDelYn"/>    <!-- RESIDENT_BOARD 삭제 플래그 -->
     <result column="MBR_NNM"          property="mbrNnm"/>
+    <result column="REPLY_CONT" property="replyCont"/>
+	<result column="ANS_DT" property="ansDt"/>
   </resultMap>
 
   <!-- 2) 페이징 처리된 민원 목록 조회 -->
@@ -42,54 +44,52 @@
           B.BRD_MOD_DTM,
           B.BRD_DEL_YN,
           R.RSD_BRD_DEL_YN,
-          M.MBR_NNM
+          M.MBR_NNM,
+          R.REPLY_CONT
         FROM RESIDENT_BOARD R
         JOIN BOARD      B ON R.RSD_BRD_ID = B.BRD_NO
         JOIN MEMBER     M ON B.MBR_CD     = M.MBR_CD
+        JOIN BUILDING   H ON R.BLDG_ID =    H.BLDG_ID
+        JOIN TENANCY    T ON H.RENTAL_PTY_ID = T.RENTAL_PTY_ID
         <where>
           <!-- 소프트 삭제되지 않은 것만 -->
           AND R.RSD_BRD_DEL_YN = 'N'
           AND B.BRD_DEL_YN     = 'N'
 
-			         <if test="search.bldgId != null and search.bldgId != ''">
-			  AND B.BLDG_ID  = #{search.bldgId}
-			</if>
-			<if test="search.searchStartDate != null and search.searchStartDate != ''">
-			  AND TO_CHAR(B.BRD_PBLS_DTM, 'YYYY-MM-DD') &gt;= #{search.searchStartDate}
-			</if>
-			<if test="search.searchEndDate != null and search.searchEndDate != ''">
-			  AND TO_CHAR(B.BRD_PBLS_DTM, 'YYYY-MM-DD') &lt;= #{search.searchEndDate}
-			</if>
-			<if test="search.brdCode != null and search.brdCode != ''">
-			  AND B.BRD_CODE = #{search.brdCode}
-			</if>
-			  <choose>
-			    <when test="search.openYn == 'LOGIN_ONLY'">
-			      AND R.MBR_CD = #{search.loginMbrCd}
-			    </when>
-			    <when test="search.openYn != null and search.openYn != ''">
-			      AND R.OPEN_YN = #{search.openYn}
-			    </when>
-			  </choose>
-			<if test="search.reqStatus != null and search.reqStatus != ''">
-			  AND R.REQ_STATUS = #{search.reqStatus}
-			</if>
-			<if test="search.searchWord != null and search.searchWord != ''">
-			  <choose>
-			    <when test="search.searchType == 'title'">
-			      AND B.BRD_TITL_NM LIKE '%'||#{search.searchWord}||'%'
-			    </when>
-			    <when test="search.searchType == 'content'">
-			      AND B.BRD_CONT   LIKE '%'||#{search.searchWord}||'%'
-			    </when>
-			    <otherwise>
-			      AND (
-			        B.BRD_TITL_NM LIKE '%'||#{search.searchWord}||'%'
-			        OR B.BRD_CONT   LIKE '%'||#{search.searchWord}||'%'
-			      )
-			    </otherwise>
-			  </choose>
-			</if>
+          <if test="search.bldgId != null and search.bldgId != ''">
+            AND B.BLDG_ID  = #{search.bldgId}
+          </if>
+          <if test="search.searchStartDate != null and search.searchStartDate != ''">
+            AND TO_CHAR(B.BRD_PBLS_DTM, 'YYYY-MM-DD') &gt;= #{search.searchStartDate}
+          </if>
+          <if test="search.searchEndDate != null and search.searchEndDate != ''">
+            AND TO_CHAR(B.BRD_PBLS_DTM, 'YYYY-MM-DD') &lt;= #{search.searchEndDate}
+          </if>
+          <if test="search.brdCode != null and search.brdCode != ''">
+            AND B.BRD_CODE = #{search.brdCode}
+          </if>
+            <if test="search.openYn != null and search.openYn != ''">
+              AND R.OPEN_YN = #{search.openYn}
+            </if>
+          <if test="search.reqStatus != null and search.reqStatus != ''">
+            AND R.REQ_STATUS = #{search.reqStatus}
+          </if>
+          <if test="search.searchWord != null and search.searchWord != ''">
+            <choose>
+              <when test="search.searchType == 'title'">
+                AND B.BRD_TITL_NM LIKE '%'||#{search.searchWord}||'%'
+              </when>
+              <when test="search.searchType == 'content'">
+                AND B.BRD_CONT   LIKE '%'||#{search.searchWord}||'%'
+              </when>
+              <otherwise>
+                AND (
+                  B.BRD_TITL_NM LIKE '%'||#{search.searchWord}||'%'
+                  OR B.BRD_CONT   LIKE '%'||#{search.searchWord}||'%'
+                )
+              </otherwise>
+            </choose>
+          </if>
         </where>
         ORDER BY B.BRD_PBLS_DTM DESC
       ) T
@@ -109,44 +109,41 @@
       AND R.RSD_BRD_DEL_YN = 'N'
       AND B.BRD_DEL_YN     = 'N'
       <if test="search.bldgId != null and search.bldgId != ''">
-  AND B.BLDG_ID  = #{search.bldgId}
-</if>
-<if test="search.brdCode != null and search.brdCode != ''">
-  AND B.BRD_CODE = #{search.brdCode}
-</if>
-<if test="search.searchStartDate != null and search.searchStartDate != ''">
-  AND TO_CHAR(B.BRD_PBLS_DTM, 'YYYY-MM-DD') &gt;= #{search.searchStartDate}
-</if>
-<if test="search.searchEndDate != null and search.searchEndDate != ''">
-  AND TO_CHAR(B.BRD_PBLS_DTM, 'YYYY-MM-DD') &lt;= #{search.searchEndDate}
-</if>
- <choose>
-  <when test="search.openYn == 'LOGIN_ONLY'">
-    AND R.MBR_CD = #{search.loginMbrCd}
-  </when>
-  <when test="search.openYn != null and search.openYn != ''">
-    AND R.OPEN_YN = #{search.openYn}
-  </when>
-</choose>
-<if test="search.reqStatus != null and search.reqStatus != ''">
-  AND R.REQ_STATUS = #{search.reqStatus}
-</if>
-<if test="search.searchWord != null and search.searchWord != ''">
-  <choose>
-    <when test="search.searchType == 'title'">
-      AND B.BRD_TITL_NM LIKE '%'||#{search.searchWord}||'%'
-    </when>
-    <when test="search.searchType == 'content'">
-      AND B.BRD_CONT   LIKE '%'||#{search.searchWord}||'%'
-    </when>
-    <otherwise>
-      AND (
-        B.BRD_TITL_NM LIKE '%'||#{search.searchWord}||'%'
-        OR B.BRD_CONT   LIKE '%'||#{search.searchWord}||'%'
-      )
-    </otherwise>
-  </choose>
-</if>
+        AND B.BLDG_ID  = #{search.bldgId}
+      </if>
+      <if test="search.brdCode != null and search.brdCode != ''">
+        AND B.BRD_CODE = #{search.brdCode}
+      </if>
+      <if test="search.searchStartDate != null and search.searchStartDate != ''">
+        AND TO_CHAR(B.BRD_PBLS_DTM, 'YYYY-MM-DD') &gt;= #{search.searchStartDate}
+      </if>
+      <if test="search.searchEndDate != null and search.searchEndDate != ''">
+        AND TO_CHAR(B.BRD_PBLS_DTM, 'YYYY-MM-DD') &lt;= #{search.searchEndDate}
+      </if>
+      <choose>
+        <when test="search.openYn != null and search.openYn != ''">
+          AND R.OPEN_YN = #{search.openYn}
+        </when>
+      </choose>
+      <if test="search.reqStatus != null and search.reqStatus != ''">
+        AND R.REQ_STATUS = #{search.reqStatus}
+      </if>
+      <if test="search.searchWord != null and search.searchWord != ''">
+        <choose>
+          <when test="search.searchType == 'title'">
+            AND B.BRD_TITL_NM LIKE '%'||#{search.searchWord}||'%'
+          </when>
+          <when test="search.searchType == 'content'">
+            AND B.BRD_CONT   LIKE '%'||#{search.searchWord}||'%'
+          </when>
+          <otherwise>
+            AND (
+              B.BRD_TITL_NM LIKE '%'||#{search.searchWord}||'%'
+              OR B.BRD_CONT   LIKE '%'||#{search.searchWord}||'%'
+            )
+          </otherwise>
+        </choose>
+      </if>
     </where>
   </select>
 
@@ -168,7 +165,8 @@
       B.BRD_MOD_DTM,
       B.BRD_DEL_YN,
       R.RSD_BRD_DEL_YN,
-      M.MBR_NNM
+      M.MBR_NNM,
+      R.REPLY_CONT
     FROM RESIDENT_BOARD R
     JOIN BOARD  B ON R.RSD_BRD_ID = B.BRD_NO
     JOIN MEMBER M ON B.MBR_CD     = M.MBR_CD
@@ -199,13 +197,17 @@
 
   <!-- 7) INSERT: RESIDENT_BOARD (삭제 플래그 기본 'N') -->
   <insert id="insertComplaint" parameterType="kr.or.ddit.vo.ResidentBoardVO">
-    INSERT INTO RESIDENT_BOARD (
-      RSD_BRD_ID, BRD_CODE, MBR_CD, BLDG_ID,
-      OPEN_YN, REQ_STATUS, RSD_BRD_DEL_YN
-    ) VALUES (
-      #{rsdBrdId}, #{brdCode}, #{mbrCd}, #{bldgId},
-      #{openYn}, #{reqStatus}, 'N'
-    )
+  INSERT INTO RESIDENT_BOARD (
+	    RSD_BRD_ID, BRD_CODE, MBR_CD, BLDG_ID,
+	    OPEN_YN, REQ_STATUS,
+	    RSD_BRD_PBLS_DTM, RSD_BRD_MOD_DTM,
+	    RSD_BRD_DEL_YN
+	  ) VALUES (
+	    #{rsdBrdId}, #{brdCode}, #{mbrCd}, #{bldgId},
+	    #{openYn}, #{reqStatus},
+	    SYSDATE,SYSDATE,
+	    'N'
+	  )
   </insert>
 
   <!-- 8) UPDATE: BOARD -->
@@ -221,7 +223,10 @@
   <update id="updateComplaint" parameterType="kr.or.ddit.vo.ResidentBoardVO">
     UPDATE RESIDENT_BOARD
        SET OPEN_YN      = #{openYn},
-           REQ_STATUS   = #{reqStatus}
+           RSD_BRD_MOD_DTM = SYSDATE,
+           <if test="reqStatus != null">
+         	 REQ_STATUS = #{reqStatus}
+     	   </if>
      WHERE RSD_BRD_ID   = #{rsdBrdId}
   </update>
 
@@ -237,28 +242,61 @@
      WHERE RSD_BRD_ID      = #{rsdBrdId}
   </update>
   
-<select id="isLandlordOfBuilding" resultType="int">
-  SELECT COUNT(*)
-  FROM TENANCY T
-  JOIN BUILDING B ON T.RENTAL_PTY_ID = B.RENTAL_PTY_ID
-  WHERE T.MBR_CD = #{mbrCd}
-    AND B.BLDG_ID = #{bldgId}
-    AND T.RENTAL_PTY_ID = B.RENTAL_PTY_ID
-</select>
+<!-- <select id="isLandlordOfBuilding" resultType="int"> -->
+<!--   SELECT CASE -->
+<!--            WHEN EXISTS ( -->
+<!--              SELECT 1 -->
+<!--              FROM TENANCY T -->
+<!--              JOIN BUILDING B ON T.RENTAL_PTY_ID = B.RENTAL_PTY_ID -->
+<!--              WHERE T.MBR_CD = #{mbrCd} -->
+<!--                AND B.BLDG_ID = #{bldgId} -->
+<!--            ) THEN 1 -->
+<!--            ELSE 0 -->
+<!--          END -->
+<!--   FROM DUAL -->
+<!-- </select> -->
 
 <update id="updateReplyToComplaint" parameterType="kr.or.ddit.vo.ResidentBoardVO">
   UPDATE RESIDENT_BOARD
      SET REPLY_CONT = #{replyCont},
-         REQ_STATUS = '002' <!-- 처리완료 -->
+         REQ_STATUS = '002', <!-- 처리완료 -->
+         ANS_DT =SYSDATE
    WHERE RSD_BRD_ID = #{rsdBrdId}
 </update>
 
 <select id="isBuildingOwner" resultType="int">
-  SELECT COUNT(*)
-  FROM BUILDING
-  WHERE BLDG_ID = #{bldgId}
-    AND RENTAL_PTY_ID = #{mbrCd}
+	select count(*)
+	from building a
+	inner join tenancy b on (a.rental_pty_id = b.rental_pty_id)
+	inner join member c on (b.mbr_cd = c.mbr_cd)
+	where a.bldg_id = #{bldgId}
+	and c.mbr_cd= #{mbrCd}
 </select>
-  
+
+<select id="canViewComplaint" resultType="int">
+  SELECT CASE
+    WHEN EXISTS (
+      SELECT 1
+      FROM BOARD B
+      JOIN RESIDENT_BOARD R ON B.BRD_NO = R.RSD_BRD_ID
+      JOIN BUILDING H ON B.BLDG_ID = H.BLDG_ID
+      LEFT JOIN TENANCY T ON H.RENTAL_PTY_ID = T.RENTAL_PTY_ID
+      LEFT JOIN UNIT_RESIDENT UR ON H.BLDG_ID = UR.BLDG_ID
+      WHERE R.RSD_BRD_ID = #{rsdBrdId}
+        AND R.RSD_BRD_DEL_YN = 'N'
+        AND B.BRD_DEL_YN     = 'N'
+        AND (
+             (R.OPEN_YN = 'Y' AND UR.MBR_CD = #{mbrCd})
+          OR (B.MBR_CD = #{mbrCd})
+          OR (T.MBR_CD = #{mbrCd})
+        )
+    )
+    THEN 1
+    ELSE 0
+  END
+  FROM DUAL
+</select>
+
+ 
 
 </mapper>

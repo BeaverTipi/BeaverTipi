@@ -82,9 +82,15 @@ public class ComplaintCreateController {
         ResidentBoardVO vo;
         if (rsdBrdId != null && !rsdBrdId.isBlank()) {
             vo = complaintService.selectComplaintById(rsdBrdId);
+
+            // ✅ 처리완료된 민원은 수정할 수 없음
+            if ("002".equals(vo.getReqStatus())) {
+                model.addAttribute("error", "처리완료된 민원은 수정할 수 없습니다.");
+                return "redirect:/resident/complaint/view?rsdBrdId=" + rsdBrdId + "&bldgIdParam=" + bldgIdParam;
+            }
         } else {
             vo = new ResidentBoardVO();
-            vo.setBrdCode("M0001");             // 민원 게시판 코드
+            vo.setBrdCode("M0001");
             vo.setBldgId(selectedBldg);
         }
         model.addAttribute("complaint", vo);
@@ -127,6 +133,13 @@ public class ComplaintCreateController {
             complaintService.insertComplaint(complaint);
             ra.addFlashAttribute("saveMsg", "등록되었습니다.");
         } else {
+        	
+        	ResidentBoardVO residentBoardVO = complaintService.selectComplaintById(complaint.getRsdBrdId());
+        	if("002".equals(residentBoardVO.getReqStatus())) {
+        		ra.addFlashAttribute("error", "처리가 완료된 민원은 수정할 수 없습니다,");
+        	    return "redirect:/resident/complaint/detail?rsdBrdId=" + complaint.getRsdBrdId() + "&bldgIdParam=" + bldgIdParam;
+            }
+        	
             complaintService.updateComplaint(complaint);
             ra.addFlashAttribute("saveMsg", "수정되었습니다.");
         }

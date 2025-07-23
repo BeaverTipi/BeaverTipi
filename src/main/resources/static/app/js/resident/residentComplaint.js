@@ -9,7 +9,7 @@ function formatDate(dateStr) {
 }
 
 // 📌 게시글 목록 렌더링
-function renderComplaintPosts(posts, loginMbrCd) {
+function renderComplaintPosts(posts, loginMbrCd,isLandlord) {
   const tableBody = document.querySelector("#boardTableBody");
   tableBody.innerHTML = "";
 
@@ -25,7 +25,7 @@ function renderComplaintPosts(posts, loginMbrCd) {
   posts.forEach((post) => {
     const isOwner = post.mbrCd === loginMbrCd;
     const isPublic = post.openYn === "Y";
-    const isVisible = isPublic || isOwner;
+    const isVisible = isPublic || isOwner || isLandlord;
 
     const titleHtml = isVisible
       ? post.rsdBrdTitl
@@ -108,8 +108,8 @@ function loadComplaints(bldgId = currentBuildingId, page = 1) {
 
   axios.get(`/ajax/resident/api/complaints?${params.toString()}`)
     .then(res => {
-      const { postList, pagination, loginMbrCd } = res.data;
-      renderComplaintPosts(postList, loginMbrCd); // ✅ 사용자 ID도 전달
+      const { postList, pagination, loginMbrCd,isLandlord } = res.data;
+      renderComplaintPosts(postList, loginMbrCd, isLandlord); // ✅ 사용자 ID도 전달
       renderPagination(pagination);
     })
     .catch(err => {
