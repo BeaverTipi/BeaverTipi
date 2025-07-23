@@ -44,11 +44,12 @@ public class MemberLoginController {
 		String tokenCookie = ResponseCookie.from(CookieBearerTokenResolver.ACCESSTOKENCOOKIE)
 				.value("")
 				.path("/")
-//				.domain(".naver.com")
 				.httpOnly(true)
-//				.secure(true)
-				.sameSite(SameSite.STRICT.attributeValue())
-				.maxAge(0)
+				.domain(".beavertipi.com")
+				.secure(true) // ✅ HTTPS 통신 시 반드시 필요
+			    .sameSite("None")
+//				.sameSite(SameSite.STRICT.attributeValue()) // http..
+				.maxAge(JwtProvider.VALID_TERM / 1000)
 				.build().toString();
 		
 		// 세션 기반 인증 상태를 로그아웃으로 처리

@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	hostname = "react.beavertipi.com";
   	brokerOfficeUrl = `https://${hostname}/broker/myoffice`;
   }
-  if(hostname =="dev.beavertipi.com"){
-	hostname = "dev1.beavertipi.com";
+  if(hostname =="dev1.beavertipi.com"){
+	hostname = "dev.beavertipi.com";
   	brokerOfficeUrl = `https://${hostname}/broker/myoffice`;
   }
   if(hostname =="hbdev.beavertipi.com"){
