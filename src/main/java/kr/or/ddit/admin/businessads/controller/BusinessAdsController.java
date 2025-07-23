@@ -21,6 +21,7 @@ import jakarta.inject.Inject;
 import kr.or.ddit.admin.businessads.service.BusinessAdsService;
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.util.renderer.DefaultPaginationRenderer;
+import kr.or.ddit.vo.AdsClientVO;
 import kr.or.ddit.vo.BoardVO;
 import kr.or.ddit.vo.BusinessAdsSearchVO;
 import lombok.extern.slf4j.Slf4j;
@@ -81,8 +82,9 @@ public class BusinessAdsController {
         try {
             String brdNo = payload.get("brdNo");
             String adsStatusCode = payload.get("adsStatusCode");
-
-            log.info("updateAdsStatus - Received update request for brdNo: {}, new status: {}", brdNo, adsStatusCode);
+            String adsRejectMessage = payload.get("adsRejectMessage");
+            
+            log.info("updateAdsStatus - Received update request for brdNo: {}, new status: {}, reject message: {}",  brdNo, adsStatusCode, adsRejectMessage);
 
             if (brdNo == null || brdNo.isEmpty() || adsStatusCode == null || adsStatusCode.isEmpty()) {
                 response.put("success", false);
@@ -91,7 +93,26 @@ public class BusinessAdsController {
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); // 400 Bad Request
             }
 
-            int result = businessAdsService.updateAdsStatus(brdNo, adsStatusCode);
+            // 반려 상태일 때 반려 내용이 없으면 오류 반환 (서버측 유효성 검사)
+            if ("반려".equals(adsStatusCode) && (adsRejectMessage == null || adsRejectMessage.trim().isEmpty())) { 
+                response.put("success", false);
+                response.put("message", "반려 상태인 경우 반려 내용을 입력해야 합니다.");
+                log.warn("updateAdsStatus - Reject reason is required for REJECTED status. brdNo={}", brdNo);
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
+
+            // BoardVO 객체를 생성하고 AdsClientVO를 내부에 설정하여 서비스로 전달
+            BoardVO boardToUpdate = new BoardVO();
+            boardToUpdate.setBrdNo(brdNo);
+            
+            AdsClientVO adsClientVO = new AdsClientVO();
+            adsClientVO.setAdsStatusCode(adsStatusCode);
+            // '반려' 상태가 아니면 null을 전달하여 DB에서 해당 컬럼 값을 비우도록 합니다.
+            adsClientVO.setAdsRejectMessage("반려".equals(adsStatusCode) ? adsRejectMessage : null); 
+            
+            boardToUpdate.setAdsClientVO(adsClientVO);
+            
+            int result = businessAdsService.updateAdsStatus(boardToUpdate);
 
             if (result > 0) {
                 response.put("success", true);

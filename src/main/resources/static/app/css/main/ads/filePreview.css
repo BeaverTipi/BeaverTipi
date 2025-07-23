@@ -1,0 +1,96 @@
+/* resources/css/filePreview.css */
+
+/* 파일 미리보기 영역 전체 컨테이너 (좌측 목록, 우측 미리보기 포함) */
+.file-preview-area {
+    display: flex; /* Flexbox를 사용하여 목록과 미리보기를 나란히 배치 */
+    gap: 20px; /* 두 섹션 사이 간격 */
+    margin-top: 15px;
+    border: 1px solid #e0e0e0; /* 시각적 구분 */
+    padding: 15px;
+    background-color: #f9f9f9;
+}
+
+/* 파일 목록 섹션 */
+.file-list-section {
+    flex: 1; /* 남은 공간을 채우도록 설정 */
+    min-width: 300px; /* 최소 너비 지정 */
+    max-height: 400px; /* 목록이 너무 길어지지 않도록 높이 제한 */
+    overflow-y: auto; /* 내용이 넘치면 스크롤바 생성 */
+}
+
+/* 파일 테이블 스타일 */
+#fileTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px; /* 제목과의 간격 */
+}
+#fileTable th, #fileTable td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+    vertical-align: middle;
+}
+#fileTable th {
+    background-color: #f2f2f2;
+}
+#fileTable tbody tr:hover {
+    background-color: #f5f5f5;
+}
+#fileTable .btn-danger {
+    padding: 3px 8px;
+    font-size: 0.8em;
+}
+
+
+/* 파일 미리보기 섹션 */
+.file-display-section {
+    flex: 2; /* 파일 목록보다 더 넓게 (예: 2배) */
+    display: flex;
+    flex-direction: column; /* 세로 방향으로 정렬 */
+    align-items: center; /* 수평 중앙 정렬 */
+    /* justify-content: space-between; /* 제목과 버튼이 위아래에 위치하도록 (선택 사항) */
+    border: 1px solid #ccc;
+    background-color: #fff;
+    padding: 10px;
+    box-sizing: border-box; /* 패딩이 너비/높이에 포함되도록 */
+
+    /* ***** 이 부분이 미리보기 크기를 고정하는 핵심 ***** */
+    width: 600px; /* 원하는 고정 너비 (예시) */
+    height: 450px; /* 원하는 고정 높이 (예시) */
+    overflow: hidden; /* ★★★ 내용이 이 높이를 벗어나면 잘라내기 ★★★ */
+    position: relative; /* 내부 요소의 위치 지정을 위해 */
+}
+
+/* "미리보기" 텍스트 (h5) 스타일 */
+.file-display-section h5 {
+    display: block; /* h5 태그가 항상 보이도록 보장 */
+    margin-bottom: 10px; /* 캔버스 위에 여백 */
+    color: #333;
+    flex-shrink: 0; /* 내용이 넘쳐도 축소되지 않도록 함 */
+}
+
+/* 캔버스 스타일 */
+#pdfCanvas {
+    max-width: 100%; /* 부모 컨테이너 너비를 넘지 않도록 */
+    max-height: 100%; /* 부모 컨테이너 높이를 넘지 않도록 */
+    display: block; /* 블록 요소로 설정 */
+    margin: 0 auto; /* 수평 중앙 정렬 */
+    flex-grow: 1; /* 남은 공간을 채우도록 함 */
+    /* background-color: #eee; /* 미리보기 없을 때 배경색 (선택 사항) */
+}
+
+/* PDF 컨트롤 버튼 영역 */
+#pdf-controls {
+    display: flex; /* 컨트롤 div가 항상 flex로 표시되도록 보장 */
+    justify-content: center;
+    margin-top: 10px; /* 캔버스 아래 여백 */
+    width: 100%; /* 버튼 정렬을 위해 전체 너비 차지 */
+    flex-shrink: 0; /* 내용이 넘쳐도 축소되지 않도록 함 */
+}
+
+/* 파일이 없을 때 메시지 스타일 (선택 사항) */
+.file-display-section .no-preview-message {
+    text-align: center;
+    color: #888;
+    font-size: 1.1em;
+}

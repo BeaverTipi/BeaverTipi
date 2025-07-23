@@ -8,10 +8,6 @@ let currentPreviewIndex = 0;
 // 캔버스 렌더링 중복 방지 플래그
 let isRendering = false;
 
-// PDF.js worker 소스 경로가 adsForm.jsp에 이미 설정되어 있지만,
-// 만약을 위해 JS 파일에서도 한 번 더 설정해 줄 수 있습니다.
-// pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-
 // 파일 크기를 읽기 쉬운 형식으로 변환 (bytes, KB, MB)
 function formatBytes(bytes, decimals = 2) {
     if (bytes === 0) return '0 Bytes';
@@ -33,7 +29,34 @@ function formatPhoneNumber(phoneNumber) {
     return phoneNumber;
 }
 
-// --- 파일 미리보기 관련 함수 (businessAdsList.js에서 재활용/수정) ---
+// --- 파일 미리보기 관련 함수 ---
+
+// 미리보기 요소들의 가시성을 토글하는 헬퍼 함수
+function togglePreviewVisibility(isVisible) {
+    const canvas = document.getElementById("pdfCanvas");
+    const controls = document.getElementById("pdf-controls");
+    const previewTitle = document.querySelector(".file-display-section h5"); // H5 제목 가져오기
+
+    if (isVisible) {
+        canvas.style.display = 'block';
+        controls.style.display = 'flex'; // CSS에 정의된 대로 flex 사용
+        previewTitle.style.display = 'block'; // 제목도 보이도록
+    } else {
+        canvas.style.display = 'none'; // 캔버스 숨김
+        controls.style.display = 'none'; // 컨트롤 숨김
+        previewTitle.style.display = 'none'; // 미리보기 없을 때 제목도 숨김
+        // 파일이 없을 때 보여줄 메시지 (선택 사항)
+        const displaySection = document.querySelector(".file-display-section");
+        let noFileMessage = displaySection.querySelector(".no-preview-message");
+        if (!noFileMessage) {
+            noFileMessage = document.createElement("p");
+            noFileMessage.classList.add("no-preview-message");
+            noFileMessage.innerText = "파일을 선택하여 미리보기를 확인하세요.";
+            displaySection.appendChild(noFileMessage);
+        }
+        noFileMessage.style.display = 'block';
+    }
+}
 
 // 파일 목록 테이블 렌더링
 function renderFileTable() {
@@ -45,7 +68,15 @@ function renderFileTable() {
         row.innerHTML = `<td colspan="3" class="text-center">첨부 예정 파일이 없습니다.</td>`;
         tbody.appendChild(row);
         updatePreviewControls(0); // 파일 없으므로 미리보기 컨트롤 비활성화 및 초기화
+        clearCanvas(); // 파일 없으면 캔버스 초기화
+        togglePreviewVisibility(false); // 파일이 없으면 미리보기 요소 숨김
         return;
+    }
+
+    // 파일이 있으면 "파일을 선택하여 미리보기를 확인하세요." 메시지 숨김
+    const noFileMessage = document.querySelector(".file-display-section .no-preview-message");
+    if (noFileMessage) {
+        noFileMessage.style.display = 'none';
     }
 
     selectedFiles.forEach((file, index) => {
@@ -74,9 +105,11 @@ function renderFileTable() {
     }
     updatePreviewControls(selectedFiles.length); // 컨트롤 업데이트
     if (selectedFiles.length > 0) {
+        togglePreviewVisibility(true); // 파일이 있으면 미리보기 요소 표시
         fetchPdfOrImage(selectedFiles[currentPreviewIndex]); // 현재 인덱스 파일 미리보기
     } else {
         clearCanvas(); // 파일 없으면 캔버스 지우기
+        togglePreviewVisibility(false); // 파일 없으면 미리보기 요소 숨김
     }
 }
 
@@ -90,20 +123,19 @@ function removeFile(indexToRemove) {
 function clearCanvas() {
     const canvas = document.getElementById("pdfCanvas");
     const ctx = canvas.getContext("2d");
+    // 캔버스의 실제 그리기 영역을 현재 CSS에 의해 결정된 크기로 설정
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    canvas.width = 1;
-    canvas.height = 1;
 }
 
 // PDF 또는 이미지 미리보기
 function fetchPdfOrImage(file) {
-    const canvas = document.getElementById("pdfCanvas");
-    const ctx = canvas.getContext("2d");
-
     if (!file || !file.type) {
         clearCanvas();
         alert("유효하지 않은 파일 정보입니다.");
         isRendering = false;
+        togglePreviewVisibility(false); // 유효하지 않은 파일이면 숨김
         return;
     }
     if (isRendering) return;
@@ -117,6 +149,7 @@ function fetchPdfOrImage(file) {
         clearCanvas();
         alert("미리보기를 지원하지 않는 파일 형식입니다: " + file.name);
         isRendering = false;
+        togglePreviewVisibility(false); // 지원하지 않는 파일이면 숨김
     }
 }
 
@@ -132,22 +165,50 @@ function fetchPdf(file) {
         pdfjsLib.getDocument(typedArray).promise
             .then(pdf => pdf.getPage(1))
             .then(page => {
-                const scale = 1.5;
-                const viewport = page.getViewport({ scale });
-                canvas.width = viewport.width;
-                canvas.height = viewport.height;
-                return page.render({ canvasContext: ctx, viewport }).promise;
+                const parentDiv = canvas.parentElement; // .file-display-section
+                const containerWidth = parentDiv.offsetWidth - (parseInt(getComputedStyle(parentDiv).paddingLeft) || 0) - (parseInt(getComputedStyle(parentDiv).paddingRight) || 0);
+                const containerHeight = parentDiv.offsetHeight - (parseInt(getComputedStyle(parentDiv).paddingTop) || 0) - (parseInt(getComputedStyle(parentDiv).paddingBottom) || 0);
+
+                // H5와 버튼 영역의 높이를 고려하여 캔버스에 할당할 실제 사용 가능 높이 계산
+                const h5Height = document.querySelector(".file-display-section h5").offsetHeight + parseInt(getComputedStyle(document.querySelector(".file-display-section h5")).marginBottom || 0);
+                const controlsHeight = document.getElementById("pdf-controls").offsetHeight + parseInt(getComputedStyle(document.getElementById("pdf-controls")).marginTop || 0);
+                const availableHeightForCanvas = containerHeight - h5Height - controlsHeight;
+
+                const viewport = page.getViewport({ scale: 1 });
+
+                // 캔버스를 사용 가능한 영역에 맞추기 위한 스케일 계산 (비율 유지)
+                let scale = Math.min(containerWidth / viewport.width, availableHeightForCanvas / viewport.height);
+                // 너무 크게 확대되지 않도록 제한 (선택 사항)
+                if (scale > 1.0) scale = 1.0; 
+
+                const scaledViewport = page.getViewport({ scale });
+
+                canvas.width = scaledViewport.width;
+                canvas.height = scaledViewport.height;
+
+                // 캔버스 요소를 수평 중앙에 배치 (수직 중앙은 flexbox가 처리)
+                canvas.style.marginLeft = `${(containerWidth - canvas.width) / 2}px`;
+                // 캔버스 자체의 수직 중앙 정렬을 위해 margin-top 사용
+                // 여기서는 flex-direction: column과 align-items: center로 인해 이미 수평 중앙 정렬이 되므로,
+                // 수직 정렬은 flex-grow: 1과 margin: auto로 처리됩니다.
+                canvas.style.marginTop = 'auto'; // flex-grow와 함께 사용 시 유용
+                canvas.style.marginBottom = 'auto'; // flex-grow와 함께 사용 시 유용
+
+                canvas.style.display = 'block';
+
+                return page.render({ canvasContext: ctx, viewport: scaledViewport }).promise;
             })
             .catch(err => {
                 console.error("PDF 로딩 오류:", err);
                 alert("PDF 미리보기 중 오류가 발생했습니다: " + file.name);
                 clearCanvas();
+                togglePreviewVisibility(false); // 오류 발생 시 숨김
             })
             .finally(() => {
                 isRendering = false;
             });
     };
-    fileReader.readAsArrayBuffer(file); // Blob 대신 File 객체를 직접 읽음
+    fileReader.readAsArrayBuffer(file);
 }
 
 // 이미지 파일 렌더링
@@ -164,22 +225,40 @@ function renderImage(file) {
     };
 
     img.onload = () => {
-        const maxWidth = 500; // 모달 내부에 맞게 조절
-        const maxHeight = 400;
+        const parentDiv = canvas.parentElement; // .file-display-section
+        const containerWidth = parentDiv.offsetWidth - (parseInt(getComputedStyle(parentDiv).paddingLeft) || 0) - (parseInt(getComputedStyle(parentDiv).paddingRight) || 0);
+        const containerHeight = parentDiv.offsetHeight - (parseInt(getComputedStyle(parentDiv).paddingTop) || 0) - (parseInt(getComputedStyle(parentDiv).paddingBottom) || 0);
+
+        // H5와 버튼 영역의 높이를 고려하여 캔버스에 할당할 실제 사용 가능 높이 계산
+        const h5Height = document.querySelector(".file-display-section h5").offsetHeight + parseInt(getComputedStyle(document.querySelector(".file-display-section h5")).marginBottom || 0);
+        const controlsHeight = document.getElementById("pdf-controls").offsetHeight + parseInt(getComputedStyle(document.getElementById("pdf-controls")).marginTop || 0);
+        const availableHeightForCanvas = containerHeight - h5Height - controlsHeight;
 
         let width = img.width;
         let height = img.height;
 
-        if (width > maxWidth) {
-            height = height * (maxWidth / width);
-            width = maxWidth;
+        const aspectRatio = width / height;
+        const containerAspectRatio = containerWidth / availableHeightForCanvas; // 캔버스 사용 가능 높이 기준
+
+        if (aspectRatio > containerAspectRatio) {
+            // 이미지가 컨테이너보다 넓을 경우 (너비에 맞춤)
+            width = containerWidth;
+            height = containerWidth / aspectRatio;
+        } else {
+            // 이미지가 컨테이너보다 높거나 같은 비율일 경우 (높이에 맞춤)
+            height = availableHeightForCanvas;
+            width = availableHeightForCanvas * aspectRatio;
         }
-        if (height > maxHeight) {
-            width = width * (maxHeight / height);
-            height = maxHeight;
-        }
+
         canvas.width = width;
         canvas.height = height;
+
+        // 캔버스 요소를 수평 중앙에 배치 (수직 중앙은 flexbox가 처리)
+        canvas.style.marginLeft = `${(containerWidth - canvas.width) / 2}px`;
+        canvas.style.marginTop = 'auto'; // flex-grow와 함께 사용 시 유용
+        canvas.style.marginBottom = 'auto'; // flex-grow와 함께 사용 시 유용
+        canvas.style.display = 'block';
+
         ctx.drawImage(img, 0, 0, width, height);
         isRendering = false;
     };
@@ -187,12 +266,14 @@ function renderImage(file) {
         alert("이미지 로드 실패: " + file.name);
         clearCanvas();
         isRendering = false;
+        togglePreviewVisibility(false); // 오류 발생 시 숨김
     };
-    reader.readAsDataURL(file); // File 객체를 Data URL로 읽음
+    reader.readAsDataURL(file);
 }
 
 // 미리보기 컨트롤 (이전/다음 버튼, 페이지 인디케이터) 업데이트
 function updatePreviewControls(total) {
+	console.log("updatePreviewControls 호출. total:", total, "currentPreviewIndex:", currentPreviewIndex);
     const fileIndexSpan = document.getElementById("fileIndex");
     const totalCountSpan = document.getElementById("totalCount");
     const prevBtn = document.getElementById("prevBtn");
@@ -204,14 +285,14 @@ function updatePreviewControls(total) {
     prevBtn.disabled = currentPreviewIndex <= 0;
     nextBtn.disabled = currentPreviewIndex >= total - 1;
 
-    // 파일이 없으면 버튼 비활성화
+	console.log("prevBtn disabled:", prevBtn.disabled, "nextBtn disabled:", nextBtn.disabled);
+
     if (total === 0) {
         prevBtn.disabled = true;
         nextBtn.disabled = true;
     }
 }
 
-// 다음 파일 미리보기
 function nextFile() {
     if (currentPreviewIndex < selectedFiles.length - 1) {
         currentPreviewIndex++;
@@ -220,7 +301,6 @@ function nextFile() {
     }
 }
 
-// 이전 파일 미리보기
 function prevFile() {
     if (currentPreviewIndex > 0) {
         currentPreviewIndex--;
@@ -231,26 +311,20 @@ function prevFile() {
 
 // --- DOMContentLoaded 이벤트 리스너 ---
 $(document).ready(function() {
-    // 1. 파일 입력 필드 변경 이벤트
     const attachFilesInput = document.getElementById("attachFiles");
     attachFilesInput.addEventListener("change", function(event) {
         // 새로 선택된 파일들을 기존 selectedFiles 배열에 추가
         for (const file of event.target.files) {
             selectedFiles.push(file);
         }
-        renderFileTable(); // 파일 목록 테이블 다시 렌더링
+        renderFileTable();
         // 첫 파일이 선택되었거나, 기존에 파일이 없었다면 새로 추가된 첫 파일을 미리보기
-        if (selectedFiles.length === event.target.files.length) { // 첫 파일 선택 시
-             currentPreviewIndex = 0;
-             fetchPdfOrImage(selectedFiles[currentPreviewIndex]);
-        } else if (selectedFiles.length > 0 && currentPreviewIndex === 0) {
-            // 이미 파일이 있었고, 새로운 파일을 추가했지만, 현재 인덱스가 0이라면 그냥 다시 렌더링 (동일 파일)
-             // 또는 새로운 파일을 추가한 경우 가장 최근 추가된 파일로 미리보기를 변경할 수 있음
-             // currentPreviewIndex = selectedFiles.length - 1; // 마지막 추가된 파일 미리보기
-             // fetchPdfOrImage(selectedFiles[currentPreviewIndex]);
+        // 또는 새로운 파일 추가 시 마지막 추가된 파일로 미리보기
+        if (selectedFiles.length > 0) {
+            currentPreviewIndex = 0;
+            fetchPdfOrImage(selectedFiles[currentPreviewIndex]);
         }
-        // input[type="file"]의 값 초기화 (동일 파일을 다시 선택해도 change 이벤트 발생시키기 위함)
-        this.value = '';
+        this.value = ''; // input[type="file"]의 값 초기화 (동일 파일을 다시 선택해도 change 이벤트 발생시키기 위함)
     });
 
     // 2. 미리보기 컨트롤 버튼 이벤트 리스너
@@ -260,10 +334,9 @@ $(document).ready(function() {
     // 초기 파일 목록 렌더링 (페이지 로드 시)
     renderFileTable();
     updatePreviewControls(0); // 처음에는 파일이 없으므로 0으로 초기화
+    togglePreviewVisibility(false); // 초기에는 미리보기 관련 요소 숨김
 
     // 3. 폼 제출 이벤트 (Axios를 사용한 비동기 제출 예시)
-    // 기존 form 태그의 action과 method를 사용해도 되지만,
-    // 파일 업로드와 함께 비동기 처리(프로그레스 바 등)를 원하면 Axios 사용이 편리합니다.
     const adsRequestForm = document.getElementById("adsRequestForm");
     adsRequestForm.addEventListener("submit", function(event) {
         event.preventDefault(); // 기본 폼 제출 방지
@@ -305,13 +378,14 @@ $(document).ready(function() {
             alert("희망 게재 종료일은 시작일보다 빠를 수 없습니다.");
             return;
         }
+        if (selectedFiles.length === 0) { // 파일 첨부 필수 유효성 검사 추가
+            alert("광고 파일을 최소 1개 이상 첨부해야 합니다.");
+            return;
+        }
 
         const formData = new FormData(this); // 폼의 모든 데이터를 FormData 객체로 생성
 
         // selectedFiles 배열에 있는 파일들을 FormData에 추가
-        // <input type="file" name="attachFiles" multiple> 로 선택된 파일들은 이미 formData에 자동으로 포함됩니다.
-        // 하지만 사용자가 파일 삭제 버튼을 눌러 selectedFiles에서 파일을 제거한 경우
-        // 기존 input의 files 리스트에는 남아있을 수 있으므로, selectedFiles를 기반으로 FormData를 재구성하는 것이 안전합니다.
         formData.delete('attachFiles'); // 기존 input의 attachFiles 제거
         selectedFiles.forEach(file => {
             formData.append('attachFiles', file); // selectedFiles의 파일들을 다시 추가

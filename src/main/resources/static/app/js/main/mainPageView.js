@@ -22,8 +22,8 @@ runWhenJQueryLoaded(function() {
                     <div class="d-flex justify-content-center align-items-center ad-slide-box">
                         <div class="ad-left-box">
                             <img src="${contextPath}/volt/assets/img/images/ourads.png" alt="기본 광고 로고" class="ad-logo">
-                            <div class="ad-title">${isError ? '광고 로드 오류' : '현재 등록된 광고 없음'}</div>
-                            <div class="ad-desc">${isError ? '광고를 불러오는 중 오류가 발생했습니다.' : '매력적인 광고가 곧 찾아옵니다!'}</div>
+                            <div class="ad-title">${isError ? '광고 로드 오류' : '광고 제목'}</div>
+                            <div class="ad-desc">${isError ? '광고를 불러오는 중 오류가 발생했습니다.' : '광고 신청으로 광고를 넣어보세요!'}</div>
                         </div>
                         <div class="ad-right-box">
                             <img src="${contextPath}/volt/assets/img/images/ourads.png" class="ad-image" alt="기본 광고 배경">

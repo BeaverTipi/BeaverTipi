@@ -7,6 +7,7 @@
         <result property="brdTitlNm" column="BRD_TITL_NM"/>
         <result property="brdCont" column="BRD_CONT"/>
         <result property="mbrCd" column="MBR_CD"/>
+        <result property="mbrId" column="MBR_ID"/>
         <result property="brdPblsDtm" column="BRD_PBLS_DTM"/>
         <result property="brdVwCnt" column="BRD_VW_CNT"/>
 
@@ -18,6 +19,7 @@
             <result property="adsPicTelno" column="ADS_PIC_TELNO"/>
             <result property="adsReqPblsStartDt" column="ADS_REQ_PBLS_START_DT"/>
             <result property="adsReqPblsEndDt" column="ADS_REQ_PBLS_END_DT"/>
+            <result property="adsRejectMessage" column="ADS_REJECT_MESSAGE"/>
         </association>
 
     </resultMap>
@@ -28,6 +30,7 @@
             A_PAGING.BRD_TITL_NM,
             A_PAGING.BRD_CONT,
             A_PAGING.MBR_CD,
+            A_PAGING.MBR_ID,
             A_PAGING.BRD_PBLS_DTM,
             A_PAGING.BRD_VW_CNT,
             A_PAGING.ADS_ID,	
@@ -45,6 +48,7 @@
 	            ,B.BRD_TITL_NM
 	            ,B.BRD_CONT
 	            ,B.MBR_CD
+	            ,M.MBR_ID AS MBR_ID
 	            ,B.BRD_PBLS_DTM
 	            ,B.BRD_VW_CNT
 	            ,A.ADS_ID
@@ -59,14 +63,16 @@
 	            BOARD B
 	        INNER JOIN
 	            ADS A ON B.BRD_NO = A.BRD_NO
-	        WHERE
+	        INNER JOIN
+                MEMBER M ON B.MBR_CD = M.MBR_CD 
+            WHERE
 	            1=1
 	        <if test="detailSearch != null">
 	        	<if test="detailSearch.searchAdsTitle != null and detailSearch.searchAdsTitle != ''">
 	                AND B.BRD_TITL_NM LIKE '%' || #{detailSearch.searchAdsTitle} || '%'
 	            </if>
 	            <if test="detailSearch.searchAdsWriter != null and detailSearch.searchAdsWriter != ''">
-	                AND B.MBR_CD LIKE '%' || #{detailSearch.searchAdsWriter} || '%'
+	                AND M.MBR_ID LIKE '%' || #{detailSearch.searchAdsWriter} || '%'
 	            </if>
 	            <if test="detailSearch.searchAdsStatusCode != null and detailSearch.searchAdsStatusCode != ''">
 	                AND A.ADS_STATUS_CODE = #{detailSearch.searchAdsStatusCode}
@@ -92,6 +98,8 @@
             BOARD B
         INNER JOIN
             ADS A ON B.BRD_NO = A.BRD_NO
+        INNER JOIN
+            MEMBER M ON B.MBR_CD = M.MBR_CD 
         WHERE
             1=1
             <if test="detailSearch != null">
@@ -99,7 +107,7 @@
                     AND B.BRD_TITL_NM LIKE '%' || #{detailSearch.searchAdsTitle} || '%'
                 </if>
                 <if test="detailSearch.searchAdsWriter != null and detailSearch.searchAdsWriter != ''">
-                    AND B.MBR_CD LIKE '%' || #{detailSearch.searchAdsWriter} || '%'
+                    AND M.MBR_ID LIKE '%' || #{detailSearch.searchAdsWriter} || '%'
                 </if>
                 <if test="detailSearch.searchAdsStatusCode != null and detailSearch.searchAdsStatusCode != ''">
                     AND A.ADS_STATUS_CODE = #{detailSearch.searchAdsStatusCode}
@@ -122,6 +130,7 @@
             ,B.BRD_TITL_NM
             ,B.BRD_CONT
             ,B.MBR_CD
+            ,M.MBR_ID AS MBR_ID
             ,B.BRD_PBLS_DTM
             ,B.BRD_VW_CNT
             ,A.ADS_ID
@@ -132,10 +141,13 @@
             ,A.ADS_PIC_TELNO
             ,A.ADS_REQ_PBLS_START_DT
             ,A.ADS_REQ_PBLS_END_DT
+            ,A.ADS_REJECT_MESSAGE
         FROM
             BOARD B
         INNER JOIN
             ADS A ON B.BRD_NO = A.BRD_NO
+        INNER JOIN
+            MEMBER M ON B.MBR_CD = M.MBR_CD
         WHERE
             B.BRD_NO = #{brdNo}
     </select>
@@ -144,6 +156,7 @@
         UPDATE ADS
         SET
             ADS_STATUS_CODE = #{adsClientVO.adsStatusCode}
+            , ADS_REJECT_MESSAGE = #{adsClientVO.adsRejectMessage}
         WHERE
             BRD_NO = #{brdNo}
     </update>
@@ -171,7 +184,7 @@
         WHERE
             A.ADS_STATUS_CODE = '승인'
             AND A.ADS_REQ_PBLS_START_DT <![CDATA[ <= ]]> SYSDATE
-            AND A.ADS_REQ_PBLS_END_DT <![CDATA[ >= ]]> SYSDATE
-            AND B.BRD_DEL_YN = 'N' ORDER BY A.ADS_REQ_PBLS_START_DT DESC, B.BRD_NO DESC 
+            AND (A.ADS_REQ_PBLS_END_DT + 1) <![CDATA[ >= ]]> SYSDATE
+            AND B.BRD_DEL_YN = 'N' ORDER BY A.ADS_REQ_PBLS_START_DT DESC, B.BRD_NO DESC
     </select>
 </mapper>

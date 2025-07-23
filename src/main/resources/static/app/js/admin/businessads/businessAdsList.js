@@ -12,7 +12,7 @@ function formatDateString(dateString) {
         const formattedMonth = (date.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 +1
         const formattedDay = date.getDate().toString().padStart(2, '0');
 
-        return `${formattedYear}-${formattedMonth}-${formattedDay}`; //  이 부분이 YYYY-MM-DD 형식으로 변경됩니다. 
+        return `${formattedYear}-${formattedMonth}-${formattedDay}`;
 
     } catch (e) {
         console.error("날짜 파싱 오류:", dateString, e);
@@ -57,17 +57,17 @@ function formatPhoneNumber(phoneNumber) {
 $(document).ready(function() {
     $('.ads-start-dt').each(function() {
         const dateVal = $(this).data('date');
-        $(this).text(formatDateString(dateVal)); // formatDateString 변경으로 하이픈 적용
+        $(this).text(formatDateString(dateVal));
     });
 
     $('.ads-end-dt').each(function() {
         const dateVal = $(this).data('date');
-        $(this).text(formatDateString(dateVal)); // formatDateString 변경으로 하이픈 적용
+        $(this).text(formatDateString(dateVal));
     });
     
     $('.ads-pic-telno').each(function() {
         const telNoVal = $(this).data('telno');
-        $(this).text(formatPhoneNumber(telNoVal)); // formatDateString 변경으로 하이픈 적용
+        $(this).text(formatPhoneNumber(telNoVal));
     });
     
      $('#resetBtn').on('click', function() {
@@ -76,9 +76,6 @@ $(document).ready(function() {
 
         // 숨겨진 page 필드를 1로 설정
         $('#currentPageNoInput').val('1');
-
-        // 필요하다면 다른 숨겨진 검색 필드도 초기화
-        // $('#searchRptCodeInput').val(''); // 예시 (만약 다른 숨겨진 필드가 있다면)
 
         // 폼 제출 (초기화된 상태로 다시 리스트를 불러옴)
         $('#searchForm').submit();
@@ -125,7 +122,7 @@ function fetchPdfOrImage(file) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         canvas.width = 1; // 캔버스 크기를 최소화
         canvas.height = 1;
-        alert("유효하지 않은 파일 정보입니다.");
+        // alert("유효하지 않은 파일 정보입니다."); // 연속적인 경고 방지를 위해 주석 처리
         isRendering = false;
         return;
     }
@@ -150,8 +147,6 @@ function fetchPdf(fileId) {
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height); // PDF 로드 전 캔버스 클리어
 
-    // axios 라이브러리가 필요합니다. <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    // businessAdsList.jsp <head> 또는 <body> 하단에 추가해주세요.
     axios({
         method: 'get',
         url: contextPath + `/admin/business/file/preview/${fileId}`,
@@ -165,7 +160,7 @@ function fetchPdf(fileId) {
         const blob = response.data;
         const url = URL.createObjectURL(blob);
         // pdfjsLib는 businessAdsList.jsp에 로드되어 있어야 합니다.
-        return pdfjsLib.getDocument(url).promise;
+        return pdfjsLib.getDocument({ url: url }).promise; // pdfjsLib.getDocument에 객체 형태로 url 전달
     })
     .then(pdf => pdf.getPage(1))
     .then(page => {
@@ -195,12 +190,13 @@ function renderImage(fileId) {
 
     const img = new Image();
     img.onload = () => {
-        const maxWidth = 800;
-        const maxHeight = 600;
+        const maxWidth = 800; // 최대 너비
+        const maxHeight = 600; // 최대 높이
 
         let width = img.width;
         let height = img.height;
 
+        // 이미지 비율 유지하면서 최대 크기 맞추기
         if (width > maxWidth) {
             height = height * (maxWidth / width);
             width = maxWidth;
@@ -209,7 +205,7 @@ function renderImage(fileId) {
             width = width * (maxHeight / height);
             height = maxHeight;
         }
-        // 캔버스 크기를 이미지에 맞게 조절
+        
         canvas.width = width;
         canvas.height = height;
         ctx.drawImage(img, 0, 0, width, height);
@@ -228,14 +224,14 @@ function renderImage(fileId) {
     img.src = contextPath + `/admin/business/file/preview/${fileId}`;
 }
 
-function nextFile() { // 함수명 충돌 방지를 위해 next -> nextFile 변경
-    if (currentIndex < currentFileIds.length - 1) {
+function nextFile() {
+    if (currentIndex < currentFileList.length - 1) {
         currentIndex++;
         fetchPdfOrImage(currentFileList[currentIndex]);
     }
 }
 
-function prevFile() { // 함수명 충돌 방지를 위해 prev -> prevFile 변경
+function prevFile() {
     if (currentIndex > 0) {
         currentIndex--;
         fetchPdfOrImage(currentFileList[currentIndex]);
@@ -246,8 +242,8 @@ function updatePageIndicator() {
     const indicator = document.querySelector("#adsDetailModal #fileIndex");
     const total = document.querySelector("#adsDetailModal #totalCount");
     if (indicator && total) {
-        indicator.innerText = currentFileIds.length > 0 ? currentIndex + 1 : 0;
-        total.innerText = currentFileIds.length;
+        indicator.innerText = currentFileList.length > 0 ? currentIndex + 1 : 0;
+        total.innerText = currentFileList.length;
     }
 }
 
@@ -265,23 +261,35 @@ $(document).ready(function() {
             success: function(data) {
                 console.log("AJAX 성공, 데이터:", data);
                 $('#modalBrdNo').text(data.brdNo);
-                $('#modalAdsStatusCodeSelect').val(data.adsClientVO ? data.adsClientVO.adsStatusCode : ''); 
+                
+                // 광고 상태 설정
+                const currentStatusCode = data.adsClientVO ? data.adsClientVO.adsStatusCode : '';
+                $('#modalAdsStatusCodeSelect').val(currentStatusCode); 
+                
+                // 반려 내용 설정 및 표시/숨김 로직
+                const rejectMessageGroup = $('#rejectMessageGroup');
+                const modalAdsRejectMessage = $('#modalAdsRejectMessage');
+
+                // data.adsClientVO가 존재하고 그 안에 adsRejectMessage가 있는지 확인
+                const rejectMessage = (data.adsClientVO && data.adsClientVO.adsRejectMessage) ? data.adsClientVO.adsRejectMessage : '';
+
+                if (currentStatusCode === '반려') {
+                    rejectMessageGroup.show();
+                    modalAdsRejectMessage.val(rejectMessage); // 기존 반려 내용 채우기
+                } else {
+                    rejectMessageGroup.hide();
+                    modalAdsRejectMessage.val(''); // 다른 상태일 경우 내용 비우기
+                }
+
                 $('#modalAdsBp').text(data.adsClientVO ? data.adsClientVO.adsBp : 'N/A');
                 $('#modalBrdTitlNm').text(data.brdTitlNm);
-                $('#modalBrdCont').text(data.brdCont);
+                $('#modalBrdCont').html(data.brdCont); // HTML 내용이므로 .html() 사용
                 $('#modalAdsPic').text(data.adsClientVO ? data.adsClientVO.adsPic : 'N/A');
-                //  담당자 연락처에 formatPhoneNumber 함수 적용 
                 $('#modalAdsPicTelno').text(formatPhoneNumber(data.adsClientVO ? data.adsClientVO.adsPicTelno : null));
-
-                //  희망 게재 시작일/종료일에 formatDateString 함수 적용 (함수 내부 변경으로 하이픈 적용) 
                 $('#modalAdsReqPblsStartDt').text(formatDateString(data.adsClientVO ? data.adsClientVO.adsReqPblsStartDt : null));
                 $('#modalAdsReqPblsEndDt').text(formatDateString(data.adsClientVO ? data.adsClientVO.adsReqPblsEndDt : null));
-                
-                //  작성일시는 서버에서 formattedBrdPblsDtm으로 받는다고 가정하고, 없으면 기존 brdPblsDtm으로 포맷팅 
-                // 이 부분은 서버에서 formattedBrdPblsDtm을 보내주는 것이 가장 좋습니다.
                 $('#modalBrdPblsDtm').text(data.formattedBrdPblsDtm || formatDateTimeString(data.brdPblsDtm));
-
-                $('#modalMbrCd').text(data.mbrCd);
+                $('#modalMbrId').text(data.mbrId);
                 
 				$('#adsDetailModal').data('brdNo', data.brdNo); 
 				
@@ -341,46 +349,68 @@ $(document).ready(function() {
         });
     });
     
+    // 광고 상태 드롭다운 변경 이벤트
+    $('#modalAdsStatusCodeSelect').on('change', function() {
+        const selectedStatus = $(this).val();
+        const rejectMessageGroup = $('#rejectMessageGroup');
+        const modalAdsRejectMessage = $('#modalAdsRejectMessage');
+
+        if (selectedStatus === '반려') {
+            rejectMessageGroup.show();
+        } else {
+            rejectMessageGroup.hide();
+            modalAdsRejectMessage.val(''); // 상태 변경 시 반려 내용 초기화
+        }
+    });
+
     // 저장 버튼 클릭 이벤트
     $('#saveAdsStatusBtn').on('click', function() {
-	    const brdNo = $('#adsDetailModal').data('brdNo'); // 모달에 저장된 brdNo 가져오기
-	    const newStatusCode = $('#modalAdsStatusCodeSelect').val(); // 변경된 상태 값 가져오기
-	
-	    if (!brdNo) {
-	        alert("광고 번호를 찾을 수 없습니다.");
-	        return;
-	    }
-	
-	    if (confirm("정말 광고 상태를 바꾸시겠습니까?")) {
-	        $.ajax({
-	            url: contextPath + '/admin/businessAds/updateAdsStatus.do',
-	            type: 'POST',
-	            contentType: 'application/json',
-	            data: JSON.stringify({
-	                brdNo: brdNo,
-	                adsStatusCode: newStatusCode
-	            }),
-	            //  dataType을 'json'으로 설정 
-	            dataType: 'json',
-	            success: function(response) {
-	                console.log("서버 응답:", response); // {success: true, message: "..."} 또는 {success: false, message: "..."}
-	                if (response.success) { //  응답 객체의 'success' 속성 확인 
-	                    alert(response.message); // 서버에서 받은 메시지 표시
-	                    $('#adsDetailModal').modal('hide'); // 모달 닫기
-	                    $('#searchForm').submit(); // 리스트 새로고침
-	                } else {
-	                    alert("광고 상태 업데이트에 실패했습니다: " + response.message); // 실패 메시지 표시
-	                }
-	            },
-	            error: function(xhr, status, error) {
-	                console.error("광고 상태 업데이트 AJAX 실패:", status, error, xhr.responseText);
-	                alert("광고 상태 업데이트 중 통신 오류가 발생했습니다.");
-	            }
-	        });
-	    }
-	});
-	
-	// 모달이 닫힐 때 파일 미리보기 상태 초기화
+        const brdNo = $('#adsDetailModal').data('brdNo'); // 모달에 저장된 brdNo 가져오기
+        const newStatusCode = $('#modalAdsStatusCodeSelect').val(); // 변경된 상태 값 가져오기
+        const adsRejectMessage = $('#modalAdsRejectMessage').val(); // 반려 내용 가져오기
+
+        if (!brdNo) {
+            alert("광고 번호를 찾을 수 없습니다.");
+            return;
+        }
+
+        // '반려' 상태일 때 반려 내용 필수 유효성 검사
+        if (newStatusCode === '반려' && (adsRejectMessage === null || adsRejectMessage.trim() === '')) {
+            alert("반려 상태인 경우 반려 내용을 입력해야 합니다.");
+            $('#modalAdsRejectMessage').focus();
+            return;
+        }
+
+        if (confirm("정말 광고 상태를 바꾸시겠습니까?")) {
+            $.ajax({
+                url: contextPath + '/admin/businessAds/updateAdsStatus.do',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    brdNo: brdNo,
+                    adsStatusCode: newStatusCode,
+                    adsRejectMessage: adsRejectMessage // 반려 내용 포함하여 전송
+                }),
+                dataType: 'json',
+                success: function(response) {
+                    console.log("서버 응답:", response);
+                    if (response.success) {
+                        alert(response.message);
+                        $('#adsDetailModal').modal('hide');
+                        $('#searchForm').submit(); // 리스트 새로고침
+                    } else {
+                        alert("광고 상태 업데이트에 실패했습니다: " + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("광고 상태 업데이트 AJAX 실패:", status, error, xhr.responseText);
+                    alert("광고 상태 업데이트 중 통신 오류가 발생했습니다.");
+                }
+            });
+        }
+    });
+    
+    // 모달이 닫힐 때 파일 미리보기 상태 초기화
     $('#adsDetailModal').on('hidden.bs.modal', function () {
         currentFileList = [];
         currentFileIds = [];
@@ -394,5 +424,9 @@ $(document).ready(function() {
         canvas.height = 1;
         renderFileTable(); // 파일 목록 테이블도 초기화
         updatePageIndicator(); // 페이지 인디케이터 초기화
+
+        // 모달 닫힐 때 반려 내용 필드 숨기고 초기화
+        $('#rejectMessageGroup').hide();
+        $('#modalAdsRejectMessage').val('');
     });
 });

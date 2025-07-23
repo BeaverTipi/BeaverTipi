@@ -10,10 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>광고 요청 작성</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <%-- 필요한 CSS 파일 추가 (예: 공통 스타일, 폼 스타일) --%>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/adsForm.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/filePreview.css"> <%-- 파일 미리보기 관련 CSS (별도 파일로 관리 추천) --%>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/main/ads/filePreview.css"> <%-- 파일 미리보기 관련 CSS (별도 파일로 관리 추천) --%>
     
     <%-- PDF.js 라이브러리 (CDN) --%>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
@@ -47,7 +44,7 @@
                 </div>
                 <div class="form-group">
                     <label for="brdCont">광고 내용 <span class="text-danger">*</span></label>
-                    <form:textarea path="brdCont" class="form-control" id="brdCont" rows="10" placeholder="상세 내용을 입력하세요" required="true"/>
+                    <form:textarea path="brdCont" class="form-control" id="brdCont" rows="1" placeholder="광고 멘트를 입력해주세요" required="true"/>
                     <form:errors path="brdCont" cssClass="text-danger"/>
                 </div>
             </div>
@@ -88,7 +85,8 @@
                     <label for="attachFiles">파일 선택</label>
                     <%-- multiple 속성을 추가하여 여러 파일 선택 가능하도록 함 --%>
                     <input type="file" class="form-control-file" id="attachFiles" name="attachFiles" multiple>
-                    <small class="form-text text-muted">이미지 (JPG, PNG), PDF 파일을 첨부할 수 있습니다.</small>
+                    <h4></h4>
+                    <small class="form-text text-muted">로고사진 1장, 메인 광고 사진 1장을 첨부해주세요!<br>이미지 (JPG, PNG), PDF 파일을 첨부할 수 있습니다.</small>
                 </div>
 
                 <div class="file-preview-area mt-3">
@@ -118,7 +116,7 @@
 
         <div class="form-group text-center">
             <button type="submit" class="btn btn-primary mr-2">광고 요청</button>
-            <button type="button" class="btn btn-secondary" onclick="location.href='${pageContext.request.contextPath}/main/home'">취소</button>
+            <button type="button" class="btn btn-secondary" onclick="location.href='${pageContext.request.contextPath}/'">취소</button>
         </div>
     </form:form>
 </div>

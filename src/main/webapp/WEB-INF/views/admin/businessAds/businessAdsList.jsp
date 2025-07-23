@@ -20,15 +20,14 @@
 <script>
     var contextPath = '${pageContext.request.contextPath}';
 </script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-<script src="${pageContext.request.contextPath}/app/js/admin/businessads/businessAdsList.js"></script>
 
 <h2 class="board-title">광고 관리</h2>
 
 <div class="container-wrapper">
   <main class="container">
 
-    <%-- 검색 폼 (이전 수정 내용 유지) --%>
     <div class="search-area">
       <form:form modelAttribute="detailSearch" action="${pageContext.request.contextPath}/admin/businessAds/businessAdsList" method="get" id="searchForm" class="search-form">
         <input type="hidden" name="page" value="${pagingVO.currentPageNo}" id="currentPageNoInput">
@@ -58,9 +57,9 @@
             <label for="searchAdsStatusCode">광고 상태:</label>
             <form:select path="searchAdsStatusCode" id="searchAdsStatusCode" class="select-field">
                 <form:option value="">전체</form:option>
-                <form:option value="대기" label="대기"/>
-                <form:option value="반려" label="반려"/>
-                <form:option value="승인" label="승인"/>
+                <form:option value="대기">대기</form:option>
+                <form:option value="반려">반려</form:option>
+                <form:option value="승인">승인</form:option>
             </form:select>
           </div>
 
@@ -99,7 +98,7 @@
                             <tr class="ads-row view-detail-btn" data-brd-no="${ad.brdNo}" data-toggle="modal" data-target="#adsDetailModal">
                                 <td>${pagingVO.firstRecordIndex + status.index}</td>
                                 <td>${ad.brdTitlNm}</td>
-                                <td>${ad.mbrCd}</td>
+                                <td>${ad.mbrId}</td>
                                 <td>${ad.adsClientVO.adsPic}</td>
                                 <td>${ad.adsClientVO.adsBp}</td>
                                 <td>${ad.adsClientVO.adsStatusCode}</td>
@@ -149,6 +148,11 @@
                         <option value="승인">승인</option>
                     </select>
                 </div>
+
+                <div class="form-group" id="rejectMessageGroup" style="display: none;">
+                    <label for="modalAdsRejectMessage"><strong>반려 내용:</strong></label>
+                    <textarea class="form-control" id="modalAdsRejectMessage" rows="3" placeholder="반려 사유를 입력하세요."></textarea>
+                </div>
                 <p><strong>사업장명:</strong> <span id="modalAdsBp"></span></p>
                 <p><strong>광고 제목:</strong> <span id="modalBrdTitlNm"></span></p>
                 
@@ -163,13 +167,12 @@
                 <p><strong>담당자 연락처:</strong> <span id="modalAdsPicTelno"></span></p>
                 <p><strong>희망 게재 시작일:</strong> <span id="modalAdsReqPblsStartDt"></span></p>
                 <p><strong>희망 게재 종료일:</strong> <span id="modalAdsReqPblsEndDt"></span></p>
-                <p><strong>작성자 ID:</strong> <span id="modalMbrCd"></span></p>
+                <p><strong>작성자 ID:</strong> <span id="modalMbrId"></span></p>
                 <p><strong>작성일시:</strong> <span id="modalBrdPblsDtm"></span></p>
 
-				<!-- 파일 미리보기 영역 추가 -->
-                <hr>
+				<hr>
                 <h5>첨부파일</h5>
-                <div id="fileDataHolder" data-filelist=''></div> <!-- JS에서 JSON.stringify된 파일 목록을 여기에 설정 -->
+                <div id="fileDataHolder" data-filelist=''></div> 
                 <div class="file-preview-area">
                     <div class="file-list-section">
                         <button id="toggleFileListBtn" type="button" class="btn btn-sm btn-info mb-2">첨부파일 목록 보기</button>
@@ -199,7 +202,6 @@
     </div>
 </div>
 
-<!-- businessAdsList.js를 body 끝에 위치시켜 DOM 로드 후 실행되도록 함 -->
 <script src="${pageContext.request.contextPath}/app/js/admin/businessads/businessAdsList.js"></script>
 </body>
 </html>

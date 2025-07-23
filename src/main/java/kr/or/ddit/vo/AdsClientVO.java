@@ -21,5 +21,6 @@ public class AdsClientVO implements Serializable {
 	private LocalDate adsReqPblsStartDt; // 광고 요청 게재 시작날짜 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate adsReqPblsEndDt;	// 광고 요청 개제 종료날짜
+	private String adsRejectMessage; // 반려 내용
 	
 }
