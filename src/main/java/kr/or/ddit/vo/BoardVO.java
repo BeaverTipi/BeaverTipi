@@ -25,6 +25,7 @@ public class BoardVO implements Serializable{
 	private String brdCode;
 	@NotBlank(groups = InsertGroup.class)
 	private String mbrCd;
+	private String mbrId; // 작성자 ID
 	@NotBlank
 	private String brdTitlNm;
 	@NotBlank
@@ -36,6 +37,8 @@ public class BoardVO implements Serializable{
 	private LocalDateTime brdModDtm;
 	@NotBlank(groups = {InsertGroup.class, DeleteGroup.class})
 	private String brdDelYn;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDateTime brdEndDtm;
 	
 	private String noticeType; 
 	private String noticeTypeName;	
