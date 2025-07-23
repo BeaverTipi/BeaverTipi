@@ -49,6 +49,7 @@ public class RestBrokerNameCardController {
     // 1. 회원별 명함 리스트 조회
     @GetMapping("/list/{mbrCd}")
     public List<FileVO> getNameCardList(@PathVariable("mbrCd") String mbrCd) {
+    	log.info(mbrCd);
         return nameCardService.selectNameCardListByMember(mbrCd);
     }
 
