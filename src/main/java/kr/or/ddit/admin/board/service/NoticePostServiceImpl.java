@@ -38,7 +38,7 @@ public class NoticePostServiceImpl implements NoticePostService {
 
 	@Override
 	public int deleteBoard(BoardVO board) {
-		return mapper.softDeleteBoard(board.getBrdNo());
+		return mapper.deleteBoard(board);
 	}
 
 	@Override

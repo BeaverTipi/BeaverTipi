@@ -12,6 +12,5 @@ public interface NoticePostService {
     public int createBoard(BoardVO board);
     public int modifyBoard(BoardVO board);
     public int deleteBoard(BoardVO board);
-
     public int getTotalBoardRecord(PaginationInfo<BoardVO> paging);
 }

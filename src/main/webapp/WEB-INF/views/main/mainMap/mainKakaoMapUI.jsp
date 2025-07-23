@@ -51,12 +51,14 @@
 							  <div class="popup-body">
 							    <button class="popup-option" data-type="saleDetailType" data-value="">전체</button>
 							    <c:forEach var="item" items="${saleDetailTypeList}">
-								  <button class="popup-option"
-								          data-type="saleDetailType"
-								          data-value="${item.codeValue}"
-								          data-parent="${item.parentCodeValue}">
-								    ${item.codeName}
+								 <c:if test="${(not empty item.codeValue) and (item.codeName ne '전체')}">
+									  <button class="popup-option"
+									          data-type="saleDetailType"
+									          data-value="${item.codeValue}"
+									          data-parent="${item.parentCodeValue}">
+									    ${item.codeName}
 								  </button>
+								  </c:if>
 								</c:forEach>
 							  </div>
 						</div>

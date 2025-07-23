@@ -13,7 +13,6 @@ public interface NoticePostMapper {
     public BoardVO selectBoardById(String brdNo);
     public int insertBoard(BoardVO board);
     public int updateBoard(BoardVO board);
-    public int softDeleteBoard(String brdNo);
-
+    public int deleteBoard(BoardVO board);
     public int selectTotalBoardRecord(PaginationInfo<BoardVO> paging);
 }

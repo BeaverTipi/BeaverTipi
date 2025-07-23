@@ -5,12 +5,6 @@
 	<resultMap type="BoardVO" id="boardMap" autoMapping="true">
 		<id property="brdNo" column="BRD_NO" />
 		<association property="member" javaType="kr.or.ddit.vo.MemberVO" autoMapping="true" />
-		<association property="notice" javaType="java.util.List" columnPrefix="N_" resultMap="noticeMap" />
-	</resultMap>
-	
-	<resultMap id="noticeMap" type="kr.or.ddit.vo.NoticeVO" autoMapping="true">
-	  <result property="noticeType" column="N_NOTICE_TYPE" />
-	  <result property="noticeTypeName" column="NOTICE_TYPE_NAME" />
 	</resultMap>
 
 	<select id="selectBoardList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultMap="boardMap">
@@ -24,91 +18,123 @@
 					BD.BRD_CONT,
 					BD.BRD_PBLS_DTM,
 					BD.BRD_VW_CNT,
-					BD.BRD_MOD_DTM,
+					BD.BRD_END_DTM,
 					BD.BRD_DEL_YN,
-					BDC.BRD_CODE AS BDC_BRD_CODE,
-					BDC.BRD_CTGRY AS BDC_BRD_CTGRY,
-					BDC.BRD_CMNT_YN AS BDC_BRD_CMNT_YN,
+					BD.BRD_CTGRY_GRP_CD,
+					BD.BRD_CODE,
+					MEM.MBR_ID,
 					MEM.MBR_CD,
-
-					-- 공지 정보
-					N.NOTICE_TYPE AS N_NOTICE_TYPE,
-					C.CODE_NAME AS N_NOTICE_TYPE_NAME
-
+					C.CODE_NAME AS BRD_CTGRY_NAME
 				FROM BOARD BD
-				LEFT JOIN MEMBER MEM ON BD.MBR_CD = MEM.MBR_CD
-				LEFT JOIN BOARD_CARTEGORY BDC ON BD.BRD_CODE = BDC.BRD_CODE
-				LEFT JOIN NOTICE N ON N.NOTICE_NO = BD.BRD_NO
+				LEFT JOIN MEMBER MEM 
+					ON BD.MBR_CD = MEM.MBR_CD
 				LEFT JOIN COMMON_CODE C 
-					ON C.CODE_GROUP = N.NOTICE_TYPE_GRP_CD 
-					AND C.CODE_VALUE = N.NOTICE_TYPE
-				WHERE BD.BRD_DEL_YN = 'N'
-				<if test="detailSearch.brdCode != null and detailSearch.brdCode != ''">
-					AND BD.BRD_CODE = #{detailSearch.brdCode}
-				</if>
+					ON C.CODE_GROUP = BD.BRD_CTGRY_GRP_CD 
+					AND C.CODE_VALUE = BD.BRD_CODE
+				WHERE 
+					BD.BRD_DEL_YN = 'N'
+					  <choose>
+		               <when test="detailSearch.brdCode == '007'">
+		                   AND (BD.BRD_END_DTM IS NULL OR BD.BRD_END_DTM >= SYSDATE)
+		               </when>
+		              </choose>
+					<if test="detailSearch.brdCode != null and detailSearch.brdCode != ''">
+						AND BD.BRD_CODE = #{detailSearch.brdCode}
+					</if>
 				ORDER BY BD.BRD_PBLS_DTM DESC
 			) inner
 			WHERE ROWNUM &lt;= #{lastRecordIndex}
 		)
 		WHERE rn &gt;= #{firstRecordIndex}
 	</select>
-
+	
+	<select id="selectBoardById" parameterType="String" resultMap="boardMap">
+		SELECT
+			BD.BRD_NO,
+			BD.BRD_TITL_NM,
+			BD.BRD_CONT,
+			BD.BRD_PBLS_DTM,
+			BD.BRD_VW_CNT,
+			BD.BRD_END_DTM,
+			BD.BRD_DEL_YN,
+			BD.BRD_CTGRY_GRP_CD,
+			BD.BRD_CODE,
+			MEM.MBR_ID,
+			MEM.MBR_CD,
+			C.CODE_NAME AS BRD_CTGRY_NAME
+		FROM BOARD BD
+		LEFT JOIN MEMBER MEM ON BD.MBR_CD = MEM.MBR_CD
+		LEFT JOIN COMMON_CODE C 
+			ON C.CODE_GROUP = BD.BRD_CTGRY_GRP_CD 
+			AND C.CODE_VALUE = BD.BRD_CODE
+		WHERE BD.BRD_NO = #{brdNo}
+	</select>
 
 	<insert id="insertBoard" parameterType="kr.or.ddit.vo.BoardVO">
-		<selectKey keyProperty="brdNo" order="BEFORE"
-			resultType="String">
+		<selectKey keyProperty="brdNo" order="BEFORE" resultType="String">
 			SELECT TO_CHAR(SEQ_BRD_NO.NEXTVAL) FROM DUAL
 		</selectKey>
 		INSERT INTO BOARD (
-		BRD_NO,
-		BRD_CODE,
-		MBR_CD,
-		BRD_TITL_NM,
-		BRD_CONT,
-		BRD_PBLS_DTM,
-		BRD_VW_CNT,
-		BRD_MOD_DTM,
-		BRD_DEL_YN
+			BRD_NO,
+			BRD_CODE,
+			MBR_CD,
+			BRD_TITL_NM,
+			BRD_CONT,
+			BRD_PBLS_DTM,
+			BRD_VW_CNT,
+			BRD_DEL_YN,
+			BRD_DEL_YN_GRP_CD,
+			BRD_CTGRY_GRP_CD,
+			<if test="brdEndDtm != null and brdEndDtm != ''"> 
+				BRD_END_DTM
+			</if>
 		) VALUES (
-		#{brdNo},
-		#{brdCode},
-		#{mbrCd},
-		#{brdTitlNm},
-		#{brdCont},
-		SYSDATE,
-		0,
-		#{brdModDtm},
-		#{brdDelYn}
+			#{brdNo},
+			#{brdCode},              
+			#{mbrCd},
+			#{brdTitlNm},
+			#{brdCont},
+			SYSDATE,
+			0,
+			'N',
+			#{brdDelYnGrpCd},       
+			#{brdCtgryGrpCd},        
+			<if test="brdEndDtm != null and brdEndDtm != ''"> 
+				#{brdEndDtm}
+			</if>
 		)
 	</insert>
 
-	<update id="updateBoard">
+	<update id="updateBoard" parameterType="kr.or.ddit.vo.BoardVO">
 		UPDATE BOARD
 		SET
-		BRD_TITL_NM = #{brdTitlNm},
-		BRD_CONT = #{brdCont},
-		BRD_MOD_DTM = SYSDATE
+			BRD_TITL_NM = #{brdTitlNm},
+			BRD_CONT = #{brdCont},
+			BRD_MOD_DTM = SYSDATE,
+			BRD_END_DTM = #{brdEndDtm},
+			BRD_CTGRY_GRP_CD = #{brdCtgryGrpCd}
 		WHERE
-		BRD_NO = #{brdNo}
-		AND BRD_DEL_YN = 'N'
+			BRD_NO = #{brdNo}
+			AND BRD_DEL_YN = 'N'
 	</update>
 
-	<update id="softDeleteBoard">
+	<update id="deleteBoard" parameterType="String">
 		UPDATE BOARD
-		SET BRD_DEL_YN = 'Y'
-		WHERE BRD_NO =
-		#{brdNo}
-		AND BRD_DEL_YN = 'N'
+			SET BRD_DEL_YN = 'Y'
+		WHERE 
+			BRD_NO = #{brdNo}
+			AND BRD_DEL_YN = 'N'
 	</update>
 
 	<select id="selectTotalBoardRecord" resultType="int" parameterType="kr.or.ddit.util.page.PaginationInfo">
 		SELECT COUNT(*)
-		FROM BOARD
-		WHERE BRD_DEL_YN = 'N'
+		FROM 
+			BOARD
+		WHERE 
+			BRD_DEL_YN = 'N'
 		<if test="detailSearch.brdCode != null and detailSearch.brdCode != ''">
 			AND BRD_CODE = #{detailSearch.brdCode}
 		</if>
 	</select>
-
 
 </mapper>

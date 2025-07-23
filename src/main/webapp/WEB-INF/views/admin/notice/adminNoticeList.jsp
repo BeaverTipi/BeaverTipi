@@ -5,12 +5,9 @@
 <head>
 <meta charset="UTF-8">
 <title>게시판</title>
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/app/css/admin/common_admin.css">
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/app/css/admin/board/adminNotice.css">
-<script
-	src="${pageContext.request.contextPath}/app/js/admin/board/boardToggle.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/common_admin.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/board/adminNotice.css">
+<script src="${pageContext.request.contextPath}/app/js/admin/board/boardToggle.js"></script>
 </head>
 <body>
 

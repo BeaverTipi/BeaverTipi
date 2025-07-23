@@ -1,7 +1,5 @@
 package kr.or.ddit.admin.board.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -20,10 +18,7 @@ import jakarta.servlet.http.HttpSession;
 import kr.or.ddit.admin.board.service.NoticePostService;
 import kr.or.ddit.util.validate.InsertGroup;
 import kr.or.ddit.vo.BoardVO;
-import kr.or.ddit.vo.FAQVO;
 import kr.or.ddit.vo.MemberVO;
-import kr.or.ddit.vo.NoticeVO;
-import kr.or.ddit.vo.QnAVO;
 
 @Controller
 @RequestMapping("/admin/notice/write")
@@ -37,10 +32,7 @@ public class NoticePostWriteController {
 	@ModelAttribute("board")
 	public BoardVO prepareBoard(HttpSession session) {
 		BoardVO board = new BoardVO();
-		board.setBrdCode("N0001");
-		board.setNotice(List.of(new NoticeVO()));
-		board.setFaq(List.of(new FAQVO()));
-		board.setQna(List.of(new QnAVO()));
+		board.setBrdCode("007");
 		return board;
 	}
 
@@ -58,17 +50,6 @@ public class NoticePostWriteController {
 
 	@GetMapping
 	public String noticewriteForm(Model model) {
-//		if (!model.containsAttribute("board")) {
-//			BoardVO board = new BoardVO();
-//			board.setBrdCode("N0001");
-//
-//			board.setNotice(List.of(new NoticeVO()));
-//			board.setFaq(List.of(new FAQVO()));
-//			board.setQna(List.of(new QnAVO()));
-//
-//			model.addAttribute("board", board);
-//		}
-
 		model.addAttribute("pageTitle", "새 공지사항 등록");
 		return "admin/notice/adminNoticeForm";
 	}
