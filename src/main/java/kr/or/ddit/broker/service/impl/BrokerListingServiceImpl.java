@@ -108,4 +108,12 @@ public class BrokerListingServiceImpl implements BrokerListingService {
 		}
 	}
 
+	@Override
+	public void removeListing(ListingVO listing) {
+		if(productMapper.updateDelYnListing(listing)<1) {
+			throw new ListingException("매물 삭제 중 오류가 발생했습니다.");
+		}
+		
+	}
+
 }

@@ -110,7 +110,7 @@
 		  <div class="custom-file-upload">
 		    <label for="mbrProfilImg" class="file-label">파일 선택</label>
 		    <span id="file-name" class="file-name">선택된 파일 없음</span>
-		    <form:input type="file" path="mbrProfilImg" id="mbtProfilImg" class="file-input" onchange="updateFileName(this)" />
+		    <form:input type="file" path="mbtProfilImg" id="mbtProfilImg" class="file-input" onchange="updateFileName(this)" />
 		  </div>
 		</div>
 

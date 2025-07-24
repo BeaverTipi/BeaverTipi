@@ -189,6 +189,35 @@ public class RestBrokerListingController {
 	    }
 	}
 
+	@PostMapping("/product/delete")
+	public Map<String, String> deleteListing(
+	    Principal principal,
+	    @RequestBody Map<String, String> encryptedPayload
+	) {
+	    Map<String, String> parsed = decryptRequestPayload(encryptedPayload);
+	    String lstgId = parsed.get("lstgId");
+
+	    if (lstgId == null || lstgId.isBlank()) {
+	        return encryptResponsePayload(Map.of("success", false, "message", "lstgId 누락"));
+	    }
+
+	    String mbrCd = authUnpack.getMbrCd(principal.getName());
+
+	    ListingVO listing = new ListingVO();
+	    listing.setLstgId(lstgId);
+	    listing.setMbrCd(mbrCd);
+	    try {
+	        service.removeListing(listing);
+	        return encryptResponsePayload(Map.of("success", true, "message", "삭제되었습니다."));
+	    } catch (ListingException e) {
+	        log.warn("삭제 실패 - 매물 없음 or 삭제 대상 불일치: {}", e.getMessage());
+	        return encryptResponsePayload(Map.of("success", false, "message", e.getMessage()));
+	    } catch (Exception e) {
+	        log.error("매물 삭제 실패 (알 수 없는 오류)", e);
+	        return encryptResponsePayload(Map.of("success", false, "message", "삭제 중 오류 발생"));
+	    }
+	}
+
 
 
 }

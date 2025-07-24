@@ -193,4 +193,10 @@ DELETE
 FROM LISTING_OPTION
 WHERE LSTG_ID=#{lstgId}
 </delete>
+<update id="updateDelYnListing">
+	UPDATE LISTING
+	SET LSTG_DEL = 'Y'
+	WHERE LSTG_ID = #{lstgId}
+	AND MBR_CD = #{mbrCd}
+</update>
 </mapper>

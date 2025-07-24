@@ -37,4 +37,6 @@ public interface RentalOwnerProductMapper {
 	public Integer insertOptionList(@Param("list") List<ListingOptionVO> optionList);
 
 	public Integer deleteOptionByLstgId(String lstgId);
+
+	public Integer updateDelYnListing(ListingVO listing);
 }

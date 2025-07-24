@@ -153,6 +153,7 @@
 	  LEFT OUTER JOIN V_BROKER_INFO BI ON(L.MBR_CD = BI.MBR_CD_B)
 	  LEFT OUTER JOIN V_LISTING_FACILITY LF ON(L.LSTG_ID = LF.LSTG_ID_LF)
 	 WHERE L.MBR_CD = #{mbrCd}
+	 AND L.LSTG_DEL = 'N'
 </sql>
 
 <select id="selectLstgList" parameterType="String" resultMap="ListingMap">

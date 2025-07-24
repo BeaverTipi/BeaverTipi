@@ -38,4 +38,6 @@ public interface BrokerListingService {
 	public void createListing(ListingVO listing, List<MultipartFile> imageFiles, List<ListingOptionVO> optionList);
 
 	public void modifyListing(ListingVO listing, List<MultipartFile> imageFiles, List<ListingOptionVO> optionList);
+
+	public void removeListing(ListingVO listing);
 }
