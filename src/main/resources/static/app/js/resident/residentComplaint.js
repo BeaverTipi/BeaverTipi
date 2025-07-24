@@ -134,8 +134,6 @@ function clearForm(e) {
 
 // 📌 초기화 및 이벤트 바인딩
 document.addEventListener("DOMContentLoaded", () => {
-  // ✅ 글쓰기 화면이면 아무것도 하지 않음
-  if (window.location.pathname.includes("/resident/complaint/form")) return;
 
   const form = document.getElementById("searchForm");
   form?.addEventListener("submit", (e) => {

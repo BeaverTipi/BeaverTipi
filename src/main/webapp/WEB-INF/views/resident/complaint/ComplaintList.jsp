@@ -299,7 +299,7 @@
     <!-- 글쓰기 버튼 -->
 	<c:if test="${not empty selectedBldgId}">
 	  <div class="write-buttons">
-	  	<a class="btn-success" href="${pageContext.request.contextPath}/resident/complaint/form?bldgIdParam=${selectedBldgId}">글쓰기</a>
+	  	<a class="btn-success" id="writeBtn" href="${pageContext.request.contextPath}/resident/complaint/form?bldgIdParam=${selectedBldgId}">글쓰기</a>
 	  </div>
 	</c:if>
 
@@ -336,6 +336,19 @@
 </script>
 
 <script>
+
+const select = document.querySelector("#bldgSelect");
+const writeBtn = document.querySelector("#writeBtn");
+
+select.addEventListener("change", () => {
+	
+  //const selectedId = localStorage.getItem("selectedBuildingId");
+  const selectedId = select.value;
+    console.log(selectedId);
+    writeBtn.href = `/resident/complaint/form?bldgIdParam=\${selectedId}`;
+    console.log("writeBtn.href : ",writeBtn.href)
+
+});
   function showPrivateAlert() {
     Swal.fire({
       icon: 'warning',

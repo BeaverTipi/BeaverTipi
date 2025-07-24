@@ -72,14 +72,13 @@ public class ComplaintController {
 	            }
 
 	            // 1-2) 선택된 건물 결정 (파라미터 우선, 없으면 가장 오래된 이동일 기준)
-	            String selectedBldg = bldgIdParam;
-	            if(selectedBldg == null || selectedBldg.isBlank()) {
-	                selectedBldg = units.stream()
+	            if(bldgIdParam == null || bldgIdParam.isBlank()) {
+	            	bldgIdParam = units.stream()
 	                                     .min(Comparator.comparing(UnitResidentVO::getMoveInDt))
 	                                     .map(UnitResidentVO::getBldgId)
 	                                     .orElse(units.get(0).getBldgId());
 	            }
-	            simpleSearch.setBldgId(selectedBldg);
+	            simpleSearch.setBldgId(bldgIdParam);
 	            simpleSearch.setMyPostsOnly("Y".equalsIgnoreCase(myPostsOnly));
 	            
 	            PaginationInfo<ResidentBoardVO> pagingInfo = new PaginationInfo<>();
@@ -115,7 +114,7 @@ public class ComplaintController {
 	            model.addAttribute("loginMember", member);
 	            model.addAttribute("boardList", list);
 	            model.addAttribute("unitList",   units);
-	            model.addAttribute("selectedBldgId", selectedBldg);
+	            model.addAttribute("selectedBldgId", bldgIdParam);
 	            model.addAttribute("search", simpleSearch);
 	            
 	            
