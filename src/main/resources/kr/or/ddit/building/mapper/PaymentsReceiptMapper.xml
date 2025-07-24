@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.building.mapper.PaymentsReceiptMapper">
+<select id="selectChargeBillHistory" resultType="kr.or.ddit.building.chargeBill.dto.ChargeBillHistoryDTO">
+	select a.*, c.BLDG_NM, b.UNIT_FLR_NO, b.UNIT_ROOM, d.MBR_NM
+	from charge_bill a
+	inner join unit b on (a.unit_id = b.unit_id)
+	inner join building c on (b.bldg_id = c.bldg_id)
+	inner join member d on (b.mbr_cd = d.mbr_cd)
+	where a.rental_pty_id = #{rentalPtyId}
+</select>
+
+<select id="selectRentalPtyId" resultType ="string">
+	select rental_pty_id
+	from tenancy
+	where mbr_cd = #{mbrCd}
+</select>
+
+<select id="selectOwnBuildings" resultType= "BuildingVO">
+	select bldg_id, bldg_nm
+	from building
+	where rental_pty_id = #{rentalPtyId}
+</select>
+
+<select id="selectUnits" resultType ="UnitVO">
+select unit_id, unit_room
+from unit
+where bldg_id = #{bldgId}
+</select>
+
+
+
+</mapper>
