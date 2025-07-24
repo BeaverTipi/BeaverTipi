@@ -189,6 +189,7 @@ public class SpringSecurityConfig {
 			.authorizeHttpRequests(authorize ->
 				authorize
 				.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // redirection으로 이동하는 것도 감지함. 그래서 막아버림. 그것도 풀어줘라 하는 게 필요.
+					.requestMatchers(new AntPathRequestMatcher("/ajax/admin/businessAds/approvedAds")).permitAll()
 					.requestMatchers(WHITE_LIST).permitAll()
 					.requestMatchers(new AntPathRequestMatcher(registerUrl)).anonymous()
 					.requestMatchers(new AntPathRequestMatcher("account/login/**")).anonymous()

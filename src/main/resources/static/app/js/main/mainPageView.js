@@ -83,10 +83,11 @@ runWhenJQueryLoaded(function() {
                             let backgroundImgSrcs = [];
 
                             if (imageFiles.length > 0) {
-                                logoImgSrc = contextPath + `/admin/business/file/preview/${imageFiles[0].fileId}`;
+                                logoImgSrc = imageFiles[0].filePathUrl;
                                 // 첫 번째 이미지 (로고)를 제외한 나머지 이미지를 배경 이미지 후보로 사용
                                 for (let i = 1; i < imageFiles.length; i++) {
-                                    backgroundImgSrcs.push(contextPath + `/admin/business/file/preview/${imageFiles[i].fileId}`);
+                                    backgroundImgSrcs.push(imageFiles[i].filePathUrl);
+                                    console.log(imageFiles[i].filePathUrl);
                                 }
                             }
                             
@@ -116,11 +117,8 @@ runWhenJQueryLoaded(function() {
                             carouselItemHtml += `  </div>`;
                             carouselItemHtml += `</div>`;
                             
-                            console.log(`생성된 ${index}번째 광고 HTML:`, carouselItemHtml);
                             $adCarouselInner.append(carouselItemHtml);
                         });
-
-                        console.log("모든 광고 HTML 삽입 완료. 최종 adCarouselInner HTML:", $adCarouselInner.html());
 
                         // 캐러셀 컨트롤 버튼 다시 표시 (광고가 여러 개일 때만)
                         if (adsList.length > 1) {
