@@ -22,79 +22,81 @@
 		</div>
 		
 		<div class="form-control">
-			<label class="label" for="brdCode">공지유형</label>
-			<form:radiobutton path="brdCode" value="007" />공지사항
-			<form:radiobutton path="brdCode" value="008" />QnA
-			<form:radiobutton path="brdCode" value="009" />FAQ
-			<form:errors path="brdCode" cssClass="text-danger" />			
+		  <label class="label" for="brdCtgryGrpCd">게시판 유형</label>
+		  <c:forEach items="${brdCodeList}" var="item">
+			  <c:if test="${item.codeValue eq '007' or item.codeValue eq '008'or item.codeValue eq '009'}">
+			 	 <form:radiobutton path="brdCtgryGrpCd" value="${item.codeValue }" />
+			 	 ${item.codeName }
+			  </c:if>
+		  </c:forEach>
+		  <form:errors path="brdCtgryGrpCd" cssClass="text-danger" />
 		</div>
 						
 		  <div class="form-detail" id="noticeDetailBox" style="display:none">
-          <label class="label">상세설정</label>
-          <c:forEach var="noticeItem" items="${board.notice}" varStatus="status">
-            <div>
-              <label class="label">공지사항 유형</label>
-              <form:radiobutton path="notice[${status.index}].noticeType" value="일반" />일반
-              <form:radiobutton path="notice[${status.index}].noticeType" value="긴급" />긴급
-              <form:radiobutton path="notice[${status.index}].noticeType" value="이벤트" />이벤트
-              <form:errors path="notice[${status.index}].noticeType" cssClass="text-danger" />
-            </div>
-            <div>
-              <label class="label">종료일시</label>
-              <form:input path="notice[${status.index}].noticeEndDtm" type="date" />
-              <form:errors path="notice[${status.index}].noticeEndDtm" cssClass="text-danger" />
-            </div>
-          </c:forEach>
+			  <label class="label">상세설정</label>
+			
+			 <div>
+			  <label class="label">공지사항 유형</label>
+			  <c:forEach var="item" items="${noticeTypeList}">
+			    <form:radiobutton path="noticeType" value="${item.codeValue}" />
+			    ${item.codeName}
+			  </c:forEach>
+			  <form:errors path="noticeType" cssClass="text-danger" />
+			</div>
+			
+			  <div>
+			    <label class="label">종료일시</label>
+			    <form:input path="brdEndDtm" type="date" />
+			    <form:errors path="brdEndDtm" cssClass="text-danger" />
+			  </div>
+			
+			  <div class="form-control">
+			    <label class="label">내용</label>
+			    <form:textarea path="brdCont" id="summernote-notice" />
+			    <form:errors path="brdCont" cssClass="text-danger" />
+			  </div>
+			</div>
 
-          <!-- 공지사항 내용 -->
-          <div class="form-control">
-            <label class="label">내용</label>
-            <form:textarea path="brdCont" id="summernote-notice" />
-            <form:errors path="brdCont" cssClass="text-danger" />
-          </div>
-        </div>
+       <div class="form-detail" id="faqDetailBox" style="display:none">
+		  <label class="label">상세설정</label>
+		
+		 <div>
+		  <label class="label">FAQ 유형</label>
+		  <c:forEach var="item" items="${faqCtgryList}">
+			  <form:radiobutton path="faqCtgry" value="${item.codeValue}" />
+			  ${item.codeName}
+			</c:forEach>
+		  <form:errors path="faqCtgry" cssClass="text-danger" />
+		</div>
+		
+		  <div class="form-control">
+		    <label class="label">내용</label>
+		    <form:textarea path="brdCont" id="summernote-faq" />
+		    <form:errors path="brdCont" cssClass="text-danger" />
+		  </div>
+		</div>
+       
 
-        <!-- FAQ 상세설정 -->
-        <div class="form-detail" id="faqDetailBox" style="display:none">
-          <label class="label">상세설정</label>
-          <c:forEach var="faqItem" items="${board.faq}" varStatus="status">
-            <div>
-              <label class="label">FAQ 유형</label>
-              <form:radiobutton path="faq[${status.index}].faqCtgry" value="결제" />결제
-              <form:radiobutton path="faq[${status.index}].faqCtgry" value="계정" />계정
-              <form:radiobutton path="faq[${status.index}].faqCtgry" value="서비스이용" />서비스이용
-              <form:errors path="faq[${status.index}].faqCtgry" cssClass="text-danger" />
-            </div>
-          </c:forEach>
-
-          <!-- FAQ 내용 -->
-          <div class="form-control">
-            <label class="label">내용</label>
-            <form:textarea path="brdCont" id="summernote-faq" />
-            <form:errors path="brdCont" cssClass="text-danger" />
-          </div>
-        </div>
-
-        <!-- QnA 상세설정 -->
         <div class="form-detail" id="qnaDetailBox" style="display:none">
-          <label class="label">상세설정</label>
-          <c:forEach var="qnaItem" items="${board.qna}" varStatus="status">
-            <div>
-              <label class="label">QnA 유형</label>
-              <form:radiobutton path="qna[${status.index}].qnaCtgry" value="결제" />결제
-              <form:radiobutton path="qna[${status.index}].qnaCtgry" value="계정" />계정
-              <form:radiobutton path="qna[${status.index}].qnaCtgry" value="서비스이용" />서비스이용
-              <form:errors path="qna[${status.index}].qnaCtgry" cssClass="text-danger" />
-            </div>
-          </c:forEach>
+		  <label class="label">상세설정</label>
+		
+		 <div>
+		  <label class="label">QnA 유형</label>
+		  <c:forEach var="item" items="${qnaCtgryList}">
+		    <form:radiobutton path="qnaCtgry" value="${item.codeValue}" />
+		    ${item.codeName}
+		  </c:forEach>
+		  <form:errors path="qnaCtgry" cssClass="text-danger" />
+		</div>
 
-          <!-- QnA 내용 -->
-          <div class="form-control">
-            <label class="label">내용</label>
-            <form:textarea path="brdCont" id="summernote-qna" />
-            <form:errors path="brdCont" cssClass="text-danger" />
-          </div>
-        </div>
+		
+		  <div class="form-control">
+		    <label class="label">내용</label>
+		    <form:textarea path="brdCont" id="summernote-qna" />
+		    <form:errors path="brdCont" cssClass="text-danger" />
+		  </div>
+		</div>
+
 			
 		<div class="card-footer">
 			<div class="button-group">

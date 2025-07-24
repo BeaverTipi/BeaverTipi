@@ -11,13 +11,14 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 
 <!-- ✅ FAQ 게시판 리스트 -->
+<!-- ✅ FAQ 게시판 리스트 (아코디언 구조) -->
 <table class="table">
 	<thead>
 		<tr>
 			<th>No</th>
 			<th>제목</th>
 			<th>게시일자</th>
-			<th>카테고리</th>  <!-- FAQCT -->
+			<th>카테고리</th> <!-- FAQCT -->
 			<th>첨부</th>
 		</tr>
 	</thead>
@@ -25,22 +26,25 @@
 		<c:choose>
 			<c:when test="${not empty boardList}">
 				<c:forEach items="${boardList}" var="board" varStatus="status">
-					<tr>
+					<tr class="faq-item" data-index="${status.index}">
 						<td>
 							<c:out value="${(paging.currentPageNo - 1) * paging.pageSize + status.index + 1}" />
 						</td>
-						<td>
-							<a href="${pageContext.request.contextPath}/admin/notice/detail?brdNo=${board.brdNo}">
-								${board.brdTitlNm}
-							</a>
+						<td class="faq-title" style="cursor:pointer;">
+							<c:out value="${board.brdTitlNm}" />
 						</td>
-						<td>${board.brdPblsDtmFormatted}</td>
-						<td>
-							<c:out value="${board.faqCtgryName}" />
-						</td>
+						<td><c:out value="${board.brdPblsDtmFormatted}" /></td>
+						<td><c:out value="${board.BRD_CTGRY_NAME}" /></td>
 						<td>
 							<img src="${pageContext.request.contextPath}/volt/assets/img/file-download-svgrepo-com.svg" 
 							     width="20" height="20" alt="첨부파일" />
+						</td>
+					</tr>
+					<tr class="faq-content" data-index="${status.index}" style="display:none;">
+						<td colspan="5">
+							<div class="faq-answer-box">
+								${board.brdCont}
+							</div>
 						</td>
 					</tr>
 				</c:forEach>
@@ -53,3 +57,4 @@
 		</c:choose>
 	</tbody>
 </table>
+

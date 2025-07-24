@@ -1,6 +1,7 @@
 package kr.or.ddit.admin.board.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -17,12 +18,12 @@ public class NoticePostServiceImpl implements NoticePostService {
 	private final NoticePostMapper mapper;
 
 	@Override
-	public List<BoardVO> readBoardList(PaginationInfo<BoardVO> paging) {
+	public List<Map<String, Object>> readBoardList(PaginationInfo<BoardVO> paging) {
 		return mapper.selectBoardList(paging);
 	}
 
 	@Override
-	public Optional<BoardVO> readBoard(String brdNo) {
+	public Optional<Map<String, Object>> readBoard(String brdNo) {
 		return Optional.ofNullable(mapper.selectBoardById(brdNo));
 	}
 
@@ -37,7 +38,7 @@ public class NoticePostServiceImpl implements NoticePostService {
 	}
 
 	@Override
-	public int deleteBoard(BoardVO board) {
+	public int deleteBoard(String board) {
 		return mapper.deleteBoard(board);
 	}
 

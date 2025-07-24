@@ -1,7 +1,8 @@
 package kr.or.ddit.admin.board.controller;
 
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,57 +29,58 @@ public class NoticePostListController {
     public String boardList(
         @RequestParam(name = "page", defaultValue = "1") int page,
         @RequestParam(name = "tab", defaultValue = "notice") String tab,
-        @RequestParam(name = "brdCode", required = false) String brdCode, // 여전히 허용
         Model model
     ) {
-        // ① tab → brdCode로 변환
-        if (brdCode == null || brdCode.isBlank()) {
-            brdCode = switch (tab) {
-                case "notice" -> "N"; // 공지사항
-                case "faq" -> "F";    // FAQ
-                case "qna" -> "Q";    // QNA
-                default -> "N";
-            };
-        }
+        // ① 공통 코드 CODE_VALUE 결정 (brdCode 대신)
+        String codeValue = switch (tab) {
+            case "notice" -> "007";
+            case "faq" -> "009";
+            case "qna" -> "008";
+            default -> "007";
+        };
 
         // ② 페이징 설정
         PaginationInfo<BoardVO> paging = new PaginationInfo<>();
         paging.setCurrentPageNo(page);
 
         BoardVO condition = new BoardVO();
-        condition.setBrdCode(brdCode); // 게시판 종류 조건
+        condition.setBrdCtgryGrpCd("BRDCT"); // 그룹코드는 유지
         paging.setDetailSearch(condition);
 
-        // ③ 리스트 + 전체 수 조회
+        // ③ 전체 레코드 수 조회
         int totalRecord = service.getTotalBoardRecord(paging);
         paging.setTotalRecordCount(totalRecord);
 
-        List<BoardVO> boardList = service.readBoardList(paging);
-        
+        // ④ 게시글 목록 조회
+        List<Map<String, Object>> boardList = service.readBoardList(paging);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         List<Map<String, Object>> processedList = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        for (BoardVO board : boardList) {
+        for (Map<String, Object> board : boardList) {
             Map<String, Object> map = new HashMap<>();
-            map.put("brdNo", board.getBrdNo());
-            map.put("brdTitlNm", board.getBrdTitlNm());
-            map.put("brdPblsDtmFormatted", board.getBrdPblsDtm() != null
-                ? board.getBrdPblsDtm().format(formatter) : "-");
-            map.put("brdVwCnt", board.getBrdVwCnt());
-            map.put("brdCont", board.getBrdCont());
-            map.put("boardCartegory", board.getBoardCartegory());
-            map.put("notice", board.getNotice());
-            // 필요한 다른 항목도 추가
+            map.put("brdTitlNm", board.get("BRD_TITL_NM"));
+            map.put("brdCont", board.get("BRD_CONT"));
+            map.put("brdVwCnt", board.get("BRD_VW_CNT"));
+            map.put("brdNo", board.get("BRD_NO"));
+
+            // ✅ 공통 코드 이름 (CODE_NAME)
+            map.put("brdCtgryName", board.get("BRD_CTGRY_NAME")); // CODE_NAME 기준
+
+            Date brdPblsDtm = (Date) board.get("BRD_PBLS_DTM");
+            Date brdEndDtm = (Date) board.get("BRD_END_DTM");
+            map.put("brdPblsDtmFormatted", brdPblsDtm != null ? formatter.format(brdPblsDtm) : "-");
+            map.put("brdEndDtmFormatted", brdEndDtm != null ? formatter.format(brdEndDtm) : "-");
+
             processedList.add(map);
         }
 
-        // ④ 모델에 담기
+        // ⑤ 모델에 담기
         model.addAttribute("boardList", processedList);
         model.addAttribute("paging", paging);
-        model.addAttribute("brdCode", brdCode);
-        model.addAttribute("activeTab", tab); // ✅ 탭 강조용
+        model.addAttribute("codeValue", codeValue); // ✅ 탭 기준으로 codeValue 전달
+        model.addAttribute("activeTab", tab); // 탭 활성화
 
-        return "admin/notice/adminNoticeList"; 
+        return "admin/notice/adminNoticeList";
     }
 
 }

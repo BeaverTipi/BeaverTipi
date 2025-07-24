@@ -175,9 +175,8 @@
 
 
 
- <script
- 	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=83437aacc12e4951bd2a5acb4a512ff0&libraries=services,clusterer,drawing"></script>
-<%-- <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=${jsApiKey}&autoload=false&libraries=services,clusterer,drawing"></script> --%>
+ <<!-- script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=83437aacc12e4951bd2a5acb4a512ff0&libraries=services,clusterer,drawing"></script> -->
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=${jsApiKey}&autoload=false&libraries=services,clusterer,drawing"></script>
 
 <script>
 	window.loggedInUserId = "${loginMember != null ? loginMember.mbrCd : ''}";

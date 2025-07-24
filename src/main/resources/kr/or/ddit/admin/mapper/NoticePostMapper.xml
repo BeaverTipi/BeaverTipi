@@ -2,12 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.admin.mapper.NoticePostMapper">
 
-	<resultMap type="BoardVO" id="boardMap" autoMapping="true">
-		<id property="brdNo" column="BRD_NO" />
-		<association property="member" javaType="kr.or.ddit.vo.MemberVO" autoMapping="true" />
-	</resultMap>
-
-	<select id="selectBoardList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultMap="boardMap">
+	<select id="selectBoardList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultType="map">
 		SELECT *
 		FROM (
 			SELECT ROWNUM rn, inner.*
@@ -21,25 +16,25 @@
 					BD.BRD_END_DTM,
 					BD.BRD_DEL_YN,
 					BD.BRD_CTGRY_GRP_CD,
-					BD.BRD_CODE,
 					MEM.MBR_ID,
 					MEM.MBR_CD,
+					C.CODE_VALUE AS BRD_CTGRY_VALUE,
 					C.CODE_NAME AS BRD_CTGRY_NAME
 				FROM BOARD BD
 				LEFT JOIN MEMBER MEM 
 					ON BD.MBR_CD = MEM.MBR_CD
 				LEFT JOIN COMMON_CODE C 
-					ON C.CODE_GROUP = BD.BRD_CTGRY_GRP_CD 
-					AND C.CODE_VALUE = BD.BRD_CODE
+					ON C.CODE_GROUP = BD.BRD_CTGRY_GRP_CD
 				WHERE 
 					BD.BRD_DEL_YN = 'N'
-					  <choose>
-		               <when test="detailSearch.brdCode == '007'">
-		                   AND (BD.BRD_END_DTM IS NULL OR BD.BRD_END_DTM >= SYSDATE)
-		               </when>
-		              </choose>
-					<if test="detailSearch.brdCode != null and detailSearch.brdCode != ''">
-						AND BD.BRD_CODE = #{detailSearch.brdCode}
+					<if test="detailSearch.brdCtgryGrpCd != null and detailSearch.brdCtgryGrpCd != ''">
+						AND BD.BRD_CTGRY_GRP_CD = #{detailSearch.brdCtgryGrpCd}
+					</if>
+					<if test="detailSearch.brdCtgryGrpCd == 'BRDCT' and detailSearch.brdCtgryValue != null">
+						AND C.CODE_VALUE = #{detailSearch.brdCtgryValue}
+					</if>
+					<if test="detailSearch.brdCtgryGrpCd == 'BRDCT' and detailSearch.brdCtgryValue == '007'">
+						AND (BD.BRD_END_DTM IS NULL OR BD.BRD_END_DTM >= SYSDATE)
 					</if>
 				ORDER BY BD.BRD_PBLS_DTM DESC
 			) inner
@@ -47,8 +42,9 @@
 		)
 		WHERE rn &gt;= #{firstRecordIndex}
 	</select>
-	
-	<select id="selectBoardById" parameterType="String" resultMap="boardMap">
+
+
+	<select id="selectBoardById" parameterType="String" resultType="map">
 		SELECT
 			BD.BRD_NO,
 			BD.BRD_TITL_NM,
@@ -58,15 +54,13 @@
 			BD.BRD_END_DTM,
 			BD.BRD_DEL_YN,
 			BD.BRD_CTGRY_GRP_CD,
-			BD.BRD_CODE,
 			MEM.MBR_ID,
 			MEM.MBR_CD,
 			C.CODE_NAME AS BRD_CTGRY_NAME
 		FROM BOARD BD
 		LEFT JOIN MEMBER MEM ON BD.MBR_CD = MEM.MBR_CD
 		LEFT JOIN COMMON_CODE C 
-			ON C.CODE_GROUP = BD.BRD_CTGRY_GRP_CD 
-			AND C.CODE_VALUE = BD.BRD_CODE
+			ON C.CODE_GROUP = BD.BRD_CTGRY_GRP_CD
 		WHERE BD.BRD_NO = #{brdNo}
 	</select>
 
@@ -76,7 +70,6 @@
 		</selectKey>
 		INSERT INTO BOARD (
 			BRD_NO,
-			BRD_CODE,
 			MBR_CD,
 			BRD_TITL_NM,
 			BRD_CONT,
@@ -84,23 +77,22 @@
 			BRD_VW_CNT,
 			BRD_DEL_YN,
 			BRD_DEL_YN_GRP_CD,
-			BRD_CTGRY_GRP_CD,
-			<if test="brdEndDtm != null and brdEndDtm != ''"> 
-				BRD_END_DTM
+			BRD_CTGRY_GRP_CD
+			<if test="brdEndDtm != null and brdEndDtm != ''">
+				, BRD_END_DTM
 			</if>
 		) VALUES (
 			#{brdNo},
-			#{brdCode},              
 			#{mbrCd},
 			#{brdTitlNm},
 			#{brdCont},
 			SYSDATE,
 			0,
 			'N',
-			#{brdDelYnGrpCd},       
-			#{brdCtgryGrpCd},        
-			<if test="brdEndDtm != null and brdEndDtm != ''"> 
-				#{brdEndDtm}
+			#{brdDelYnGrpCd},
+			#{brdCtgryGrpCd}
+			<if test="brdEndDtm != null and brdEndDtm != ''">
+				, #{brdEndDtm}
 			</if>
 		)
 	</insert>
@@ -111,29 +103,30 @@
 			BRD_TITL_NM = #{brdTitlNm},
 			BRD_CONT = #{brdCont},
 			BRD_MOD_DTM = SYSDATE,
-			BRD_END_DTM = #{brdEndDtm},
-			BRD_CTGRY_GRP_CD = #{brdCtgryGrpCd}
+			BRD_CTGRY_GRP_CD = #{brdCtgryGrpCd},
+			BRD_END_DTM = #{brdEndDtm}
 		WHERE
 			BRD_NO = #{brdNo}
 			AND BRD_DEL_YN = 'N'
 	</update>
-
+	
 	<update id="deleteBoard" parameterType="String">
 		UPDATE BOARD
-			SET BRD_DEL_YN = 'Y'
+		SET
+			BRD_DEL_YN = 'Y'
 		WHERE 
 			BRD_NO = #{brdNo}
 			AND BRD_DEL_YN = 'N'
 	</update>
 
+
 	<select id="selectTotalBoardRecord" resultType="int" parameterType="kr.or.ddit.util.page.PaginationInfo">
 		SELECT COUNT(*)
-		FROM 
-			BOARD
+		FROM BOARD
 		WHERE 
 			BRD_DEL_YN = 'N'
-		<if test="detailSearch.brdCode != null and detailSearch.brdCode != ''">
-			AND BRD_CODE = #{detailSearch.brdCode}
+		<if test="detailSearch.brdCtgryGrpCd != null and detailSearch.brdCtgryGrpCd != ''">
+			AND BRD_CTGRY_GRP_CD = #{detailSearch.brdCtgryGrpCd}
 		</if>
 	</select>
 

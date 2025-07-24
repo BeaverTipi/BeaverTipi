@@ -2,61 +2,76 @@
  * 
  */
 document.addEventListener("DOMContentLoaded", () => {
-	function toggleDetail(value) {
-		const noticeBox = document.getElementById('noticeDetailBox');
-		const faqBox = document.getElementById('faqDetailBox');
-		const qnaBox = document.getElementById("qnaDetailBox");
+	function toggleDetail(code) {
+		const mapping = {
+			'007': '#noticeDetailBox',
+			'008': '#qnaDetailBox',
+			'009': '#faqDetailBox'
+		};
 
-		if (!noticeBox || !faqBox || !qnaBox) return;
+		Object.values(mapping).forEach(selector => {
+			const el = document.querySelector(selector);
+			if (el) el.style.display = 'none';
+		});
 
-		// 모두 숨김
-		noticeBox.style.display = 'none';
-		faqBox.style.display = 'none';
-		qnaBox.style.display = 'none';
-
-		// 해당 영역만 표시
-		if (value === '007') {
-			noticeBox.style.display = 'block';
-			initSummernote("#summernote-notice");
-		} else if (value === '009') {
-			faqBox.style.display = 'block';
-			initSummernote("#summernote-faq");
-		} else if (value === '008') {
-			qnaBox.style.display = 'block';
-			initSummernote("#summernote-qna");
+		const activeSelector = mapping[code];
+		if (activeSelector) {
+			const box = document.querySelector(activeSelector);
+			if (box) {
+				box.style.display = 'block';
+				initSummernote(`${activeSelector} textarea`);
+			}
 		}
 	}
 
 	// Summernote 초기화 함수
 	function initSummernote(selector) {
-		// 이미 초기화되었으면 다시 안 함
-		if ($(selector).next('.note-editor').length > 0) return;
+		const $el = $(selector);
+		if ($el.length === 0 || $el.next('.note-editor').length > 0) return;
 
-		$(selector).summernote({
+		$el.summernote({
 			height: 300,
 			placeholder: '내용을 입력하세요...',
 			lang: 'ko-KR'
 		});
 	}
 
-	// 공지유형 라디오 버튼 이벤트
+	// 게시판 유형 라디오 버튼 변경 시 상세영역 토글
 	const radios = document.querySelectorAll('input[name="brdCode"]');
 	radios.forEach(radio => {
-		radio.addEventListener('change', function () {
+		radio.addEventListener('change', function() {
 			toggleDetail(this.value);
 		});
 	});
 
-	// 최초 체크된 항목 반영
+	// 최초 체크된 유형 반영
 	const selected = document.querySelector('input[name="brdCode"]:checked');
 	if (selected) {
 		toggleDetail(selected.value);
 	}
 
-	// 아래는 기존 리스트용 toggle 등 (필요 시 유지)
+	// ✅ FAQ 게시판만 아코디언 토글
+	const faqTitles = document.querySelectorAll(".faq-title");
+	faqTitles.forEach(title => {
+		title.addEventListener("click", function() {
+			const index = this.closest("tr")?.dataset?.index;
+			const contentRow = document.querySelector(`.faq-content[data-index='${index}']`);
+
+			// 열려있는 다른 row 닫기
+			document.querySelectorAll(".faq-content").forEach(row => {
+				if (row !== contentRow) row.style.display = "none";
+			});
+
+			if (contentRow) {
+				contentRow.style.display = contentRow.style.display === "none" ? "table-row" : "none";
+			}
+		});
+	});
+
+	// ✅ 기존 리스트 toggle 유지 (공지사항/QnA용)
 	const titleLinks = document.querySelectorAll(".toggle-detail");
 	titleLinks.forEach(link => {
-		link.addEventListener("click", function (e) {
+		link.addEventListener("click", function(e) {
 			e.preventDefault();
 			const currentRow = this.closest("tr");
 			const currentDetailRow = currentRow.nextElementSibling;
@@ -77,12 +92,4 @@ document.addEventListener("DOMContentLoaded", () => {
 			}
 		});
 	});
-
-	const selectAll = document.getElementById("selectAllCheckbox");
-	const checkboxes = document.querySelectorAll(".rowCheckbox");
-	if (selectAll) {
-		selectAll.addEventListener("change", function () {
-			checkboxes.forEach(cb => cb.checked = selectAll.checked);
-		});
-	}
 });

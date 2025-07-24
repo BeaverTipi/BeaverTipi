@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <head>
 <meta charset="UTF-8">
 <title>게시판</title>
@@ -37,7 +36,7 @@
 	</c:choose>
 
 	<!-- ✅ 페이징 영역 -->
-	<c:if test="${paging.totalPageCount > 1}">
+	<c:if test="${paging != null and paging.totalPageCount > 0}">
 		<div class="pagination-wrapper">
 			<a href="?page=1&tab=${activeTab}"
 				class="${paging.currentPageNo == 1 ? 'disabled' : ''}">&laquo;</a> <a

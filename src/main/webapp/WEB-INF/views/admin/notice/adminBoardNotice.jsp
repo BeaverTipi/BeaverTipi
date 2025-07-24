@@ -24,7 +24,7 @@
 	</thead>
 	<tbody>
 		<c:choose>
-			<c:when test="${not empty boardList}">
+			<c:when test="${boardList != null and boardList.size() > 0}">
 				<c:forEach items="${boardList}" var="board" varStatus="status">
 					<tr>
 						<td>
@@ -36,28 +36,28 @@
 							</a>
 						</td>
 						<td>${board.brdPblsDtmFormatted}</td>
-						<td>${board.brdPblsDtmFormatted}</td>
+						<td>${board.brdEndDtmFormatted}</td>
 						<td>
 						  <c:choose>
-						    <c:when test="${not empty board.notice and board.notice[0].noticeTypeName == '일반'}">
-						      <span class="badge badge-normal">일반</span>
-						    </c:when>
-						    <c:when test="${not empty board.notice and board.notice[0].noticeTypeName == '긴급'}">
-						      <span class="badge badge-danger">긴급</span>
-						    </c:when>
-						    <c:when test="${not empty board.notice and board.notice[0].noticeTypeName == '이벤트'}">
-						      <span class="badge badge-event">이벤트</span>
-						    </c:when>
-						    <c:otherwise>
-						      <span class="badge badge-etc">
-						        <c:out value="${not empty board.notice ? board.notice[0].noticeTypeName : '-'}" />
-						      </span>
-						    </c:otherwise>
-						  </c:choose>
+							  <c:when test="${board.noticeTypeName == '일반'}">
+							    <span class="badge badge-normal">일반</span>
+							  </c:when>
+							  <c:when test="${board.noticeTypeName == '긴급'}">
+							    <span class="badge badge-danger">긴급</span>
+							  </c:when>
+							  <c:when test="${board.noticeTypeName == '이벤트'}">
+							    <span class="badge badge-event">이벤트</span>
+							  </c:when>
+							  <c:otherwise>
+							    <span class="badge badge-etc">${board.noticeTypeName != null ? board.noticeTypeName : '-'}</span>
+							  </c:otherwise>
+							</c:choose>
 						</td>
 						<td>
-							<img src="${pageContext.request.contextPath}/volt/assets/img/file-download-svgrepo-com.svg" 
-							     width="20" height="20" alt="첨부파일" />
+							<c:if test="${not empty board.attachFiles}">
+							  <img src="${pageContext.request.contextPath}/volt/assets/img/file-download-svgrepo-com.svg" 
+							       width="20" height="20" alt="첨부파일" />
+							</c:if>
 						</td>
 					</tr>
 				</c:forEach>

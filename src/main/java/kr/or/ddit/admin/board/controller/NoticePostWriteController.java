@@ -6,16 +6,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.servlet.http.HttpSession;
 import kr.or.ddit.admin.board.service.NoticePostService;
+import kr.or.ddit.admin.code.service.CommonCodeService;
 import kr.or.ddit.util.validate.InsertGroup;
 import kr.or.ddit.vo.BoardVO;
 import kr.or.ddit.vo.MemberVO;
@@ -26,40 +24,48 @@ public class NoticePostWriteController {
 
 	@Autowired
 	private NoticePostService service;
+	
+	@Autowired
+	private CommonCodeService commonCode;
 
 	static final String MODELNAME = "board";
 
 	@ModelAttribute("board")
-	public BoardVO prepareBoard(HttpSession session) {
+	public BoardVO prepareBoard(@AuthenticationPrincipal(expression = "realUser") MemberVO authMember) {
 		BoardVO board = new BoardVO();
 		board.setBrdCode("007");
+		board.setBrdCtgryGrpCd("BRDCT");
+		if (authMember != null) {
+			board.setMbrCd(authMember.getMbrCd());
+		}
 		return board;
 	}
 
-	@InitBinder("board")
-	public void initBinder(WebDataBinder binder,
-			@AuthenticationPrincipal(expression = "realUser") MemberVO authMember) {
-		Object target = binder.getTarget();
-		if (target instanceof BoardVO && authMember != null) {
-			BoardVO board = (BoardVO) target;
-			if (board.getMbrCd() == null || board.getMbrCd().isBlank()) {
-				board.setMbrCd(authMember.getMbrCd());
-			}
-		}
-	}
+//	@InitBinder("board")
+//	public void initBinder(WebDataBinder binder,
+//			@AuthenticationPrincipal(expression = "realUser") MemberVO authMember) {
+//		Object target = binder.getTarget();
+//		if (target instanceof BoardVO && authMember != null) {
+//			BoardVO board = (BoardVO) target;
+//			if (board.getMbrCd() == null || board.getMbrCd().isBlank()) {
+//				board.setMbrCd(authMember.getMbrCd());
+//			}
+//		}
+//	}
 
 	@GetMapping
 	public String noticewriteForm(Model model) {
 		model.addAttribute("pageTitle", "새 공지사항 등록");
+		model.addAttribute("brdCodeList", commonCode.readCommonCodeList("BRDCT"));
+		model.addAttribute("noticeTypeList", commonCode.readCommonCodeList("NOTPE"));
+		model.addAttribute("faqCtgryList", commonCode.readCommonCodeList("QNACT"));
+		model.addAttribute("qnaCtgryList", commonCode.readCommonCodeList("FAQCT"));
 		return "admin/notice/adminNoticeForm";
 	}
 
 	@PostMapping
-	public String noticeWriteSubmit(
-			@Validated(InsertGroup.class) @ModelAttribute("board") BoardVO board,
-			BindingResult errors, 
-			RedirectAttributes redirectAttributes
-	) {
+	public String noticeWriteSubmit(@Validated(InsertGroup.class) @ModelAttribute("board") BoardVO board,
+			BindingResult errors, RedirectAttributes redirectAttributes) {
 		String lvn;
 		if (!errors.hasErrors()) {
 			int result = service.createBoard(board);

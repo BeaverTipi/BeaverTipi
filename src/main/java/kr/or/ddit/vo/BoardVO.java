@@ -19,6 +19,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(of="brdNo")
 public class BoardVO implements Serializable{
 	private String brdDelYnGrpCd;
+	private String brdCtgryGrpCd;
 	@NotBlank(groups = {UpdateGroup.class, DeleteGroup.class})
 	private String brdNo;
 	@NotBlank
@@ -40,7 +41,9 @@ public class BoardVO implements Serializable{
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDateTime brdEndDtm;
 	
-	private String noticeType; 
+	private String noticeType;
+	private String faqCtgry;
+	private String qnaCtgry;
 	private String noticeTypeName;	
 	private List<NoticeVO> notice;
 	private BoardCartegoryVO boardCartegory;
@@ -49,7 +52,8 @@ public class BoardVO implements Serializable{
 	
 	private List<FileVO> attachFiles;	// 첨부파일 목록 필드
 	
-	
+	// 시스템 관리자 관련
+	private String brdCtgryValue;
 	
 	// REPORT 테이블 관련 필드
 	private String reportId;       		// 신고 번호
@@ -91,4 +95,6 @@ public class BoardVO implements Serializable{
     private LocalDate adsReqPblsStartDtFrom; // 광고 요청 게재 시작날짜 From
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate adsReqPblsEndDtTo;     // 광고 요청 게재 종료날짜 To
+    
+ 
 }
