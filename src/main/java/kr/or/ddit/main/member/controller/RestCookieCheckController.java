@@ -16,8 +16,8 @@ public class RestCookieCheckController {
 	@GetMapping("/rest/auth")
 	public ResponseEntity<?> checkAuth(Authentication authentication, Principal principal) {
 	    if (authentication == null || !authentication.isAuthenticated()) {
-//	    	log.debug("왜 서명페이지로 못 넘어가냐?????? {}", principal.toString());
-//	    	log.debug("왜 서명페이지로 못 넘어가냐?????? 2트 {}", authentication.toString());
+	    	log.debug("왜 서명페이지로 못 넘어가냐?????? principal>..{}", principal.toString());
+	    	log.debug("왜 서명페이지로 못 넘어가냐?????? 2트 authentication>..{}", authentication.toString());
 	    	//둘 다 null;
 	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	    }

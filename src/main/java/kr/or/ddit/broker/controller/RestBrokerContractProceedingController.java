@@ -229,7 +229,7 @@ public class RestBrokerContractProceedingController {
         }
         
         /** 3. 개설 여부 조회 */
-        String signYn = contService.checkIsSignPageOpened(contId); // Y/N 조회
+        String signYn = contService.isSignPageOpened(contId); // Y/N 조회
         
         /** 4. ResponseEntity */
         if ("N".equals(signYn)) resultJson = objectMapper.writeValueAsString(

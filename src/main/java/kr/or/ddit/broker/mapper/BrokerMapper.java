@@ -94,6 +94,8 @@ public interface BrokerMapper {
 	 * @return
 	 */
 	public String selectContractSignatureYn(String contId);
+	public ContractVO selectContractInfo(String contId);
+	public boolean isContractExist(@Param("contId") String contId);
 	
 	public FileVO selectContractFile(String contId); 
 	

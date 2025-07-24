@@ -1,6 +1,7 @@
 package kr.or.ddit.util.crypto;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,17 @@ public class AES256UtilTest {
 	
 	@Autowired
 	private AES256Util aes256Util;
+	
+	@Test
+	@DisplayName("REACT-SPRING 암복호화 iv키 테스트")
+	void testContractIdSecure() {
+		
+		String original = "CN250723002";
+		String encrypted = "cai4gzV6J0gUApkMqvADeg==";
+		String decrypted = aes256Util.decrypt(encrypted);
+		log.info("결과야 결과 {}", decrypted);
+		assertEquals(original, decrypted);
+	}
 	
 	@Test
 	@DisplayName("문자열 암복호화 테스트")

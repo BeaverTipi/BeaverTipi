@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ContractVO implements Serializable{
 	private String contId;
-	private String mbrCd;
 	private String mbrCdBrok;
 	private String lstgId;
 	private String contTypeCode;
@@ -29,6 +28,9 @@ public class ContractVO implements Serializable{
 	private String contStatGroupCd;
 	private String contDelYn;
 	private String contSignYn;
+	private String contLesseeTelno;
+	private String contTenancyTelno;
+	private String contBrokerTelno;
 	
 	private transient MemberVO lesseeInfo;   // 임차인
 	private transient BrokerVO brokerInfo;   // 중개인

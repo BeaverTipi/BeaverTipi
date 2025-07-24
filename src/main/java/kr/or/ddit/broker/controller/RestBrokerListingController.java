@@ -59,12 +59,12 @@ public class RestBrokerListingController {
 			Principal principal
 	) {
 		String username = principal.getName();
-		log.error("{}", username);
+		log.debug("{}", username);
 		String mbrCd = authUnpack.getMbrCd(username);
 		
 		
 		List<ListingVO> lstgList= service.readLstgList(mbrCd);
-		log.error("{}", lstgList);
+		log.debug("{}", lstgList);
 		return lstgList;
 	}
 	

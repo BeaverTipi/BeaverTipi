@@ -92,5 +92,14 @@ public interface BrokerContractService {
 	 * 서명페이지 개설 여부 확인
 	 * @param contId
 	 */
-	public String checkIsSignPageOpened(String contId);
+	public String isSignPageOpened(String contId);
+	
+	/**
+	 * 인가처리 후 계약페이지 넘어갈 때 만들어봄
+	 * @param contId
+	 * @return
+	 */
+	public boolean isContractExist(String contId);
+	
+	public ContractVO readContractInfo(String contId);
 }

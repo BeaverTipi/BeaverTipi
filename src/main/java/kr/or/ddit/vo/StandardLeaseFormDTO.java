@@ -17,7 +17,6 @@ public class StandardLeaseFormDTO implements Serializable {
     private String check;
 
     // 중개인 정보
-    @NotBlank
     private String agentMbrCd;
     private String agentMbrId;
     private String agentName;
@@ -33,7 +32,6 @@ public class StandardLeaseFormDTO implements Serializable {
     // 임대인
     private Map<String, Object> lessorInfo; // "0": {...}, "1": {...}
     private Map<String, Object> coLessor;   // "1": {...}
-    @NotBlank
     private String lessorMbrCd;
     private String lessorMbrId;
     private String lessorName;
@@ -50,7 +48,6 @@ public class StandardLeaseFormDTO implements Serializable {
 
     // 임차인
     private Map<String, Object> lesseeInfo;
-    @NotBlank
     private String lesseeMbrCd;
     private String lesseeMbrId;
     private String lesseeName;

@@ -123,7 +123,6 @@
 
 <resultMap id="ContractMap" type="ContractVO" autoMapping="true">
 	<id property="contId" column="CONT_ID" />
-	<result property="mbrCd" column="MBR_CD" />
 	<result property="mbrCdBrok" column="MBR_CD_BROK" />
 	<result property="lstgId" column="LSTG_ID" />
 	<result property="contTypeCode" column="CONT_TYPE_CODE" />
@@ -134,6 +133,9 @@
 	<result property="contStatCd" column="CONT_STAT_CD" />
 	<result property="contDtm" column="CONT_DTM" />
 	<result property="contStatGroupCd" column="CONT_STAT_GROUP_CD" />
+	<result property="contLesseeTelno" column="CONT_LESSEE_TELNO" />
+	<result property="contTenancyTelno" column="CONT_TENANCY_TELNO" />
+	<result property="contBrokerTelno" column="CONT_BROKER_TELNO" />
 
 	<association property="brokerInfo" resultMap="BrokerMap" />
 	<association property="tenancyInfo" resultMap="TenancyMap" />
@@ -141,7 +143,7 @@
 	<association property="listingInfo" resultMap="ListingMap" />
 </resultMap>
 
-<sql id="selectLstgList">
+<sql id="sqlSelectLstgList">
 	SELECT L.*
 	       ,TI.*
 	       ,BI.*
@@ -154,17 +156,18 @@
 </sql>
 
 <select id="selectLstgList" parameterType="String" resultMap="ListingMap">
-	<include refid="selectLstgList" />
+	<include refid="sqlSelectLstgList" />
+	   AND L.LSTG_DEL = 'N'
 	 ORDER BY L.LSTG_REG_DATE DESC
 </select>
 <select id="selectLstgListForContract" parameterType="String" resultMap="ListingMap">
-	<include refid="selectLstgList" />
+	<include refid="sqlSelectLstgList" />
 	   AND L.LSTG_PROD_STAT = '001'
 	   AND L.LSTG_DEL = 'N'
 	 ORDER BY L.LSTG_ID ASC
 </select>
 <select id="selectLstgDetails" parameterType="Map" resultMap="ListingMap">
-	<include refid="selectLstgList" />
+	<include refid="sqlSelectLstgList" />
 	   AND L.LSTG_ID = #{lstgId}
 </select>
 <select id="selectWishlistForLessee" parameterType="String" resultType="ListingWishlistVO">
@@ -202,7 +205,7 @@
 <select id="selectContractList" parameterType="String" resultType="ContractVO">
 	SELECT *
 	  FROM CONTRACT
-	 WHERE MBR_CD = #{mbrCd}
+	 WHERE MBR_CD_BROK = #{mbrCdBrok}
 </select>
 
 <insert id="insertProceedingContract" parameterType="ContractVO">
@@ -211,7 +214,6 @@
     </selectKey>
 	INSERT INTO CONTRACT(
 		CONT_ID
-		, MBR_CD
 		, MBR_CD_BROK
 		, LSTG_ID
 		, CONT_TYPE_CODE
@@ -222,10 +224,12 @@
 		, CONT_DTM
 		, CONT_TYPE_GROUP_CD
 		, CONT_STAT_GROUP_CD
+		, CONT_LESSEE_TELNO
+		, CONT_TENANCY_TELNO
+		, CONT_BROKER_TELNO
 	)
 	VALUES(
 		#{contId}
-	    , #{mbrCd}
 	    , #{mbrCdBrok}
 	    , #{lstgId}
 	    , #{contTypeCode}
@@ -236,6 +240,9 @@
 	    , SYSDATE
 	    , 'TRDST'
 	    , 'CONTR'
+	    , #{contLesseeTelno}
+	    , #{contTenancyTelno}
+	    , #{contBrokerTelno}
 	)
 </insert>
 <update id="updateListingProdStat" parameterType="String">
@@ -271,10 +278,22 @@
 	   AND CONT_DEL_YN = 'N'
 	   AND CONT_SIGN_YN = 'Y'
 </update>
-<select id="selectContractSignatureYn" resultType="String">
+<select id="selectContractSignatureYn" parameterType="String" resultType="String">
 	SELECT CONT_SIGN_YN
 	  FROM CONTRACT
 	 WHERE CONT_ID = #{contId}
 	   AND CONT_DEL_YN = 'N' 
+</select>
+<select id="selectContractInfo" parameterType="String" resultMap="ContractMap">
+	SELECT *
+	  FROM CONTRACT
+	 WHERE CONT_ID = #{contId}
+</select>
+<select id="isContractExist" parameterType="String" resultType="Boolean">
+	SELECT EXISTS
+	(	SELECT 1
+		  FROM CONTRACT
+		 WHERE CONT_ID = #{contId}
+	) FROM DUAL
 </select>
 </mapper>

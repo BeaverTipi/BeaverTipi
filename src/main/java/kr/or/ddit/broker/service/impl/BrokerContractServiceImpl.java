@@ -206,7 +206,6 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 
 			/** 4. DB에 계약정보 레코드 입력 */
 			ContractVO contract = ContractVO.builder()
-					.mbrCd(String.valueOf(contractInfo.getLesseeMbrCd()))
 					.mbrCdBrok(authUnpack.getMbrCd(principal.getName()))
 					.lstgId(contractInfo.getListingId())
 					.contTypeCode(contractInfo.getListingTypeSale())
@@ -228,6 +227,9 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 					.contDtm(null)
 					.contTypeGroupCd(null)
 					.contStatGroupCd(null)
+					.contLesseeTelno(contractInfo.getLesseeTelno())
+					.contTenancyTelno(contractInfo.getLessorTelno())
+					.contBrokerTelno(contractInfo.getAgentTelno())
 					.build();
 			log.debug("(ಥ﹏ಥ) {}", contractInfo.getListingTypeCode1());
 			log.debug("(ಥ﹏ಥ) {}", contractInfo.getListingLease());
@@ -312,7 +314,6 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 		
 		return rec;
 	}
-
 	/**
 	 * 일정 시간 후 알아서 닫히게끔
 	 */
@@ -327,12 +328,28 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	}
 
 	@Override
-	public String checkIsSignPageOpened(String contId) {
+	public String isSignPageOpened(String contId) {
 		if(contId == null || contId.trim().isEmpty())
 			throw new IllegalArgumentException("계약 ID(contId)는 필수입니다.");
 		String isSignPageOpened = mapper.selectContractSignatureYn(contId);
 		if(isSignPageOpened == null || isSignPageOpened.isEmpty())
 			throw new IllegalStateException("전자서명 상태 업데이트 실패: contId=" + contId);
 		return isSignPageOpened;
+	}
+	
+	
+	@Override
+	public ContractVO readContractInfo(String contId) {
+		if(contId == null || contId.trim().isEmpty())
+			throw new IllegalArgumentException("계약 ID(contId)는 필수입니다.");
+		ContractVO contract = mapper.selectContractInfo(contId);
+		if(contract == null)
+			throw new IllegalStateException("계약 정보 조회 실패: 파라미터(contId)=" + contId);
+		return contract;
+	}
+
+	@Override
+	public boolean isContractExist(String contId) {
+		return mapper.isContractExist(contId);
 	}
 }
