@@ -8,7 +8,7 @@
 			SELECT TO_CHAR(SEQ_BRD_NO.NEXTVAL) FROM DUAL
 		</selectKey>
         INSERT INTO BOARD (
-            BRD_NO
+			BRD_NO
             ,BRD_CODE
             ,MBR_CD
             ,BRD_TITL_NM
@@ -29,12 +29,8 @@
     </insert>
 
     <insert id="insertAdsClient" parameterType="adsClientVO">
-        <selectKey keyProperty="adsId" order="BEFORE" resultType="String">
-			SELECT TO_CHAR(SEQ_ADS_ID.NEXTVAL) FROM DUAL
-		</selectKey>
         INSERT INTO ADS (
-            ADS_ID
-            ,BRD_NO
+        	BRD_NO
             ,ADS_STATUS_CODE
             ,ADS_BP
             ,ADS_PIC
@@ -42,8 +38,7 @@
             ,ADS_REQ_PBLS_START_DT
             ,ADS_REQ_PBLS_END_DT
         ) VALUES (
-            #{adsId}
-            ,#{brdNo}
+        	#{brdNo}
             ,'대기'
             ,#{adsBp}
             ,#{adsPic}

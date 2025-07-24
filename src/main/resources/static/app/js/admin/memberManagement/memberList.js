@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("회원 상세 조회 요청:", mbrCd);
 
         // AJAX 요청으로 회원 상세 정보 가져오기
-        axios.get(`/admin/member/detail/${mbrCd}`) // 예시 URL, 실제 백엔드 URL에 맞춰 수정 필요
+        axios.get(`/ajax/admin/member/detail/${mbrCd}`) // 예시 URL, 실제 백엔드 URL에 맞춰 수정 필요
             .then(response => {
                 const member = response.data;
                 console.log("회원 상세 데이터 수신:", member);

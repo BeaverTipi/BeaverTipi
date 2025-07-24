@@ -36,7 +36,7 @@ public class MemberAdsController {
      * @param model Model 객체
      * @return 광고 요청 작성 폼 JSP 경로
      */
-    @GetMapping("/requestForm.do")
+    @GetMapping("/requestForm")
     public String adsRequestForm(Model model) {
         // 폼 초기화를 위해 빈 VO 객체를 모델에 추가할 수 있습니다.
         // 예를 들어, commandObject 형태로 BoardVO와 AdsClientVO를 미리 설정하여 폼에 바인딩할 수 있습니다.
@@ -54,7 +54,7 @@ public class MemberAdsController {
      * @param model Model 객체
      * @return 리다이렉트 경로 또는 결과 페이지
      */
-    @PostMapping("/request.do")
+    @PostMapping("/request")
     public String processAdsRequest(
             @ModelAttribute("boardVO") @Valid BoardVO boardVO, // 폼 데이터 바인딩
             BindingResult bindingResult,

@@ -28,13 +28,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/admin/businessAds")
+@RequestMapping("")
 public class BusinessAdsController {
 
 	@Inject
 	private BusinessAdsService businessAdsService;
 
-	@GetMapping("businessAdsList") // 기존 목록 조회
+	@GetMapping("/admin/businessAds/businessAdsList") // 기존 목록 조회
 	public String selectBusinessAdsList(
 	        @RequestParam(name="page", required = false, defaultValue = "1") int currentPage,
 	        @ModelAttribute("detailSearch") BusinessAdsSearchVO detailSearch,
@@ -64,7 +64,7 @@ public class BusinessAdsController {
 	}
 
 	// 모달용 상세 정보 조회 메서드
-	@GetMapping(value = "adsDetailModal.do")
+	@GetMapping(value = "/ajax/admin/businessAds/adsDetailModal")
 	@ResponseBody
 	public BoardVO selectBusinessAdsDetailForModal(@RequestParam("brdNo") String brdNo) {
 
@@ -75,7 +75,7 @@ public class BusinessAdsController {
         return boardDetail; // 실제 DB에서 조회한 BoardVO 객체 반환
 	}
 	
-	@PostMapping(value = "/updateAdsStatus.do", produces = MediaType.APPLICATION_JSON_VALUE) // produces 속성 -> 응답의 Content-Type 지정
+	@PostMapping(value = "/admin/businessAds/updateAdsStatus.do", produces = MediaType.APPLICATION_JSON_VALUE) // produces 속성 -> 응답의 Content-Type 지정
     @ResponseBody
     public ResponseEntity<Map<String, Object>> updateAdsStatus(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>(); // Map 객체 생성
@@ -133,7 +133,7 @@ public class BusinessAdsController {
         }
     }
 	
-	@GetMapping(value = "/approvedAds", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/ajax/admin/businessAds/approvedAds", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<BoardVO>> getApprovedAdsForMain() {
         try {

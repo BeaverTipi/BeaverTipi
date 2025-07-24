@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (mbrCd && newMbrStatus !== originalMbrStatus) {
             changesMade = true;
             promises.push(
-                axios.post('/admin/report/updateMemberStatus', null, {
+                axios.post('/ajax/admin/report/updateMemberStatus', null, {
                     params: { mbrCd: mbrCd, mbrStatus: newMbrStatus }
                 })
                 .then(response => {

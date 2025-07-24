@@ -30,7 +30,7 @@
     <h2 class="mb-4">광고 요청 작성</h2>
     
     <%-- multipart/form-data 인코딩 타입 설정 및 commandName 지정 --%>
-    <form:form id="adsRequestForm" action="${pageContext.request.contextPath}/member/ads/request.do" 
+    <form:form id="adsRequestForm" action="${pageContext.request.contextPath}/member/ads/request" 
                method="post" enctype="multipart/form-data" 
                modelAttribute="boardVO"> <%-- BoardVO를 기본 modelAttribute로 설정 --%>
         
@@ -39,12 +39,12 @@
             <div class="card-body">
                 <div class="form-group">
                     <label for="brdTitlNm">광고 제목 <span class="text-danger">*</span></label>
-                    <form:input path="brdTitlNm" class="form-control" id="brdTitlNm" placeholder="광고 제목을 입력하세요" required="true"/>
+                    <form:input path="brdTitlNm" class="form-control" id="brdTitlNm" placeholder="광고 제목을 입력하세요(공백 포함 최대 10자)" required="true"/>
                     <form:errors path="brdTitlNm" cssClass="text-danger"/>
                 </div>
                 <div class="form-group">
                     <label for="brdCont">광고 내용 <span class="text-danger">*</span></label>
-                    <form:textarea path="brdCont" class="form-control" id="brdCont" rows="1" placeholder="광고 멘트를 입력해주세요" required="true"/>
+                    <form:textarea path="brdCont" class="form-control" id="brdCont" rows="1" placeholder="광고 멘트를 입력해주세요(공백 포함 최대 20자)" required="true"/>
                     <form:errors path="brdCont" cssClass="text-danger"/>
                 </div>
             </div>
@@ -86,7 +86,7 @@
                     <%-- multiple 속성을 추가하여 여러 파일 선택 가능하도록 함 --%>
                     <input type="file" class="form-control-file" id="attachFiles" name="attachFiles" multiple>
                     <h4></h4>
-                    <small class="form-text text-muted">로고사진 1장, 메인 광고 사진 1장을 첨부해주세요!<br>이미지 (JPG, PNG), PDF 파일을 첨부할 수 있습니다.</small>
+                    <small class="form-text text-muted">로고사진 1장, 메인 광고 사진 1장을 순서대로 첨부해주세요!<br>이미지 크기는 최대 1200x900입니다.</small>
                 </div>
 
                 <div class="file-preview-area mt-3">

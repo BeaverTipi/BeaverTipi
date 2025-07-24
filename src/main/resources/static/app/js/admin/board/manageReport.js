@@ -75,7 +75,7 @@ $(document).ready(function() {
                 }
 
                 if (confirm(`${mbrCd} 회원의 상태를 "${newStatus}"(으)로 변경하시겠습니까?`)) {
-                    axios.post('/admin/report/updateMemberStatus', null, {
+                    axios.post('/ajax/admin/report/updateMemberStatus', null, {
                         params: {
                             mbrCd: mbrCd,
                             mbrStatus: newStatus

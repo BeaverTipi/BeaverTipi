@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("")
 public class ManageMemberListController {
 
     private ManageMemberService service;
@@ -43,7 +43,7 @@ public class ManageMemberListController {
      * @param search MemberSearchVO 객체에 바인딩된 검색 조건
      * @return 뷰 경로
      */
-    @GetMapping("/member/list")
+    @GetMapping("/admin/member/list")
     public String listHandler(
             Model model,
             @RequestParam(required = false, defaultValue = "1") int page,
@@ -81,7 +81,7 @@ public class ManageMemberListController {
      * @param mbrCd 조회할 회원의 코드
      * @return MemberVO 객체를 JSON 형태로 반환
      */
-    @GetMapping("/member/detail/{mbrCd}")
+    @GetMapping("/ajax/admin/member/detail/{mbrCd}")
     @ResponseBody // JSON 응답을 위해 @ResponseBody 추가
     public ResponseEntity<MemberVO> getMemberDetail(@PathVariable String mbrCd) {
         log.info("회원 상세 조회 요청. MBR_CD: {}", mbrCd);
@@ -103,7 +103,7 @@ public class ManageMemberListController {
      * @param mbrStatusCode 변경할 회원 상태 코드
      * @return "SUCCESS" 또는 "FAIL" 문자열 반환
      */
-    @PostMapping("/member/updateStatusFromDetail")
+    @PostMapping("/admin/member/updateStatusFromDetail")
     @ResponseBody // JSON 또는 문자열 응답을 위해 @ResponseBody 추가
     public ResponseEntity<String> updateMemberStatusFromDetail(
             @RequestParam("mbrCd") String mbrCd,

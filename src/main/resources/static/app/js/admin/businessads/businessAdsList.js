@@ -254,7 +254,7 @@ $(document).ready(function() {
         console.log("상세보기 클릭, 게시글 번호:", brdNo);
 
         $.ajax({
-            url: contextPath + '/admin/businessAds/adsDetailModal.do',
+            url: contextPath + '/ajax/admin/businessAds/adsDetailModal',
             type: 'GET',
             data: { brdNo: brdNo },
             dataType: 'json',

@@ -54,7 +54,7 @@ runWhenJQueryLoaded(function() {
         // 광고 데이터를 가져와 캐러셀에 동적으로 로드하는 함수
         function loadApprovedAds() {
             
-            const requestUrl = contextPath + '/admin/businessAds/approvedAds';
+            const requestUrl = contextPath + '/ajax/admin/businessAds/approvedAds';
             console.log("AJAX 요청 URL:", requestUrl);
 
             $.ajax({
