@@ -35,6 +35,7 @@ public class RsdBoardRestController {
             @RequestParam(value = "searchWord", required = false) String searchWord,
             @RequestParam(value = "searchStartDate", required = false) String searchStartDate,
             @RequestParam(value = "searchEndDate", required = false) String searchEndDate,
+            @RequestParam(value = "myPostsOnly", required = false) String myPostsOnly,
             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
     ) {
         SimpleSearch search = new SimpleSearch();
@@ -43,7 +44,11 @@ public class RsdBoardRestController {
         search.setSearchWord(searchWord);
         search.setSearchStartDate(searchStartDate);
         search.setSearchEndDate(searchEndDate);
-
+        
+        MemberVO loginUser = principal.getRealUser();
+        search.setLoginMbrCd(loginUser.getMbrCd());
+        search.setMyPostsOnly("Y".equalsIgnoreCase(myPostsOnly));
+        
         PaginationInfo<ResidentBoardVO> paging = new PaginationInfo<>();
         paging.setSimpleSearch(search);
         paging.setCurrentPageNo(page);
@@ -51,7 +56,10 @@ public class RsdBoardRestController {
         paging.setPageSize(5);
 
         List<ResidentBoardVO> boardList = boardService.getBoardList(paging);
-
+        
+        log.info("✅ 내 글만 보기 여부: {}", myPostsOnly);  // 'Y' 또는 null 확인
+        log.info("🧪 loginMbrCd  = {}", search.getLoginMbrCd());
+        
         Map<String, Object> result = new HashMap<>();
         result.put("postList", boardList);
         result.put("pagination", paging); // JS에서 totalPageCount, currentPageNo 등을 활용 가능

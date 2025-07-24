@@ -40,6 +40,7 @@ public class RsdBoardController {
             Model model,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(value = "search.bldgId", required = false) String search_bldgId,  // search.bldgId로 받기
+            @RequestParam(value = "myPostsOnly", required = false)String myPostsOnly,
             @ModelAttribute("search") SimpleSearch simpleSearch,
             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
 
@@ -64,7 +65,9 @@ public class RsdBoardController {
         // 검색 파라미터로 받은 bldgId를 SimpleSearch 객체에 세팅
         simpleSearch.setBldgId(search_bldgId);  // search.bldgId를 simpleSearch에 설정
         
-        
+        simpleSearch.setLoginMbrCd(member.getMbrCd());
+        simpleSearch.setMyPostsOnly("Y".equalsIgnoreCase(myPostsOnly));
+
         // 나머지 로직은 그대로
         PaginationInfo<ResidentBoardVO> paging = new PaginationInfo<>();
         paging.setCurrentPageNo(page);
@@ -72,7 +75,6 @@ public class RsdBoardController {
 
         int totalRecord = boardService.getTotalRecord(paging);
         paging.setTotalRecordCount(totalRecord);
-
         List<ResidentBoardVO> boardList = boardService.getBoardList(paging);
         String pagingHTML = new DefaultPaginationRenderer().renderPagination(paging, "fnPaging");
 

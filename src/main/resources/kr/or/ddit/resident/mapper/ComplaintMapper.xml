@@ -90,6 +90,9 @@
               </otherwise>
             </choose>
           </if>
+			<if test="search.myPostsOnly">
+				  AND B.MBR_CD = #{search.loginMbrCd}
+			</if>
         </where>
         ORDER BY B.BRD_PBLS_DTM DESC
       ) T
@@ -144,6 +147,9 @@
           </otherwise>
         </choose>
       </if>
+		<if test="search.myPostsOnly">
+		  AND B.MBR_CD = #{search.loginMbrCd}
+		</if>
     </where>
   </select>
 

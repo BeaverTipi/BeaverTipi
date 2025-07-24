@@ -236,23 +236,35 @@
             </c:forEach>
           </div>
         </div>
-		
-<!-- 검색조건 + 검색어 같이 정렬 (수정됨) -->
-<div class="search-item search-keyword-group" style="grid-column: span 2;">
-  <div style="display: grid; grid-template-columns: 140px 1fr; gap: 12px; align-items: end;">
-    <div>
-      <label for="searchType">검색조건</label>
+<div class="search-item search-combined-group" style="grid-column: span 2;">
+  <label for="searchType">검색</label>
+  <div class="combined-search-row">
+    
+    <!-- 검색조건 -->
+    <div class="search-type-group">
       <select name="searchType" class="select-field short">
         <option value="title" ${search.searchType == 'title' ? 'selected' : ''}>제목</option>
         <option value="content" ${search.searchType == 'content' ? 'selected' : ''}>내용</option>
       </select>
     </div>
-    <div>
-      <label for="searchWord">검색어</label>
+
+    <!-- 검색어 -->
+    <div class="search-word-group">
       <input type="text" name="searchWord" value="${search.searchWord}" class="input-field" placeholder="검색어를 입력하세요" />
     </div>
+
+    <!-- 내 글만 보기 -->
+    <div class="my-posts-group">
+      <label>
+        <input type="checkbox" id="myPostsOnly" name="myPostsOnly" value="Y"
+               ${param.myPostsOnly == 'Y' ? 'checked' : ''} />
+        내 글만 보기
+      </label>
+    </div>
+
   </div>
 </div>
+
 
         <!-- 버튼 -->
 		<div class="search-item search-buttons" style="grid-column: span 2; display: flex; justify-content: flex-end; align-items: end;">
@@ -261,13 +273,6 @@
 		</div>
       </form>
     </div>
-    
-<%-- <c:if test="${empty loginMember}"> --%>
-<!--   <tr><td colspan="6">⚠ 로그인 정보가 없습니다 (loginMember is null)</td></tr> -->
-<%-- </c:if> --%>
-<%-- <c:if test="${not empty loginMember}"> --%>
-<%--   <tr><td colspan="6">✅ 로그인 정보 있음: ${loginMember.mbrCd}</td></tr> --%>
-<%-- </c:if> --%>
 
     <!-- 민원 목록 테이블 -->
     <table class="table">
@@ -282,61 +287,7 @@
         </tr>
       </thead>
      <tbody id="boardTableBody" class="post-list">
-<%--   <c:forEach var="vo" items="${boardList}"> --%>
-<!--     <tr> -->
-<%--       <td>${vo.mbrNnm}</td> --%>
 
-<!--       ✅ 제목 처리: 비공개 + 권한 없는 경우 가림 -->
-<!--       <td> -->
-<%--         <c:choose> --%>
-<%--           <c:when test="${vo.openYn == 'N' and vo.mbrCd ne loginMember.mbrCd}"> --%>
-<!--             <span class="text-muted">비공개 글입니다.</span> -->
-<%--           </c:when> --%>
-<%--           <c:otherwise> --%>
-<%--             <c:out value="${vo.rsdBrdTitl}" /> --%>
-<%--           </c:otherwise> --%>
-<%--         </c:choose> --%>
-<!--       </td> -->
-
-<!--       공개여부 -->
-<!--       <td> -->
-<%--         <c:choose> --%>
-<%--           <c:when test="${vo.openYn == 'Y'}"><span class="badge badge-blue">공개</span></c:when> --%>
-<%--           <c:otherwise><span class="badge badge-dark">비공개</span></c:otherwise> --%>
-<%--         </c:choose> --%>
-<!--       </td> -->
-
-<!--       처리상태 -->
-<!--       <td> -->
-<%--         <c:forEach var="code" items="${reqStatusList}"> --%>
-<%--           <c:if test="${code.codeValue eq vo.reqStatus}"> --%>
-<%--             <c:choose> --%>
-<%--               <c:when test="${code.codeValue == '001'}"><span class="badge badge-orange">${code.codeName}</span></c:when> --%>
-<%--               <c:when test="${code.codeValue == '002'}"><span class="badge badge-green">${code.codeName}</span></c:when> --%>
-<%--             </c:choose> --%>
-<%--           </c:if> --%>
-<%--         </c:forEach> --%>
-<!--       </td> -->
-
-<!--       게시일 -->
-<%--       <td><fmt:formatDate value="${vo.rsdBrdPblsDate}" pattern="yyyy-MM-dd"/></td> --%>
-
-<!--       ✅ 보기 버튼 처리 -->
-<!--       <td> -->
-<%--         <c:choose> --%>
-<%--           <c:when test="${vo.openYn == 'N' and vo.mbrCd ne loginMember.mbrCd}"> --%>
-<!--             <button type="button" class="btn-view" onclick="showPrivateAlert()">보기</button> -->
-<%--           </c:when> --%>
-<%--           <c:otherwise> --%>
-<%--             <form method="get" action="${pageContext.request.contextPath}/resident/complaint/view" style="display:inline;"> --%>
-<%--               <input type="hidden" name="rsdBrdId" value="${vo.rsdBrdId}" /> --%>
-<!--               <button type="submit" class="btn-view">보기</button> -->
-<!--             </form> -->
-<%--           </c:otherwise> --%>
-<%--         </c:choose> --%>
-<!--       </td> -->
-<!--     </tr> -->
-<%--   </c:forEach> --%>
   <c:if test="${empty boardList}">
     <tr><td colspan="6" class="no-data-center">검색 결과가 없습니다.</td></tr>
   </c:if>
@@ -346,9 +297,11 @@
     <!-- 페이징 -->
 	<div class="pagination-wrapper"></div>
     <!-- 글쓰기 버튼 -->
-    <div class="write-buttons">
-      <a class="btn-success" href="${pageContext.request.contextPath}/resident/complaint/form?bldgIdParam=${selectedBldgId}">글쓰기</a>
-    </div>
+	<c:if test="${not empty selectedBldgId}">
+	  <div class="write-buttons">
+	  	<a class="btn-success" href="${pageContext.request.contextPath}/resident/complaint/form?bldgIdParam=${selectedBldgId}">글쓰기</a>
+	  </div>
+	</c:if>
 
   </main>
 </div>
@@ -356,13 +309,6 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/resident/commonBuildingSelect.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/resident/residentComplaint.js"></script>
-<script>
-  setupGlobalBuildingSelector({
-    param: 'bldgIdParam',
-    storageKey: 'selectedBuildingId',
-    onChange: loadComplaints // residentComplaint.js 안에 정의된 함수
-  });
-</script>
 
 <script>
   function fnPaging(pageNo) {

@@ -37,6 +37,9 @@
         </otherwise>
       </choose>
     </if>
+		<if test="simpleSearch.myPostsOnly">
+		  AND rb.mbr_cd = #{simpleSearch.loginMbrCd}
+		</if>
   </where>
 </sql>
 

@@ -121,7 +121,46 @@
   max-width: 100px;
   /* 그룹 내에서 꽉 차게 */
 }
+.post-title-link {
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+}
 
+.post-title-link:hover {
+  text-decoration: underline;
+  color: #E17100;
+}
+.loading-row, .error-row {
+  text-align: center;
+  font-style: italic;
+  color: #999;
+}
+.table-loading-overlay {
+  position: absolute;
+  background-color: rgba(255,255,255,0.8);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-style: italic;
+  color: #888;
+}
+.table-wrapper {
+  position: relative;
+}
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+.fade-in {
+  opacity: 1;
+  transition: opacity 0.2s ease-in;
+}
 
     @media (max-width: 768px) {
       .search-form {
@@ -197,32 +236,45 @@
     </div>
   </div>
 
-  <!-- 조건 -->
-<div class="search-item">
-  <label for="searchType">조건</label>
-  <div class="condition-group">
-    <select name="searchType" class="select-field select-type">
-      <option value="title" ${search.searchType == 'title' ? 'selected' : ''}>제목</option>
-      <option value="writer" ${search.searchType == 'writer' ? 'selected' : ''}>작성자</option>
-    </select>
-  </div>
-</div>
-
-  <!-- 검색어 (입력 + 버튼) -->
-  <div class="search-item">
-    <label for="searchWord">검색어</label>
-    <div class="search-item-group">
-      <input type="text" name="searchWord" value="${search.searchWord}" placeholder="검색어 입력" />
-      <button type="submit" class="search-button">검색</button>
-      <button type="button" class="btn-reset" onclick="location.href='${pageContext.request.contextPath}/resident/board'">초기화</button>
-    </div>
-  </div>
-</div>
+	  <!-- 조건 -->
+	<div class="search-item">
+	  <label for="searchType">조건</label>
+	  <div class="condition-group">
+	    <select name="searchType" class="select-field select-type">
+	      <option value="title" ${search.searchType == 'title' ? 'selected' : ''}>제목</option>
+	      <option value="writer" ${search.searchType == 'writer' ? 'selected' : ''}>작성자</option>
+	    </select>
+	  </div>
+	</div>
+	
+	<!-- 내 글만 보기 -->
+	<div class="search-item">
+	  <label for="myPostsOnly"> </label>
+	  <div class="search-item-group">
+	    <label style="font-weight: normal;">
+	      <input type="checkbox" id="myPostsOnly" name="myPostsOnly" value="Y"
+	        ${param.myPostsOnly == 'Y' ? 'checked' : ''} />
+	      내 글만 보기
+	    </label>
+	  </div>
+	</div>
+	
+	  <!-- 검색어 (입력 + 버튼) -->
+	  <div class="search-item">
+	    <label for="searchWord">검색어</label>
+	    <div class="search-item-group">
+	      <input type="text" name="searchWord" value="${search.searchWord}" placeholder="검색어 입력" />
+	      <button type="submit" class="search-button">검색</button>
+	      <button type="button" class="btn-reset" onclick="location.href='${pageContext.request.contextPath}/resident/board'">초기화</button>
+	    </div>
+	  </div>
+	</div>
         </form>
       </div>
       
 
       <!-- 📋 게시글 목록 -->
+      <div class="table-wrapper">
       <table class="table">
         <thead>
           <tr>
@@ -231,43 +283,15 @@
             <th>작성자</th>
             <th>작성일</th>
             <th>조회수</th>
-            <th>보기</th>
           </tr>
         </thead>
         <tbody id="boardTableBody">
-          <c:forEach var="board" items="${boardList}" varStatus="status">
-            <tr>
-              <td>${pagingInfo.firstRecordIndex + status.index}</td>
-              <td><c:out value="${board.rsdBrdTitl}" /></td>
-              <td>${board.mbrNnm}</td>
-              <td><fmt:formatDate value="${board.rsdBrdPblsDate}" pattern="yyyy-MM-dd" /></td>
-              <td>${board.rsdBrdCnt}</td>
-              <td>
-                <form method="get" action="${pageContext.request.contextPath}/resident/board/detail" style="display:inline;">
-                  <input type="hidden" name="rsdBrdId" value="${board.rsdBrdId}" />
-                  <input type="hidden" name="bldgIdParam" value="${selectedBldgId}" />
-                  <input type="hidden" name="page" value="${pagingInfo.currentPageNo}" />
-                  <button type="submit" class="btn-view">보기</button>
-                </form>
-              </td>
-            </tr>
-          </c:forEach>
-          <c:if test="${empty boardList}">
-            <tr>
-              <td colspan="6" class="no-data-center">
-                <c:choose>
-                  <c:when test="${not empty search.searchWord}">검색 결과가 없습니다.</c:when>
-                  <c:otherwise>건물을 선택하면 게시글이 표시됩니다.</c:otherwise>
-                </c:choose>
-              </td>
-            </tr>
-          </c:if>
         </tbody>
       </table>
-
-      <!-- 📄 페이징 -->
-      <div class="pagination-wrapper">${pagingHTML}</div>
-
+     <div id="tableLoading" class="table-loading-overlay" style="display: none;">로딩 중입니다...</div>
+</div>
+	<div class="pagination-wrapper"></div> 
+	
       <!-- ✏️ 글쓰기 및 휴지통 버튼 -->
       <c:if test="${not empty unitList && not empty selectedBldgId}">
         <div class="write-buttons">
@@ -275,56 +299,45 @@
           <a href="${pageContext.request.contextPath}/resident/board/trash?bldgIdParam=${selectedBldgId}" class="btn-dark">휴지통</a>
         </div>
       </c:if>
-
-      <!-- 🔁 페이징용 히든 폼 -->
-      <form id="searchForm" method="get" action="${pageContext.request.contextPath}/resident/board">
-        <input type="hidden" name="page" value="1">
-        <input type="hidden" name="bldgIdParam" value="${selectedBldgId}">
-        <input type="hidden" name="searchType" value="${search.searchType}">
-        <input type="hidden" name="searchWord" value="${search.searchWord}">
-        <input type="hidden" name="searchStartDate" value="${search.searchStartDate}">
-        <input type="hidden" name="searchEndDate" value="${search.searchEndDate}">
-        <input type="hidden" name="search.bldgId" value="${empty search.bldgId ? selectedBldgId : search.bldgId}" />
-      </form>
     </main>
   </div>
 
  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/resident/commonBuildingSelect.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/resident/residentBuilding.js"></script>
-<script src="${pageContext.request.contextPath}/app/js/resident/residentBoard.js"></script>
-<script>
-  setupGlobalBuildingSelector({
-    param: 'bldgIdParam',
-    storageKey: 'selectedBuildingId',
-    onChange: loadPosts // residentBoard.js 안에 정의된 함수
-  });
-</script>
 
 <script>
+  // 📌 건물 선택 초기화 및 게시글 자동 로딩
   document.addEventListener('DOMContentLoaded', () => {
     setupGlobalBuildingSelector({
       param: 'bldgIdParam',
       storageKey: 'selectedBuildingId',
       onChange: loadPosts
     });
-  });
-</script>
-  <script>
-    function fnPaging(pageNo) {
-      const form = document.getElementById('searchForm');
-      form.page.value = pageNo;
-      form.submit();
-    }
-  </script>
-<script>
-  document.querySelector('.search-form').addEventListener('submit', function (e) {
-    e.preventDefault(); // 기본 제출 막기
 
+    // 📌 첫 진입 시 자동 게시글 로딩
+    const selectedBldgId = localStorage.getItem('selectedBuildingId');
+    if (selectedBldgId) {
+      loadPosts(selectedBldgId, 1);
+    }
+    const myPostsOnlyCheckbox = document.querySelector('#myPostsOnly');
+    if (myPostsOnlyCheckbox) {
+      myPostsOnlyCheckbox.addEventListener('change', () => {
+        const selectedBldgId = document.querySelector('select[name="bldgIdParam"]').value;
+        if (selectedBldgId) {
+          loadPosts(selectedBldgId, 1);
+        }
+      });
+    }
+  });
+ 
+  // 📌 검색 폼 제출 시 비동기 게시글 로딩
+  document.querySelector('.search-form').addEventListener('submit', function (e) {
+    e.preventDefault(); // 폼 전송 막고
     const selectedBldgId = document.querySelector('select[name="bldgIdParam"]').value;
     if (selectedBldgId) {
-      sessionStorage.removeItem('alreadyLoaded'); // 새로 검색이므로 초기화
-      loadPosts(selectedBldgId, 1);
+      sessionStorage.removeItem('alreadyLoaded'); // 필요시 초기화
+      loadPosts(selectedBldgId, 1); // 검색 조건 포함해 다시 로드
     }
   });
 </script>

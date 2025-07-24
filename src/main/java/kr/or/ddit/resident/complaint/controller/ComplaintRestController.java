@@ -48,6 +48,7 @@ public class ComplaintRestController {
         @RequestParam(value = "reqStatus", required = false) String reqStatus,
         @RequestParam(value = "searchStartDate", required = false) String searchStartDate,
         @RequestParam(value = "searchEndDate", required = false) String searchEndDate,
+        @RequestParam(value = "myPostsOnly", required = false) String myPostsOnly,
         @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
     ) {
         MemberVO member = principal.getRealUser();
@@ -61,7 +62,8 @@ public class ComplaintRestController {
         search.setSearchStartDate(searchStartDate);
         search.setSearchEndDate(searchEndDate);
         search.setBrdCode("M0001");
-
+        search.setMyPostsOnly("Y".equalsIgnoreCase(myPostsOnly));
+        
         PaginationInfo<ResidentBoardVO> pagingInfo = new PaginationInfo<>();
         pagingInfo.setCurrentPageNo(page);
         pagingInfo.setPageSize(10);

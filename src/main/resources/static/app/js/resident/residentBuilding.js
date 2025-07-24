@@ -1,34 +1,16 @@
-// /app/js/resident/residentBuilding.js
-
+// ✅ 게시글 목록 로드
 function loadPosts(bldgId, page = 1, pageSize = 10) {
   if (!bldgId) return;
 
-  const postListContainer = document.querySelector('.post-list');
   const tableBody = document.querySelector('#boardTableBody');
-  const paginationWrapper = document.querySelector('.pagination-wrapper');
+  const loadingOverlay = document.querySelector('#tableLoading');
 
-//  postListContainer.innerHTML = '<div class="loading">로딩 중...</div>';
-  tableBody.innerHTML = '';
-  paginationWrapper.innerHTML = '';
+  // 👉 오버레이 표시
+  loadingOverlay.style.display = 'flex';
 
-  // 검색 조건 가져오기
-  const searchType = document.querySelector('select[name="searchType"]').value;
-  const searchWord = document.querySelector('input[name="searchWord"]').value;
-  const searchStartDate = document.querySelector('input[name="searchStartDate"]').value;
-  const searchEndDate = document.querySelector('input[name="searchEndDate"]').value;
+  const searchParams = collectSearchParams(bldgId, page, pageSize);
 
-  // 쿼리 구성
-  const params = new URLSearchParams({
-    bldgIdParam: bldgId,
-    page,
-    pageSize,
-    searchType,
-    searchWord,
-    searchStartDate,
-    searchEndDate
-  });
-
-  axios.get(`/ajax/resident/api/board?${params.toString()}`)
+  axios.get(`/ajax/resident/api/board?${searchParams}`)
     .then(response => {
       const { postList, pagination } = response.data;
       displayPosts(postList, pagination);
@@ -36,42 +18,80 @@ function loadPosts(bldgId, page = 1, pageSize = 10) {
     })
     .catch(error => {
       console.error("게시글 로드 실패:", error);
-      tableBody.innerHTML = `<tr><td colspan="6">불러오는 데 실패했습니다.</td></tr>`;
+      tableBody.innerHTML = `
+        <tr><td colspan="5" class="error-row">게시글을 불러오는 데 실패했습니다.</td></tr>`;
+    })
+    .finally(() => {
+      loadingOverlay.style.display = 'none'; // ✅ 항상 숨김
     });
 }
 
-function displayPosts(posts, pagination) {
-  const tableBody = document.querySelector('#boardTableBody');
-  tableBody.innerHTML = '';
+// ✅ 검색 파라미터 수집
+function collectSearchParams(bldgId, page, pageSize) {
+  const searchType = document.querySelector('select[name="searchType"]').value;
+  const searchWord = document.querySelector('input[name="searchWord"]').value;
+  const searchStartDate = document.querySelector('input[name="searchStartDate"]').value;
+  const searchEndDate = document.querySelector('input[name="searchEndDate"]').value;
+  const myPostsOnlyCheckbox = document.querySelector('input[name="myPostsOnly"]');
+  const myPostsOnly = myPostsOnlyCheckbox && myPostsOnlyCheckbox.checked ? 'Y' : '';
 
-  if (!posts || posts.length === 0) {
-    tableBody.innerHTML = `
-      <tr>
-        <td colspan="6" class="no-data-center">게시글이 없습니다.</td>
-      </tr>`;
-    return;
-  }
-
-  posts.forEach((post, index) => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${pagination.firstRecordIndex + index}</td>
-      <td>${post.rsdBrdTitl}</td>
-      <td>${post.mbrNnm}</td>
-      <td>${new Date(post.rsdBrdPblsDtm).toLocaleDateString()}</td>
-      <td>${post.rsdBrdCnt || 0}</td>
-      <td>
-        <form method="get" action="/resident/board/detail" style="display:inline;">
-          <input type="hidden" name="rsdBrdId" value="${post.rsdBrdId}" />
-          <input type="hidden" name="bldgIdParam" value="${post.bldgId}" />
-          <button type="submit" class="btn-view">보기</button>
-        </form>
-      </td>
-    `;
-    tableBody.appendChild(row);
-  });
+  return new URLSearchParams({
+    bldgIdParam: bldgId,
+    page,
+    pageSize,
+    searchType,
+    searchWord,
+    searchStartDate,
+    searchEndDate,
+    myPostsOnly
+  }).toString();
 }
 
+// ✅ 게시글 테이블 렌더링
+function displayPosts(posts, pagination) {
+  const tableBody = document.querySelector('#boardTableBody');
+
+  // 1️⃣ 기존 행 fade-out
+  tableBody.classList.add('fade-out');
+
+  setTimeout(() => {
+    tableBody.innerHTML = '';
+
+    if (!posts || posts.length === 0) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="5" class="no-data-center">게시글이 없습니다.</td>
+        </tr>`;
+    } else {
+      posts.forEach((post, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${pagination.firstRecordIndex + index}</td>
+          <td>
+            <a href="/resident/board/detail?rsdBrdId=${post.rsdBrdId}&bldgIdParam=${post.bldgId}" 
+               class="post-title-link">${post.rsdBrdTitl}</a>
+          </td>
+          <td>${post.mbrNnm}</td>
+          <td>${new Date(post.rsdBrdPblsDtm).toLocaleDateString()}</td>
+          <td>${post.rsdBrdCnt || 0}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    // 2️⃣ fade-in 애니메이션
+    tableBody.classList.remove('fade-out');
+    tableBody.classList.add('fade-in');
+
+    // 3️⃣ 애니메이션 클래스 제거 (다음 호출 대비)
+    setTimeout(() => {
+      tableBody.classList.remove('fade-in');
+    }, 300);
+
+  }, 100); // 부드럽게 바뀌도록 약간의 delay
+}
+
+// ✅ 페이지네이션 렌더링
 function renderPagination(pagination) {
   const wrapper = document.querySelector('.pagination-wrapper');
   wrapper.innerHTML = '';
@@ -79,31 +99,36 @@ function renderPagination(pagination) {
   const ul = document.createElement('ul');
   ul.className = 'pagination';
 
-  // 이전 페이지
+  // ◀ 이전 버튼
   if (pagination.currentPageNo > 1) {
     const prevLi = document.createElement('li');
     prevLi.innerHTML = `<a href="#">«</a>`;
-    prevLi.addEventListener('click', () => loadPosts(pagination.simpleSearch.bldgId, pagination.currentPageNo - 1));
+    prevLi.addEventListener('click', () =>
+      loadPosts(pagination.simpleSearch.bldgId, pagination.currentPageNo - 1)
+    );
     ul.appendChild(prevLi);
   }
 
+  // 🔢 숫자 버튼
   for (let i = pagination.firstPageNoOnPageList; i <= pagination.lastPageNoOnPageList; i++) {
     const li = document.createElement('li');
     li.className = (i === pagination.currentPageNo) ? 'active' : '';
     li.innerHTML = `<a href="#">${i}</a>`;
-    li.addEventListener('click', () => loadPosts(pagination.simpleSearch.bldgId, i));
+    li.addEventListener('click', () =>
+      loadPosts(pagination.simpleSearch.bldgId, i)
+    );
     ul.appendChild(li);
   }
 
-  // 다음 페이지
+  // ▶ 다음 버튼
   if (pagination.currentPageNo < pagination.totalPageCount) {
     const nextLi = document.createElement('li');
     nextLi.innerHTML = `<a href="#">»</a>`;
-    nextLi.addEventListener('click', () => loadPosts(pagination.simpleSearch.bldgId, pagination.currentPageNo + 1));
+    nextLi.addEventListener('click', () =>
+      loadPosts(pagination.simpleSearch.bldgId, pagination.currentPageNo + 1)
+    );
     ul.appendChild(nextLi);
   }
 
   wrapper.appendChild(ul);
 }
-
-

@@ -52,6 +52,7 @@ public class ComplaintController {
 			    Model model,
 		        @RequestParam(value="page", required=false, defaultValue="1") int page,
 		        @RequestParam(value="bldgIdParam", required=false) String bldgIdParam,
+		        @RequestParam(value = "myPostsOnly", required = false)String myPostsOnly,
 		        @ModelAttribute("search") SimpleSearch simpleSearch,
 		        @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
 			) { 
@@ -79,6 +80,7 @@ public class ComplaintController {
 	                                     .orElse(units.get(0).getBldgId());
 	            }
 	            simpleSearch.setBldgId(selectedBldg);
+	            simpleSearch.setMyPostsOnly("Y".equalsIgnoreCase(myPostsOnly));
 	            
 	            PaginationInfo<ResidentBoardVO> pagingInfo = new PaginationInfo<>();
 	            pagingInfo.setCurrentPageNo(page);

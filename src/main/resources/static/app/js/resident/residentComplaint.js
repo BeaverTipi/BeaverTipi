@@ -9,15 +9,13 @@ function formatDate(dateStr) {
 }
 
 // 📌 게시글 목록 렌더링
-function renderComplaintPosts(posts, loginMbrCd,isLandlord) {
+function renderComplaintPosts(posts, loginMbrCd, isLandlord) {
   const tableBody = document.querySelector("#boardTableBody");
   tableBody.innerHTML = "";
 
-  if (!posts || posts.length === 0) {
+  if (!posts?.length) {
     tableBody.innerHTML = `
-      <tr>
-        <td colspan="6" class="no-data-center">검색 결과가 없습니다.</td>
-      </tr>
+      <tr><td colspan="6" class="no-data-center">검색 결과가 없습니다.</td></tr>
     `;
     return;
   }
@@ -32,26 +30,21 @@ function renderComplaintPosts(posts, loginMbrCd,isLandlord) {
       : `<span class="text-muted">비공개 글입니다.</span>`;
 
     const viewButtonHtml = isVisible
-      ? `
-        <form method="get" action="/resident/complaint/view">
-          <input type="hidden" name="rsdBrdId" value="${post.rsdBrdId}" />
-          <input type="hidden" name="bldgIdParam" value="${post.bldgId}" />
-          <button type="submit" class="btn-view">보기</button>
-        </form>
-      `
+      ? `<form method="get" action="/resident/complaint/view">
+            <input type="hidden" name="rsdBrdId" value="${post.rsdBrdId}" />
+            <input type="hidden" name="bldgIdParam" value="${post.bldgId}" />
+            <button type="submit" class="btn-view">보기</button>
+         </form>`
       : `<button type="button" class="btn-view" onclick="showPrivateAlert()">보기</button>`;
 
     const 공개여부 = post.openYn === "Y"
       ? `<span class="badge badge-blue">공개</span>`
       : `<span class="badge badge-dark">비공개</span>`;
 
-    const 처리상태 = post.reqStatus === "001"
-      ? `<span class="badge badge-orange">처리중</span>`
-      : post.reqStatus === "002"
-      ? `<span class="badge badge-green">처리완료</span>`
-      : "";
-
-    const formattedDate = formatDate(post.rsdBrdPblsDate);
+    const 처리상태 = {
+      "001": `<span class="badge badge-orange">처리중</span>`,
+      "002": `<span class="badge badge-green">처리완료</span>`
+    }[post.reqStatus] || "";
 
     const rowHtml = `
       <tr>
@@ -59,7 +52,7 @@ function renderComplaintPosts(posts, loginMbrCd,isLandlord) {
         <td>${titleHtml}</td>
         <td>${공개여부}</td>
         <td>${처리상태}</td>
-        <td>${formattedDate}</td>
+        <td>${formatDate(post.rsdBrdPblsDate)}</td>
         <td>${viewButtonHtml}</td>
       </tr>
     `;
@@ -73,13 +66,11 @@ function renderPagination(pagingHtml) {
   const wrapper = document.querySelector(".pagination-wrapper");
   wrapper.innerHTML = pagingHtml;
 
-  wrapper.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", function (e) {
+  wrapper.querySelectorAll("a[data-page]").forEach(link => {
+    link.addEventListener("click", (e) => {
       e.preventDefault();
-      const pageNo = this.getAttribute("data-page");
-      if (pageNo) {
-        loadComplaints(currentBuildingId, pageNo);
-      }
+      const pageNo = link.getAttribute("data-page");
+      if (pageNo) loadComplaints(currentBuildingId, pageNo);
     });
   });
 }
@@ -89,6 +80,9 @@ let currentBuildingId = localStorage.getItem("selectedBuildingId") || "";
 
 // 📌 민원 게시글 로드
 function loadComplaints(bldgId = currentBuildingId, page = 1) {
+ 
+  if (window.location.pathname.includes("/resident/complaint/form")) return;
+	
   if (!bldgId) return;
 
   currentBuildingId = bldgId;
@@ -103,18 +97,17 @@ function loadComplaints(bldgId = currentBuildingId, page = 1) {
     openYn: form.openYn?.value || "",
     reqStatus: form.reqStatus?.value || "",
     searchStartDate: form.searchStartDate?.value || "",
-    searchEndDate: form.searchEndDate?.value || ""
+    searchEndDate: form.searchEndDate?.value || "",
+    myPostsOnly: form.myPostsOnly?.checked ? "Y" : "N"
   });
 
   axios.get(`/ajax/resident/api/complaints?${params.toString()}`)
     .then(res => {
-      const { postList, pagination, loginMbrCd,isLandlord } = res.data;
-      renderComplaintPosts(postList, loginMbrCd, isLandlord); // ✅ 사용자 ID도 전달
+      const { postList, pagination, loginMbrCd, isLandlord } = res.data;
+      renderComplaintPosts(postList, loginMbrCd, isLandlord);
       renderPagination(pagination);
     })
-    .catch(err => {
-      console.error("민원 목록 불러오기 실패:", err);
-    });
+    .catch(err => console.error("민원 목록 불러오기 실패:", err));
 }
 
 // 📌 SweetAlert 비공개 알림
@@ -127,15 +120,31 @@ function showPrivateAlert() {
   });
 }
 
-// 📌 초기화 및 검색 이벤트 바인딩
-document.addEventListener("DOMContentLoaded", function () {
+// 📌 폼 초기화 함수
+function clearForm(e) {
+  e.preventDefault();
   const form = document.getElementById("searchForm");
-  if (form) {
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      loadComplaints(currentBuildingId, 1);
-    });
-  }
+  if (!form) return;
+
+  form.reset();
+  form.page.value = 1;
+
+  loadComplaints(currentBuildingId, 1);
+}
+
+// 📌 초기화 및 이벤트 바인딩
+document.addEventListener("DOMContentLoaded", () => {
+  // ✅ 글쓰기 화면이면 아무것도 하지 않음
+  if (window.location.pathname.includes("/resident/complaint/form")) return;
+
+  const form = document.getElementById("searchForm");
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    loadComplaints(currentBuildingId, 1);
+  });
+
+  const checkbox = document.querySelector("#myPostsOnly");
+  checkbox?.addEventListener("change", () => loadComplaints(currentBuildingId, 1));
 
   loadComplaints(currentBuildingId, 1);
 });

@@ -39,6 +39,24 @@ public class ComplaintCreateController {
     @Autowired
     private UnitResidentService unitResidentService;
 
+    @ModelAttribute("complaint")
+    public ResidentBoardVO prepareComplaint(
+            @RequestParam(value = "rsdBrdId", required = false) String rsdBrdId,
+            @RequestParam(value = "bldgIdParam", required = false) String bldgIdParam,
+            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
+
+        if (rsdBrdId != null && !rsdBrdId.isBlank()) {
+            ResidentBoardVO vo = complaintService.selectComplaintById(rsdBrdId);
+            return vo != null ? vo : new ResidentBoardVO();
+        } else {
+            ResidentBoardVO newComplaint = new ResidentBoardVO();
+            if (bldgIdParam != null && !bldgIdParam.isBlank()) {
+                newComplaint.setBldgId(bldgIdParam);
+            }
+            return newComplaint;
+        }
+    }
+    
     /**
      * 1) 등록·수정 폼
      */
@@ -46,7 +64,9 @@ public class ComplaintCreateController {
     public String form(
             @RequestParam(value = "rsdBrdId", required = false) String rsdBrdId,
             @RequestParam(value = "bldgIdParam", required = false) String bldgIdParam,
+            @RequestParam(value = "bldgId", required = false) String bldgId, 
             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
+            @ModelAttribute("complaint") ResidentBoardVO complaint,
             Model model
     ) {
         // 1-1) 로그인 사용자 입주 유닛 조회
@@ -60,11 +80,19 @@ public class ComplaintCreateController {
             // 단지 입주자가 아닐 경우 회원가입 페이지로
             return "redirect:/member/register";
         }
+        
+        String selectedBldg = null;
+        if (bldgIdParam != null && !bldgIdParam.isBlank()) {
+            selectedBldg = bldgIdParam;
+        } else if (bldgId != null && !bldgId.isBlank()) {
+            selectedBldg = bldgId;
+        } else if (complaint.getBldgId() != null && !complaint.getBldgId().isBlank()) {
+            selectedBldg = complaint.getBldgId();
+        } else {
+            selectedBldg = units.get(0).getBldgId();
+        }
 
-        // 1-2) 선택된 건물 결정
-        String selectedBldg = (bldgIdParam != null && !bldgIdParam.isBlank())
-                ? bldgIdParam
-                : units.get(0).getBldgId();
+        complaint.setBldgId(selectedBldg);
         
         log.info("🏢 선택된 건물 ID: " + selectedBldg);
         log.info("🏢 bldgIdParam: " + bldgIdParam);

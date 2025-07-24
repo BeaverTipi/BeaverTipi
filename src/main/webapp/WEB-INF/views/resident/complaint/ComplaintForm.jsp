@@ -107,7 +107,7 @@
   </style>
 </head>
 <body>
-
+<p>현재 선택된 건물: ${selectedBldgId}</p>
 <div class="form-wrapper">
   <h2>
     <c:choose>
@@ -173,6 +173,7 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 <script>
   const contextPath = '${pageContext.request.contextPath}';

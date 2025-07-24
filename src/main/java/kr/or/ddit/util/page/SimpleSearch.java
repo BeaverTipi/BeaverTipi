@@ -39,5 +39,6 @@ public class SimpleSearch {
 	private String searchStartDate;
 	private String searchEndDate;
 	
+	private boolean myPostsOnly; 
 	private String loginMbrCd;
 }
