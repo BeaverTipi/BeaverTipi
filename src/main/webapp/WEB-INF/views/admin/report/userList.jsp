@@ -95,12 +95,14 @@
             <tbody>
                 <c:if test="${not empty reportedUserList}">
                     <c:forEach items="${reportedUserList}" var="report" varStatus="status">
-                        <tr class="report-row" data-report-id="${report.reportId}">
-                        	<td>${(pagingInfo.currentPageNo - 1) * pagingInfo.recordCountPerPage + status.index + 1}</td>
+                        <tr class="report-row" data-report-id="${report.rptId}">
+                        	<td>${(pagingVO.currentPageNo - 1) * pagingVO.recordCountPerPage + status.index + 1}</td>
                             <td>${report.brdTitlNm}</td>
                             <td>${report.rptTargetId}</td>
                             <td>${report.mbrCd}</td>
-                            <td>${report.formattedBrdPblsDtm}</td>
+                            <td>
+                                ${report.getFormattedBrdPblsDtm()}
+                            </td>
                             <td>
                                 <c:choose>
                                     <c:when test="${report.rptStatusCode eq 'REG'}">등록</c:when>

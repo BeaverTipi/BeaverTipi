@@ -18,8 +18,10 @@ import jakarta.inject.Inject;
 import kr.or.ddit.admin.report.service.ReportPostService;
 import kr.or.ddit.util.renderer.DefaultPaginationRenderer;
 import kr.or.ddit.util.page.PaginationInfo;
-import kr.or.ddit.util.page.SimpleSearch; // SimpleSearch 임포트가 필요한 경우 유지
+import kr.or.ddit.util.page.SimpleSearch;
 import kr.or.ddit.vo.BoardVO;
+import kr.or.ddit.vo.ReportVO;
+import kr.or.ddit.vo.ReportSearchVO; // ReportSearchVO 임포트 추가
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -33,39 +35,36 @@ public class ReportUserListController {
     @GetMapping("userList")
     public String selectReportedPostList(
         @RequestParam(name="page", required = false, defaultValue = "1") int currentPage,
-        @ModelAttribute("detailSearch") BoardVO detailSearch,
-        @ModelAttribute("simpleSearch") SimpleSearch simpleSearch, // SimpleSearch를 사용하지 않는다면 제거
+        @ModelAttribute("detailSearch") ReportSearchVO detailSearch, // ReportVO -> ReportSearchVO로 변경
+        @ModelAttribute("simpleSearch") SimpleSearch simpleSearch,
         Model model) {
 
-	        log.info("detailSearch: {}", detailSearch); // searchRptCode 값이 여기에 찍히는지 확인
-	        log.info("simpleSearch: {}", simpleSearch); // SimpleSearch 사용하지 않는다면 이 로그 제거
-	      
-	        PaginationInfo<BoardVO> pagingVO = new PaginationInfo<>();
-	        pagingVO.setCurrentPageNo(currentPage);
-	
-	        // JSP에 보여줄 원본 brdPblsDtmTo 값을 저장
-	        LocalDate originalBrdPblsDtmTo = null;
-	        if (detailSearch.getBrdPblsDtmTo() != null) {
-	            originalBrdPblsDtmTo = detailSearch.getBrdPblsDtmTo(); // 원본 값 백업
-	            // 검색 쿼리에 사용될 값만 하루 더합니다.
-	            detailSearch.setBrdPblsDtmTo(detailSearch.getBrdPblsDtmTo().plusDays(1));
-        }
-        
-        pagingVO.setDetailSearch(detailSearch);
-        pagingVO.setSimpleSearch(simpleSearch); // SimpleSearch 사용하지 않는다면 이 라인 제거
-       
+        log.info("detailSearch: {}", detailSearch);
+        log.info("simpleSearch: {}", simpleSearch);
 
-        // 페이징을 위한 전체 레코드 수 조회 및 설정
+        // PaginationInfo의 타입 파라미터는 여전히 ReportVO입니다.
+        PaginationInfo<ReportVO> pagingVO = new PaginationInfo<>();
+        pagingVO.setCurrentPageNo(currentPage);
+
+        // JSP에 보여줄 원본 brdPblsDtmTo 값을 저장 (ReportSearchVO에서 접근)
+        LocalDate originalBrdPblsDtmTo = null;
+        if (detailSearch.getBrdPblsDtmTo() != null) {
+            originalBrdPblsDtmTo = detailSearch.getBrdPblsDtmTo();
+            detailSearch.setBrdPblsDtmTo(detailSearch.getBrdPblsDtmTo().plusDays(1));
+        }
+
+        // PaginationInfo에 ReportSearchVO 객체를 detailSearch로 설정
+        pagingVO.setDetailSearch(detailSearch);
+        pagingVO.setSimpleSearch(simpleSearch);
+
         int totalCount = reportPostService.selectReportedPostCount(pagingVO);
         pagingVO.setTotalRecordCount(totalCount);
-        
-        // 목록 조회
-        List<BoardVO> reportedUserList = reportPostService.selectReportedPostList(pagingVO);
+
+        List<ReportVO> reportedUserList = reportPostService.selectReportedPostList(pagingVO);
 
         model.addAttribute("reportedUserList", reportedUserList);
         model.addAttribute("pagingVO", pagingVO);
 
-        // 페이징 HTML 생성 및 모델에 추가
         DefaultPaginationRenderer renderer = new DefaultPaginationRenderer();
         String pagingHTML = renderer.renderPagination(pagingVO, "fn_paging");
         model.addAttribute("pagingHTML", pagingHTML);
@@ -74,19 +73,19 @@ public class ReportUserListController {
         if (originalBrdPblsDtmTo != null) {
             detailSearch.setBrdPblsDtmTo(originalBrdPblsDtmTo);
         }
-        // detailSearch 객체를 다시 Model에 추가하여 JSP 폼에 값 유지
-        model.addAttribute("detailSearch", detailSearch);
+        model.addAttribute("detailSearch", detailSearch); // ReportSearchVO 타입의 detailSearch 유지
 
         return "admin/report/userList";
     }
 
+    // 이하는 이전과 동일 (List<ReportVO>, ReportVO, Map 사용)
     @PostMapping("updateStatuses")
     @ResponseBody
-    public String updateReportStatuses(@RequestBody List<BoardVO> rptStatusUpdates) {
+    public String updateReportStatuses(@RequestBody List<ReportVO> rptStatusUpdates) {
         try {
             log.info("Received update requests for statuses: {}", rptStatusUpdates);
             int updatedCount = 0;
-            for (BoardVO report : rptStatusUpdates) {
+            for (ReportVO report : rptStatusUpdates) {
                 reportPostService.updateReportStatus(report);
                 updatedCount++;
             }
@@ -98,41 +97,32 @@ public class ReportUserListController {
         }
     }
 
-    // 신고 상세 정보 조회
     @GetMapping("/detail/{reportId}")
-    @ResponseBody // JSON 응답을 위해 추가
-    public BoardVO getReportDetail(@PathVariable String reportId) {
+    @ResponseBody
+    public ReportVO getReportDetail(@PathVariable String reportId) {
         log.info("신고 상세 조회 요청. reportId: {}" + reportId);
-        
-        BoardVO reportDetail = reportPostService.selectReportDetail(reportId);
-        
+        ReportVO reportDetail = reportPostService.selectReportDetail(reportId);
         if (reportDetail != null) {
             log.info("Report Detail fetched: {}", reportDetail);
-            if (reportDetail.getAttachFiles() != null) {
-                log.info("Attached Files Count: {}", reportDetail.getAttachFiles().size());
-                // 각 파일의 URL을 로그에 출력하여 디버깅에 도움을 줍니다.
-                reportDetail.getAttachFiles().forEach(file -> log.info("  File: {} (URL: {})", file.getFileOriginalname(), file.getFilePathUrl()));
-            }
         } else {
             log.warn("No report detail found for reportId: {}", reportId);
         }
         return reportDetail;
     }
 
-    // 신고된 회원 상태 변경
     @PostMapping("/updateMemberStatus")
-    @ResponseBody // JSON 응답을 위해 추가
+    @ResponseBody
     public String updateMemberStatus(@RequestParam String mbrCd, @RequestParam String mbrStatus) {
         log.info("updateMemberStatus called. mbrCd: {}, mbrStatus: {}", mbrCd, mbrStatus);
         try {
             reportPostService.updateReportedMemberStatus(mbrCd, mbrStatus);
-            return "SUCCESS"; // 성공 시 "SUCCESS" 문자열 반환
+            return "SUCCESS";
         } catch (Exception e) {
             log.error("회원 상태 변경 실패", e);
-            return "FAIL"; // 실패 시 "FAIL" 문자열 반환
+            return "FAIL";
         }
     }
-    
+
     @PostMapping("/updateListingDeleteStatus")
     @ResponseBody
     public String updateListingDeleteStatus(@RequestParam String lstgId, @RequestParam String lstgDel) {

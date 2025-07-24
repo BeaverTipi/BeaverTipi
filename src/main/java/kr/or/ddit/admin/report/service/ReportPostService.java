@@ -3,17 +3,17 @@ package kr.or.ddit.admin.report.service;
 import java.util.List;
 
 import kr.or.ddit.util.page.PaginationInfo;
-import kr.or.ddit.vo.BoardVO; 
+import kr.or.ddit.vo.ReportVO; 
 
 public interface ReportPostService {
 
-    public List<BoardVO> selectReportedPostList(PaginationInfo<BoardVO> pagingVO);
+    public List<ReportVO> selectReportedPostList(PaginationInfo<ReportVO> pagingVO);
 
-    public int selectReportedPostCount(PaginationInfo<BoardVO> pagingVO);
+    public int selectReportedPostCount(PaginationInfo<ReportVO> pagingVO);
     
-    public int updateReportStatus(BoardVO boardVO);
+    public int updateReportStatus(ReportVO reportVO);
     
-    public BoardVO selectReportDetail(String reportId);	// 신고 상세 정보를 조회
+    public ReportVO selectReportDetail(String reportId);	// 신고 상세 정보를 조회
     
     public void updateReportedMemberStatus(String mbrCd, String mbrStatus);	// 신고된 회원 상태 변경
     

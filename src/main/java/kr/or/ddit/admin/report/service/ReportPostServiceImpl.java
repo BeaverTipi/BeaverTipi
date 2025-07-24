@@ -13,6 +13,8 @@ import kr.or.ddit.util.file.mapper.FileMapper;
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.vo.BoardVO;
 import kr.or.ddit.vo.FileVO;
+import kr.or.ddit.vo.ReportVO;
+import kr.or.ddit.vo.ReportSearchVO; // ReportSearchVO 임포트 유지
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -24,41 +26,41 @@ public class ReportPostServiceImpl implements ReportPostService {
 
     @Inject
     private FileMapper fileMapper;
-    
+
     @Override
-    public List<BoardVO> selectReportedPostList(PaginationInfo<BoardVO> pagingVO) {
+    public List<ReportVO> selectReportedPostList(PaginationInfo<ReportVO> pagingVO) {
         return reportPostMapper.selectReportedPostList(pagingVO);
     }
 
     @Override
-    public int selectReportedPostCount(PaginationInfo<BoardVO> pagingVO) {
+    public int selectReportedPostCount(PaginationInfo<ReportVO> pagingVO) {
         return reportPostMapper.selectReportedPostCount(pagingVO);
     }
 
-	@Override
-	public int updateReportStatus(BoardVO boardVO) {
-		return reportPostMapper.updateReportStatus(boardVO);
-	}
-	
-	@Override
-    public BoardVO selectReportDetail(String reportId) {
-        // 1. reportId로 신고된 게시글의 상세 정보(BoardVO)를 가져옵니다.
-        //    이때 ReportPostMapper.xml에서 BRD_NO (게시글 번호)와 신고 대상 회원의 상태(rptTargetMbrStatus)를 함께 가져오도록 해야 합니다.
-        BoardVO reportDetail = reportPostMapper.selectReportDetailByReportId(reportId);
-        	log.info("Report Detail fetched: {}", reportDetail);
-        if (reportDetail != null && reportDetail.getBrdNo() != null) { // ⭐ 게시글 번호(brdNo)가 있어야 파일을 조회할 수 있습니다. ⭐
+    @Override
+    public int updateReportStatus(ReportVO reportVO) {
+        return reportPostMapper.updateReportStatus(reportVO);
+    }
+
+    @Override
+    public ReportVO selectReportDetail(String reportId) {
+        ReportVO reportDetail = reportPostMapper.selectReportDetailByReportId(reportId);
+        log.info("Report Detail fetched (ReportVO): {}", reportDetail);
+
+        if (reportDetail != null && reportDetail.getBrdNo() != null) {
             log.debug("Found reportDetail for reportId: {}, brdNo: {}", reportId, reportDetail.getBrdNo());
 
-            // 2. BoardVO의 brdNo를 사용하여 첨부 파일 목록을 가져옵니다.
-            //    FileVO의 fileSourceId가 BoardVO의 brdNo와 매핑된다고 가정합니다.
+            // 첨부 파일 목록을 가져옵니다. (fileSourceId는 게시글 번호)
             FileVO searchFileVO = new FileVO();
-            searchFileVO.setFileSourceId(reportDetail.getBrdNo()); // 게시글 번호를 파일 소스 ID로 설정
-
-            // 참고: 만약 게시글 첨부 파일에 특정 fileSourceRef를 사용한다면 여기에 설정해야 합니다.
-            // 예: searchFileVO.setFileSourceRef("BOARD");
-
+            searchFileVO.setFileSourceId(reportDetail.getBrdNo()); // ReportVO의 brdNo 필드 직접 사용
             List<FileVO> attachFiles = fileMapper.selectFileList(searchFileVO);
-            reportDetail.setAttachFiles(attachFiles);
+
+            // ReportVO에 attachFiles 필드를 직접 추가하거나,
+            // BoardVO의 attachFiles 필드를 통해 접근하는 방식을 유지할 수 있습니다.
+            // 현재 BoardVO에 attachFiles가 있으므로, ReportVO를 반환할 때 이 필드가 채워지도록 하는 게 자연스럽습니다.
+            // 이 로직은 `ReportVO.attachFiles = attachFiles;` 또는 `super.setAttachFiles(attachFiles);` 형태로 가능합니다.
+            // BoardVO에 attachFiles 필드가 있다면, super.setAttachFiles(attachFiles)로 가능합니다.
+            reportDetail.setAttachFiles(attachFiles); // ReportVO가 BoardVO를 상속했으므로, BoardVO의 setAttachFiles 메서드 호출
             log.debug("Attached files count for brdNo {}: {}", reportDetail.getBrdNo(), attachFiles.size());
 
         } else {
@@ -67,16 +69,14 @@ public class ReportPostServiceImpl implements ReportPostService {
         return reportDetail;
     }
 
-    // 신고된 회원의 상태를 변경
     @Override
     public void updateReportedMemberStatus(String mbrCd, String mbrStatus) {
-    	Map<String, String> paramMap = new HashMap<>();
+        Map<String, String> paramMap = new HashMap<>();
         paramMap.put("mbrId", mbrCd);
         paramMap.put("mbrStatus", mbrStatus);
-        reportPostMapper.updateMemberStatus(paramMap); // Map 객체 전달
+        reportPostMapper.updateMemberStatus(paramMap);
     }
-    
-    // 신고된 매물의 상태(삭제여부)를 변경
+
     @Override
     public void updateListingDeleteStatus(String lstgId, String lstgDel) {
         log.info("updateListingDeleteStatus 호출. lstgId: {}, lstgDel: {}", lstgId, lstgDel);

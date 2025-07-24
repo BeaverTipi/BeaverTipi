@@ -2,36 +2,44 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.admin.mapper.ReportPostMapper">
 
-    <resultMap type="kr.or.ddit.vo.BoardVO" id="boardReportMap" autoMapping="true">
-        <id property="brdNo" column="BRD_NO"/>
-        <result property="reportId" column="RPT_ID"/>
-    </resultMap>
+    <resultMap type="kr.or.ddit.vo.ReportVO" id="reportMap">
+        <id property="rptId" column="RPT_ID"/>
+        <result property="rptCode" column="RPT_CODE"/>
+        <result property="rptTargetId" column="RPT_TARGET_ID"/>
+        <result property="rptStatusCode" column="RPT_STATUS_CODE"/>
+        <result property="rptDelYn" column="RPT_DEL_YN"/>
+        <result property="rptTargetMbrStatus" column="RPT_TARGET_MBR_STATUS"/>
+        <result property="rptTargetMbrCd" column="RPT_TARGET_MBR_CD"/>
+        <result property="lstgDel" column="LSTG_DEL"/>
 
-    <select id="selectReportedPostList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultMap="boardReportMap">
+        <result property="brdNo" column="BRD_NO"/>
+        <result property="brdTitlNm" column="BRD_TITL_NM"/>
+        <result property="brdCont" column="BRD_CONT"/>
+        <result property="mbrCd" column="MBR_CD"/>
+        <result property="brdPblsDtm" column="BRD_PBLS_DTM"/>
+        </resultMap>
+
+    <select id="selectReportedPostList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultMap="reportMap">
         SELECT
-            BRD_NO
-            ,BRD_TITL_NM
-            ,BRD_CONT
-            ,MBR_CD
-            ,BRD_PBLS_DTM
-            ,BRD_VW_CNT
-            ,RPT_ID
-            ,RPT_CODE
-            ,RPT_TARGET_ID
-            ,RPT_STATUS_CODE
+            A.RPT_ID,
+            A.BRD_NO,
+            A.BRD_TITL_NM,
+            A.MBR_CD,
+            A.BRD_PBLS_DTM,
+            A.RPT_CODE,
+            A.RPT_TARGET_ID,
+            A.RPT_STATUS_CODE
         FROM (
             SELECT
                 ROW_NUMBER() OVER (ORDER BY B.BRD_PBLS_DTM DESC) AS RNUM,
-                B.BRD_NO
-                ,B.BRD_TITL_NM
-                ,B.BRD_CONT
-                ,B.MBR_CD
-                ,B.BRD_PBLS_DTM
-                ,B.BRD_VW_CNT
-                ,R.RPT_ID
-                ,R.RPT_CODE
-                ,R.RPT_TARGET_ID
-                ,R.RPT_STATUS_CODE
+                B.BRD_NO,
+                B.BRD_TITL_NM,
+                B.MBR_CD,
+                B.BRD_PBLS_DTM,
+                R.RPT_ID,
+                R.RPT_CODE,
+                R.RPT_TARGET_ID,
+                R.RPT_STATUS_CODE
             FROM
                 BOARD B
             JOIN
@@ -40,6 +48,57 @@
                 1=1
                 AND R.RPT_DEL_YN = 'N'
                 AND B.BRD_DEL_YN = 'N'
+                <if test="detailSearch != null">
+                    <choose>
+                        <when test="detailSearch.searchRptCode != null and detailSearch.searchRptCode != ''">
+                            AND R.RPT_CODE = #{detailSearch.searchRptCode}
+                        </when>
+                        <otherwise>
+                            AND R.RPT_CODE = 'MEMB'
+                        </otherwise>
+                    </choose>
+                    <if test="detailSearch.searchTitle != null and detailSearch.searchTitle != ''">
+                        AND B.BRD_TITL_NM LIKE '%' || #{detailSearch.searchTitle} || '%'
+                    </if>
+                    <if test="detailSearch.searchWriter != null and detailSearch.searchWriter != ''">
+                        AND B.MBR_CD LIKE '%' || #{detailSearch.searchWriter} || '%'
+                    </if>
+                    <if test="detailSearch.searchReportedTargetId != null and detailSearch.searchReportedTargetId != ''">
+                        AND R.RPT_TARGET_ID LIKE '%' || #{detailSearch.searchReportedTargetId} || '%'
+                    </if>
+                    <if test="detailSearch.searchRptStatusCode != null and detailSearch.searchRptStatusCode != ''">
+                        AND R.RPT_STATUS_CODE = #{detailSearch.searchRptStatusCode}
+                    </if>
+                    <if test="detailSearch.brdPblsDtmFrom != null">
+                        AND B.BRD_PBLS_DTM <![CDATA[ >= ]]> #{detailSearch.brdPblsDtmFrom, jdbcType=DATE}
+                    </if>
+                    <if test="detailSearch.brdPblsDtmTo != null">
+                        AND B.BRD_PBLS_DTM <![CDATA[ < ]]> #{detailSearch.brdPblsDtmTo, jdbcType=DATE}
+                    </if>
+                </if>
+                <if test="simpleSearch != null">
+                     <if test="simpleSearch.searchWord != null and simpleSearch.searchWord != ''">
+                         AND (
+                                B.BRD_TITL_NM LIKE '%' || #{simpleSearch.searchWord} || '%' OR
+                                B.BRD_CONT LIKE '%' || #{simpleSearch.searchWord} || '%'
+                             )
+                     </if>
+                </if>
+        ) A
+        WHERE RNUM BETWEEN #{firstRecordIndex} AND #{lastRecordIndex}
+    </select>
+
+    <select id="selectReportedPostCount" parameterType="kr.or.ddit.util.page.PaginationInfo" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            BOARD B
+        JOIN
+            REPORT R ON B.BRD_NO = R.BRD_NO
+        WHERE
+            1=1
+            AND R.RPT_DEL_YN = 'N'
+            AND B.BRD_DEL_YN = 'N'
             <if test="detailSearch != null">
                 <choose>
                     <when test="detailSearch.searchRptCode != null and detailSearch.searchRptCode != ''">
@@ -76,81 +135,30 @@
                          )
                  </if>
             </if>
-        ) A
-        WHERE RNUM BETWEEN #{firstRecordIndex} AND #{lastRecordIndex}
     </select>
 
-    <select id="selectReportedPostCount" parameterType="kr.or.ddit.util.page.PaginationInfo" resultType="int">
-        SELECT
-            COUNT(*)
-        FROM
-            BOARD B
-        JOIN
-            REPORT R ON B.BRD_NO = R.BRD_NO
-        WHERE
-            1=1
-            AND R.RPT_DEL_YN = 'N'
-            AND B.BRD_DEL_YN = 'N'
-        <if test="detailSearch != null">
-            <choose>
-                <when test="detailSearch.searchRptCode != null and detailSearch.searchRptCode != ''">
-                    AND R.RPT_CODE = #{detailSearch.searchRptCode}
-                </when>
-                <otherwise>
-                    AND R.RPT_CODE = 'MEMB'
-                </otherwise>
-            </choose>
-            <if test="detailSearch.searchTitle != null and detailSearch.searchTitle != ''">
-                AND B.BRD_TITL_NM LIKE '%' || #{detailSearch.searchTitle} || '%'
-            </if>
-            <if test="detailSearch.searchWriter != null and detailSearch.searchWriter != ''">
-                AND B.MBR_CD LIKE '%' || #{detailSearch.searchWriter} || '%'
-            </if>
-            <if test="detailSearch.searchReportedTargetId != null and detailSearch.searchReportedTargetId != ''">
-                AND R.RPT_TARGET_ID LIKE '%' || #{detailSearch.searchReportedTargetId} || '%'
-            </if>
-            <if test="detailSearch.searchRptStatusCode != null and detailSearch.searchRptStatusCode != ''">
-                AND R.RPT_STATUS_CODE = #{detailSearch.searchRptStatusCode}
-            </if>
-            <if test="detailSearch.brdPblsDtmFrom != null">
-                AND B.BRD_PBLS_DTM <![CDATA[ >= ]]> #{detailSearch.brdPblsDtmFrom, jdbcType=DATE}
-            </if>
-            <if test="detailSearch.brdPblsDtmTo != null">
-                AND B.BRD_PBLS_DTM <![CDATA[ < ]]> #{detailSearch.brdPblsDtmTo, jdbcType=DATE}
-            </if>
-        </if>
-        <if test="simpleSearch != null">
-             <if test="simpleSearch.searchWord != null and simpleSearch.searchWord != ''">
-                 AND (
-                        B.BRD_TITL_NM LIKE '%' || #{simpleSearch.searchWord} || '%' OR
-                        B.BRD_CONT LIKE '%' || #{simpleSearch.searchWord} || '%'
-                     )
-             </if>
-        </if>
-    </select>
-
-    <update id="updateReportStatus" parameterType="kr.or.ddit.vo.BoardVO">
+    <update id="updateReportStatus" parameterType="kr.or.ddit.vo.ReportVO">
         UPDATE REPORT
         SET
             RPT_STATUS_CODE = #{rptStatusCode}
         WHERE
-            RPT_ID = #{reportId}
+            RPT_ID = #{rptId}
     </update>
 
-    <select id="selectReportDetailByReportId" parameterType="string" resultMap="boardReportMap">
+    <select id="selectReportDetailByReportId" parameterType="string" resultMap="reportMap">
         SELECT
-            R.RPT_ID
-            ,B.BRD_NO
-            ,B.BRD_TITL_NM
-            ,B.BRD_CONT
-            ,B.MBR_CD
-            ,B.BRD_PBLS_DTM
-            ,R.RPT_TARGET_ID
-            ,R.RPT_STATUS_CODE
-            ,R.RPT_CODE
-            ,M.MBR_STATUS_CODE AS RPT_TARGET_MBR_STATUS
-            ,M.MBR_ID AS RPT_TARGET_MBR_CD
-            ,L.LSTG_DEL AS LSTG_DEL
+            R.RPT_ID,
+            R.BRD_NO,
+            B.BRD_TITL_NM,
+            B.BRD_CONT,
+            B.MBR_CD,
+            B.BRD_PBLS_DTM,
+            R.RPT_TARGET_ID,
+            R.RPT_STATUS_CODE,
+            R.RPT_CODE,
+            M.MBR_STATUS_CODE AS RPT_TARGET_MBR_STATUS,
+            M.MBR_ID AS RPT_TARGET_MBR_CD,
+            L.LSTG_DEL AS LSTG_DEL
         FROM REPORT R
         JOIN BOARD B ON R.BRD_NO = B.BRD_NO
         LEFT JOIN MEMBER M ON R.RPT_CODE = 'MEMB' AND R.RPT_TARGET_ID = M.MBR_ID
@@ -163,7 +171,7 @@
         SET MBR_STATUS_CODE = #{mbrStatus}
         WHERE MBR_ID = #{mbrId}
     </update>
-    
+
     <update id="updateListingDeleteStatus" parameterType="map">
         UPDATE LISTING
         SET LSTG_DEL = #{lstgDel} WHERE LSTG_ID = #{lstgId}

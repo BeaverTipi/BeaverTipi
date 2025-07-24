@@ -7,17 +7,18 @@ import org.apache.ibatis.annotations.Mapper;
 
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.vo.BoardVO;
+import kr.or.ddit.vo.ReportVO;
 
 @Mapper
 public interface ReportPostMapper {
 
-    List<BoardVO> selectReportedPostList(PaginationInfo<BoardVO> pagingVO);
+    List<ReportVO> selectReportedPostList(PaginationInfo<ReportVO> pagingVO);
 
-    int selectReportedPostCount(PaginationInfo<BoardVO> pagingVO);
+    int selectReportedPostCount(PaginationInfo<ReportVO> pagingVO);
 
-    int updateReportStatus(BoardVO reportVO);
+    int updateReportStatus(ReportVO reportVO);
 
-	BoardVO selectReportDetailByReportId(String reportId);
+    ReportVO selectReportDetailByReportId(String reportId);
 
 	void updateMemberStatus(Map<String, String> paramMap);
 

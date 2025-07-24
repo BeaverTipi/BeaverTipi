@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(of="adsId")
 public class BusinessAdsSearchVO implements Serializable {
 	private String searchAdsId;			// 광고 번호 (일단 사용안함)
 	private String searchAdsBrdNo;		// 게시글 번호 (일단 사용안함)

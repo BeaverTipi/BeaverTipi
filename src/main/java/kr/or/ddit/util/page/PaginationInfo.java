@@ -8,6 +8,7 @@ import kr.or.ddit.vo.BoardVO; // ⭐ BoardVO import 포함 ⭐
 import kr.or.ddit.vo.BusinessAdsSearchVO;
 import kr.or.ddit.vo.BusinessApproveSearchVO;
 import kr.or.ddit.vo.MemberSearchVO;
+import kr.or.ddit.vo.ReportSearchVO;
 import lombok.Getter;
 import lombok.Setter; // ⭐ @Setter 어노테이션 포함 ⭐
 
@@ -93,32 +94,35 @@ public class PaginationInfo<T> {
 					System.err.println("URL Encoding failed for MemberSearchVO: " + e.getMessage());
 				}
 			}
-			// 기존 BoardVO 처리 로직 유지
-			else if (this.detailSearch instanceof BoardVO) {
-				BoardVO boardVO = (BoardVO) this.detailSearch;
-				try {
-					if (boardVO.getSearchTitle() != null && !boardVO.getSearchTitle().isEmpty()) {
-						sb.append("&detailSearch.searchTitle=").append(URLEncoder.encode(boardVO.getSearchTitle(), StandardCharsets.UTF_8.toString()));
-					}
-					if (boardVO.getSearchWriter() != null && !boardVO.getSearchWriter().isEmpty()) {
-						sb.append("&detailSearch.searchWriter=").append(URLEncoder.encode(boardVO.getSearchWriter(), StandardCharsets.UTF_8.toString()));
-					}
-					if (boardVO.getSearchReportedTargetId() != null && !boardVO.getSearchReportedTargetId().isEmpty()) {
-						sb.append("&detailSearch.searchReportedTargetId=").append(URLEncoder.encode(boardVO.getSearchReportedTargetId(), StandardCharsets.UTF_8.toString()));
-					}
-					if (boardVO.getSearchRptStatusCode() != null && !boardVO.getSearchRptStatusCode().isEmpty()) {
-						sb.append("&detailSearch.searchRptStatusCode=").append(URLEncoder.encode(boardVO.getSearchRptStatusCode(), StandardCharsets.UTF_8.toString()));
-					}
-					if (boardVO.getBrdPblsDtmFrom() != null) {
-						sb.append("&detailSearch.brdPblsDtmFrom=").append(URLEncoder.encode(boardVO.getBrdPblsDtmFrom().toString(), StandardCharsets.UTF_8.toString()));
-					}
-					if (boardVO.getBrdPblsDtmTo() != null) {
-						sb.append("&detailSearch.brdPblsDtmTo=").append(URLEncoder.encode(boardVO.getBrdPblsDtmTo().toString(), StandardCharsets.UTF_8.toString()));
-					}
-				} catch (UnsupportedEncodingException e) {
-					System.err.println("URL Encoding failed for BoardVO: " + e.getMessage());
-				}
-			}
+			// ReportSearchVO 처리 로직
+            else if (this.detailSearch instanceof ReportSearchVO) {
+                ReportSearchVO reportSearchVO = (ReportSearchVO) this.detailSearch;
+                try {
+                    if (reportSearchVO.getSearchTitle() != null && !reportSearchVO.getSearchTitle().isEmpty()) {
+                        sb.append("&detailSearch.searchTitle=").append(URLEncoder.encode(reportSearchVO.getSearchTitle(), StandardCharsets.UTF_8.toString()));
+                    }
+                    if (reportSearchVO.getSearchWriter() != null && !reportSearchVO.getSearchWriter().isEmpty()) {
+                        sb.append("&detailSearch.searchWriter=").append(URLEncoder.encode(reportSearchVO.getSearchWriter(), StandardCharsets.UTF_8.toString()));
+                    }
+                    if (reportSearchVO.getSearchReportedTargetId() != null && !reportSearchVO.getSearchReportedTargetId().isEmpty()) {
+                        sb.append("&detailSearch.searchReportedTargetId=").append(URLEncoder.encode(reportSearchVO.getSearchReportedTargetId(), StandardCharsets.UTF_8.toString()));
+                    }
+                    if (reportSearchVO.getSearchRptStatusCode() != null && !reportSearchVO.getSearchRptStatusCode().isEmpty()) {
+                        sb.append("&detailSearch.searchRptStatusCode=").append(URLEncoder.encode(reportSearchVO.getSearchRptStatusCode(), StandardCharsets.UTF_8.toString()));
+                    }
+                    if (reportSearchVO.getBrdPblsDtmFrom() != null) {
+                        sb.append("&detailSearch.brdPblsDtmFrom=").append(URLEncoder.encode(reportSearchVO.getBrdPblsDtmFrom().toString(), StandardCharsets.UTF_8.toString()));
+                    }
+                    if (reportSearchVO.getBrdPblsDtmTo() != null) {
+                        sb.append("&detailSearch.brdPblsDtmTo=").append(URLEncoder.encode(reportSearchVO.getBrdPblsDtmTo().toString(), StandardCharsets.UTF_8.toString()));
+                    }
+                    if (reportSearchVO.getSearchRptCode() != null && !reportSearchVO.getSearchRptCode().isEmpty()) {
+                        sb.append("&detailSearch.searchRptCode=").append(URLEncoder.encode(reportSearchVO.getSearchRptCode(), StandardCharsets.UTF_8.toString()));
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    System.err.println("URL Encoding failed for ReportSearchVO: " + e.getMessage());
+                }
+            }
 			// 구독
 			else if (this.detailSearch instanceof BusinessApproveSearchVO) {
 			    BusinessApproveSearchVO vo = (BusinessApproveSearchVO) this.detailSearch;
