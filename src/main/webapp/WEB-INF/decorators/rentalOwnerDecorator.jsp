@@ -36,6 +36,8 @@
 <%@ include file="/WEB-INF/fragments/rentalOwnerPreStyle.jsp"%>
 <!-- axios -->
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script
+	src="${pageContext.request.contextPath}/volt/assets/js/customAxios.js"></script>
 <!-- NOTICE: You can use the _analytics.html partial to include production code specific code & trackers -->
 <sitemesh:write property="head"/>
 <c:if test="${not empty message}">

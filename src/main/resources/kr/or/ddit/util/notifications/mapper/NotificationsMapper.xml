@@ -4,8 +4,7 @@
 	namespace="kr.or.ddit.util.notifications.mapper.NotificationsMapper">
 	
 <select id="selectNotificationList">
-SELECT A.*
-FROM (	SELECT NOTIF_ID
+	SELECT NOTIF_ID
 			  , MBR_CD
 		 	  , NOTIF_TITLE
 		      , NOTIF_MSG
@@ -20,8 +19,6 @@ FROM (	SELECT NOTIF_ID
         AND NOTIF_READ_YN ='N'
         AND NOTIF_DEL_YN = 'N'
         ORDER BY NOTIF_DT DESC
-  		) A
-WHERE ROWNUM BETWEEN 1 AND 5
 </select>
 <select id="selectNotificationListPaging">
   SELECT *

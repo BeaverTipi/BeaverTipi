@@ -259,6 +259,10 @@
 		(M.MBR_CD=UR.MBR_CD)
 		WHERE M.MBR_EML_ADDR = #{mail}
 	</select>
+<select id="selectNextMbrCd">
+SELECT 'M'||TRIM(TO_CHAR(SYSDATE,'YYMM'))||TRIM(TO_CHAR(SEQ_MBR_CD.NEXTVAL,'000000'))
+FROM MEMBER
+</select>
 
 	<insert id="insertMember">
 		INSERT INTO MEMBER(
@@ -277,7 +281,7 @@
 		, MBR_DELETE_DATE
 		, MBR_ZIP
 		) VALUES(
-		'M'||TRIM(TO_CHAR(SYSDATE,'YYMM'))||TRIM(TO_CHAR(SEQ_MBR_CD.NEXTVAL,'000000'))
+		#{mbrCd}
 		, #{mbrId}
 		, #{mbrPw}
 		, #{mbrNm}

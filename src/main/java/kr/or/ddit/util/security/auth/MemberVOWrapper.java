@@ -25,7 +25,6 @@ public class MemberVOWrapper extends User implements RealUserWrapper<MemberVO> {
 					    									.toArray(String[]::new))
 				);
 		this.realUser = realUser;
-		log.info("▶▶ MemberVOWrapper 생성됨. realUser.mbrCd = {}", realUser.getMbrCd());
 	}
 	
 	@Override

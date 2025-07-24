@@ -54,6 +54,7 @@ public class RestSpringSecurityConfig {
 			.authorizeHttpRequests(authorize ->
 				authorize.requestMatchers("/rest/auth").permitAll()
 						 .requestMatchers("/rest/buyer/**").hasRole("ADMIN")
+						 .requestMatchers("/rest/broker/myoffice/**").hasRole("BROKER")
 //						 .requestMatchers("/rest/buyer/**").hasAuthority("SCOPE_BUYER")
 //						 .requestMatchers(HttpMethod.GET,"/rest/lprod/**").hasAuthority("SCOPE_LPROD/READ")
 //						 .requestMatchers(HttpMethod.DELETE,"/rest/lprod/**").hasAuthority("SCOPE_LPROD/DELETE")

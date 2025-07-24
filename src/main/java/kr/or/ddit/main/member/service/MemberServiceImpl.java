@@ -13,18 +13,20 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.ddit.main.mapper.MemberMapper;
+import kr.or.ddit.main.mapper.SubscribeSubscriptionMapper;
 import kr.or.ddit.util.file.service.FileService;
 import kr.or.ddit.util.validate.exception.FileIOException;
 import kr.or.ddit.util.validate.exception.PKDuplicatedException;
 import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.RoleAchievedVO;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 	private final MemberMapper mapper;
-	
+	private final SubscribeSubscriptionMapper subMapper;
 	private final PasswordEncoder passwordEncoder;
 	
 	private final AuthenticationManager authenticationManager; 
@@ -42,8 +44,15 @@ public class MemberServiceImpl implements MemberService {
 				FileVO newFile = this.fileUpload(file, member.getMbrCd());
 				member.setMbrProfilImage(newFile.getFileId());
 			}
+			String username = mapper.selectNextMbrCd();
+			member.setMbrCd(username);
+			
+			RoleAchievedVO role = new RoleAchievedVO();
+			role.setMbrCd(username);
+			role.setUserRoleId("ROLE_USER");
 			
 			mapper.insertMember(member);
+			subMapper.insertRoleAchived(role);
 		}else {
 			throw new PKDuplicatedException(member.getMbrId());
 		}

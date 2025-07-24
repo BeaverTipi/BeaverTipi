@@ -18,4 +18,6 @@ public interface MemberMapper {
 	public int updateMemDelete(String username);
 	
 	public int updateMember(MemberVO member);
+	
+	public String selectNextMbrCd();
 }

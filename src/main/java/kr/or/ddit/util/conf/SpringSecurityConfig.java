@@ -178,10 +178,6 @@ public class SpringSecurityConfig {
 		handler.setInvalidateHttpSession(true);
 		return handler;		
 	}
-//	@Bean
-//	public HttpSessionEventPublisher httpSessionEventPublisher() {
-//	    return new HttpSessionEventPublisher();
-//	}
 	
 	@Bean
 	@Order(2)
@@ -194,14 +190,15 @@ public class SpringSecurityConfig {
 				authorize
 				.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // redirection으로 이동하는 것도 감지함. 그래서 막아버림. 그것도 풀어줘라 하는 게 필요.
 					.requestMatchers(WHITE_LIST).permitAll()
-					.requestMatchers(new AntPathRequestMatcher(registerUrl)).permitAll()
-					.requestMatchers(new AntPathRequestMatcher("account/login/**")).permitAll()
-					.requestMatchers(new AntPathRequestMatcher("account/logout/**")).permitAll()
-					.requestMatchers(new AntPathRequestMatcher("/mypage")).authenticated()
-					.requestMatchers(new AntPathRequestMatcher("/prod/*Insert*")).hasAnyRole("ADMIN")
-					.requestMatchers(new AntPathRequestMatcher("/prod/*Update*")).hasAnyRole("ADMIN")
-					.requestMatchers(new AntPathRequestMatcher("/prod/*Delete*")).hasAnyRole("ADMIN")
-					.requestMatchers(new AntPathRequestMatcher("/buyer/**")).hasAnyRole("ADMIN")
+					.requestMatchers(new AntPathRequestMatcher(registerUrl)).anonymous()
+					.requestMatchers(new AntPathRequestMatcher("account/login/**")).anonymous()
+					.requestMatchers(new AntPathRequestMatcher("account/logout/**")).authenticated()
+					.requestMatchers(new AntPathRequestMatcher("/resident/chat/**")).authenticated()
+					.requestMatchers(new AntPathRequestMatcher("/account/read")).authenticated()
+					.requestMatchers(new AntPathRequestMatcher("/admin/**")).hasAnyRole("ADMIN")
+					.requestMatchers(new AntPathRequestMatcher("/tenancy/**")).hasAnyRole("TENANCY")
+					.requestMatchers(new AntPathRequestMatcher("/broker/**")).hasAnyRole("BROKER")
+					.requestMatchers(new AntPathRequestMatcher("/member/**")).authenticated()
 //					.anyRequest().authenticated() // 폐쇄형 사이트 -> cors 필요없음
 					.requestMatchers("/**").permitAll() // 우리는 공개형 사이트를 가지고 있다. -> cors필요함.
 			)

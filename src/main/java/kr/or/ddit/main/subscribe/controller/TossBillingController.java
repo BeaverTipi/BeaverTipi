@@ -213,7 +213,7 @@ public class TossBillingController {
 
             RoleAchievedVO roleAchievedVO = new RoleAchievedVO();
             roleAchievedVO.setMbrCd(mbrCd);
-            roleAchievedVO.setUserRoleId(role);
+            roleAchievedVO.setUserRoleId("ROLE_"+role);
             
             CardVO cardVO =new CardVO();
             Map<String,String> map = (Map<String,String>)result.get("card");
@@ -283,7 +283,7 @@ public class TossBillingController {
 
                 RoleAchievedVO roleAchievedVO = new RoleAchievedVO();
                 roleAchievedVO.setMbrCd(mbrCd);
-                roleAchievedVO.setUserRoleId(role);
+                roleAchievedVO.setUserRoleId("ROLE_" + role);
 
                 SolutionSubscriptionVO subscriptionVO = new SolutionSubscriptionVO();
                 subscriptionVO.setMbrCd(mbrCd);

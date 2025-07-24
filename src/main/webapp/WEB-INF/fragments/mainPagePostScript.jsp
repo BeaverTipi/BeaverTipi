@@ -62,8 +62,7 @@
 <!-- custom JS -->
 <script src="${pageContext.request.contextPath}/volt/assets/js/volt.js"></script>
 <!-- Custom axios -->
-<script
-	src="${pageContext.request.contextPath}/volt/assets/js/customAxios.js"></script>
+
 <script src="${pageContext.request.contextPath}/app/js/main/login.js"></script>
 <script
 	src="${pageContext.request.contextPath}/app/js/chat/chatPopup.js" defer></script>

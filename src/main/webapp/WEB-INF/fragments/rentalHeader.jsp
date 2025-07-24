@@ -94,10 +94,16 @@
 							</c:choose>
 					</a>
 					<ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="userDropdown">
-						<li><a class="dropdown-item" href="${pageContext.request.contextPath}/resident/myhouse">마이하우스(입주민)</a></li>
+												<li><a class="dropdown-item" href="${pageContext.request.contextPath}/resident/myhouse">마이하우스(입주민)</a></li>
+						<security:authorize access="hasRole('TENANCY')"> 
 						<li><a class="dropdown-item" href="${pageContext.request.contextPath}/building/myhouse">마이하우스(임대인)</a></li>
+						</security:authorize>
+						<security:authorize access="hasRole('BROKER')"> 
 						<li><a class="dropdown-item" href="#" id="brokerOfficeLink">마이오피스(중개인)</a></li>
+						</security:authorize>
+						<security:authorize access="hasRole('ADMIN')"> 
 						<li><a class="dropdown-item" href="${pageContext.request.contextPath}/admin/main">시스템 관리자</a></li>
+						</security:authorize>
 						<li><a class="dropdown-item" href="${pageContext.request.contextPath}/subscribe/subscription">구독/승인</a></li>
 						<li><hr class="dropdown-divider"></li>
 						<li><a class="dropdown-item text-danger" id="logout" href="${pageContext.request.contextPath}/account/logout">로그아웃</a></li>
