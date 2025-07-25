@@ -252,5 +252,10 @@ public class FileServiceImpl implements FileService {
         return s3Uploader.generatePresignedUrl(s3Key, expireMinutes);
     }
 
+	@Override
+	public void updateFileUrl(String fileId, String newUrl) {
+		mapper.updateFileUrl(fileId, newUrl);
+	}
+
 
 }

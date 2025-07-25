@@ -80,6 +80,7 @@ public class RestContractAuthorizationController {
 				// String contId = String.valueOf(parsedRequest.get("contId"));
 				log.debug("-----<> 계약 ID 출력:: {}", contId);
 				ContractVO contract = contService.readContractInfo(contId);
+				log.debug("-----<> 계약 VO 출력:: {}", contract);
 
 				/** 2. 회원 로그인상태 확인 및 인가처리 밑작업 */
 				if ((auth == null || !auth.isAuthenticated()) && principal == null)
@@ -112,10 +113,10 @@ public class RestContractAuthorizationController {
 				responseMap.put("contId", contId);
 				responseMap.put("role", userRole);
 				responseMap.put("name", user.getMbrNm());
-				responseMap.put("telNo", user.getMbrTelno());
+				responseMap.put("telno", user.getMbrTelno());
 				responseMap.put("ipAddr", request.getRemoteAddr());
 				responseMap.put("mbrId", user.getMbrId());
-
+				log.debug("^ㅂ^^ㅂ^^ㅂ^^ㅂ^^ㅂ^^ㅂ^ {}", user.getMbrTelno());
 				resultJson = objectMapper.writeValueAsString(responseMap);
 				return ResponseEntity.ok(aes256Util.encryptWithDynamicIV(resultJson));
 			} catch (Exception e) {

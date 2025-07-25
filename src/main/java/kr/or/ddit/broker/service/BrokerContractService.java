@@ -19,7 +19,9 @@ import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import kr.or.ddit.vo.ContractDigitalSignVO;
 import kr.or.ddit.vo.ContractVO;
+import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
 import kr.or.ddit.vo.TenancyVO;
@@ -66,7 +68,7 @@ public interface BrokerContractService {
 	 */
 	public ResponseEntity<?> processOfCreatingContract(String decryptedJson, Principal principal) throws JsonProcessingException;
 	
-	public void readContractPDF(String contId);
+	public FileVO readContractPDFFile(String contId);
 	
 	/**
 	 * 계약 정보 단건 삭제
@@ -104,4 +106,12 @@ public interface BrokerContractService {
 	public ContractVO readContractInfo(String contId);
 	
 	public List<Map<String, Object>> validateSignerStatus(String contId);
+	
+	
+	/**
+	 * contId에 대한 전자서명 정보를 조회, List로 반환하는 단순 조회
+	 * @param contId
+	 * @return List<ContractDigitalSignVO>
+	 */
+	public List<ContractDigitalSignVO> readSignatureList(String contId);
 }

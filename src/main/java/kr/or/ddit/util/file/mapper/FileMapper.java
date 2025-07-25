@@ -15,5 +15,6 @@ public interface FileMapper {
 	public FileVO selectFile(String fileId);
 	public List<FileVO> selectFileList(FileVO file);
 	public int updateFile(FileVO file);
-	
+	public FileVO selectContractFile(String contId);
+	public int updateFileUrl(String fileId, String newUrl); // ^0^
 }

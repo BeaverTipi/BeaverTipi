@@ -28,7 +28,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
         registry.addHandler(webSocketHandler, "/ws/chat");
         registry.addHandler(chatListSocketHandler, "/ws/chatList");
         registry.addHandler(brokerChatHandler, "/ws/brokerChat");
-        registry.addHandler(contractExpireWebSocketHandler, "/ws/contractExpire").setAllowedOrigins("*"); // ✅ 추가
-        registry.addHandler(contractSignerWebSocketHandler, "/ws/signers").setAllowedOrigins("*");
+        registry.addHandler(contractExpireWebSocketHandler, "/ws/contractExpire").setAllowedOrigins("*"); // ^0^
+        registry.addHandler(contractSignerWebSocketHandler, "/ws/signers").setAllowedOrigins("*"); // ^0^
     }
 }

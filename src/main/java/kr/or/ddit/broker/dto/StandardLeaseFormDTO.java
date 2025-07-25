@@ -1,4 +1,4 @@
-package kr.or.ddit.vo;
+package kr.or.ddit.broker.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -8,6 +8,7 @@ import java.util.Map;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import kr.or.ddit.vo.FileVO;
 import lombok.Data;
 
 @Data

@@ -58,7 +58,7 @@ import kr.or.ddit.vo.ContractVO;
 import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
-import kr.or.ddit.vo.StandardLeaseFormDTO;
+import kr.or.ddit.broker.dto.StandardLeaseFormDTO;
 import kr.or.ddit.vo.TenancyVO;
 import lombok.extern.slf4j.Slf4j;
 

@@ -132,4 +132,10 @@ WHERE FILE_ID = #{fileId}
 	FROM FILES
 	WHERE FILE_SOURCE_ID = #{contId}
 </select>
+<update id="updateFileUrl">
+  UPDATE FILES
+  SET FILE_PATH_URL = #{newUrl}
+  WHERE FILE_ID = #{fileId}
+</update>
+
 </mapper>

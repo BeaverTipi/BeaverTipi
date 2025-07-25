@@ -23,4 +23,6 @@ public interface FileService {
 	public List<FileVO> readFileList(String sourceRef, String sourceId);
 	public InputStream getFileStream(String fileId); // S3 파일 스트림 제공
     public String getPresignedUrl(String fileId, int expireMinutes); // Presigned URL 제공
+    
+    public void updateFileUrl(String fileId, String newUrl);
 }

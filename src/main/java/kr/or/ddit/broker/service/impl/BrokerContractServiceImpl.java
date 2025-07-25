@@ -46,6 +46,7 @@ import kr.or.ddit.util.calc.CalcOnContract;
 import kr.or.ddit.util.crypto.AES256Util;
 import kr.or.ddit.util.file.Base64DecodedMultipartFile;
 import kr.or.ddit.util.file.ToMultipartFileUtil;
+import kr.or.ddit.util.file.mapper.FileMapper;
 import kr.or.ddit.util.file.service.FileService;
 import kr.or.ddit.util.parse.SafeParse;
 import kr.or.ddit.util.pdf.service.PDFService;
@@ -54,7 +55,7 @@ import kr.or.ddit.vo.ContractVO;
 import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
-import kr.or.ddit.vo.StandardLeaseFormDTO;
+import kr.or.ddit.broker.dto.StandardLeaseFormDTO;
 import kr.or.ddit.vo.TenancyVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -76,11 +77,14 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	@Autowired
 	private FileService fileService;
 	@Autowired
+	private FileMapper fileMapper;
+	@Autowired
 	private ObjectMapper objectMapper;
 	@Autowired
 	private Validator validator;
 	@Autowired
 	private AES256Util aes256Util;
+	
 
 	/**
 	 * @param principal 내에서 불러온 Broker의 mbrCd
@@ -270,9 +274,8 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	}
 
 	@Override
-	public void readContractPDF(String contId) {
-		// TODO Auto-generated method stub
-
+	public FileVO readContractPDFFile(String contId) {
+		return fileMapper.selectContractFile(contId);
 	}
 
 	@Transactional
@@ -355,21 +358,155 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 
 	@Override
 	public List<Map<String, Object>> validateSignerStatus(String contId) {
-		List<ContractDigitalSignVO> signs = mapper.selectDtSignList(contId);
+		
+		//계약 레코드에서는 계약 참여자의 전화번호가 식별자
+	    ContractVO contract = mapper.selectContractInfo(contId);
+	    List<Map<String, Object>> defaultSigners = new ArrayList<>();
 
-		return signs.stream().map((Function  <ContractDigitalSignVO, Map<String, Object>>)sign -> {
-			String raw = sign.getContDtBaseData()
-					+ sign.getMbrCd()
-					+ sign.getContId()
-					+ sign.getContDtSignType()
-					+ sign.getContDtSignDtm();
+	    //계약 참여자의 기본 정보
+	    defaultSigners.add(Map.of(
+	        "role", "AGENT",
+	        "name", contract.getContBrokerTelno(),
+	        "signedAt", null,
+	        "isValid", null
+	    ));
+	    defaultSigners.add(Map.of(
+	        "role", "LESSOR",
+	        "name", contract.getContTenancyTelno(),
+	        "signedAt", null,
+	        "isValid", null
+	    ));
+	    defaultSigners.add(Map.of(
+	        "role", "LESSEE",
+	        "name", contract.getContLesseeTelno(),
+	        "signedAt", null,
+	        "isValid", null
+	    ));
+	    
+	    //계약 참여자의 서명 데이터
+	    //제네릭 타입 추론의 실패 유의
+    /*
+		    return defaultSigners.stream().map(participant -> {
+	        String role = (String) participant.get("role");
+	        String name = (String) participant.get("name");
+	
+	        ContractDigitalSignVO sign = signedMap.get(role);
+	        if (sign != null) {
+	            String raw = sign.getContDtBaseData()
+	                    + sign.getMbrCd()
+	                    + sign.getContId()
+	                    + sign.getContDtSignType()
+	                    + sign.getContDtSignDtm();
+	
+	            String serverHash = DigestUtils.sha256Hex(raw);
+	            boolean isValid = serverHash.equals(sign.getContDtSignHashVal());
+	
+	            return Map.of(
+	                "role", role,
+	                "name", name,
+	                "signedAt", sign.getContDtSignDtm(),
+	                "isValid", isValid,
+	                "isRejected", sign.getIsRejected(),
+	                "tempPdfUrl", sign.getTempPdfUrl()
+	            );
+	        } else {
+	            return participant; // 서명되지 않음
+	        }
+	    }).collect(Collectors.toList());
+    
+    	map(...) 안에서 Function<...> 제네릭 타입 추론에 실패.
+    	why?
+    	- stream().map(...).collect(Collectors.toList()) 부분이 복잡
+    	- 연산식이 복잡해지면 타입 추론에 실패
+    	why?
+    	- Map<String, Object> 형태는 Java 타입추론에 있어 금쪽이.
+    	- 그냥 타입 안정성이라곤 쥐뿔도 없는 형태
+    	- Stream 내에서 처리하기 위해선 캐스팅을 명확하게 하거나 DTO로 전환.
+    	
+    	
+    	To..
+    	1. 람다식은 명확한 입력 타입 선언
+    	list.stream().map(item -> { ... })    // 🚫 sometimes fails
+		list.stream().map((Function<MyType, MyReturnType>) item -> { ... })  // ✅ good
+		- `map((Function<Target, Result> lambda)` 처럼 람다 타입을 명시한다!
 
-			String serverHash = DigestUtils.sha256Hex(raw);
-			boolean isValid = serverHash.equals(sign.getContDtSignHashVal());
+		2. .collect(Collectors.toMap(...)) 반환 타입에 유의
+		Map<String, User> map = list.stream()
+    		.collect(Collectors.toMap(User::getId, Function.identity()));
+		- key 또는 value mapper가 null 반환 시, IllegalStateException 발생
+		- 키의 중복에 대응하거나(1), 명시적 타입을 지정(2)한다.
+		
+		3. Map<String, Object>는 제네릭 타입 추론의 금쪽이
+		- String role = (String) participant.get("role");
+		
+		4. .stream().map(...).collect(...) 반환타입을 변수로 고정시킨다.
+		List<Map<String, Object>> result = list.stream()
+		    .map(...)  // ↔ 컴파일러가 여기서 타입 추론
+		    .collect(Collectors.toList());  // 🔐 변수가 타입을 고정해줌
+		- 익명으로 선언하지 말고, 변수 선언을 통해 타입을 못 박아버린다.
+		
+		5. Function/Predicate/Supplier 함수형 인터페이스 사용
+		Function<T, R> mapper = t -> ...
+		list.stream().map(mapper).collect(...)
+		- 람다 함수의 로직이 복잡해도 컴파일러의 타입추론이 수월해짐
+		
+		6. 어지간한 컴파일 오류의 근본 원인은 람다식의 타입추론 실패.
+		- 그러니 람다에 꼭 타입 붙인다. Function<T, R>
+		
+		7. 금쪽이 Map<String, Object> 대신 DTO 활용
+		- Map은 코드가 항상 복잡해지는데다, IDE도 타입 추적을 못함.
+		
+| 구간                        | 설명                 		| 대처 방법                      			|
+| --------------------------- | --------------------------- | ----------------------------------------- |
+| `stream().map(...)`         | 람다 복잡할 때           	| 람다에 타입명시 or Function 객체 사용 	|
+| `Collectors.toMap(...)`     | 키 중복, 타입 추론 불가     | 타입 지정 + mergeFunction 지정   			|
+| `List<Map<String, Object>>` | 캐스팅 필요, 추론 불가      | DTO 전환 권장                 			|
+| `Optional.map(...)`         | Optional 내부 타입 미확정 	| 명시적 람다 또는 타입 고정 변수 사용      |
 
-			return Map.of("role", sign.getContDtSignType(), "name", sign.getMbrCd(), "signedAt",
-					sign.getContDtSignDtm(), "isValid", isValid);
-		}).collect(Collectors.toList()); // ✅ 이게 핵심
+     */
+	    List<ContractDigitalSignVO> signs = mapper.selectDtSignList(contId);
+	    
+	    // role 기준으로 서명된 데이터 매핑
+	    Map<String, ContractDigitalSignVO> signedMap = signs.stream()
+	        .collect(Collectors.toMap(ContractDigitalSignVO::getContDtSignType, Function.identity()));
+
+	    return defaultSigners.stream()
+	        .map((Function<Map<String, Object>, Map<String, Object>>) participant -> {
+	            String role = (String) participant.get("role");
+	            String name = (String) participant.get("name");
+
+	            ContractDigitalSignVO sign = signedMap.get(role);
+	            if (sign != null) {
+	                String raw = sign.getContDtBaseData()
+	                        + sign.getMbrCd()
+	                        + sign.getContId()
+	                        + sign.getContDtSignType()
+	                        + sign.getContDtSignDtm();
+
+	                String serverHash = DigestUtils.sha256Hex(raw);
+	                boolean isValid = serverHash.equals(sign.getContDtSignHashVal());
+
+	                return Map.of(
+	                    "role", role,
+	                    "name", name,
+	                    "signedAt", sign.getContDtSignDtm(),
+	                    "isValid", isValid
+	                );
+	            } else {
+	                return participant; // 서명되지 않은 상태 그대로 유지
+	            }
+	        })
+	        .collect(Collectors.toList());
+	}
+
+	/**
+	 * contId에 대한 전자서명 정보를 조회, List로 반환하는 단순 조회
+	 * @param contId
+	 * @return List<ContractDigitalSignVO>
+	 */
+	@Override
+	public List<ContractDigitalSignVO> readSignatureList(String contId) {
+	    return mapper.selectDtSignList(contId);
 	}
 
 }
