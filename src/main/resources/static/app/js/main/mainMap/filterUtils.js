@@ -55,6 +55,30 @@ window.getFilterParams = function() {
 
 	const mbrCd = document.querySelector('#currentUserCode')?.value;
 	if (mbrCd && mbrCd.trim() !== "") params.mbrCd = mbrCd;
+	
+	const jeonseMin = document.querySelector('[name="jeonseMin"]')?.value;
+	if (jeonseMin && jeonseMin.trim() !== "") params.jeonseMin = jeonseMin;
+
+	const jeonseMax = document.querySelector('[name="jeonseMax"]')?.value;
+	if (jeonseMax && jeonseMax.trim() !== "") params.jeonseMax = jeonseMax;
+
+	const depositMin = document.querySelector('[name="depositMin"]')?.value;
+	if (depositMin && depositMin.trim() !== "") params.depositMin = depositMin;
+
+	const depositMax = document.querySelector('[name="depositMax"]')?.value;
+	if (depositMax && depositMax.trim() !== "") params.depositMax = depositMax;
+
+	const monthlyMin = document.querySelector('[name="monthlyMin"]')?.value;
+	if (monthlyMin && monthlyMin.trim() !== "") params.monthlyMin = monthlyMin;
+
+	const monthlyMax = document.querySelector('[name="monthlyMax"]')?.value;
+	if (monthlyMax && monthlyMax.trim() !== "") params.monthlyMax = monthlyMax;
+
+	const saleMin = document.querySelector('[name="saleMin"]')?.value;
+	if (saleMin && saleMin.trim() !== "") params.saleMin = saleMin;
+
+	const saleMax = document.querySelector('[name="saleMax"]')?.value;
+	if (saleMax && saleMax.trim() !== "") params.saleMax = saleMax;
 
 	return params;
 };

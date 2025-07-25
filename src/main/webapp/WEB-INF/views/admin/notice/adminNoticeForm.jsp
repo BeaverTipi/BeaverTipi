@@ -13,6 +13,7 @@
 		<div class="card-body">
 			<form:form modelAttribute="board" method="post">
     			<form:hidden path="brdDelYn" value="N" />
+    			<form:hidden path="brdCtgryGrpCd" value="BRDCT" />
 				<div>
 				
 		<div class="form-control">
@@ -25,7 +26,7 @@
 		  <label class="label" for="brdCtgryGrpCd">게시판 유형</label>
 		  <c:forEach items="${brdCodeList}" var="item">
 			  <c:if test="${item.codeValue eq '007' or item.codeValue eq '008'or item.codeValue eq '009'}">
-			 	 <form:radiobutton path="brdCtgryGrpCd" value="${item.codeValue }" />
+			 	 <form:radiobutton path="brdCtgryValue" value="${item.codeValue }" />
 			 	 ${item.codeName }
 			  </c:if>
 		  </c:forEach>

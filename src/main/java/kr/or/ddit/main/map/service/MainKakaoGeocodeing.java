@@ -32,8 +32,8 @@ public class MainKakaoGeocodeing {
     private final KakaoApiKeyProvider apiKeyProvider;
 	private final MainKakaoMapService service;
 	
-	// 이거 태스트용으로 30분 마다 실행됩니다.
-	@Scheduled(cron = "0 */30 * * * *")
+	// 이거 태스트용으로 60분 마다 실행됩니다.
+	@Scheduled(cron = "0 0 * * * *")
 	public void scheduledGeocodeingJob() {
 		getCoordinatesFromDB();
 	}
@@ -127,7 +127,7 @@ public class MainKakaoGeocodeing {
 	            					));
 	            			log.info("좌표 저장 완료 : {} -> {}, {}", addr, lat, lng);
 	            			
-	            			Thread.sleep(600);  
+	            			Thread.sleep(1000);  
 	            			success = true;
 	            		}
 	            } catch (Exception e) {

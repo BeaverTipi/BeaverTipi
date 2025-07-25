@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kr.or.ddit.main.map.service.MainKakaoMapService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
+import kr.or.ddit.vo.LstgViewLogVO;
 import kr.or.ddit.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
 
@@ -43,14 +45,23 @@ public class MainKakaoMapRestController {
 		@RequestParam(required = false) Integer minFloor,
 		@RequestParam(required = false) Integer maxFloor,
 		@RequestParam(required = false) Double minArea,
-		@RequestParam(required = false) Double maxArea
+		@RequestParam(required = false) Double maxArea,
+		@RequestParam(required = false) Integer jeonseMin,
+		@RequestParam(required = false) Integer jeonseMax,
+		@RequestParam(required = false) Integer depositMin,
+		@RequestParam(required = false) Integer depositMax,
+		@RequestParam(required = false) Integer monthlyMin,
+		@RequestParam(required = false) Integer monthlyMax,
+		@RequestParam(required = false) Integer saleMin,
+		@RequestParam(required = false) Integer saleMax
 	) {
 		List<ListingVO> result = service.selectLatLngMarkList(
 			swLat, swLng, neLat, neLng,
 			category, keyword,
 			typeCode1List, typeCode2List, saleTypeList,
 			facilityOptionList, mbrCd,
-			parkingYn, minFloor, maxFloor, minArea, maxArea
+			parkingYn, minFloor, maxFloor, minArea, maxArea,
+			jeonseMin, jeonseMax, depositMin, depositMax, monthlyMin, monthlyMax, saleMin, saleMax
 		);
 
 		return ResponseEntity.ok(result == null ? Collections.emptyList() : result);
@@ -77,9 +88,6 @@ public class MainKakaoMapRestController {
 	    return ResponseEntity.ok(detailList.get(0));
 	}
 
-
-
-	
 	@PostMapping("/wishlist/toggle")
 	public ResponseEntity<Integer> toggleWishlist(
 	        @RequestParam String lstgId,
@@ -103,4 +111,21 @@ public class MainKakaoMapRestController {
 	    return ResponseEntity.ok(service.countWishListByLstgId(lstgId));
 	}
 	
+	 @PostMapping("/viewLog")
+	 public ResponseEntity<Void> insertListingViewLog(
+	    @RequestParam("lstgId") String lstgId,
+	    @RequestParam(value = "mbrCd", required = false) String mbrCd,
+	    HttpServletRequest request
+	 ) {
+		 if (mbrCd == null || mbrCd.trim().isEmpty()) {
+	         mbrCd = request.getRemoteAddr(); // 비회원이면 IP로 대체
+	     }
+
+	     LstgViewLogVO vo = new LstgViewLogVO();
+	     vo.setLstgId(lstgId);
+	     vo.setMbrCd(mbrCd);
+
+	     service.countListingView(vo);
+	     return ResponseEntity.ok().build();
+	    }
 }

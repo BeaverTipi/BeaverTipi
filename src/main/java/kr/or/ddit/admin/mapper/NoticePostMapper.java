@@ -1,7 +1,6 @@
 package kr.or.ddit.admin.mapper;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -10,10 +9,10 @@ import kr.or.ddit.vo.BoardVO;
 
 @Mapper
 public interface NoticePostMapper {
-    public List<Map<String, Object>> selectBoardList(PaginationInfo<BoardVO> paging);
-    public Map<String, Object> selectBoardById(String brdNo);
+    public List<BoardVO> selectBoardList(PaginationInfo<BoardVO> paging);
+    public BoardVO selectBoardById(String brdNo);
     public int insertBoard(BoardVO board);
     public int updateBoard(BoardVO board);
-    public int deleteBoard(String board);
+    public int deleteBoard(String brdNo);
     public int selectTotalBoardRecord(PaginationInfo<BoardVO> paging);
 }

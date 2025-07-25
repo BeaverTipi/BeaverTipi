@@ -9,6 +9,7 @@ import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
+import kr.or.ddit.vo.LstgViewLogVO;
 
 public interface MainKakaoMapService {
 	public List<ListingVO> selectNotLatLngList();
@@ -27,7 +28,11 @@ public interface MainKakaoMapService {
 			String mbrCd, // 찜 확인용
 			String parkingYn, // 주차 가능 여부
 			Integer minFloor, Integer maxFloor, // 층수 범위
-			Double minArea, Double maxArea // 면적 범위
+			Double minArea, Double maxArea, // 면적 범위
+			Integer jeonseMin, Integer jeonseMax, // 전세 필터
+			Integer depositMin, Integer depositMax, // 보증금
+			Integer monthlyMin, Integer monthlyMax, // 월세
+			Integer saleMin, Integer saleMax // 매매가
 	);
 	public List<Map<String, Object>> selectListingDetailList(String lstgId, String mbrCd);
 	public List<FacilityOptionVO> selectFacilityOptionsByListingId(String lstgId);
@@ -35,4 +40,6 @@ public interface MainKakaoMapService {
 	public int deleteWishList(ListingWishlistVO vo);
 	public boolean isWishlisted(ListingWishlistVO vo);
 	public int countWishListByLstgId(@Param("lstgId") String lstgId);
+	
+	public int countListingView(LstgViewLogVO vo);
 }

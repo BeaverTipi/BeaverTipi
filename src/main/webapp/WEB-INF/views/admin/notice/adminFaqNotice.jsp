@@ -34,7 +34,7 @@
 							<c:out value="${board.brdTitlNm}" />
 						</td>
 						<td><c:out value="${board.brdPblsDtmFormatted}" /></td>
-						<td><c:out value="${board.BRD_CTGRY_NAME}" /></td>
+						<td><c:out value="${board.brdCtgryName}" /></td>
 						<td>
 							<img src="${pageContext.request.contextPath}/volt/assets/img/file-download-svgrepo-com.svg" 
 							     width="20" height="20" alt="첨부파일" />

@@ -31,14 +31,15 @@
 						  <div class="popup-body">
 						    <button class="popup-option" data-type="saleType" data-value="">전체</button>
 						    <c:forEach var="item" items="${saleTypeList}">
-					  <c:if test="${not empty item.codeValue && item.codeName ne '전체'}">
-					    <button class="popup-option"
-					            data-type="saleType"
-					            data-value="${item.codeValue}">
-					      ${item.codeName}
-					    </button>
-					  </c:if>
-					</c:forEach>
+							  <c:if test="${not empty item.codeValue && item.codeName ne '전체'}">
+							    <button class="popup-option"
+							            data-type="saleType"
+							            data-value="${item.codeValue}">
+							      ${item.codeName}
+							    </button>
+							  </c:if>
+							</c:forEach>
+								<div id="priceFilterSection" class="price-filter" style="display: none;"></div>
 						  </div>
 						</div>
 					<input type="hidden" id="saleTypeFilter" />
@@ -175,22 +176,8 @@
 
 
 
- <<!-- script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=83437aacc12e4951bd2a5acb4a512ff0&libraries=services,clusterer,drawing"></script> &autoload=false -->
-<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=${jsApiKey}&libraries=services,clusterer,drawing"></script>
-<!-- <script>
-(function() {
-  const jsApiKey = '${jsApiKey}';
-  if (!window.kakao || !window.kakao.maps) {
-    const script = document.createElement('script');
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${jsApiKey}&autoload=true&libraries=services,clusterer,drawing`;
-    script.async = true;
-    script.onload = function () {
-      console.log("✅ Kakao Maps SDK loaded.");
-    };
-    document.head.appendChild(script);
-  }
-})();
-</script> -->
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=83437aacc12e4951bd2a5acb4a512ff0&libraries=services,clusterer,drawing&autoload=false"></script>
+<!-- <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=${jsApiKey}&libraries=services,clusterer,drawing&autoload=false"></script> -->
 
 <script>
 	window.loggedInUserId = "${loginMember != null ? loginMember.mbrCd : ''}";

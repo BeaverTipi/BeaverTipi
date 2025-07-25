@@ -10,6 +10,7 @@ import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
+import kr.or.ddit.vo.LstgViewLogVO;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -44,11 +45,13 @@ public class MainKakaoMapServiceImpl implements MainKakaoMapService {
 	public List<ListingVO> selectLatLngMarkList(double swLat, double swLng, double neLat, double neLng,
 			Integer category, String keyword, List<String> typeCode1List, List<String> typeCode2List,
 			List<String> saleTypeList, List<String> facilityOptionList, String mbrCd, String parkingYn,
-			Integer minFloor, Integer maxFloor, Double minArea, Double maxArea) {
+			Integer minFloor, Integer maxFloor, Double minArea, Double maxArea, Integer jeonseMin,   
+			Integer jeonseMax, Integer depositMin, Integer depositMax, Integer monthlyMin, Integer monthlyMax, 
+			Integer saleMin, Integer saleMax  ) {
 
 		return kakaoMapDataMapper.selectLatLngMarkList(swLat, swLng, neLat, neLng, category, keyword, typeCode1List,
 				typeCode2List, saleTypeList, facilityOptionList, mbrCd, parkingYn, minFloor, maxFloor, minArea,
-				maxArea);
+				maxArea, jeonseMin, jeonseMax, depositMin, depositMax, monthlyMin, monthlyMax, saleMin, saleMax);
 	}
 
 	@Override
@@ -75,5 +78,11 @@ public class MainKakaoMapServiceImpl implements MainKakaoMapService {
 	public int countWishListByLstgId(String lstgId) {
 		return kakaoMapDataMapper.countWishListByLstgId(lstgId);
 	}
+
+	@Override
+	public int countListingView(LstgViewLogVO vo) {
+		return kakaoMapDataMapper.insertLstgViewCont(vo);
+	}
+
 
 }

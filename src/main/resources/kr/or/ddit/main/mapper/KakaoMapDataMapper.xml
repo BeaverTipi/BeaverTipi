@@ -125,6 +125,36 @@
 	    <if test="maxArea != null">
 	      AND LI.LSTG_GR_AREA &lt;= #{maxArea}
 	    </if>
+
+		<!-- 🆕 전세 필터 -->
+		<if test="jeonseMin != null">
+		  AND LI.LSTG_TYPE_SALE = '001' AND LI.LSTG_LEASE &gt;= #{jeonseMin}
+		</if>
+		<if test="jeonseMax != null">
+		  AND LI.LSTG_TYPE_SALE = '001' AND LI.LSTG_LEASE &lt;= #{jeonseMax}
+		</if>
+		
+		<!-- 🆕 월세 필터 -->
+		<if test="depositMin != null">
+		  AND LI.LSTG_TYPE_SALE = '002' AND LI.LSTG_LEASE_AMT &gt;= #{depositMin}
+		</if>
+		<if test="depositMax != null">
+		  AND LI.LSTG_TYPE_SALE = '002' AND LI.LSTG_LEASE_AMT &lt;= #{depositMax}
+		</if>
+		<if test="monthlyMin != null">
+		  AND LI.LSTG_TYPE_SALE = '002' AND LI.LSTG_LEASE_M &gt;= #{monthlyMin}
+		</if>
+		<if test="monthlyMax != null">
+		  AND LI.LSTG_TYPE_SALE = '002' AND LI.LSTG_LEASE_M &lt;= #{monthlyMax}
+		</if>
+		
+		<!-- 🆕 매매 필터 -->
+		<if test="saleMin != null">
+		  AND LI.LSTG_TYPE_SALE = '003' AND LI.LSTG_LEASE_AMT &gt;= #{saleMin}
+		</if>
+		<if test="saleMax != null">
+		  AND LI.LSTG_TYPE_SALE = '003' AND LI.LSTG_LEASE_AMT &lt;= #{saleMax}
+		</if>
 	    
 	    ORDER BY
 		    CASE 
@@ -229,5 +259,17 @@
 	WHERE LSTG_ID = #{lstgId}
 	  AND MBR_CD = #{mbrCd}
 </select>
+
+<insert id="insertLstgViewCont" parameterType="kr.or.ddit.vo.LstgViewLogVO">
+	INSERT INTO LSTG_VIEW_LOG (
+	    LSTG_ID,
+	    MBR_CD,
+	    VIEW_DTM
+	) VALUES (
+		#{lstgId},
+		#{mbrCd},
+		SYSDATE
+	)	
+</insert>
 
 </mapper>

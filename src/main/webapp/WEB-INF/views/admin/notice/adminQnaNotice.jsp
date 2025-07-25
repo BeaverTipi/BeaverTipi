@@ -16,7 +16,7 @@
 		<tr>
 			<th>No</th>
 			<th>제목</th>
-			<th>게시일자</th>
+			<th>회원명</th>
 			<th>카테고리</th>  <!-- QNACT -->
 			<th>상태</th>      <!-- QNAST -->
 		</tr>

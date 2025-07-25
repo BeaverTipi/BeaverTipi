@@ -10,6 +10,7 @@ import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
+import kr.or.ddit.vo.LstgViewLogVO;
 
 @Mapper
 public interface KakaoMapDataMapper {
@@ -31,8 +32,16 @@ public interface KakaoMapDataMapper {
 	    	@Param("minFloor") Integer minFloor,
 	    	@Param("maxFloor") Integer maxFloor,
 	    	@Param("minArea") Double minArea,
-	    	@Param("maxArea") Double maxArea
-			);
+	    	@Param("maxArea") Double maxArea,
+	    	@Param("jeonseMin") Integer jeonseMin,
+	    	@Param("jeonseMax") Integer jeonseMax,
+	    	@Param("depositMin") Integer depositMin,
+	    	@Param("depositMax") Integer depositMax,
+	    	@Param("monthlyMin") Integer monthlyMin,
+	    	@Param("monthlyMax") Integer monthlyMax,
+	    	@Param("saleMin") Integer saleMin,
+	    	@Param("saleMax") Integer saleMax
+		);
 	public List<Map<String, Object>> selectListingDetailList(
 				@Param("lstgId") String lstgId,  @Param("mbrCd") String mbrCd);
 	public List<FacilityOptionVO> selectFacilityOptionsByListingId(@Param("lstgId") String lstgId);
@@ -40,4 +49,6 @@ public interface KakaoMapDataMapper {
 	public int deleteWishList(ListingWishlistVO vo);
 	public boolean isWishlisted(ListingWishlistVO vo);
 	public int countWishListByLstgId(@Param("lstgId") String lstgId);
+	
+	public int insertLstgViewCont(LstgViewLogVO vo);
 }

@@ -2,13 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.admin.mapper.NoticePostMapper">
 
-	<select id="selectBoardList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultType="map">
+	<select id="selectBoardList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultType="kr.or.ddit.vo.BoardVO">
 		SELECT *
 		FROM (
 			SELECT ROWNUM rn, inner.*
 			FROM (
 				SELECT
 					BD.BRD_NO,
+					BD.BRD_CODE,
 					BD.BRD_TITL_NM,
 					BD.BRD_CONT,
 					BD.BRD_PBLS_DTM,
@@ -18,24 +19,32 @@
 					BD.BRD_CTGRY_GRP_CD,
 					MEM.MBR_ID,
 					MEM.MBR_CD,
-					C.CODE_VALUE AS BRD_CTGRY_VALUE,
-					C.CODE_NAME AS BRD_CTGRY_NAME
-				FROM BOARD BD
-				LEFT JOIN MEMBER MEM 
-					ON BD.MBR_CD = MEM.MBR_CD
-				LEFT JOIN COMMON_CODE C 
-					ON C.CODE_GROUP = BD.BRD_CTGRY_GRP_CD
+					C.CODE_NAME AS BRD_CODE_NAME,
+					FAQ.FAQ_CTGRY,
+					FAQ.FAQ_TITL,
+					FAQ.FAQ_CONT,
+					QNA.QNA_CTGRY,
+					QNA.QNA_TITL,
+					QNA.QNA_CONT,
+					QNA.QNA_STATUS
+				FROM 
+					BOARD BD
+					LEFT JOIN MEMBER MEM ON BD.MBR_CD = MEM.MBR_CD
+					LEFT JOIN COMMON_CODE C 
+					ON C.CODE_GROUP = 'BRDCT' AND C.CODE_VALUE = BD.BRD_CODE
+					LEFT JOIN FAQ FAQ ON BD.BRD_NO = FAQ.BRD_NO
+					LEFT JOIN QNA QNA ON BD.BRD_NO = QNA.BRD_NO
 				WHERE 
 					BD.BRD_DEL_YN = 'N'
-					<if test="detailSearch.brdCtgryGrpCd != null and detailSearch.brdCtgryGrpCd != ''">
-						AND BD.BRD_CTGRY_GRP_CD = #{detailSearch.brdCtgryGrpCd}
-					</if>
-					<if test="detailSearch.brdCtgryGrpCd == 'BRDCT' and detailSearch.brdCtgryValue != null">
-						AND C.CODE_VALUE = #{detailSearch.brdCtgryValue}
-					</if>
-					<if test="detailSearch.brdCtgryGrpCd == 'BRDCT' and detailSearch.brdCtgryValue == '007'">
-						AND (BD.BRD_END_DTM IS NULL OR BD.BRD_END_DTM >= SYSDATE)
-					</if>
+	
+				<if test="detailSearch.brdCode != null and detailSearch.brdCode != ''">
+					AND BD.BRD_CODE = #{detailSearch.brdCode}
+				</if>
+	
+				<if test="detailSearch.brdCode == '007'">
+					AND (BD.BRD_END_DTM IS NULL OR BD.BRD_END_DTM >= SYSDATE)
+				</if>
+	
 				ORDER BY BD.BRD_PBLS_DTM DESC
 			) inner
 			WHERE ROWNUM &lt;= #{lastRecordIndex}
@@ -43,10 +52,10 @@
 		WHERE rn &gt;= #{firstRecordIndex}
 	</select>
 
-
-	<select id="selectBoardById" parameterType="String" resultType="map">
+	<select id="selectBoardById" parameterType="String" resultType="kr.or.ddit.vo.BoardVO">
 		SELECT
 			BD.BRD_NO,
+			BD.BRD_CODE,
 			BD.BRD_TITL_NM,
 			BD.BRD_CONT,
 			BD.BRD_PBLS_DTM,
@@ -56,13 +65,40 @@
 			BD.BRD_CTGRY_GRP_CD,
 			MEM.MBR_ID,
 			MEM.MBR_CD,
-			C.CODE_NAME AS BRD_CTGRY_NAME
-		FROM BOARD BD
-		LEFT JOIN MEMBER MEM ON BD.MBR_CD = MEM.MBR_CD
-		LEFT JOIN COMMON_CODE C 
-			ON C.CODE_GROUP = BD.BRD_CTGRY_GRP_CD
-		WHERE BD.BRD_NO = #{brdNo}
+			C.CODE_NAME AS BRD_CODE_NAME,
+			FAQ.FAQ_ID,
+			FAQ.FAQ_CTGRY,
+			FAQ.FAQ_TITL,
+			FAQ.FAQ_CONT,
+			FAQ.FAQ_CNT,
+			FAQ.FAQ_YN,
+			FAQ.FAQ_MBR_ID,
+			FAQ.FAQ_CRE_DTM,
+			FAQ.FAQ_MOD_DTM,
+			QNA.QNA_ID,
+			QNA.QNA_CTGRY,
+			QNA.QNA_TITL,
+			QNA.QNA_CONT,
+			QNA.ANSWER_CONT,
+			QNA.QNA_STATUS,
+			QNA.QNA_YN,
+			QNA.QNA_CRE_DTM,
+			QNA.QNA_MOD_DTM,
+			QNA.QNA_ANSWERED_AT,
+			QNA.MBR_CD AS QNA_MBR_CD,
+			QNA.ANSWER_ADMIN_ID
+	
+		FROM 
+			BOARD BD
+			LEFT JOIN MEMBER MEM ON BD.MBR_CD = MEM.MBR_CD
+			LEFT JOIN COMMON_CODE C 
+			ON C.CODE_GROUP = 'BRDCT' AND C.CODE_VALUE = BD.BRD_CODE
+			LEFT JOIN FAQ FAQ ON BD.BRD_NO = FAQ.BRD_NO
+			LEFT JOIN QNA QNA ON BD.BRD_NO = QNA.BRD_NO
+		WHERE 
+			BD.BRD_NO = #{brdNo}
 	</select>
+
 
 	<insert id="insertBoard" parameterType="kr.or.ddit.vo.BoardVO">
 		<selectKey keyProperty="brdNo" order="BEFORE" resultType="String">
@@ -123,10 +159,14 @@
 	<select id="selectTotalBoardRecord" resultType="int" parameterType="kr.or.ddit.util.page.PaginationInfo">
 		SELECT COUNT(*)
 		FROM BOARD
-		WHERE 
-			BRD_DEL_YN = 'N'
-		<if test="detailSearch.brdCtgryGrpCd != null and detailSearch.brdCtgryGrpCd != ''">
-			AND BRD_CTGRY_GRP_CD = #{detailSearch.brdCtgryGrpCd}
+		WHERE BRD_DEL_YN = 'N'
+	
+		<if test="detailSearch.brdCode != null and detailSearch.brdCode != ''">
+			AND BRD_CODE = #{detailSearch.brdCode}
+		</if>
+	
+		<if test="detailSearch.brdCode == '007'">
+			AND (BRD_END_DTM IS NULL OR BRD_END_DTM >= SYSDATE)
 		</if>
 	</select>
 

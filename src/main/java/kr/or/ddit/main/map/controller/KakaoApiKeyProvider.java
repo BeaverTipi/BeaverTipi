@@ -3,6 +3,11 @@ package kr.or.ddit.main.map.controller;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequiredArgsConstructor
 @Component
 public class KakaoApiKeyProvider {
 
@@ -20,3 +25,4 @@ public class KakaoApiKeyProvider {
         return jsApiKey;
     }
 }
+
