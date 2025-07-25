@@ -139,17 +139,26 @@ window.renderListPage = function(data, map, page = 1, perPage = 5) {
 	}
 };
 
-
 window.openDetailModal = function(lstgId) {
 	const mbrCd = window.loggedInUserId || '';
+	
+	fetch('/map/api/viewLog', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		body: new URLSearchParams({
+			lstgId: lstgId,
+			mbrCd: mbrCd
+		})
+	}).catch(console.warn);
+	
 	const url = `/map/api/detail?lstgId=${lstgId}&mbrCd=${encodeURIComponent(mbrCd)}`;
-
 	fetch(url)
 		.then(res => res.json())
 		.then(data => {
 			showDetailModal(data);
 		});
 };
+
 
 
 window.showDetailModal = function(data) {

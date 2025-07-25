@@ -293,6 +293,20 @@ window.closeFilterPopup = function(type) {
 	if (popup) popup.style.display = 'none';
 };
 
+function setupPriceSelectEvents(map, clusterer) {
+	const selects = document.querySelectorAll('#priceFilterSection select');
+	selects.forEach(select => {
+		select.addEventListener('change', () => {
+			const bounds = map.getBounds();
+			const url = buildUrl(bounds, window.currentCategory);
+			fetch(url).then(res => res.json()).then(data => {
+				renderMarkers(data, map, clusterer);
+				renderListPage(data, map);
+			});
+		});
+	});
+}
+
 window.setupPopupOptionClick = function(map, clusterer) {
 	document.querySelectorAll('.popup-option').forEach(btn => {
 		btn.addEventListener('click', () => {
@@ -309,7 +323,97 @@ window.setupPopupOptionClick = function(map, clusterer) {
 			// 숨겨진 select 태그에도 값 반영
 			const hidden = document.getElementById(type + 'Filter');
 			if (hidden) hidden.value = value;
+			
+			if (type === 'saleType') {
+				const priceFilterSection = document.getElementById('priceFilterSection');
+				let html = '';
 
+				if (value === '001') { // 전세
+				html = `
+					<div class="price-filter-line">
+						<label>전세금 (만원)</label>
+						<div class="price-range">
+							<select name="jeonseMin">
+							  <option value="">최소</option>
+							  <option value="500">500</option>
+							  <option value="1000">1000</option>
+							  <option value="2000">2000</option>
+							</select>
+							<span class="range-separator">~</span>
+							<select name="jeonseMax">
+							  <option value="">최대</option>
+							  <option value="3000">3000</option>
+							  <option value="5000">5000</option>
+							  <option value="10000">10000</option>
+							</select>
+						</div>
+					</div>
+				`;
+			} else if (value === '002') { // 월세
+				html = `
+					<div class="price-filter-line">
+						<label>보증금 (만원)</label>
+						<div class="price-range">
+							<select name="depositMin">
+							  <option value="">최소</option>
+							  <option value="500">500</option>
+							  <option value="1000">1000</option>
+							</select>
+							<span class="range-separator">~</span>
+							<select name="depositMax">
+							  <option value="">최대</option>
+							  <option value="3000">3000</option>
+							  <option value="5000">5000</option>
+							</select>
+						</div>
+					</div>
+					<div class="price-filter-line">
+						<label>월세 (만원)</label>
+						<div class="price-range">
+							<select name="monthlyMin">
+							  <option value="">최소</option>
+							  <option value="30">30</option>
+							  <option value="50">50</option>
+							</select>
+							<span class="range-separator">~</span>
+							<select name="monthlyMax">
+							  <option value="">최대</option>
+							  <option value="100">100</option>
+							  <option value="150">150</option>
+							</select>
+						</div>
+					</div>
+				`;
+			} else if (value === '003') { // 매매
+				html = `
+					<div class="price-filter-line">
+						<label>매매가 (만원)</label>
+						<div class="price-range">
+							<select name="saleMin">
+							  <option value="">최소</option>
+							  <option value="10000">1억</option>
+							  <option value="20000">2억</option>
+							</select>
+							<span class="range-separator">~</span>
+							<select name="saleMax">
+							  <option value="">최대</option>
+							  <option value="30000">3억</option>
+							  <option value="50000">5억</option>
+							</select>
+						</div>
+					</div>
+				`;
+			}
+
+
+				if (priceFilterSection) {
+					priceFilterSection.innerHTML = html;
+					priceFilterSection.style.display = html ? 'block' : 'none';
+					
+					setupPriceSelectEvents(map, clusterer);
+				}
+			}
+			
 			// 필터 fetch 트리거
 			const bounds = map.getBounds();
 			const url = buildUrl(bounds, window.currentCategory);
