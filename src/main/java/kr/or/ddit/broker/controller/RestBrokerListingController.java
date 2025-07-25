@@ -51,8 +51,7 @@ public class RestBrokerListingController {
 
 	private final BrokerListingService  service;
 	private final BrokerAuthUnpackingService authUnpack;
-	private final ObjectMapper mapper;
-	private final AES256Util aes256Util;
+	
 	
 	@GetMapping("/list")
 	public List<ListingVO> lstgList(
@@ -70,7 +69,7 @@ public class RestBrokerListingController {
 	
 	@PostMapping("/listing-details")
 	public Map<String, String> lstgDetails(Principal principal, @RequestBody Map<String, String> payload) {
-	    Map<String, String> parsedRequest = decryptRequestPayload(payload);
+	    Map<String, String> parsedRequest = BrokerCryptUtil.decryptRequestPayload(payload);
 	    String lstgId = parsedRequest.get("lstgId");
 	    if (lstgId == null) throw new IllegalArgumentException("lstgId 누락");
 
@@ -80,38 +79,18 @@ public class RestBrokerListingController {
 	    listing.setMbrCd(mbrCd);
 
 	    ListingVO lstgDetails = service.readLstgDetails(listing);
-	    return encryptResponsePayload(lstgDetails);
+	    return BrokerCryptUtil.encryptResponsePayload(lstgDetails);
 	}
 
 	
 	@PostMapping("/facilityOption")
 	public Map<String, String> facilityOption() {
 	    List<FacilityOptionVO> facilityOptionList = service.readFacilityOptionList();
-	    return encryptResponsePayload(facilityOptionList);
+	    return BrokerCryptUtil.encryptResponsePayload(facilityOptionList);
 	}
 
 	
-	private Map<String, String> decryptRequestPayload(Map<String, String> payload) {
-	    String iv = payload.get("iv");
-	    String encrypted = payload.get("encrypted");
-	    if (encrypted == null) throw new IllegalArgumentException("암호화된 요청 없음");
 
-	    String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
-	    try {
-	        return mapper.readValue(decryptedJson, new TypeReference<>() {});
-	    } catch (Exception e) {
-	        throw new RuntimeException("요청 JSON 파싱 실패", e);
-	    }
-	}
-	
-	private Map<String, String> encryptResponsePayload(Object responseData) {
-	    try {
-	        String resultJson = mapper.writeValueAsString(responseData);
-	        return aes256Util.encryptWithDynamicIV(resultJson);
-	    } catch (Exception e) {
-	        throw new RuntimeException("응답 암호화 실패", e);
-	    }
-	}
 
 	@PostMapping("/product/add")
 	public ResponseEntity<?> addListing(
@@ -194,11 +173,11 @@ public class RestBrokerListingController {
 	    Principal principal,
 	    @RequestBody Map<String, String> encryptedPayload
 	) {
-	    Map<String, String> parsed = decryptRequestPayload(encryptedPayload);
+	    Map<String, String> parsed = BrokerCryptUtil.decryptRequestPayload(encryptedPayload);
 	    String lstgId = parsed.get("lstgId");
 
 	    if (lstgId == null || lstgId.isBlank()) {
-	        return encryptResponsePayload(Map.of("success", false, "message", "lstgId 누락"));
+	        return BrokerCryptUtil.encryptResponsePayload(Map.of("success", false, "message", "lstgId 누락"));
 	    }
 
 	    String mbrCd = authUnpack.getMbrCd(principal.getName());
@@ -208,13 +187,13 @@ public class RestBrokerListingController {
 	    listing.setMbrCd(mbrCd);
 	    try {
 	        service.removeListing(listing);
-	        return encryptResponsePayload(Map.of("success", true, "message", "삭제되었습니다."));
+	        return BrokerCryptUtil.encryptResponsePayload(Map.of("success", true, "message", "삭제되었습니다."));
 	    } catch (ListingException e) {
 	        log.warn("삭제 실패 - 매물 없음 or 삭제 대상 불일치: {}", e.getMessage());
-	        return encryptResponsePayload(Map.of("success", false, "message", e.getMessage()));
+	        return BrokerCryptUtil.encryptResponsePayload(Map.of("success", false, "message", e.getMessage()));
 	    } catch (Exception e) {
 	        log.error("매물 삭제 실패 (알 수 없는 오류)", e);
-	        return encryptResponsePayload(Map.of("success", false, "message", "삭제 중 오류 발생"));
+	        return BrokerCryptUtil.encryptResponsePayload(Map.of("success", false, "message", "삭제 중 오류 발생"));
 	    }
 	}
 

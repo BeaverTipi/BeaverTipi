@@ -23,5 +23,6 @@ public class ScheduleVO implements Serializable{
 	private LocalDateTime scdStrDtm;
 	private LocalDateTime scdEndDtm;
 	private String scdRptSetCont;
-	private String scdDelYn;
+	private boolean scdDelYn;
+	private String scdLevel;
 }

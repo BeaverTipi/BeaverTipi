@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.broker.mapper.BrokerScheduleMapper">
+
+<select id="selectScheduleList">
+SELECT SCD_ID
+		, MBR_CD
+		, SCD_TITL_NM
+		, SCD_CONT
+		, SCD_STR_DTM
+		, SCD_END_DTM
+		, SCD_RPT_SET_CONT
+		, SCD_DEL_YN
+		, SCD_LEVEL
+FROM SCHEDULE
+WHERE MBR_CD = #{username}
+AND SCD_DEL_YN = 'N'
+</select>
+<select id="selectSchedule">
+SELECT SCD_ID
+		, MBR_CD
+		, SCD_TITL_NM
+		, SCD_CONT
+		, SCD_STR_DTM
+		, SCD_END_DTM
+		, SCD_RPT_SET_CONT
+		, SCD_DEL_YN
+		, SCD_LEVEL
+FROM SCHEDULE
+WHERE SCD_ID = #{scdId} 
+AND MBR_CD = #{mbrCd}
+AND SCD_DEL_YN = 'N'
+</select>
+<select id="selectNextScheduleIdSuffix" >
+  SELECT 'C'|| TO_CHAR(SYSDATE, 'YYMM') || LPAD(SEQ_SCD_ID.NEXTVAL, 6, '0')
+  FROM DUAL
+</select>
+
+<insert id="insertSchedule">
+INSERT INTO SCHEDULE(
+	SCD_ID
+	, MBR_CD
+	, SCD_TITL_NM
+	, SCD_CONT
+	, SCD_STR_DTM
+	, SCD_END_DTM
+	, SCD_RPT_SET_CONT
+	, SCD_DEL_YN
+	, SCD_LEVEL
+)VALUES(
+	#{scdId}
+	, #{mbrCd}
+	, #{scdTitlNm}
+	, #{scdCont}
+	, #{scdStrDtm}
+	, #{scdEndDtm}
+	, #{scdRptSetCont}
+	, 'N'
+	, #{scdLevel}
+)
+</insert>
+<update id="updateSchedule">
+UPDATE SCHEDULE
+SET SCD_TITL_NM = #{scdTitlNm}
+	, SCD_CONT = #{scdCont}
+	, SCD_STR_DTM = #{scdStrDtm}
+	, SCD_END_DTM = #{scdEndDtm}
+	<if test="scdRptSetCont != null and scdRptSetCont != '' ">
+	, SCD_RPT_SET_CONT = #{scdRptSetCont}
+	</if> 
+	<if test="scdLevel != null and scdLevel != '' ">
+	,SCD_LEVEL = #{scdLevel}
+	</if>
+WHERE SCD_ID = #{scdId} 
+AND MBR_CD = #{mbrCd}
+</update>
+
+<update id="updateDelYnSchedule">
+UPDATE SCHEDULE
+SET SCD_DEL_YN = 'Y'
+WHERE SCD_ID = #{scdId} 
+AND MBR_CD = #{mbrCd}
+</update>
+</mapper>
