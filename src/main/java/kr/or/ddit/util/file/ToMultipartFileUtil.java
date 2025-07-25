@@ -6,7 +6,7 @@ import java.nio.file.Files;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public class FileToMultipartFileUtil {
+public class ToMultipartFileUtil {
 
     public static MultipartFile convert(File file) throws IOException {
         byte[] content = Files.readAllBytes(file.toPath());

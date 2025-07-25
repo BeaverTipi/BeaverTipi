@@ -13,6 +13,7 @@ package kr.or.ddit.broker.mapper;
 import org.apache.ibatis.annotations.Mapper;
 
 import kr.or.ddit.vo.BrokerVO;
+import kr.or.ddit.vo.MemberVO;
 
 /**
  * 	@author developer_KCY
@@ -21,4 +22,5 @@ import kr.or.ddit.vo.BrokerVO;
 public interface BrokerAuthUnpackingMapper {
 	public String selectMbrCdByUsername(String username);
 	public BrokerVO selectBrokerByUsername(String mbrId);
+	public MemberVO selectMemberByUsername(String mbrId);
 }

@@ -1,17 +1,17 @@
-/** 
+/**
  * <pre>
  * << 개정이력(Modification Information) >>
- *   
- *   수정일      			수정자           수정내용
- *  -----------   	-------------    ---------------------------
- * 2025. 7. 9.     			김찬영          최초 생성
- * 2025. 7. 17.				김찬영			클래스명 변경 (Listing... -> Default)
- * 2025. 7. 21.				김찬영			가독성 좋게 리팩토링
+ * 
+ *   수정일      수정자      수정내용
+ *  -----------  ----------  -------------------------------------
+ *  2025.07.09   김찬영      최초 생성
+ *  2025.07.17   김찬영      Listing → Default 리네이밍
+ *  2025.07.21   김찬영      Abstract 기반 리팩토링 적용
  * </pre>
  * 
- * Quartz 스케줄링 Job
- * - application.properties에 등록된 시퀀스 목록을 RESTART START WITH 1로 초기화.
- * - 시퀀스 리셋 결과는 SEQ_RESET_LOG 테이블에 기록.
+ * <b>[기능 설명]</b>
+ * - application.properties에서 지정한 시퀀스 목록을 일괄 초기화
+ * - Quartz Job으로 등록되어 매월 1일 자정에 실행됨
  */
 package kr.or.ddit.util.batch.idseq;
 

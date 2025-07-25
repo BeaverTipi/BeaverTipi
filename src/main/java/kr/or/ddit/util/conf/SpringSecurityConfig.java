@@ -200,6 +200,8 @@ public class SpringSecurityConfig {
 					.requestMatchers(new AntPathRequestMatcher("/tenancy/**")).hasAnyRole("TENANCY")
 					.requestMatchers(new AntPathRequestMatcher("/broker/**")).hasAnyRole("BROKER")
 					.requestMatchers(new AntPathRequestMatcher("/member/**")).authenticated()
+					.requestMatchers(new AntPathRequestMatcher("/signers/**")).permitAll()
+
 //					.anyRequest().authenticated() // 폐쇄형 사이트 -> cors 필요없음
 					.requestMatchers("/**").permitAll() // 우리는 공개형 사이트를 가지고 있다. -> cors필요함.
 			)

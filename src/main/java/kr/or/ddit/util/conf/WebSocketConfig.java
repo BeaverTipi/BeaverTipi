@@ -8,6 +8,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import kr.or.ddit.util.websocket.BrokerChatHandler;
 import kr.or.ddit.util.websocket.ChatListSocketHandler;
 import kr.or.ddit.util.websocket.ContractExpireWebSocketHandler;
+import kr.or.ddit.util.websocket.ContractSignerWebSocketHandler;
 import kr.or.ddit.util.websocket.WebSocketHandler;
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +21,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     private final WebSocketHandler webSocketHandler;
     private final ChatListSocketHandler chatListSocketHandler;
     private final ContractExpireWebSocketHandler contractExpireWebSocketHandler; // ✅ 추가
+    private final ContractSignerWebSocketHandler contractSignerWebSocketHandler;
     
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
@@ -27,5 +29,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
         registry.addHandler(chatListSocketHandler, "/ws/chatList");
         registry.addHandler(brokerChatHandler, "/ws/brokerChat");
         registry.addHandler(contractExpireWebSocketHandler, "/ws/contractExpire").setAllowedOrigins("*"); // ✅ 추가
+        registry.addHandler(contractSignerWebSocketHandler, "/ws/signers").setAllowedOrigins("*");
     }
 }

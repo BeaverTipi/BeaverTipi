@@ -19,6 +19,7 @@ import org.apache.ibatis.annotations.Param;
 
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.CommonCodeVO;
+import kr.or.ddit.vo.ContractDigitalSignVO;
 import kr.or.ddit.vo.ContractVO;
 import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.ListingVO;
@@ -28,6 +29,14 @@ import kr.or.ddit.vo.TenancyVO;
 
 /**
  * @author developer_KCY
+ */
+/**
+ * 
+ * @author 
+ * @since
+ * @see
+ *
+ *
  */
 @Mapper
 public interface BrokerMapper {
@@ -107,7 +116,15 @@ public interface BrokerMapper {
     
     public BrokerVO selectBrokerInfo(String mbrCd);
     public MemberVO selectLesseeInfo(String mbrCd);
+
+
+	/**
+	 * contId로 계약에 속한 전자서명들(ContractDigitalSignVO)을 모두 조회
+	 * @param contId
+	 * @return
+	 */
+	public List<ContractDigitalSignVO> selectDtSignList(String contId);
     
-    
+
 
 }

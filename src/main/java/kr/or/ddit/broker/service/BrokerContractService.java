@@ -102,4 +102,6 @@ public interface BrokerContractService {
 	public boolean isContractExist(String contId);
 	
 	public ContractVO readContractInfo(String contId);
+	
+	public List<Map<String, Object>> validateSignerStatus(String contId);
 }

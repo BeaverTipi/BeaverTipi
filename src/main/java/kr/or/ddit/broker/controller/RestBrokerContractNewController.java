@@ -49,7 +49,7 @@ import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
 import kr.or.ddit.broker.service.BrokerContractService;
 import kr.or.ddit.util.crypto.AES256Util;
 import kr.or.ddit.util.file.Base64DecodedMultipartFile;
-import kr.or.ddit.util.file.FileToMultipartFileUtil;
+import kr.or.ddit.util.file.ToMultipartFileUtil;
 import kr.or.ddit.util.file.service.FileService;
 import kr.or.ddit.util.parse.SafeParse;
 import kr.or.ddit.util.pdf.service.PDFService;

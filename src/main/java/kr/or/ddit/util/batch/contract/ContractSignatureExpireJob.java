@@ -1,3 +1,17 @@
+/**
+ * <pre>
+ * << 개정이력(Modification Information) >>
+ * 
+ *   수정일      수정자      수정내용
+ *  -----------  ----------  -------------------------------------
+ *  2025.07.09   김찬영      최초 생성 - 계약 서명 만료 처리 Job 구성
+ * </pre>
+ * 
+ * <b>[기능 설명]</b>
+ * - 계약 서명 페이지 만료 대상 Job 실행 시 `BrokerContractService`를 통해 상태 만료 처리
+ * - 처리 후 WebSocket을 통해 중개인에게 만료 알림 전송
+ * - Quartz에서 동적 잡으로 등록되어 실행됨 (JobDataMap에 contId 필요)
+ */
 package kr.or.ddit.util.batch.contract;
 
 import org.quartz.DisallowConcurrentExecution;

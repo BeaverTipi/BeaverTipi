@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
+import java.util.stream.Collectors;
+import java.util.function.Function;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,12 +42,14 @@ import jakarta.validation.Validator;
 import kr.or.ddit.broker.mapper.BrokerMapper;
 import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
 import kr.or.ddit.broker.service.BrokerContractService;
+import kr.or.ddit.util.calc.CalcOnContract;
 import kr.or.ddit.util.crypto.AES256Util;
 import kr.or.ddit.util.file.Base64DecodedMultipartFile;
-import kr.or.ddit.util.file.FileToMultipartFileUtil;
+import kr.or.ddit.util.file.ToMultipartFileUtil;
 import kr.or.ddit.util.file.service.FileService;
 import kr.or.ddit.util.parse.SafeParse;
 import kr.or.ddit.util.pdf.service.PDFService;
+import kr.or.ddit.vo.ContractDigitalSignVO;
 import kr.or.ddit.vo.ContractVO;
 import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.ListingVO;
@@ -77,7 +81,7 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	private Validator validator;
 	@Autowired
 	private AES256Util aes256Util;
-	
+
 	/**
 	 * @param principal 내에서 불러온 Broker의 mbrCd
 	 * @return Broker가 가진 매물(LSTG)의 리스트
@@ -158,7 +162,8 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 
 	@Transactional
 	@Override
-	public ResponseEntity<?> processOfCreatingContract(String decryptedJson, Principal principal) throws JsonProcessingException {
+	public ResponseEntity<?> processOfCreatingContract(String decryptedJson, Principal principal)
+			throws JsonProcessingException {
 		// TODO 컨트롤러 다이어트 들어가야지...
 		try {
 			/** 2. JSON -> POJO 매핑 */
@@ -167,15 +172,16 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 			StandardLeaseFormDTO contractInfo = objectMapper.convertValue(parsedRequest.get("contractInfo"),
 					StandardLeaseFormDTO.class);
 			Set<ConstraintViolation<StandardLeaseFormDTO>> violations = validator.validate(contractInfo);
-	
+
 			if (!violations.isEmpty()) {
-			    StringBuilder errorMsg = new StringBuilder("검증 실패 항목:\n");
-			    for (ConstraintViolation<StandardLeaseFormDTO> violation : violations) {
-			        errorMsg.append("- ").append(violation.getPropertyPath()).append(": ").append(violation.getMessage()).append("\n");
-			    }
-			    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMsg.toString());
+				StringBuilder errorMsg = new StringBuilder("검증 실패 항목:\n");
+				for (ConstraintViolation<StandardLeaseFormDTO> violation : violations) {
+					errorMsg.append("- ").append(violation.getPropertyPath()).append(": ")
+							.append(violation.getMessage()).append("\n");
+				}
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMsg.toString());
 			}
-			
+
 			List<Map<String, String>> base64Files = objectMapper.convertValue(parsedRequest.get("base64Files"),
 					new TypeReference<List<Map<String, String>>>() {
 					});
@@ -202,35 +208,29 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 				multipartFiles.add(multipartFile);
 			}
 			File merged = pdfService.mergeToSinglePdf(multipartFiles);
-			MultipartFile multipartMerged = FileToMultipartFileUtil.convert(merged);
+			MultipartFile multipartMerged = ToMultipartFileUtil.convert(merged);
 
 			/** 4. DB에 계약정보 레코드 입력 */
-			ContractVO contract = ContractVO.builder()
-					.mbrCdBrok(authUnpack.getMbrCd(principal.getName()))
-					.lstgId(contractInfo.getListingId())
-					.contTypeCode(contractInfo.getListingTypeSale())
-					.contDeposit(/* deposit */
-						SafeParse.safeParseLong(
-								Optional.ofNullable(contractInfo.getListingTypeCode1())
-								.map(type -> {
-									// 전세 계약일 경우
-									if ("001".equals(type)) return contractInfo.getListingLease(); // 전세금 (String)
-									// 월세 계약일 경우
-									if ("002".equals(type)) return contractInfo.getListingLeaseAmt(); // 보증금 (String)
-									// 매칭되는 타입이 없으면 null 반환
-									return null;
-								}).orElse("0") // null이면 "0"으로 대체
-						))
-					.contTaxAmount(null)
-					.contAmount(SafeParse.safeParseLong(contractInfo.getListingLeaseM()))
-					.contStatCd("001")
-					.contDtm(null)
-					.contTypeGroupCd(null)
-					.contStatGroupCd(null)
-					.contLesseeTelno(contractInfo.getLesseeTelno())
-					.contTenancyTelno(contractInfo.getLessorTelno())
-					.contBrokerTelno(contractInfo.getAgentTelno())
-					.build();
+
+			Long deposit = SafeParse.safeParseLong(Optional.ofNullable(contractInfo.getListingTypeCode1()).map(type -> {
+				// 전세 계약일 경우
+				if ("001".equals(type))
+					return contractInfo.getListingLease(); // 전세금 (String)
+				// 월세 계약일 경우
+				if ("002".equals(type))
+					return contractInfo.getListingLeaseAmt(); // 보증금 (String)
+				// 매칭되는 타입이 없으면 null 반환
+				return null;
+			}).orElse("0") // null이면 "0"으로 대체
+			);
+
+			ContractVO contract = ContractVO.builder().mbrCdBrok(authUnpack.getMbrCd(principal.getName()))
+					.lstgId(contractInfo.getListingId()).contTypeCode(contractInfo.getListingTypeSale())
+					.contDeposit(deposit).contTaxAmount(CalcOnContract.getTaxAmount(deposit))
+					.contAmount(SafeParse.safeParseLong(contractInfo.getListingLeaseM())).contStatCd("001")
+					.contDtm(null).contTypeGroupCd(null).contStatGroupCd(null)
+					.contLesseeTelno(contractInfo.getLesseeTelno()).contTenancyTelno(contractInfo.getLessorTelno())
+					.contBrokerTelno(contractInfo.getAgentTelno()).build();
 			log.debug("(ಥ﹏ಥ) {}", contractInfo.getListingTypeCode1());
 			log.debug("(ಥ﹏ಥ) {}", contractInfo.getListingLease());
 			log.debug("(ಥ﹏ಥ) {}", contractInfo.getListingLeaseAmt());
@@ -242,7 +242,7 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 			String contId = contract.getContId();
 			FileVO result = fileService.uploadAndSave(multipartMerged, "contract", "CONTR", contId,
 					multipartMerged.getContentType());
-			//S3 업로드 이후 예외 발생 시, 업로드 파일 삭제 로직도 고려해볼 것
+			// S3 업로드 이후 예외 발생 시, 업로드 파일 삭제 로직도 고려해볼 것
 
 			/** 6. 매물의 계약상태 정보 변경하기 */
 			String lstgId = contract.getLstgId();
@@ -253,10 +253,11 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 //			Files.copy(merged.toPath(), debugCopy.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
 			/** 0. 응답신호 내보내기 */
-			String resultJson = objectMapper.writeValueAsString(Map.of("success", true, "mergedPath", merged.getAbsolutePath(),
+			String resultJson = objectMapper
+					.writeValueAsString(Map.of("success", true, "mergedPath", merged.getAbsolutePath(),
 //					"debugPath", debugCopy.getAbsolutePath(),
-					"contId", contId));
-			
+							"contId", contId));
+
 			return ResponseEntity.ok(aes256Util.encryptWithDynamicIV(resultJson));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -271,30 +272,29 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	@Override
 	public void readContractPDF(String contId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Transactional
 	@Override
 	public int removeProceedingContractBulk(List<String> selectedContractIds) {
 		if (selectedContractIds == null || selectedContractIds.isEmpty())
-		throw new IllegalArgumentException("삭제할 계약 ID 리스트가 비어 있습니다.");
-		
+			throw new IllegalArgumentException("삭제할 계약 ID 리스트가 비어 있습니다.");
+
 		int expectedCount = selectedContractIds.size();
 		int deletedCount = 0;
-		
+
 		for (String id : selectedContractIds) {
-		    int result = mapper.deleteProceedingContract(id);
-		    if (result == 0) {
-		        throw new IllegalStateException("계약 ID " + id + "에 대한 삭제가 실패했습니다.");
-		    }
-		    deletedCount += result;
+			int result = mapper.deleteProceedingContract(id);
+			if (result == 0) {
+				throw new IllegalStateException("계약 ID " + id + "에 대한 삭제가 실패했습니다.");
+			}
+			deletedCount += result;
 		}
-		
+
 		if (deletedCount != expectedCount)
-		throw new IllegalStateException("일부 계약 삭제에 실패했습니다. 요청: " + expectedCount + ", 삭제: " + deletedCount);
-		
-		
+			throw new IllegalStateException("일부 계약 삭제에 실패했습니다. 요청: " + expectedCount + ", 삭제: " + deletedCount);
+
 		return deletedCount;
 	}
 
@@ -304,16 +304,17 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	 */
 	@Override
 	public int openContractSignaturePage(String contId) {
-		if (contId == null || contId.trim().isEmpty()) 
-		    throw new IllegalArgumentException("계약 ID(contId)는 필수입니다.");
-		
+		if (contId == null || contId.trim().isEmpty())
+			throw new IllegalArgumentException("계약 ID(contId)는 필수입니다.");
+
 		int rec = mapper.updateProceedingContractSignYnToY(contId);
-		
-		if (rec == 0) 
-		    throw new IllegalStateException("전자서명 상태 업데이트 실패: contId=" + contId);
-		
+
+		if (rec == 0)
+			throw new IllegalStateException("전자서명 상태 업데이트 실패: contId=" + contId);
+
 		return rec;
 	}
+
 	/**
 	 * 일정 시간 후 알아서 닫히게끔
 	 */
@@ -329,21 +330,20 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 
 	@Override
 	public String isSignPageOpened(String contId) {
-		if(contId == null || contId.trim().isEmpty())
+		if (contId == null || contId.trim().isEmpty())
 			throw new IllegalArgumentException("계약 ID(contId)는 필수입니다.");
 		String isSignPageOpened = mapper.selectContractSignatureYn(contId);
-		if(isSignPageOpened == null || isSignPageOpened.isEmpty())
+		if (isSignPageOpened == null || isSignPageOpened.isEmpty())
 			throw new IllegalStateException("전자서명 상태 업데이트 실패: contId=" + contId);
 		return isSignPageOpened;
 	}
-	
-	
+
 	@Override
 	public ContractVO readContractInfo(String contId) {
-		if(contId == null || contId.trim().isEmpty())
+		if (contId == null || contId.trim().isEmpty())
 			throw new IllegalArgumentException("계약 ID(contId)는 필수입니다.");
 		ContractVO contract = mapper.selectContractInfo(contId);
-		if(contract == null)
+		if (contract == null)
 			throw new IllegalStateException("계약 정보 조회 실패: 파라미터(contId)=" + contId);
 		return contract;
 	}
@@ -352,4 +352,24 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	public boolean isContractExist(String contId) {
 		return mapper.isContractExist(contId);
 	}
+
+	@Override
+	public List<Map<String, Object>> validateSignerStatus(String contId) {
+		List<ContractDigitalSignVO> signs = mapper.selectDtSignList(contId);
+
+		return signs.stream().map((Function  <ContractDigitalSignVO, Map<String, Object>>)sign -> {
+			String raw = sign.getContDtBaseData()
+					+ sign.getMbrCd()
+					+ sign.getContId()
+					+ sign.getContDtSignType()
+					+ sign.getContDtSignDtm();
+
+			String serverHash = DigestUtils.sha256Hex(raw);
+			boolean isValid = serverHash.equals(sign.getContDtSignHashVal());
+
+			return Map.of("role", sign.getContDtSignType(), "name", sign.getMbrCd(), "signedAt",
+					sign.getContDtSignDtm(), "isValid", isValid);
+		}).collect(Collectors.toList()); // ✅ 이게 핵심
+	}
+
 }

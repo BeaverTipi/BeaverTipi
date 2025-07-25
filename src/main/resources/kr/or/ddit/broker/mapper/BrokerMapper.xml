@@ -297,4 +297,21 @@
 		 WHERE CONT_ID = #{contId}
 	) FROM DUAL
 </select>
+<select id="selectDtSignList" parameterType="String" resultType="ContractDigitalSignVO">
+	SELECT
+	    CDS.CONT_DT_SIGN_ID
+	    , CDS.CONT_ID
+	    , CDS.CONT_DT_SIGN_TYPE
+	    , CDS.CONT_DT_SIGN_DTM
+	    , CDS.CONT_DT_SIGN_IMG
+	    , CDS.CONT_DT_SIGN_HASH_VAL
+	    , CDS.CONT_DT_SIGN_STAT
+	    , CDS.MBR_CD
+	    , CDS.CONT_DT_IP_ADDR
+	    , CDS.CONT_DT_BASE_DATA
+	  FROM CONTRACT_DIGITAL_SIGN CDS
+	 INNER JOIN MEMBER M ON(CDS.MBR_CD = M.MBR_CD)
+	 WHERE CDS.CONT_ID = #{contId}
+	 ORDER BY CDS.CONT_DT_SIGN_TYPE
+</select>
 </mapper>

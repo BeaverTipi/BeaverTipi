@@ -16,5 +16,10 @@
 	 INNER JOIN FILES F ON(F.FILE_ID=M.MBR_PROFIL_IMAGE)
 	 WHERE M.MBR_ID = #{mbrId}
 </select>
+<select id="selectMemberByUsername" parameterType="String" resultType="MemberVO">
+	SELECT *
+	  FROM MEMBER
+	 WHERE MBR_ID = #{mbrId}
+</select>
 
 </mapper>

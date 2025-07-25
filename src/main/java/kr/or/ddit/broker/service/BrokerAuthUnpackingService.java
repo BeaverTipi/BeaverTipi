@@ -19,6 +19,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import kr.or.ddit.broker.mapper.BrokerAuthUnpackingMapper;
 import kr.or.ddit.vo.BrokerVO;
+import kr.or.ddit.vo.MemberVO;
 
 /**
  * @author developer_KCY 
@@ -41,6 +42,10 @@ public class BrokerAuthUnpackingService implements HandlerInterceptor {
 	
 	public BrokerVO getRealUser(Principal principal) {
 		return mapper.selectBrokerByUsername(principal.getName());
+	}
+	
+	public MemberVO getSigner(Principal principal) {
+		return mapper.selectMemberByUsername(principal.getName());
 	}
 	
 }

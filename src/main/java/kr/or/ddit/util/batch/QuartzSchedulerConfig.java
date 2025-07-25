@@ -1,16 +1,20 @@
-/** 
+/**
  * <pre>
  * << 개정이력(Modification Information) >>
- *   
- *   수정일      			수정자           수정내용
- *  -----------   	-------------    ---------------------------
- * 2025. 7. 9.     			김찬영            최초 생성
- *
+ * 
+ *   수정일      수정자      수정내용
+ *  -----------  ----------  -------------------------------------
+ *  2025.07.17   김찬영      최초 생성 - Quartz Scheduler 설정 등록
+ *  2025.07.25   김찬영      Scheduler 이름 명시 및 Trigger 설정 고도화
  * </pre>
  * 
- * - listingIdResetJob을 Quartz를 이용해 매월 1일 자정에 실행.
+ * <b>[기능 설명]</b>
+ * - Quartz 스케줄링 설정 클래스
+ * - 기본 ID 리셋 Job / 계약 ID 리셋 Job 등록 및 Trigger 구성
+ * - JobFactory 주입을 통해 Autowiring 가능하도록 설정
+ * - Scheduler 이름은 `beavertipiQuartzScheduler`로 명시
+ * - shutdown, overwrite 등 관련 설정 포함
  */
-
 package kr.or.ddit.util.batch;
 
 import kr.or.ddit.util.batch.idseq.ContractIdSequenceResetJob;
@@ -123,6 +127,7 @@ public class QuartzSchedulerConfig {
         SchedulerFactoryBean factory = new SchedulerFactoryBean();
         factory.setDataSource(dataSource);
         factory.setJobFactory(jobFactory);
+        factory.setSchedulerName("beavertipiQuartzScheduler");
         factory.setJobDetails(defaultIdResetJobDetail, contractIdResetJobDetail);
         factory.setTriggers(defaultIdResetTrigger, contractIdResetTrigger);
         factory.setOverwriteExistingJobs(true);
