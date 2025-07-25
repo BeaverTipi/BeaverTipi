@@ -459,6 +459,9 @@ function refreshDetailModal(lstgId) {
 				const data = detailData[0];
 				showDetailModal(data);       // 모달 다시 열기
 				setupHeartClickEvent(data);  // ✅ 하트 상태 및 이벤트 적용
+				if (typeof bindDetailModalEvents === 'function') {
+                    bindDetailModalEvents(data);
+                }
 			}
 		});
 }
@@ -600,4 +603,20 @@ window.closeGalleryModal = function() {
 	document.getElementById('galleryModal').style.display = 'none';
 };
 
-
+window.bindDetailModalEvents = function(detailData) {
+    
+    const warningIcon = document.getElementById('warningIcon');
+    if (warningIcon) {
+        warningIcon.addEventListener('click', () => {
+            const lstgIdToReport = detailData.LSTG_ID || detailData.lstgId;
+            if (lstgIdToReport) {
+                // `contextPath`는 JSP에서 정의된 전역 변수여야 합니다.
+                // 이 변수가 없으면 오류가 발생합니다.
+                window.location.href = `${contextPath}/main/report/createForm?targetId=${lstgIdToReport}&type=LSTG`;
+            } else {
+                console.error("신고할 매물 ID를 찾을 수 없습니다.");
+                alert("신고할 매물 정보를 가져올 수 없습니다. 다시 시도해 주세요.");
+            }
+        });
+    }
+};

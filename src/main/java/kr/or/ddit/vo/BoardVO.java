@@ -54,8 +54,6 @@ public class BoardVO implements Serializable{
 	
 	// 시스템 관리자 관련
 	private String brdCtgryValue;
-    
-	private ReportVO reportVO;
 	
     private MemberVO member;
     

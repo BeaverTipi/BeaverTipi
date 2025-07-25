@@ -156,6 +156,9 @@ window.openDetailModal = function(lstgId) {
 		.then(res => res.json())
 		.then(data => {
 			showDetailModal(data);
+			if (typeof bindDetailModalEvents === 'function') {
+                bindDetailModalEvents(data);
+            }
 		});
 };
 

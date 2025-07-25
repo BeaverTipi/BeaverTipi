@@ -144,11 +144,6 @@
                 <p><strong>게시글 제목 :</strong> <span id="modalBrdTitlNm"></span></p>
                 <p><strong id="modalTargetIdLabel"></strong><span id="modalRptTargetId"></span></p>
                 <p><strong>신고 내용 :</strong></p>
-                <div id="attachFilesSection" style="display: none;">
-                    <h5>첨부 파일:</h5>
-                    <div id="modalAttachFiles" class="d-flex flex-wrap">
-                    </div>
-                </div>
                 <div id="modalBrdCont" class="alert alert-secondary"></div>
 
 

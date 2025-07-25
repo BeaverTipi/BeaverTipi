@@ -30,7 +30,7 @@
         <h6 class="fw-bold">고객지원</h6>
         <ul class="list-unstyled">
           <li><a href="http://localhost/member/ads/requestForm" class="text-dark text-decoration-none">광고문의</a></li>
-          <li>신고하기</li>
+          <li><a href="http://localhost/main/report/createForm" class="text-dark text-decoration-none">신고하기</a></li>
           <li>공지사항</li>
           <li>FAQ</li>
           <li>QNA</li>

@@ -50,19 +50,6 @@ public class ReportPostServiceImpl implements ReportPostService {
         if (reportDetail != null && reportDetail.getBrdNo() != null) {
             log.debug("Found reportDetail for reportId: {}, brdNo: {}", reportId, reportDetail.getBrdNo());
 
-            // 첨부 파일 목록을 가져옵니다. (fileSourceId는 게시글 번호)
-            FileVO searchFileVO = new FileVO();
-            searchFileVO.setFileSourceId(reportDetail.getBrdNo()); // ReportVO의 brdNo 필드 직접 사용
-            List<FileVO> attachFiles = fileMapper.selectFileList(searchFileVO);
-
-            // ReportVO에 attachFiles 필드를 직접 추가하거나,
-            // BoardVO의 attachFiles 필드를 통해 접근하는 방식을 유지할 수 있습니다.
-            // 현재 BoardVO에 attachFiles가 있으므로, ReportVO를 반환할 때 이 필드가 채워지도록 하는 게 자연스럽습니다.
-            // 이 로직은 `ReportVO.attachFiles = attachFiles;` 또는 `super.setAttachFiles(attachFiles);` 형태로 가능합니다.
-            // BoardVO에 attachFiles 필드가 있다면, super.setAttachFiles(attachFiles)로 가능합니다.
-            reportDetail.setAttachFiles(attachFiles); // ReportVO가 BoardVO를 상속했으므로, BoardVO의 setAttachFiles 메서드 호출
-            log.debug("Attached files count for brdNo {}: {}", reportDetail.getBrdNo(), attachFiles.size());
-
         } else {
             log.warn("No report detail found or brdNo is null for reportId: {}", reportId);
         }

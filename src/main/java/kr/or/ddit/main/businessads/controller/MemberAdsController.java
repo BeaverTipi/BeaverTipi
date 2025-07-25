@@ -81,7 +81,7 @@ public class MemberAdsController {
     	} else {
     	    log.warn("로그인하지 않은 사용자의 광고 요청 시도.");
     	    model.addAttribute("message", "로그인이 필요합니다.");
-    	    return "redirect:/login"; // 로그인 페이지로 리다이렉트 (경로에 맞게 수정)
+    	    return "redirect:/"; // 로그인 페이지로 리다이렉트 (경로에 맞게 수정)
     	}
         
     	log.info("광고 요청 데이터 접수: BoardVO={}, AdsClientVO={}", boardVO, adsClientVO);

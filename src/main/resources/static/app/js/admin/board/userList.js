@@ -138,31 +138,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 $('#modalRptStatusCode').val(data.rptStatusCode);
                 $('#btnProcessAllChanges').data('report-id', data.rptId);
                 $('#btnProcessAllChanges').data('original-rpt-status', data.rptStatusCode);
-
-                const $modalAttachFiles = $('#modalAttachFiles');
-                $modalAttachFiles.empty();
-                // 첨부파일은 ReportVO.boardVO.attachFiles에 있습니다.
-                if (data.attachFiles && data.attachFiles.length > 0) {
-                    $('#attachFilesSection').show();
-                   $.each(data.attachFiles, function(index, file) {
-                        if (file.fileMime && file.fileMime.startsWith('image/')) {
-                            const imgElement = $('<img>').attr('src', file.filePathUrl)
-                                                        .attr('alt', file.fileOriginalname)
-                                                        .addClass('img-fluid');
-                            $modalAttachFiles.append(imgElement);
-                        } else {
-                            const fileLink = $('<a>')
-                                .attr('href', file.filePathUrl)
-                                .attr('target', '_blank')
-                                .addClass('file-link')
-                                .text(file.fileOriginalname);
-                            $modalAttachFiles.append(fileLink);
-                        }
-                    });
-                } else {
-                    $('#attachFilesSection').hide();
-                }
-
                 $('#reportDetailModal').modal('show');
             })
             .catch(error => {

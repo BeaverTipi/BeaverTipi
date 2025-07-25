@@ -8,15 +8,17 @@
         <result property="rptTargetId" column="RPT_TARGET_ID"/>
         <result property="rptStatusCode" column="RPT_STATUS_CODE"/>
         <result property="rptDelYn" column="RPT_DEL_YN"/>
-        <result property="rptTargetMbrStatus" column="RPT_TARGET_MBR_STATUS"/>
-        <result property="rptTargetMbrCd" column="RPT_TARGET_MBR_CD"/>
-        <result property="lstgDel" column="LSTG_DEL"/>
+        
 
         <result property="brdNo" column="BRD_NO"/>
         <result property="brdTitlNm" column="BRD_TITL_NM"/>
         <result property="brdCont" column="BRD_CONT"/>
         <result property="mbrCd" column="MBR_CD"/>
         <result property="brdPblsDtm" column="BRD_PBLS_DTM"/>
+        
+        <result property="rptTargetMbrStatus" column="RPT_TARGET_MBR_STATUS"/>
+        <result property="rptTargetMbrCd" column="RPT_TARGET_MBR_CD"/>
+        <result property="lstgDel" column="LSTG_DEL"/>
         </resultMap>
 
     <select id="selectReportedPostList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultMap="reportMap">

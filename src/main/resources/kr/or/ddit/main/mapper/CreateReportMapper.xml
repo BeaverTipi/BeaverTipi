@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.main.mapper.CreateReportMapper">
+
+    <!-- **새로 추가할 쿼리: BOARD 테이블에 신고 게시글 삽입** -->
+    <!-- ReportVO가 BoardVO를 상속하므로 ReportVO를 parameterType으로 받습니다. -->
+    <insert id="insertReportBoard" parameterType="kr.or.ddit.vo.ReportVO">
+        <selectKey keyProperty="brdNo" order="BEFORE" resultType="String">
+			SELECT TO_CHAR(SEQ_BRD_NO.NEXTVAL) FROM DUAL
+		</selectKey>
+        INSERT INTO BOARD (
+              BRD_NO
+            , BRD_CODE
+            , BRD_TITL_NM
+            , BRD_CONT
+            , MBR_CD
+            , BRD_PBLS_DTM
+            , BRD_DEL_YN
+        ) VALUES (
+              #{brdNo}
+            , 'R0001'
+            , #{brdTitlNm}
+            , #{brdCont}
+            , #{mbrCd}
+            , SYSDATE
+            , 'N'
+        )
+    </insert>
+
+    <!-- **새로 추가할 쿼리: REPORT 테이블에 신고 상세 정보 삽입** -->
+    <insert id="insertReport" parameterType="kr.or.ddit.vo.ReportVO">
+        INSERT INTO REPORT (
+            BRD_NO
+            , RPT_CODE
+            , RPT_TARGET_ID
+            , RPT_STATUS_CODE
+            , RPT_DEL_YN
+        ) VALUES (
+            #{brdNo}
+            , #{rptCode}
+            , #{rptTargetId}
+            , 'REG' <!-- 초기 상태는 'REG'(등록)으로 고정 -->
+            , 'N'
+        )
+    </insert>
+
+</mapper>
