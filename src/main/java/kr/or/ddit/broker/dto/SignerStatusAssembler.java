@@ -42,11 +42,11 @@ public class SignerStatusAssembler {
                 .signedAt(LocalDateTime.parse(vo.getContDtSignDtm(), formatter))
                 .hashVal(vo.getContDtSignHashVal())
                 .ipAddr(vo.getContDtIpAddr())
-                .name(vo.getMbrCd()) // 또는 JOIN된 mbrNm
+                .mbrNm(vo.getMbrCd()) // 또는 JOIN된 mbrNm
                 .telno(telno)
-                .isRejected(isRejected)
-                .tempPdfUrl(vo.getContDtSignImg())
-                .connected(false)
+//                .isRejected(isRejected)
+//                .tempPdfUrl(vo.getContDtSignImg())
+//                .connected(false)
                 .build();
     }
 
@@ -59,15 +59,15 @@ public class SignerStatusAssembler {
     public SignerStatusDTO makeDefaultSigner(String role, String telno, String name, String mbrCd, String ipAddr) {
         return SignerStatusDTO.builder()
             .role(role)
-            .name(name) // 이름 미정
+            .mbrNm(name) // 이름 미정
             .telno(telno)
             .mbrCd(mbrCd)
             .ipAddr(ipAddr)
             .signedAt(null)
             .isValid(null)
-            .isRejected(false)
+//            .isRejected(false)
             .hashVal(null)
-            .tempPdfUrl(null)
+//            .tempPdfUrl(null)
             .build();
     }
 }

@@ -343,7 +343,7 @@ public class RestContractSignatureController {
 			// 5. 인가된 권한에 해당하는 SignerStatus 갱신
 			for (SignerStatusDTO dto : defaultSigners) {
 				if (dto.getRole().equals(role)) {
-					dto.setName(user.getMbrNm());
+					dto.setMbrNm(user.getMbrNm());
 					dto.setMbrCd(user.getMbrCd());
 					dto.setIpAddr(request.getRemoteAddr());
 				}
@@ -356,7 +356,7 @@ public class RestContractSignatureController {
 						dto.setSignedAt(LocalDateTime.parse(sign.getContDtSignDtm(), SignerStatusAssembler.formatter));
 						dto.setHashVal(sign.getContDtSignHashVal());
 //	                    dto.setTempPdfUrl(null);
-						dto.setIsRejected("Y".equalsIgnoreCase(sign.getContDtSignStat()));
+//						dto.setIsRejected("Y".equalsIgnoreCase(sign.getContDtSignStat()));
 
 						// 🔐 hash 검증
 						String raw = sign.getContDtBaseData() + user.getMbrTelno() + sign.getContId()
