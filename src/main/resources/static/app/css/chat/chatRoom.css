@@ -146,6 +146,24 @@
       justify-content: center;
       z-index: 500;
     }
+    
+    #warningIcon {
+      position: fixed;
+      top: 11px;
+      right: 15px;
+      background-color: transparent;
+      border: 1px solid #333;
+      color: #333;
+      border-radius: 4px;
+      font-size: 16px;
+      padding: 0;
+      height: 32px;
+      width: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+    }
 
     #closeSidebarBtn {
       width: 36px;
