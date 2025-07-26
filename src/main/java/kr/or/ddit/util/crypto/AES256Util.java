@@ -9,7 +9,9 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -31,7 +33,7 @@ public class AES256Util {
 
     private SecretKeySpec keySpec;
     private IvParameterSpec ivSpec;
-
+    
     @PostConstruct
     public void init() {
         if (secretKey.length() != 32 || iv.length() != 16) {

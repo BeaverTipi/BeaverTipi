@@ -89,14 +89,9 @@ public class RestBrokerContractProceedingController {
 	        @RequestBody Map<String, String> payload
 	) {
 	    try {
-	        /** 1. 복호화 */
-	        String iv = payload.get("iv");
-	        String encrypted = payload.get("encrypted");
-	        if (encrypted == null || iv == null) return ResponseEntity.badRequest().body("암호화된 요청 또는 IV 누락");
-	        String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
-
-	        /** 2. JSON -> POJO 매핑 */
-	        Map<String, Object> parsedRequest = objectMapper.readValue(decryptedJson, new TypeReference<>() {});
+	        Map<String, String> parsedRequest = BrokerCryptUtil.decryptRequestPayload(payload);
+	        
+	        /** JSON -> POJO 매핑 */
 	        String method = String.valueOf(parsedRequest.get("_method"));
 	        if (!"DELETE".equalsIgnoreCase(method)) return ResponseEntity.badRequest().body("지원하지 않는 요청 방식입니다.");
 
@@ -110,7 +105,7 @@ public class RestBrokerContractProceedingController {
 	        /** 4. ResponseEntity */
 	        return ResponseEntity.ok(Map.of("message", "삭제 완료", "deletedCount", deletedCount));
 	    }
-	    catch (JsonProcessingException e) {log.error("JSON 파싱 실패", e); return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청 형식입니다.");}
+//	    catch (JsonProcessingException e) {log.error("JSON 파싱 실패", e); return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청 형식입니다.");}
 	    catch (IllegalArgumentException | IllegalStateException e) {log.error("삭제 처리 실패", e); return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());}
 	    catch (Exception e) {log.error("서버 오류", e); return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류 발생");}
 	}
