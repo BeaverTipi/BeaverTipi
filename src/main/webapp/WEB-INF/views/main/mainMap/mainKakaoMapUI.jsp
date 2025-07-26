@@ -181,6 +181,7 @@
 
 <script>
 	window.loggedInUserId = "${loginMember != null ? loginMember.mbrCd : ''}";
+	const contextPath = '<%= request.getContextPath() %>';
 </script>
 
 <script src="${pageContext.request.contextPath }/app/js/main/mainMap/mapCore.js"></script>
