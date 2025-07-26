@@ -22,8 +22,19 @@ import lombok.Setter;
 @Builder
 public class SignerStatusDTO {
 
-    /**서명자 역할 AGENT||LESSOR||LESSEE
-     * contDtSignType
+	/**참여자 상태
+	 * - NOT_JOINED: 아직 접속하지 않음
+	 * - JOINED: WebSocket 접속 중
+	 * - SIGNED: 서명 완료
+	 * - REJECTED: 거절
+	 * - DISCONNECTED: 접속했지만 현재 연결 해제됨
+	 */
+	private String status;
+	
+	/**서명자 역할
+     * - LESSEE
+     * - LESSOR
+     * - AGENT
      */
     private String role;
 
@@ -31,6 +42,14 @@ public class SignerStatusDTO {
      * mbrCd
      */
     private String mbrCd;
+    
+    /**서명자 이름
+     */
+    private String mbrNm;
+    
+    /**서명자 전화번호
+     */
+    private String telno;
     
     /**서명 완료 시각
      * contDtSignDtm
@@ -42,18 +61,6 @@ public class SignerStatusDTO {
      */
     private String hashVal;
 
-    /**서명자 이름
-     */
-    private String name;
-
-    /**서명자 전화번호
-     */
-    private String telno;
-    
-    /**WebSocket 접속 상태
-     */
-    private boolean connected;
-
     /**클라이언트 접속 IP
      * contDtIpAddr
      */
@@ -62,12 +69,4 @@ public class SignerStatusDTO {
     /**hash 검증 성공 여부
      */
     private Boolean isValid;
-
-    /**서명 거절 여부
-     */
-    private Boolean isRejected;
-
-    /**서명 삽입된 TempPDF PathUrl
-     */
-    private String tempPdfUrl;
 }

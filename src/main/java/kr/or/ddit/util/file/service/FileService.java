@@ -7,6 +7,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import kr.or.ddit.vo.ContractDigitalSignVO;
 import kr.or.ddit.vo.FileVO;
 
 public interface FileService {
@@ -25,4 +26,6 @@ public interface FileService {
     public String getPresignedUrl(String fileId, int expireMinutes); // Presigned URL 제공
     
     public void updateFileUrl(String fileId, String newUrl);
+    public Integer readMaxAttachSeq(String contId);
+    public FileVO uploadAndSaveTempSignedContract(MultipartFile file, ContractDigitalSignVO digitalSign);
 }

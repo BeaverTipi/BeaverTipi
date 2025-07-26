@@ -233,15 +233,11 @@ public class RestContractSignatureController {
 			// 6. 새 PDF를 S3에 업로드
 			MultipartFile signedPdf = new ByteArrayMultipartFile("contract-" + digitalSign.getContId() + "-signed.pdf",
 					signedPdfBytes, "application/pdf");
-			FileVO uploadedSignedFile = fileService.uploadAndSave(signedPdf, "signed", "CONTRACT",
-					digitalSign.getContId(), "SIGNED_PDF");
+			FileVO tempContr = fileService.uploadAndSaveTempSignedContract(signedPdf, digitalSign);
 
-			// 7. FILES 테이블 갱신
-			fileService.updateFileUrl(digitalSign.getContId(), uploadedSignedFile.getFilePathUrl());
-
-			// 8. 성공 응답
+			// 7. 성공 응답
 			resultJson = objectMapper
-					.writeValueAsString(Map.of("success", true, "fileUrl", uploadedSignedFile.getFilePathUrl()));
+					.writeValueAsString(Map.of("success", true, "fileUrl", tempContr.getFilePathUrl()));
 			return ResponseEntity.ok(aes256Util.encryptWithDynamicIV(resultJson));
 
 		} catch (Exception e) {

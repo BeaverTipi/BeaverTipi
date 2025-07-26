@@ -17,4 +17,5 @@ public interface FileMapper {
 	public int updateFile(FileVO file);
 	public FileVO selectContractFile(String contId);
 	public int updateFileUrl(String fileId, String newUrl); // ^0^
+	public int selectTempContrMaxAttachSeq(String contId); // ^0^
 }

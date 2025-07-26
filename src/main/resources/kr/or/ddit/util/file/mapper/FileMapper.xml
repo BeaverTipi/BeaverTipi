@@ -131,11 +131,18 @@ WHERE FILE_ID = #{fileId}
 		    , FILE_DIR
 	FROM FILES
 	WHERE FILE_SOURCE_ID = #{contId}
+	  AND FILE_SOURCE_REF = 'CONTR'
 </select>
 <update id="updateFileUrl">
   UPDATE FILES
   SET FILE_PATH_URL = #{newUrl}
   WHERE FILE_ID = #{fileId}
 </update>
-
+<select id="selectTempContrMaxAttachSeq" resultType="Integer">
+  SELECT NVL(MAX(FILE_ATTACH_SEQ), 0)
+    FROM FILES
+   WHERE FILE_SOURCE_ID = #{contId}
+     AND FILE_SOURCE_REF = 'TEMP_CONTR'
+     AND DOC_TYPE_CD = 'SIGNED_PDF'
+</select>
 </mapper>

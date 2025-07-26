@@ -2,11 +2,15 @@ package kr.or.ddit.util.file.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.joda.time.chrono.ZonedChronology;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +25,7 @@ import com.amazonaws.services.s3.model.S3Object;
 
 import kr.or.ddit.util.file.mapper.FileMapper;
 import kr.or.ddit.util.validate.exception.FileIOException;
+import kr.or.ddit.vo.ContractDigitalSignVO;
 import kr.or.ddit.vo.FileVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -255,6 +260,47 @@ public class FileServiceImpl implements FileService {
 	@Override
 	public void updateFileUrl(String fileId, String newUrl) {
 		mapper.updateFileUrl(fileId, newUrl);
+	}
+
+	@Override
+	public Integer readMaxAttachSeq(String contId) {
+		return mapper.selectTempContrMaxAttachSeq(contId);
+	}
+
+	@Override
+	public FileVO uploadAndSaveTempSignedContract(MultipartFile file, ContractDigitalSignVO digitalSign) {
+		
+		Integer signedOrder = readMaxAttachSeq(digitalSign.getContId());
+		if(signedOrder == null) signedOrder = 1;
+		if(signedOrder < 3) signedOrder++;
+		if(signedOrder == 3) {}
+		
+	    String fileUrl;
+		try {fileUrl = s3Uploader.upload(file, "tempContr" +"/"+ digitalSign.getContDtSignHashVal());}
+		catch (IOException e) {throw new FileIOException();}
+
+		String changedFileName = changedFileName(file.getOriginalFilename());
+		
+		Instant instant = Instant.parse(digitalSign.getContDtSignDtm());
+		LocalDate regDtm = instant.atZone(ZoneId.systemDefault()).toLocalDate();
+		
+	    FileVO vo = new FileVO();
+	    vo.setFileId(UUID.randomUUID().toString());
+	    vo.setFileAttachSeq(signedOrder);
+	    vo.setFileSourceRef("TEMP_CONTR");
+	    vo.setFileSourceId(digitalSign.getContId());
+	    vo.setFileOriginalname(file.getOriginalFilename());
+	    vo.setFileSavedname(changedFileName);
+	    vo.setFileMime(file.getContentType());
+	    vo.setFileSize((int) file.getSize());
+	    vo.setDocTypeCd("SIGNED_PDF");
+	    vo.setFilePathUrl(fileUrl);
+	    // ^0^ LocalDateTime 형식:: "2025-07-26T01:01:07.614Z" 이건 바로 LocalDate로 변환 불가능 
+	    vo.setRegDtm(regDtm);
+	    vo.setFileDir("temp-contr");
+
+	    mapper.insertFile(vo);
+	    return vo;
 	}
 
 
