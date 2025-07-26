@@ -49,6 +49,7 @@ public interface ComplaintMapper {
 
     /** 게시글 조회 가능 여부 (작성자 또는 임대인 여부 판단) */
     public int canViewComplaint(@Param("rsdBrdId") String rsdBrdId, @Param("mbrCd") String mbrCd);
-
+    
+    public String selectFirstMoveInBuildingId(String mbrCd);
 }	
 

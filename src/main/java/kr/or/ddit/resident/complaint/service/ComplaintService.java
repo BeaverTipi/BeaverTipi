@@ -35,4 +35,6 @@ public interface ComplaintService {
     
     public boolean canViewComplaint(String rsdBrdId,String mbrCd);
     
+    public String getFirstMoveInBuildingId(String mbrCd);
+    
 }

@@ -64,7 +64,7 @@ public class RsdBoardController {
 
         // 검색 파라미터로 받은 bldgId를 SimpleSearch 객체에 세팅
         simpleSearch.setBldgId(search_bldgId);  // search.bldgId를 simpleSearch에 설정
-        
+        simpleSearch.setBrdCode("R0001");
         simpleSearch.setLoginMbrCd(member.getMbrCd());
         simpleSearch.setMyPostsOnly("Y".equalsIgnoreCase(myPostsOnly));
 
@@ -77,7 +77,8 @@ public class RsdBoardController {
         paging.setTotalRecordCount(totalRecord);
         List<ResidentBoardVO> boardList = boardService.getBoardList(paging);
         String pagingHTML = new DefaultPaginationRenderer().renderPagination(paging, "fnPaging");
-
+        
+        log.info("🧩 brdCode = {}", simpleSearch.getBrdCode());
         // 모델에 데이터 바인딩
         model.addAttribute("search", simpleSearch);
         model.addAttribute("unitList", units);

@@ -84,6 +84,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			e.preventDefault();
 			e.stopPropagation();
 			e.stopImmediatePropagation();
+			localStorage.removeItem("selectedBuildingId");
 			customAxios.post("/account/logout", {})
 				.then(resp => {
 					Swal.fire({

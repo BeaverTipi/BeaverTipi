@@ -1,4 +1,5 @@
 
+
 document.addEventListener('DOMContentLoaded', () => {
 const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get("success") === "true") {

@@ -317,22 +317,31 @@ select[name="bldgIdParam"] {
   </style>
 </head>
 <body>
-  <fmt:parseDate var="prevDate" value="${previousMonth}" pattern="yyyyMM" />
+  <fmt:parseDate var="prevDate" value="${currentMonth}" pattern="yyyyMM" />
   <div class="container">
     <div class="header-bar">
       <div class="page-title">
         <h1>📄 관리비 납부 비교</h1>
-        <p>${previousMonth} 기준 항목을 전전월과 비교한 요약 카드입니다</p>
+        <p>${currentMonth} 기준 항목을 전전월과 비교한 요약 카드입니다</p>
       </div>
-      <form id="noticeSearchForm" method="get" action="/resident/payment">
-        <select name="bldgIdParam">
-          <c:forEach var="unit" items="${unitList}">
-            <option value="${unit.bldgId}" <c:if test="${selectedBldgId eq unit.bldgId}">selected</c:if>>
-              ${unit.building.bldgNm}
-            </option>
-          </c:forEach>
-        </select>
-      </form>
+			<form id="noticeSearchForm" method="get" action="/resident/payment">
+			  <select name="bldgIdParam">
+			    <c:forEach var="unit" items="${unitList}">
+			      <option value="${unit.bldgId}" <c:if test="${selectedBldgId eq unit.bldgId}">selected</c:if>>
+			        ${unit.building.bldgNm}
+			      </option>
+			    </c:forEach>
+			  </select>
+				<select name="unitIdParam" id="unitSelect" style="margin-left: 10px;">
+				  <c:forEach var="unit" items="${unitsInBuilding}">
+				    <option value="${unit.unitId}" <c:if test="${unit.unitId eq selectedUnitId}">selected</c:if>>
+				      ${unit.unit.unitRoom}호
+				    </option>
+				  </c:forEach>
+				</select>
+			  <!-- ✅ 검색 버튼 추가 -->
+			  <button type="submit" class="search-button" style="margin-left: 10px;">검색</button>
+			</form>
     </div>
     <div class="main-grid">
      <div class="notice-grid">
@@ -355,40 +364,41 @@ select[name="bldgIdParam"] {
       <c:set var="totalIntegratedAmount" value="${totalIntegratedAmount + energyChargeSum}" />
         <div class="giro-notice-card">
           <h4><fmt:formatDate value="${prevDate}" pattern="yyyy년 MM월" /> 관리비 요약</h4>
-          <table class="charge-table">
-  <thead>
-    <tr>
-      <th>항목</th>
-      <th style="text-align:center">금액</th>
-      <th class="diff">변동</th>
-    </tr>
-  </thead>
-  <tbody>
-    <c:forEach var="item" items="${chargeBillComparisonList}" varStatus="vs">
-      <tr class="${vs.index % 2 == 0 ? 'even' : 'odd'}">
-        <td class="label">${item.feeName}</td>
-      <td class="amount">
-      <span class="money-compare">
-        <fmt:formatNumber value="${item.currentAmount}" type="currency" />
-        →
-        <fmt:formatNumber value="${item.previousAmount}" type="currency" />
-        </span>
-      </td>
-        <td class="diff">
-          <c:choose>
-            <c:when test="${item.diffAmount > 0}">
-              <span class="diff up">▲ <fmt:formatNumber value="${item.diffAmount}" />원</span>
-            </c:when>
-            <c:when test="${item.diffAmount < 0}">
-              <span class="diff down">▼ <fmt:formatNumber value="${-item.diffAmount}" />원</span>
-            </c:when>
-            <c:otherwise><span class="diff same">변화 없음</span></c:otherwise>
-          </c:choose>
-        </td>
-      </tr>
-    </c:forEach>
-  </tbody>
-</table>
+		<table class="charge-table">
+		  <thead>
+		    <tr>
+		      <th>항목</th>
+		      <th style="text-align:center">금액</th>
+		      <th class="diff">변동</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <c:forEach var="item" items="${chargeBillComparisonList}" varStatus="vs">
+		      <tr class="${vs.index % 2 == 0 ? 'even' : 'odd'}">
+		        <td class="label">${item.feeName}</td>
+		        <td class="amount">
+		          <span class="money-compare">
+		            <fmt:formatNumber value="${item.previousAmount}" type="currency" />
+		            →
+		            <fmt:formatNumber value="${item.twoMonthsAgo}" type="currency" />
+		          </span>
+		        </td>
+		        <td class="diff">
+		          <c:choose>
+		            <c:when test="${item.diffAmount > 0}">
+		              <span class="diff up">▲ <fmt:formatNumber value="${item.diffAmount}" />원</span>
+		            </c:when>
+		            <c:when test="${item.diffAmount < 0}">
+		              <span class="diff down">▼ <fmt:formatNumber value="${-item.diffAmount}" />원</span>
+		            </c:when>
+		            <c:otherwise><span class="diff same">변화 없음</span></c:otherwise>
+		          </c:choose>
+		        </td>
+		      </tr>
+		    </c:forEach>
+		  </tbody>
+		</table>
+
 
          <div class="energy-summary">
   <c:set var="electricCode" value="전기" />
@@ -456,9 +466,9 @@ select[name="bldgIdParam"] {
           <img src="/images/ad-banner.jpg" alt="광고 배너" style="width:100%; border-radius:6px; margin-top:10px;" />
         </div>
         <div class="total-charge-box">
-        <h3>📦 총 관리비 내역</h3>
+        <h3>📦 이번 달 청구 금액</h3>
         <p class="total-charge-amount">
-          <fmt:formatNumber value="${totalIntegratedAmount}" type="currency" />
+          <fmt:formatNumber value="${currentChargeAmount}" type="number" currencySymbol="₩" />
         </p>
         <c:if test="${totalSavedAmount > 0}">
           <p style="font-size:13px; color:#2ecc71; margin-top:6px;">
@@ -479,7 +489,7 @@ select[name="bldgIdParam"] {
 			  type="button"
 			  class="pay-button"
 			  data-name="<fmt:formatDate value='${prevDate}' pattern='yyyy년 MM월 관리비'/>"
-			  data-pay="${totalIntegratedAmount}"
+			  data-pay="${currentChargeAmount}"
 			>
 			  💰 납부하기
 			</button>
@@ -514,6 +524,39 @@ select[name="bldgIdParam"] {
 <script src="https://js.tosspayments.com/v1"></script>
 <script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/building/move-in/residentList.js"></script>
-<script src="${pageContext.request.contextPath}/app/js/resident/residentBuliding.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const unitSelect = document.getElementById("unitSelect");
+
+    unitSelect.addEventListener("change", function () {
+      const selectedUnitId = this.value;
+      const bldgId = localStorage.getItem("selectedBuildingId"); // 건물 ID가 필요하면
+
+      if (selectedUnitId) {
+        // ✅ 여기에 공과금 데이터를 AJAX로 요청
+        axios.get(`/ajax/resident/api/payment/charge-info`, {
+          params: {
+            unitId: selectedUnitId,
+            bldgId: bldgId
+          }
+        })
+        .then(response => {
+          // 데이터를 받아서 렌더링
+          renderChargeInfo(response.data);
+        })
+        .catch(error => {
+          console.error("세대 데이터 불러오기 실패:", error);
+        });
+      }
+    });
+  });
+
+  function renderChargeInfo(data) {
+    // 여기에 표, 차트 등 렌더링 로직 작성
+    console.log("청구 내역:", data);
+  }
+</script>
+
+
 </body>
 </html>

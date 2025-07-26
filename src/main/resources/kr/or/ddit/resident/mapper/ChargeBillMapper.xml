@@ -15,8 +15,20 @@
     <result property="chgbillPaidDate" column="chgbillPaidDate"/>
     <result property="chgbillDesc" column="chgbillDesc"/>
   </resultMap>
-
-  <!-- ✅ chgbillId 제거 후 정상 작동하도록 수정 -->
+<resultMap id="chargeBillPaymentLogMap" type="ChargeBillPaymentLogVO">
+    <result property="chgbillChargeMonth" column="CHGBILL_CHARGE_MONTH"/>
+    <result property="rentalPtyId" column="RENTAL_PTY_ID"/>
+    <result property="unitId" column="UNIT_ID"/>
+    <result property="bldgId" column="BLDG_ID"/>
+    <result property="paymentKey" column="PAYMENTKEY"/>
+    <result property="chgbillPayAmount" column="CHGBILL_PAY_AMOUNT"/>
+    <result property="chgbillPaidAt" column="CHGBILL_PAID_AT"/>
+    <result property="chgbillPayMethod" column="CHGBILL_PAY_METHOD"/>
+    <result property="chgbillPayMethodGrpCd" column="CHGBILL_PAY_METHOD_GRP_CD"/>
+    <result property="chgbillFailDesc" column="CHGBILL_FAIL_DESC"/>
+    <result property="chgbillDelinquentDt" column="CHGBILL_DELINQUENT_DT"/>
+    <result property="chgbillDelinquentAmount" column="CHGBILL_DELINQUENT_AMOUNT"/>
+</resultMap>
   <select id="selectChargeBillComparisonDetail" resultType="map">
     SELECT
       imf.INT_MAN_FEE_CD,
@@ -109,25 +121,63 @@
       AND imf.INTG_FEE_ID = #{month}
     ORDER BY imf.INT_MAN_FEE_CD
   </select>
+  
+<update id="updateChargeBillAfterPayment">
+  UPDATE CHARGE_BILL
+     SET CHGBILL_PAY_AMOUNT = CHGBILL_PAY_AMOUNT + #{amount},
+         CHGBILL_STATUS = CASE
+           WHEN CHGBILL_PAY_AMOUNT + #{amount} >= CHGBILL_AMOUNT THEN '002'
+           ELSE CHGBILL_STATUS
+         END
+   WHERE CHGBILL_CHARGE_MONTH = #{chgbillChargeMonth}
+     AND RENTAL_PTY_ID = #{rentalPtyId}
+     AND UNIT_ID = #{unitId}
+     AND BLDG_ID = #{bldgId}
+</update>
 
-  <!-- 🔄 동일 쿼리 중복 제거 -->
-  <select id="selectEnergySummary" resultType="map">
-    SELECT
-      hemu.DUM_MONTH                     AS chargeMonth,
-      ec.CODE_NAME                      AS energyTypeName,
-      SUM(hemu.TOTAL_ENERGY_USAGE_QTY) AS usageQty,
-      SUM(hemu.TOTAL_ENERGY_CHARGE_AMT)AS chargeAmt
-    FROM HOUSEHOLD_ENERGY_MONTHLY_USAGE hemu
-    LEFT JOIN COMMON_CODE ec
-      ON ec.CODE_GROUP = 'ENEG'
-     AND ec.CODE_VALUE = hemu.ENEG_TYPE
-    WHERE hemu.UNIT_ID = #{unitId}
-      AND hemu.DUM_MONTH IN
-      <foreach item="month" collection="months" open="(" separator="," close=")">
-        #{month}
-      </foreach>
-    GROUP BY hemu.DUM_MONTH, ec.CODE_NAME
-    ORDER BY hemu.DUM_MONTH, ec.CODE_NAME
-  </select>
+<insert id="insertChargeBillPaymentLog">
+  INSERT INTO CHARGE_BILL_PAYMENT_LOG (
+    CHGBILL_CHARGE_MONTH,
+    RENTAL_PTY_ID,
+    UNIT_ID,
+    BLDG_ID,
+    PAYMENTKEY,
+    CHGBILL_PAY_AMOUNT,
+    CHGBILL_PAID_AT,
+    CHGBILL_PAY_METHOD,
+    CHGBILL_PAY_METHOD_GRP_CD
+  )
+  VALUES (
+    #{chgbillChargeMonth},
+    #{rentalPtyId},
+    #{unitId},
+    #{bldgId},
+    #{paymentKey},
+    #{amount},
+    SYSDATE,
+    #{method},
+    #{methodGrpCd}
+  )
+</insert>
+<!-- ✅ 특정 청구서의 납부 상태 정보 조회 -->
+<select id="selectChargeBillInfo" resultType="ChargeBillVO">
+  SELECT CHGBILL_PAY_AMOUNT, CHGBILL_AMOUNT
+    FROM CHARGE_BILL
+   WHERE CHGBILL_CHARGE_MONTH = #{chgbillChargeMonth}
+     AND UNIT_ID = #{unitId}
+</select>
+
+<select id="selectUnpaidChargeBills" resultMap="chargeBillResultMap">
+  SELECT *
+  FROM CHARGE_BILL cb
+  WHERE EXISTS (
+    SELECT 1
+    FROM UNIT_RESIDENT ur
+    WHERE ur.UNIT_ID = cb.UNIT_ID
+      AND ur.MBR_CD = #{mbrCd}
+  )
+    AND CHGBILL_STATUS != '002' <!-- '002'은 납부 완료 상태 -->
+</select>
+
 
 </mapper>

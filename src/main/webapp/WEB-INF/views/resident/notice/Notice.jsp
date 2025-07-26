@@ -126,6 +126,18 @@
   font-weight: bold;
   cursor: pointer;
 }
+/* 제목에 마우스를 올렸을 때 밑줄 효과 */
+.notice-title {
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.notice-title:hover {
+  text-decoration: underline;
+  color: #E17100;
+}
+
 
 </style>
 
@@ -205,7 +217,6 @@
       <th>작성자</th>
       <th>게시일</th>
       <th>조회수</th>
-      <th>보기</th>
     </tr>
   </thead>
   <tbody id="noticeTableBody">

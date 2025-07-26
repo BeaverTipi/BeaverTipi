@@ -12,6 +12,7 @@ function loadPosts(bldgId, page = 1, pageSize = 10) {
 
   axios.get(`/ajax/resident/api/board?${searchParams}`)
     .then(response => {
+		 console.log("📦 응답 데이터:", response.data);
       const { postList, pagination } = response.data;
       displayPosts(postList, pagination);
       renderPagination(pagination);
@@ -35,7 +36,8 @@ function collectSearchParams(bldgId, page, pageSize) {
   const myPostsOnlyCheckbox = document.querySelector('input[name="myPostsOnly"]');
   const myPostsOnly = myPostsOnlyCheckbox && myPostsOnlyCheckbox.checked ? 'Y' : '';
 
-  return new URLSearchParams({
+  const brdCode="R0001";
+    return new URLSearchParams({
     bldgIdParam: bldgId,
     page,
     pageSize,
@@ -43,7 +45,8 @@ function collectSearchParams(bldgId, page, pageSize) {
     searchWord,
     searchStartDate,
     searchEndDate,
-    myPostsOnly
+    myPostsOnly,
+    brdCode
   }).toString();
 }
 

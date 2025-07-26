@@ -149,6 +149,16 @@
   gap: 6px;                /* 라디오와 텍스트 간격 */
   white-space: nowrap;     /* 줄바꿈 방지 */
 }
+.notice-title {
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.notice-title:hover {
+  text-decoration: underline;
+  color: #E17100;
+}
 
     @media (max-width: 768px) {
       .search-form {
@@ -184,7 +194,6 @@
     <!-- 검색 영역 -->
     <div class="search-area">
     	<form id="searchForm" method="get" class="search-form">
-        <input type="hidden" name="page" value="${pagingInfo.currentPageNo}" />
         <input type="hidden" name="brdCode" value="M0001" />
 
         <!-- 건물 선택 -->
@@ -278,12 +287,12 @@
     <table class="table">
       <thead>
         <tr>
+          <th>번호</th>
           <th>작성자</th>
           <th>제목</th>
           <th>공개여부</th>
           <th>처리상태</th>
           <th>게시일</th>
-          <th>보기</th>
         </tr>
       </thead>
      <tbody id="boardTableBody" class="post-list">
@@ -311,13 +320,6 @@
 <script src="${pageContext.request.contextPath}/app/js/resident/residentComplaint.js"></script>
 
 <script>
-  function fnPaging(pageNo) {
-    const form = document.getElementById('searchForm');
-    form.page.value = pageNo;
-    form.submit();
-  }
-</script>
-<script>
   function clearForm(e) {
     e.preventDefault();
 
@@ -326,9 +328,6 @@
 
     // input, select, radio 초기화
     form.reset();
-
-    // hidden 필드(page 등)는 기본값으로 수동 초기화
-    form.page.value = 1;
 
     // 로컬스토리지에 저장된 selectedBuildingId는 유지하되, 검색 조건만 초기화
     loadComplaints(currentBuildingId, 1); // 검색 조건 비운 상태로 목록 재조회
@@ -341,7 +340,6 @@ const select = document.querySelector("#bldgSelect");
 const writeBtn = document.querySelector("#writeBtn");
 
 select.addEventListener("change", () => {
-	
   //const selectedId = localStorage.getItem("selectedBuildingId");
   const selectedId = select.value;
     console.log(selectedId);

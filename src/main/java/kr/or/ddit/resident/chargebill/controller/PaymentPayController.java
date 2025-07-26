@@ -48,6 +48,7 @@ public class PaymentPayController {
             Model model,
             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
             @RequestParam(required = false) String bldgIdParam,
+            @RequestParam(required = false) String unitIdParam,
             @ModelAttribute("search") SimpleSearch simpleSearch
     ) {
         MemberVO member = principal.getRealUser();
@@ -71,18 +72,24 @@ public class PaymentPayController {
         simpleSearch.setBldgId(selectedBldgId);
         log.info("📌 selectedBldgId: {}", selectedBldgId);
 
-        String unitId = units.stream()
-            .filter(u -> selectedBldgId.equals(u.getBldgId()))
-            .findFirst()
-            .map(UnitResidentVO::getUnitId)
-            .orElse(units.get(0).getUnitId());
+        List<UnitResidentVO> unitsInBuilding = unitResidentService.selectMyUnitsInBuilding(member.getMbrCd(), selectedBldgId);
+        
+        if (unitsInBuilding.isEmpty()) {
+            log.warn("해당 건물에 계약된 유닛이 없습니다.");
+            return "resident:/member/register";
+        }
+        
+        String unitId = (unitIdParam != null && !unitIdParam.isBlank())
+        	    ? unitIdParam
+        	    : unitsInBuilding.get(0).getUnitId();
 
         log.info("선택된 유닛 ID:{}",unitId);
         
         String currentMonth = getCurrentMonth();
         String previousMonth = getPreviousMonth();
+        String twoMonthsAgo = getTwoMonthsAgo();
         
-        log.info("현재 월: {}, 이전 월: {}", currentMonth, previousMonth);
+        log.info("전월 월: {}, 전전월 월: {}", previousMonth,twoMonthsAgo);
         
 
         // ✅ DTO 기반 비교 결과 조회
@@ -105,14 +112,21 @@ public class PaymentPayController {
         log.info("currentMonth: {}, previousMonth: {}", currentMonth, previousMonth);
         log.info("energySummary: {}", energySummary);
         
+        Long currentChargeAmount = paymentService.getCurrentChargeAmount(unitId,currentMonth);
+        log.info("getCurrentChargeAmount : ", currentChargeAmount);
+        model.addAttribute("currentChargeAmount", currentChargeAmount);
+        
         log.info("납부 관련 공통 코드: {}", payment);
         
+        model.addAttribute("unitsInBuilding", unitsInBuilding);
+        model.addAttribute("selectedUnitId", unitId);
         model.addAttribute("payment", payment);
         model.addAttribute("unitList", units);
         model.addAttribute("selectedBldgId", selectedBldgId);
         model.addAttribute("bldgIdParam", bldgIdParam);
         model.addAttribute("currentMonth", currentMonth);
         model.addAttribute("previousMonth", previousMonth);
+        model.addAttribute("twoMonthsAgo", twoMonthsAgo);
         model.addAttribute("chargeBillComparisonList", comparisonList);
         model.addAttribute("energySummary", energySummary);
 
@@ -122,11 +136,14 @@ public class PaymentPayController {
 
 
     private String getCurrentMonth() {
-        return LocalDate.now().minusMonths(1).format(DateTimeFormatter.ofPattern("yyyyMM"));
+        return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
     }
 
     private String getPreviousMonth() {
-        return LocalDate.now().minusMonths(2).format(DateTimeFormatter.ofPattern("yyyyMM"));
+        return LocalDate.now().minusMonths(1).format(DateTimeFormatter.ofPattern("yyyyMM"));
     }
-
+    private String getTwoMonthsAgo() {
+        return LocalDate.now().minusMonths(2).format(DateTimeFormatter.ofPattern("yyyyMM")); // 202505
+    }
+    
 }

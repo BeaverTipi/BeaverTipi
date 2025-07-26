@@ -22,7 +22,7 @@ function renderNoticePosts(posts) {
   if (!posts || posts.length === 0) {
     tableBody.innerHTML = `
       <tr>
-        <td colspan="7" class="no-data-center">등록된 공지사항이 없습니다.</td>
+        <td colspan="6" class="no-data-center">등록된 공지사항이 없습니다.</td>
       </tr>
     `;
     return;
@@ -36,17 +36,15 @@ function renderNoticePosts(posts) {
       <tr>
         <td>${idx + 1}</td>
         <td>${post.noticeTypeCode?.codeName || ""}</td>
-        <td title="${post.brdTitlNm}">${titleShort}</td>
+        <td title="${post.brdTitlNm}">
+          <a href="/resident/notice/detail?noticeNo=${post.noticeNo}&bldgIdParam=${getSafeBldgId()}"
+             class="notice-title" title="${post.brdTitlNm}">
+            ${titleShort}
+          </a>
+        </td>
         <td>${post.member?.mbrNnm || ""}</td>
         <td>${formattedDate}</td>
         <td>${post.brdVwCnt}</td>
-        <td>
-          <form method="get" action="/resident/notice/detail">
-            <input type="hidden" name="noticeNo" value="${post.noticeNo}" />
-            <input type="hidden" name="bldgIdParam" value="${getSafeBldgId()}" />
-            <button type="submit" class="btn-view">보기</button>
-          </form>
-        </td>
       </tr>
     `;
 

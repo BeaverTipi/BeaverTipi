@@ -9,7 +9,7 @@ function formatDate(dateStr) {
 }
 
 // 📌 게시글 목록 렌더링
-function renderComplaintPosts(posts, loginMbrCd, isLandlord) {
+function renderComplaintPosts(posts, loginMbrCd, isLandlord, currentPageNo,pageSize) {
   const tableBody = document.querySelector("#boardTableBody");
   tableBody.innerHTML = "";
 
@@ -19,8 +19,9 @@ function renderComplaintPosts(posts, loginMbrCd, isLandlord) {
     `;
     return;
   }
-
-  posts.forEach((post) => {
+  const startIdx = (currentPageNo - 1) * pageSize + 1;
+  
+  posts.forEach((post,idx) => {
     const isOwner = post.mbrCd === loginMbrCd;
     const isPublic = post.openYn === "Y";
     const isVisible = isPublic || isOwner || isLandlord;
@@ -28,14 +29,6 @@ function renderComplaintPosts(posts, loginMbrCd, isLandlord) {
     const titleHtml = isVisible
       ? post.rsdBrdTitl
       : `<span class="text-muted">비공개 글입니다.</span>`;
-
-    const viewButtonHtml = isVisible
-      ? `<form method="get" action="/resident/complaint/view">
-            <input type="hidden" name="rsdBrdId" value="${post.rsdBrdId}" />
-            <input type="hidden" name="bldgIdParam" value="${post.bldgId}" />
-            <button type="submit" class="btn-view">보기</button>
-         </form>`
-      : `<button type="button" class="btn-view" onclick="showPrivateAlert()">보기</button>`;
 
     const 공개여부 = post.openYn === "Y"
       ? `<span class="badge badge-blue">공개</span>`
@@ -48,12 +41,17 @@ function renderComplaintPosts(posts, loginMbrCd, isLandlord) {
 
     const rowHtml = `
       <tr>
+        <td>${startIdx + idx}</td>
         <td>${post.mbrNnm}</td>
-        <td>${titleHtml}</td>
+          <td>
+          <a href="/resident/complaint/view?rsdBrdId=${post.rsdBrdId}&bldgIdParam=${post.bldgId}" 
+             class="notice-title" title="${post.rsdBrdTitl}">
+            ${titleHtml}
+          </a>
+        </td>
         <td>${공개여부}</td>
         <td>${처리상태}</td>
         <td>${formatDate(post.rsdBrdPblsDate)}</td>
-        <td>${viewButtonHtml}</td>
       </tr>
     `;
 
@@ -61,29 +59,35 @@ function renderComplaintPosts(posts, loginMbrCd, isLandlord) {
   });
 }
 
-// 📌 페이징 HTML 렌더링
-function renderPagination(pagingHtml) {
-  const wrapper = document.querySelector(".pagination-wrapper");
-  wrapper.innerHTML = pagingHtml;
-
-  wrapper.querySelectorAll("a[data-page]").forEach(link => {
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
-      const pageNo = link.getAttribute("data-page");
-      if (pageNo) loadComplaints(currentBuildingId, pageNo);
-    });
-  });
-}
-
 // 🔁 전역 변수
 let currentBuildingId = localStorage.getItem("selectedBuildingId") || "";
 
-// 📌 민원 게시글 로드
-function loadComplaints(bldgId = currentBuildingId, page = 1) {
- 
+// 📌 민원 게시글 로드 (최초 입주 건물 포함)
+function loadComplaints(bldgId = currentBuildingId, page = 1, pageSize = 10) {
+  page = parseInt(page) || 1;
+
   if (window.location.pathname.includes("/resident/complaint/form")) return;
-	
-  if (!bldgId) return;
+
+  // selectedBuildingId가 없는 경우, 최초 입주 건물 불러오기
+  if (!bldgId) {
+    axios.get("/ajax/resident/api/complaints/initial")
+      .then(res => {
+        const { bldgId: initBldgId } = res.data;
+        if (!initBldgId) {
+          document.querySelector("#boardTableBody").innerHTML = `
+            <tr><td colspan="6" class="no-data-center">민원 데이터가 없습니다.</td></tr>
+          `;
+          return;
+        }
+        localStorage.setItem("selectedBuildingId", initBldgId);
+        currentBuildingId = initBldgId;
+
+        // 초기 건물로 다시 로딩
+        loadComplaints(initBldgId, page,pageSize);
+      })
+      .catch(err => console.error("최초 건물 게시글 로딩 실패:", err));
+    return;
+  }
 
   currentBuildingId = bldgId;
   localStorage.setItem("selectedBuildingId", bldgId);
@@ -92,6 +96,7 @@ function loadComplaints(bldgId = currentBuildingId, page = 1) {
   const params = new URLSearchParams({
     bldgIdParam: bldgId,
     page,
+    pageSize,
     searchType: form.searchType?.value || "",
     searchWord: form.searchWord?.value || "",
     openYn: form.openYn?.value || "",
@@ -104,8 +109,8 @@ function loadComplaints(bldgId = currentBuildingId, page = 1) {
   axios.get(`/ajax/resident/api/complaints?${params.toString()}`)
     .then(res => {
       const { postList, pagination, loginMbrCd, isLandlord } = res.data;
-      renderComplaintPosts(postList, loginMbrCd, isLandlord);
-      renderPagination(pagination);
+      renderComplaintPosts(postList, loginMbrCd, isLandlord,page,pageSize);
+      renderPagination(pagination,page,pageSize);
     })
     .catch(err => console.error("민원 목록 불러오기 실패:", err));
 }
@@ -132,9 +137,50 @@ function clearForm(e) {
   loadComplaints(currentBuildingId, 1);
 }
 
+// 📌 페이징 처리
+function renderPagination(pagination, bldgId, currentPageNo, pageSize) {
+  const wrapper = document.querySelector('.pagination-wrapper');
+  wrapper.innerHTML = '';
+
+  const ul = document.createElement('ul');
+  ul.className = 'pagination';
+
+  // ◀ 이전 버튼
+  if (currentPageNo > 1) {
+    const prevLi = document.createElement('li');
+    prevLi.innerHTML = `<a href="javascript:void(0)">«</a>`;
+    prevLi.addEventListener('click', () =>
+      loadComplaints(bldgId, currentPageNo - 1, pageSize)
+    );
+    ul.appendChild(prevLi);
+  }
+
+  // 🔢 숫자 버튼
+  for (let i = pagination.firstPageNoOnPageList; i <= pagination.lastPageNoOnPageList; i++) {
+    const li = document.createElement('li');
+    li.className = (i === currentPageNo) ? 'active' : '';
+    li.innerHTML = `<a href="javascript:void(0)">${i}</a>`;
+    li.addEventListener('click', () =>
+      loadComplaints(bldgId, i, pageSize)
+    );
+    ul.appendChild(li);
+  }
+
+  // ▶ 다음 버튼
+  if (currentPageNo < pagination.totalPageCount) {
+    const nextLi = document.createElement('li');
+    nextLi.innerHTML = `<a href="javascript:void(0)">»</a>`;
+    nextLi.addEventListener('click', () =>
+      loadComplaints(bldgId, currentPageNo + 1, pageSize)
+    );
+    ul.appendChild(nextLi);
+  }
+
+  wrapper.appendChild(ul);
+}
+
 // 📌 초기화 및 이벤트 바인딩
 document.addEventListener("DOMContentLoaded", () => {
-
   const form = document.getElementById("searchForm");
   form?.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -144,5 +190,5 @@ document.addEventListener("DOMContentLoaded", () => {
   const checkbox = document.querySelector("#myPostsOnly");
   checkbox?.addEventListener("change", () => loadComplaints(currentBuildingId, 1));
 
-  loadComplaints(currentBuildingId, 1);
+  loadComplaints(currentBuildingId); // 최초 로딩
 });

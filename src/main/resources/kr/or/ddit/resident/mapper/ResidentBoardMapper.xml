@@ -9,7 +9,9 @@
 <sql id="searchCondition">
   <where>
     rsd_brd_del_yn = 'N'
-
+	 <if test="simpleSearch.brdCode != null and simpleSearch.brdCode != ''">
+	      AND rb.brd_code = #{simpleSearch.brdCode}
+	 </if>
     <if test="simpleSearch.bldgId != null and simpleSearch.bldgId != ''">
       AND rb.bldg_id = #{simpleSearch.bldgId}
     </if>

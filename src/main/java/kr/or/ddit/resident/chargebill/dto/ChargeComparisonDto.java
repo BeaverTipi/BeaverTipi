@@ -9,6 +9,7 @@ public class ChargeComparisonDto {
 	private String description;
 	private int previousAmount;
 	private int currentAmount;
+	private int twoMonthsAgo;
 	private int diffAmount;
 	private int energyUsageCurrent;
 	private int energyUsageDiffPercent;

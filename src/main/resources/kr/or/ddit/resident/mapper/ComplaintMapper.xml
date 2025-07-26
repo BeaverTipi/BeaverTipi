@@ -303,6 +303,18 @@
   FROM DUAL
 </select>
 
+ <select id="selectFirstMoveInBuildingId" resultType="String">
+  SELECT BLDG_ID
+  FROM (
+    SELECT UR.BLDG_ID
+    FROM UNIT_RESIDENT UR
+    WHERE UR.MBR_CD = #{mbrCd}
+      AND UR.UNIT_DEL_YN = 'N'
+      AND UR.MOVE_IN_DT IS NOT NULL
+    ORDER BY UR.MOVE_IN_DT ASC
+  )
+  WHERE ROWNUM = 1
+</select>
  
 
 </mapper>

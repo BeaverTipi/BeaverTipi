@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.or.ddit.resident.mapper.ComplaintMapper;
+import kr.or.ddit.resident.mapper.UnitResidentMapper;
 import kr.or.ddit.vo.ResidentBoardVO;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 
@@ -34,7 +36,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Autowired
     private ComplaintMapper mapper;
-
+    
     @Override
     public ResidentBoardVO selectComplaintById(String rsdBrdId) {
         return mapper.selectComplaintById(rsdBrdId);
@@ -109,6 +111,16 @@ public class ComplaintServiceImpl implements ComplaintService {
 		int result = mapper.canViewComplaint(rsdBrdId, mbrCd);
 		return result ==1;
 	}
+
+	@Override
+	public String getFirstMoveInBuildingId(String mbrCd) {
+		// TODO Auto-generated method stub
+		return mapper.selectFirstMoveInBuildingId(mbrCd);
+	}
+
+
+
+
 }
 
 

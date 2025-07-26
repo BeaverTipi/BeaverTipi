@@ -40,6 +40,7 @@ public class RsdBoardRestController {
     ) {
         SimpleSearch search = new SimpleSearch();
         search.setBldgId(bldgIdParam);
+        search.setBrdCode("R0001");
         search.setSearchType(searchType);
         search.setSearchWord(searchWord);
         search.setSearchStartDate(searchStartDate);
@@ -59,7 +60,8 @@ public class RsdBoardRestController {
         
         log.info("✅ 내 글만 보기 여부: {}", myPostsOnly);  // 'Y' 또는 null 확인
         log.info("🧪 loginMbrCd  = {}", search.getLoginMbrCd());
-        
+        log.info("🧩 brdCode = {}", search.getBrdCode());
+
         Map<String, Object> result = new HashMap<>();
         result.put("postList", boardList);
         result.put("pagination", paging); // JS에서 totalPageCount, currentPageNo 등을 활용 가능

@@ -38,6 +38,29 @@ public class ComplaintRestController {
     @Autowired
     private PaginationRenderer paginationRenderer;
 
+    @GetMapping("/initial")
+    public Map<String , Object> getInitialBuildingPosts(
+    			@AuthenticationPrincipal RealUserWrapper<MemberVO> principal
+    		){
+    		MemberVO member = principal.getRealUser();
+    		List<Map<String, Object>> posts = unitResidentService.getInitialBuildingPosts(member.getMbrCd());
+    		
+    		Map<String, Object> result = new HashMap<>();
+    		  if (!posts.isEmpty()) {
+    		        result.put("bldgId", posts.get(0).get("BLDG_ID"));  // 초기 건물 ID
+    		        result.put("bldgNm", posts.get(0).get("BLDG_NM"));  // 건물 이름
+    		        result.put("postList", posts);                      // 게시글 전체 리스트
+    		        result.put("loginMbrCd", member.getMbrCd());        // 로그인한 사용자
+    		    } else {
+    		        result.put("bldgId", null);
+    		        result.put("postList", List.of());
+    		        result.put("loginMbrCd", member.getMbrCd());
+    		    }
+    	log.info("✅ principal = " + principal);
+    	log.info("✅ member = " + (principal != null ? principal.getRealUser() : "null"));
+    	return result;
+    }
+    
     @GetMapping
     public Map<String, Object> getComplaintList(
         @RequestParam("bldgIdParam") String bldgIdParam,
@@ -52,6 +75,7 @@ public class ComplaintRestController {
         @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
     ) {
         MemberVO member = principal.getRealUser();
+        
         SimpleSearch search = new SimpleSearch();
         search.setLoginMbrCd(member.getMbrCd()); // 로그인한 사용자 ID 설정
         search.setBldgId(bldgIdParam);
@@ -101,7 +125,7 @@ public class ComplaintRestController {
         // 결과 반환
         Map<String, Object> result = new HashMap<>();
         result.put("postList", postList);
-        result.put("pagination", pagingHtml);
+        result.put("pagination", pagingInfo);
         result.put("loginMbrCd", member.getMbrCd());  // 로그인한 사용자의 ID 포함
         result.put("isLandlord", isLandlord);  // 임대인 여부 포함
         return result;
