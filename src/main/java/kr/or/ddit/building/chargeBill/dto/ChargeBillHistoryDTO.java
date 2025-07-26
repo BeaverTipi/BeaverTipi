@@ -1,6 +1,12 @@
 package kr.or.ddit.building.chargeBill.dto;
 
-public class ChargeBillHistoryDTO {
+import java.io.Serializable;
+import java.time.LocalDate;
+
+import lombok.Data;
+
+@Data
+public class ChargeBillHistoryDTO implements Serializable{
 	public String chgbillChargeMonth;
 	public String rentalPtyId;
 	public String unitId;
@@ -17,5 +23,9 @@ public class ChargeBillHistoryDTO {
 	public String unitFlrNo;
 	public String unitRoom;
 	public String mbrNm;
+	
+	public LocalDate chgbillDueStartDate;
+	public LocalDate chgbillDueEndDate;
+	
 }
 

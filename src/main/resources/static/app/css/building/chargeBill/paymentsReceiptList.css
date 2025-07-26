@@ -1,0 +1,202 @@
+@charset "UTF-8";
+    body {
+      font-family: sans-serif;
+      font-size: 13px;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 22px;
+      margin-bottom: 10px;
+      margin-right: 135px;
+    }
+
+    .month-header {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 25px;
+      margin-right: 140px;
+    }
+
+    .filter-summary-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 10px;
+    }
+
+    .filter-left {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: nowrap;
+      margin-right: auto;
+    }
+
+    .filter-center {
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      gap: 15px;
+      margin-right: 0px; 
+    }
+
+    .filter-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: nowrap;
+      margin-left: auto;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .filter-group label {
+      font-weight: bold;
+    }
+
+    .filter-group select,
+    .filter-group input[type="month"],
+    .filter-group input[type="date"] {
+      padding: 5px;
+      font-size: 13px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    #bldgId {
+      width: 200px; /* ✅ 건물 선택 너비 늘림 */
+    }
+
+/* 공통 카드 스타일 */
+.summary-card {
+  padding: 15px 20px;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  font-size: 14px;
+  min-width: 140px;
+  flex: 1;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+
+}
+
+/* 개별 배경 색상 */
+.summary-card.orange {
+  background-color: #f79646; /* 청구서 현황 */
+}
+.summary-card.red {
+  background-color: #e74c3c; /* 미납 현황 */
+}
+.summary-card.blue {
+  background-color: #4aacc5; /* 수납 현황 */
+}
+.summary-card.purple {
+  background-color: #9b59b6; /* 연체 현황 */
+}
+
+/* 🖱 마우스 오버 시 버튼 느낌 효과 */
+.summary-card:hover {
+  background-color: rgba(123, 213, 132, 0.7); /* 아주 약간 밝아짐 */
+  color: #f2f2f2; /* 대비는 유지하면서 부드럽게 */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* 살짝 떠보이는 느낌 */
+  transform: translateY(-1px); /* 눌렀을 듯한 느낌 */
+}
+
+
+
+/* ✅ 클릭된 카드 강조 - 밑줄 효과 */
+.summary-card.active::after {
+  content: "";
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50%;
+  height: 2px;
+  background-color: white;
+  border-radius: 1px;
+}
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    th.sortable:hover {
+      background-color: #f2f2f2;
+    }
+
+    @media screen and (max-width: 768px) {
+      .filter-summary-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter-left,
+      .filter-center,
+      .filter-right {
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+    }
+    
+    /* ✅ 기본 페이지네이션 버튼 스타일 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 20px;
+  font-size: 15px;
+}
+
+.page-btn {
+  background: none;
+  border: none;
+  padding: 0 6px;
+  margin: 0;
+  font: inherit;
+  color: #333;
+  cursor: pointer;
+  border-radius: 0;
+  text-decoration: none;
+}
+
+.page-btn:hover {
+  text-decoration: underline;
+  color: #0076c0;
+}
+
+.page-btn.active {
+  font-weight: bold;
+  color: #0076c0;
+  border-bottom: 2px solid #0076c0;
+}
+
+.page-btn.nav-btn {
+  font-weight: bold;
+  color: #555;
+}

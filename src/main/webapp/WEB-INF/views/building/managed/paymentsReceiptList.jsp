@@ -4,256 +4,149 @@
 <head>
   <meta charset="UTF-8">
   <title>납부데이터 통합관리</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      font-size: 13px;
-      padding: 20px;
-    }
-
-    h2 {
-      text-align: center;
-      font-size: 22px;
-      margin-bottom: 10px;
-      margin-right: 10px;
-    }
-
-    .month-header {
-      text-align: center;
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 25px;
-      margin-right: 10px;
-    }
-
-    .filter-summary-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 60px;
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 0 10px;
-    }
-
-    .filter-left {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: nowrap;
-      margin-right: auto;
-    }
-
-    .filter-center {
-      display: flex;
-      justify-content: center;
-      align-items: stretch;
-      gap: 15px;
-      margin-right: 0px; 
-    }
-
-    .filter-right {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: nowrap;
-      margin-left: auto;
-    }
-
-    .filter-group {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      white-space: nowrap;
-    }
-
-    .filter-group label {
-      font-weight: bold;
-    }
-
-    .filter-group select,
-    .filter-group input[type="month"],
-    .filter-group input[type="date"] {
-      padding: 5px;
-      font-size: 13px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    #buildingFilter {
-      width: 200px; /* ✅ 건물 선택 너비 늘림 */
-    }
-
-    .summary-card {
-      padding: 15px 20px;
-      border-radius: 8px;
-      color: white;
-      font-weight: bold;
-      text-align: center;
-      font-size: 14px;
-      min-width: 140px;
-      flex: 1;
-      background-color: #f79646;
-    }
-
-    .summary-card.blue {
-      background-color: #4aacc5;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      margin-top: 15px;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: center;
-      cursor: pointer;
-    }
-
-    th.sortable:hover {
-      background-color: #f2f2f2;
-    }
-
-    @media screen and (max-width: 768px) {
-      .filter-summary-row {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .filter-left,
-      .filter-center,
-      .filter-right {
-        justify-content: center;
-        flex-wrap: wrap;
-        margin-top: 10px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="/app/css/building/chargeBill/paymentsReceiptList.css">
 </head>
 <body>
 
 <%
   java.time.LocalDate now = java.time.LocalDate.now();
-  String currentYearMonth = now.getYear() + "-" + String.format("%02d", now.getMonthValue());
 %>
 
 <h2>납부데이터 통합관리</h2>
-<div class="month-header" id="monthHeader">📅 <%= now.getYear() %>년 <%= now.getMonthValue() %>월 납부현황</div>
+<div class="month-header" id="monthHeader">
+  📅 <%= now.getYear() %>년 <%= now.getMonthValue() %>월 납부현황
+</div>
 
+<!-- 🔍 필터 및 요약 카드 -->
 <div class="filter-summary-row">
   <!-- 좌측 필터 -->
   <div class="filter-left">
     <div class="filter-group">
-      <label for="buildingFilter">건물:</label>
-      <select id="buildingFilter">
-        <option value="all">전체</option>
-        <option value="A동">A동</option>
-        <option value="B동">B동</option>
-      </select>
+      <label for="bldgId">건물:</label>
+      <select id="bldgId"><option value>전체</option></select>
     </div>
     <div class="filter-group">
-      <label for="roomFilter">호수:</label>
-      <select id="roomFilter">
-        <option value="all">전체</option>
-        <option value="101">101호</option>
-        <option value="201">201호</option>
-        <option value="301">301호</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label for="statusFilter">납부상태:</label>
-      <select id="statusFilter">
-        <option value="all">전체</option>
-        <option value="paid">납부완료</option>
-        <option value="unpaid">미납</option>
-      </select>
+      <label for="unitRoom">호수:</label>
+      <select id="unitRoom"><option value>전체</option></select>
     </div>
   </div>
 
-  <!-- 중앙 현황 카드 -->
-  <div class="filter-center">
-    <div class="summary-card">
-      청구서 현황<br>
-      <span id="billCount">-</span><br>
-      <span id="billAmount">-</span>
-    </div>
-    <div class="summary-card blue">
-      수납현황<br>
-      <span id="payCount">-</span><br>
-      <span id="payAmount">-</span>
-    </div>
-  </div>
+  <!-- 중앙 요약 카드 -->
+	<div class="summary-card orange" data-status="">청구서 현황<br>
+	  <span id="summaryTotalCount">-</span><br>
+	  <span id="summaryTotalAmount">-</span>
+	</div>
+	<div class="summary-card red" data-status="001">미납 현황<br>
+	  <span id="summaryUnpaidCount">-</span><br>
+	  <span id="summaryUnpaidAmount">-</span>
+	</div>
+	<div class="summary-card blue" data-status="002">수납 현황<br>
+	  <span id="summaryPaidCount">-</span><br>
+	  <span id="summaryPaidAmount">-</span>
+	</div>
+	<div class="summary-card purple" data-status="004">연체 현황<br>
+	  <span id="summaryLateCount">-</span><br>
+	  <span id="summaryLateAmount">-</span>
+	</div>
 
   <!-- 우측 날짜 필터 -->
   <div class="filter-right">
     <div class="filter-group">
-      <label for="monthPicker">청구월:</label>
-      <input type="month" id="monthPicker" value="<%= currentYearMonth %>" />
+      <label for="chgbillChargeMonth">청구월:</label>
+      <input type="month" id="chgbillChargeMonth" value="<%= now.getYear() %>-<%= String.format("%02d", now.getMonthValue()) %>" />
     </div>
     <div class="filter-group">
       <label>납기일 기간:</label>
-      <input type="date" id="dueStart" /> ~ <input type="date" id="dueEnd" />
+      <input type="date" id="chgbillDueStartDate" /> ~ <input type="date" id="chgbillDueEndDate" />
     </div>
   </div>
 </div>
-
+<!-- 📊 납부 테이블 -->
 <table id="paymentTable">
   <thead>
     <tr>
-      <th>No</th>
-      <th>건물명</th>
-      <th>층</th>
-      <th>호수</th>
-      <th>임차인명</th>
-      <th class="sortable">청구금액</th>
-      <th class="sortable">납부금액</th>
-      <th class="sortable">납부상태</th>
-      <th class="sortable">청구일</th>
-      <th class="sortable">납기일</th>
-      <th class="sortable">납부일</th>
-      <th>청구계좌</th>
+      <th>No</th><th>건물명</th><th>층</th><th>호수</th><th>임차인명</th>
+      <th class="sortable">청구금액</th><th class="sortable">납부금액</th>
+      <th class="sortable">납부상태</th><th class="sortable">청구일</th>
+      <th class="sortable">납기일</th><th class="sortable">납부일</th><th>청구계좌</th>
     </tr>
   </thead>
   <tbody>
     <!-- 동적 데이터 삽입 예정 -->
   </tbody>
 </table>
+<!-- 📎 페이지네이션 버튼 영역 -->
+<div class="pagination" id="paginationContainer"></div>
+
+
+<div class="modal">
+  <h2>청구 상세 정보</h2>
+
+  <!-- 기본 정보 -->
+  <div class="info-block">
+    <p><strong>건물명:</strong> ${item.bldgNm}</p>
+    <p><strong>호수:</strong> ${item.unitRoom}</p>
+    <p><strong>청구일:</strong> ${item.billDate}</p>
+    <p><strong>납기일:</strong> ${item.dueDate}</p>
+    <p><strong>완납일:</strong> ${item.paidDate || '-'}</p>
+    <p><strong>청구상태:</strong> ${item.status}</p>
+  </div>
+
+  <!-- 공용관리비 항목 -->
+  <div class="charge-section">
+    <h3>공용 관리비</h3>
+    <ul>
+      <li>청소비: ${cleanFee} 원</li>
+      <li>승강기 유지비: ${elevatorFee} 원</li>
+      <li>공용 전기료: ${publicElectricFee} 원</li>
+      <li>공용 수도료: ${publicWaterFee} 원</li>
+      <li>일반 운영비: ${operationFee} 원</li>
+      <li>경비 인건비: ${guardFee} 원</li>
+      <li>방역 소독비: ${disinfectionFee} 원</li>
+      <li>소모품비: ${supplyFee} 원</li>
+      <li>소방 설비 유지비: ${fireSafetyFee} 원</li>
+      <li>보안 시스템 유지비: ${securityFee} 원</li>
+    </ul>
+  </div>
+
+  <!-- 개인 에너지 사용량 -->
+  <div class="energy-section">
+    <h3>에너지 사용 내역</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>항목</th><th>사용량</th><th>비용</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>가스</td><td>${gasUsage} ㎥</td><td>${gasFee} 원</td>
+        </tr>
+        <tr>
+          <td>수도</td><td>${waterUsage} ㎥</td><td>${waterFee} 원</td>
+        </tr>
+        <tr>
+          <td>전기</td><td>${electricUsage} kWh</td><td>${electricFee} 원</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 청구액 및 납부액 -->
+  <div class="amount-section">
+    <p><strong>청구액:</strong> ${item.totalCharge} 원</p>
+
+    <div class="editable-field">
+      <label for="paidAmount"><strong>납부액:</strong></label>
+      <input type="number" id="paidAmount" value="${item.paidAmount}" readonly>
+      <button onclick="toggleEdit(this)">수정</button>
+    </div>
+  </div>
+</div>
 
 <script>
-  document.querySelectorAll("th.sortable").forEach((header, i) => {
-    header.addEventListener("click", () => {
-      const table = document.getElementById("paymentTable");
-      const rows = Array.from(table.tBodies[0].rows);
-      const asc = header.dataset.order !== "asc";
-
-      rows.sort((a, b) => {
-        let v1 = a.cells[i].innerText;
-        let v2 = b.cells[i].innerText;
-        const isNumber = !isNaN(parseFloat(v1)) && !isNaN(parseFloat(v2));
-        if (isNumber) {
-          v1 = parseFloat(v1);
-          v2 = parseFloat(v2);
-        }
-        return (v1 > v2 ? 1 : v1 < v2 ? -1 : 0) * (asc ? 1 : -1);
-      });
-
-      rows.forEach(r => table.tBodies[0].appendChild(r));
-      document.querySelectorAll("th.sortable").forEach(th => delete th.dataset.order);
-      header.dataset.order = asc ? "asc" : "desc";
-    });
-  });
-
-  document.getElementById("monthPicker").addEventListener("change", function () {
-    const [year, monthStr] = this.value.split("-");
-    const yearNum = parseInt(year, 10);
-    const monthNum = parseInt(monthStr, 10);
-    document.getElementById("monthHeader").innerText = "📅 " + yearNum + "년 " + monthNum + "월 납부현황";
-  });
+  window.rentalPtyId = "${rentalPtyId}";
 </script>
-
+<script src="/app/js/building/chargeBill/paymentsReceiptList.js"></script>
 </body>
 </html>

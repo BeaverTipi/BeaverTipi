@@ -1,18 +1,26 @@
 package kr.or.ddit.building.chargeBill.service;
 
 import java.util.List;
+import java.util.Map;
 
 import kr.or.ddit.building.chargeBill.dto.ChargeBillHistoryDTO;
+import kr.or.ddit.building.chargeBill.dto.EnergyUsageDTO;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.UnitVO;
 
 public interface PaymentsReceiptService {
 
-	public List<ChargeBillHistoryDTO> getChargeBillHistory(ChargeBillHistoryDTO cbhDTO);
-	
-	public String getRentalPtyId(String mbrCd);
-	
-	public List<BuildingVO> getOwnBuildings(String rentalPtyId);
-	
-	public List<UnitVO> getUnits(String bldgId);
+	public List<Map<String, Object>> getMonthlyChargeBillSummary(String rentalPtyId, String chgbillChargeMonth);
+
+    public int getChargeBillHistoryCount(ChargeBillHistoryDTO cbhDTO);  // 페이징용
+
+    public List<ChargeBillHistoryDTO> getChargeBillHistoryPaged(ChargeBillHistoryDTO cbhDTO, int startRow, int endRow);
+
+    public String getRentalPtyId(String mbrCd);
+
+    public List<BuildingVO> getOwnBuildings(String rentalPtyId);
+
+    public List<UnitVO> getUnits(String bldgId, String rentalPtyId);
+    
+    public List<EnergyUsageDTO> getEnergyUsage(ChargeBillHistoryDTO cbhDTO);
 }

@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function initializeSocket() {
   try {
-    const socket = new WebSocket("ws://" + location.host + "/ws/chatList");
+    const socket = new WebSocket("wss://" + location.host + "/ws/chatList");
 
     socket.onmessage = (event) => {
       const msg = JSON.parse(event.data);

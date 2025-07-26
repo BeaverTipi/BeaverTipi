@@ -13,7 +13,7 @@
 const residentChatRoomId = window.chatInfo.residentChatRoomId;
 const loginMbrCd = window.chatInfo.loginMbrCd;
 const bldgId = window.chatInfo.bldgId;
-const socket = new WebSocket("ws://" + location.host + "/ws/chat?residentChatRoomId=" + residentChatRoomId);
+const socket = new WebSocket("wss://" + location.host + "/ws/chat?residentChatRoomId=" + residentChatRoomId);
 
     socket.onopen = function () {
       console.log(" WebSocket 연결 성공");

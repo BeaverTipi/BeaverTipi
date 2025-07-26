@@ -20,14 +20,14 @@ public class WebSocketConfig implements WebSocketConfigurer {
 	private final BrokerChatHandler brokerChatHandler;
     private final WebSocketHandler webSocketHandler;
     private final ChatListSocketHandler chatListSocketHandler;
-    private final ContractExpireWebSocketHandler contractExpireWebSocketHandler; // ✅ 추가
+    private final ContractExpireWebSocketHandler contractExpireWebSocketHandler; 
     private final ContractSignerWebSocketHandler contractSignerWebSocketHandler;
     
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocketHandler, "/ws/chat");
-        registry.addHandler(chatListSocketHandler, "/ws/chatList");
-        registry.addHandler(brokerChatHandler, "/ws/brokerChat");
+        registry.addHandler(webSocketHandler, "/ws/chat").setAllowedOrigins("*"); ;
+        registry.addHandler(chatListSocketHandler, "/ws/chatList").setAllowedOrigins("*"); ;
+        registry.addHandler(brokerChatHandler, "/ws/brokerChat").setAllowedOrigins("*"); ;
         registry.addHandler(contractExpireWebSocketHandler, "/ws/contractExpire").setAllowedOrigins("*"); // ^0^
         registry.addHandler(contractSignerWebSocketHandler, "/ws/signers").setAllowedOrigins("*"); // ^0^
     }

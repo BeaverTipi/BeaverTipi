@@ -9,7 +9,7 @@
  * </pre>
  */
 const { crId, loginMbrCd } = window.chatInfo;
-const socket = new WebSocket("ws://" + location.host + "/ws/brokerChat?crId=" + crId);
+const socket = new WebSocket("wss://" + location.host + "/ws/brokerChat?crId=" + crId);
 
 socket.onopen = () => console.log("✅ WebSocket 연결 성공");
 

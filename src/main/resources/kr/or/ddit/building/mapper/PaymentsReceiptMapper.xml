@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.building.mapper.PaymentsReceiptMapper">
-<select id="selectChargeBillHistory" resultType="kr.or.ddit.building.chargeBill.dto.ChargeBillHistoryDTO">
-	select a.*, c.BLDG_NM, b.UNIT_FLR_NO, b.UNIT_ROOM, d.MBR_NM
-	from charge_bill a
-	inner join unit b on (a.unit_id = b.unit_id)
-	inner join building c on (b.bldg_id = c.bldg_id)
-	inner join member d on (b.mbr_cd = d.mbr_cd)
-	where a.rental_pty_id = #{rentalPtyId}
+<select id="selectMonthlyChargeBillSummary" resultType="map">
+SELECT 
+  chgbill_status,
+  COUNT(*) AS count,
+  SUM(chgbill_amount) AS amount
+FROM charge_bill
+WHERE rental_pty_id = #{rentalPtyId}
+  AND chgbill_charge_month = #{chgbillChargeMonth}
+GROUP BY chgbill_status
 </select>
 
 <select id="selectRentalPtyId" resultType ="string">
@@ -26,6 +28,104 @@
 select unit_id, unit_room
 from unit
 where bldg_id = #{bldgId}
+and rental_pty_id = #{rentalPtyId}
+</select>
+
+
+
+<!-- 페이지네이션 처리 영역 -->
+
+<select id="selectChargeBillHistoryCount" resultType="int">
+  select count(*)
+  from charge_bill a
+  inner join unit b on (a.unit_id = b.unit_id)
+  inner join building c on (b.bldg_id = c.bldg_id)
+  inner join member d on (b.mbr_cd = d.mbr_cd)
+  where a.rental_pty_id = #{rentalPtyId}
+  <if test="bldgId != null and bldgId !=''">
+    AND b.bldg_id = #{bldgId}
+  </if>
+  <if test="unitRoom != null and unitRoom != ''">
+    AND b.unit_room = #{unitRoom}
+  </if>
+  <if test="chgbillStatus != null and chgbillStatus != ''">
+    AND a.chgbill_status = #{chgbillStatus}
+  </if>
+  <if test="chgbillChargeMonth != null and chgbillChargeMonth != ''">
+    AND a.chgbill_charge_month = #{chgbillChargeMonth}
+  </if>
+  <if test="chgbillDueStartDate != null and chgbillDueEndDate != null">
+	 AND TO_DATE(a.chgbill_due_date, 'yyyy-mm-dd')
+	     BETWEEN #{chgbillDueStartDate} AND #{chgbillDueEndDate}
+  </if>
+</select>
+
+<select id="selectChargeBillHistoryPaged"
+        resultType="kr.or.ddit.building.chargeBill.dto.ChargeBillHistoryDTO">
+  <![CDATA[
+    SELECT * FROM (
+      SELECT inner_query.*, ROWNUM rn
+      FROM (
+        SELECT a.*, c.BLDG_NM, b.UNIT_FLR_NO, b.UNIT_ROOM, d.MBR_NM
+        FROM charge_bill a
+        INNER JOIN unit b ON (a.unit_id = b.unit_id)
+        INNER JOIN building c ON (b.bldg_id = c.bldg_id)
+        INNER JOIN member d ON (b.mbr_cd = d.mbr_cd)
+        WHERE 1=1
+  ]]>
+    <if test="cbh.rentalPtyId != null">
+      <![CDATA[
+        AND a.rental_pty_id = #{cbh.rentalPtyId}
+      ]]>
+    </if>
+    <if test="cbh.bldgId != null and cbh.bldgId !=''">
+      <![CDATA[
+        AND b.bldg_id = #{cbh.bldgId}
+      ]]>
+    </if>
+    <if test="cbh.unitRoom != null and cbh.unitRoom != ''">
+      <![CDATA[
+        AND b.unit_room = #{cbh.unitRoom}
+      ]]>
+    </if>
+    <if test="cbh.chgbillStatus != null and cbh.chgbillStatus != ''">
+      <![CDATA[
+        AND a.chgbill_status = #{cbh.chgbillStatus}
+      ]]>
+    </if>
+    <if test="cbh.chgbillChargeMonth != null and cbh.chgbillChargeMonth != ''">
+      <![CDATA[
+        AND a.chgbill_charge_month = #{cbh.chgbillChargeMonth}
+      ]]>
+    </if>
+    <if test="cbh.chgbillDueStartDate != null and cbh.chgbillDueEndDate != null">
+      <![CDATA[
+        AND TO_DATE(a.chgbill_due_date, 'yyyy-mm-dd')
+            BETWEEN #{cbh.chgbillDueStartDate} AND #{cbh.chgbillDueEndDate}
+      ]]>
+    </if>
+  <![CDATA[
+        ORDER BY a.chgbill_due_date DESC
+      ) inner_query
+      WHERE ROWNUM <= #{endRow}
+    )
+    WHERE rn >= #{startRow}
+  ]]>
+</select>
+
+<select id="selectIntegratedMgmtFee" resultType="kr.or.ddit.building.chargeBill.dto.IntegratedMgmtFeeDTO">
+select *
+from integrated_management_fee
+where int_mna_fee_cd = #{chgbillChargeMonth}
+and unit_id=#{unitId}
+
+</select>
+
+<select id="selectEnergyUsage" resultType ="kr.or.ddit.building.chargeBill.dto.EnergyUsageDTO">
+select *
+from household_energy_monthly_usage
+where dum_month = #{chgbillChargeMonth}
+and unit_id=#{unitId}
 </select>
 
 
