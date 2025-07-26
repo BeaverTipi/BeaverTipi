@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page isELIgnored="false" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
@@ -25,6 +26,12 @@
     var contextPath = '${pageContext.request.contextPath}';
     // PDF.js worker 소스 경로 설정
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    
+    
+   
+    
+   
+
 </script>
 
 <div class="container mt-5">
@@ -40,7 +47,6 @@
             <div class="card-body">
                 <div class="form-group">
                     <label for="brdTitlNm">신고 제목 <span class="text-danger">*</span></label>
-                    <%-- ReportVO는 BoardVO를 상속하므로 brdTitlNm 필드 직접 사용 --%>
                     <form:input path="brdTitlNm" class="form-control" id="brdTitlNm" placeholder="신고 제목을 입력하세요" required="true"/>
                     <form:errors path="brdTitlNm" cssClass="text-danger"/>
                 </div>
@@ -59,7 +65,8 @@
                     <label for="rptCode">신고 유형 <span class="text-danger">*</span></label>
                     <%-- 신고 유형이 이미 설정되어 있다면 disabled 및 사용자에게 표시 --%>
                     <c:set var="isRptCodePredefined" value="${not empty reportVO.rptCode}"/>
-                    <form:select path="rptCode" class="form-control" id="rptCode" required="true" ${isRptCodePredefined ? 'disabled' : ''}>
+                    
+                    <form:select path="rptCode" class="form-control" id="rptCode" required="true">					    
                         <form:option value="" label="-- 신고 유형 선택 --"/>
                         <form:option value="MEMB" label="회원"/>
                         <form:option value="LSTG" label="매물"/>
@@ -71,12 +78,13 @@
                     </c:if>
                 </div>
                 <div class="form-group">
-                    <label for="rptTargetId">신고 대상 ID/게시글 번호 <span class="text-danger">*</span></label>
-                    <%-- 신고 대상 ID가 이미 설정되어 있다면 readonly 및 사용자에게 표시 --%>
+                    <label for="rptTargetId">신고 매물 ID<span class="text-danger">*</span></label>
                     <c:set var="isRptTargetIdPredefined" value="${not empty reportVO.rptTargetId}" />
-                    <form:input path="rptTargetId" class="form-control" id="rptTargetId" 
-                                placeholder="신고 대상의 ID 또는 게시글 번호를 입력하세요" 
-                                required="true" ${isRptTargetIdPredefined ? 'readonly' : ''}/>
+   
+                    <form:input path="rptTargetId" class="form-control" id="rptTargetId"
+				                placeholder="신고 대상의 ID를 입력하세요"
+				                required="true"/>
+    
                     <form:errors path="rptTargetId" cssClass="text-danger"/>
                     <c:if test="${isRptTargetIdPredefined}">
                         <small class="form-text text-muted">신고 대상 ID가 자동으로 입력되었습니다.</small>
@@ -94,7 +102,7 @@
                     <%-- multiple 속성을 추가하여 여러 파일 선택 가능하도록 함 --%>
                     <input type="file" class="form-control-file" id="attachFiles" name="attachFiles" multiple>
                     <h4></h4>
-                    <small class="form-text text-muted">신고 내용을 뒷받침할 이미지, PDF 등 증거 자료를 첨부해주세요.<br>최대 5개 파일, 각 파일 최대 10MB.</small>
+                    <small class="form-text text-muted">신고 내용을 뒷받침할 이미지, PDF 등 증거 자료를 첨부해주세요.</small>
                 </div>
 
                 <div class="file-preview-area mt-3">
@@ -128,6 +136,17 @@
         </div>
     </form:form>
 </div>
+
+<script>
+$(function(){
+	var isRptCodePredefined = ${isRptCodePredefined};
+	$("#rptCode").prop("disabled", isRptCodePredefined);
+	
+	var isRptTargetIdPredefined = ${isRptTargetIdPredefined};
+    $("#rptTargetId").prop("readonly", isRptTargetIdPredefined);
+}) 
+</script>
+
 
 <script src="${pageContext.request.contextPath}/app/js/main/report/createReport.js"></script>
 </body>

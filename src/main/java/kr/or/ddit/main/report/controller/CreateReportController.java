@@ -61,6 +61,8 @@ public class CreateReportController {
         }
 
         model.addAttribute("reportVO", reportVO); // ReportVO를 modelAttribute로 사용
+        
+        System.out.println("DEBUG: reportVO.rptTargetId = " + reportVO.getRptTargetId());
         return "main/report/createReport";
     }
 
