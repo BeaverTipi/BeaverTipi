@@ -37,6 +37,14 @@
       max-width: 600px;
       border-radius: 8px;
     }
+    
+    #warningIcon {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    margin-left: 220px;
+    margin-top : 5px;
+    }
 
     .message {
       margin: 5px 0;

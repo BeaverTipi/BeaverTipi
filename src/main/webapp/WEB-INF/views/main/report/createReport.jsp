@@ -58,16 +58,15 @@
                 <div class="form-group">
                     <label for="rptCode">신고 유형 <span class="text-danger">*</span></label>
                     <%-- 신고 유형이 이미 설정되어 있다면 disabled 및 사용자에게 표시 --%>
-                    <c:set var="isRptCodePredefined" value="${not empty reportVO.rptCode}" />
+                    <c:set var="isRptCodePredefined" value="${not empty reportVO.rptCode}"/>
                     <form:select path="rptCode" class="form-control" id="rptCode" required="true" ${isRptCodePredefined ? 'disabled' : ''}>
-                        <form:option value="" label="-- 신고 유형 선택 --" />
+                        <form:option value="" label="-- 신고 유형 선택 --"/>
                         <form:option value="MEMB" label="회원"/>
                         <form:option value="LSTG" label="매물"/>
                     </form:select>
                     <form:errors path="rptCode" cssClass="text-danger"/>
                     <c:if test="${isRptCodePredefined}">
                         <small class="form-text text-muted">신고 유형이 자동으로 선택되었습니다.</small>
-                        <%-- disabled 필드는 폼 제출 시 전송되지 않으므로 hidden 필드를 추가하여 값을 넘겨줍니다. --%>
                         <input type="hidden" name="rptCode" value="${reportVO.rptCode}"/>
                     </c:if>
                 </div>
@@ -130,7 +129,6 @@
     </form:form>
 </div>
 
-<%-- JavaScript 파일 로드 (광고 폼과 동일한 로직을 재사용하거나, 신고 전용으로 수정) --%>
 <script src="${pageContext.request.contextPath}/app/js/main/report/createReport.js"></script>
 </body>
 </html>

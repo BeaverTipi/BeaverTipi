@@ -2,6 +2,7 @@ package kr.or.ddit.admin.businessads.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.inject.Inject;
@@ -17,10 +18,10 @@ import lombok.extern.slf4j.Slf4j; // SLF4J 로거를 사용하기 위한 import 
 @Service
 public class BusinessAdsServiceImpl implements BusinessAdsService {
 
-    @Inject
+	@Autowired
     private BusinessAdsMapper businessAdsMapper;
 
-    @Inject
+	@Autowired
     private FileService fileService;
     
     private static final String AD_FILE_SOURCE_REF = "AD_BOARD";

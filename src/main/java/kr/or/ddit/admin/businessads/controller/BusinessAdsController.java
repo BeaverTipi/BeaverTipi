@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("")
 public class BusinessAdsController {
 
-	@Inject
+	@Autowired
 	private BusinessAdsService businessAdsService;
 
 	@GetMapping("/admin/businessAds/businessAdsList") // 기존 목록 조회

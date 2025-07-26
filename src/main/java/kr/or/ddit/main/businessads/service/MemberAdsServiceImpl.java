@@ -2,6 +2,7 @@ package kr.or.ddit.main.businessads.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; // 트랜잭션 처리를 위해 임포트
 import org.springframework.web.multipart.MultipartFile;
@@ -18,10 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class MemberAdsServiceImpl implements MemberAdsService {
 
-    @Inject
+	@Autowired
     private MemberAdsMapper memberAdsMapper; // MemberAdsMapper 주입
 
-    @Inject
+	@Autowired
     private FileService fileService; // FileService 주입
 
     // 광고 파일의 sourceRef 값 (FileVO의 fileSourceRef 필드에 저장될 값)

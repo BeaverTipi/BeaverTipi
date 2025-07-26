@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List; // List 임포트 추가
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication; // Authentication 임포트
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -32,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/main/report")
 public class CreateReportController {
 
-    @Inject
+    @Autowired
     private CreateReportService createReportService;
 
     

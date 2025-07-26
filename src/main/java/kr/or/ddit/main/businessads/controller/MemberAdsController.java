@@ -2,6 +2,7 @@ package kr.or.ddit.main.businessads.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication; // 이 부분을 확인
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -28,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/member/ads") // 회원용 광고 요청 경로
 public class MemberAdsController {
 
-    @Inject
+	@Autowired
     private MemberAdsService memberAdsService; // 회원용 광고 서비스 주입
 
     /**

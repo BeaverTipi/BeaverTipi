@@ -21,6 +21,7 @@
     <div class="header">
       <img src="/volt/assets/img/brand/dark.png" class="chatimg" alt="Logo">
       <button id="leaveChatRoomBtn" class="sidebar-toggle-btn-small">🚪</button>
+      <img id="warningIcon" src="/volt/assets/img/icons/warning-svgrepo-com.svg" alt="경고 아이콘">
     </div>
 
     <div id="chatbox">

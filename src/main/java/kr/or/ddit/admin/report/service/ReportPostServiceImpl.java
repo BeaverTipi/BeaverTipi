@@ -21,10 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class ReportPostServiceImpl implements ReportPostService {
 
-    @Inject
+	@Autowired
     private ReportPostMapper reportPostMapper;
 
-    @Inject
+	@Autowired
     private FileMapper fileMapper;
 
     @Override

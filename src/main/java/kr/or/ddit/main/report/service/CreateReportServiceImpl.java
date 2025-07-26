@@ -2,6 +2,7 @@ package kr.or.ddit.main.report.service;
 
 import java.util.List; // List 임포트 추가
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile; // MultipartFile 임포트
@@ -18,10 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class CreateReportServiceImpl implements CreateReportService {
 
-    @Inject
+	@Autowired
     private CreateReportMapper createReportMapper;
 
-    @Inject
+	@Autowired
     private FileService fileService; // FileService 주입 - 광고 요청 서비스와 동일
 
     // 신고 관련 파일의 sourceRef
