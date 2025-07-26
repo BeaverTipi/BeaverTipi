@@ -11,7 +11,7 @@ import kr.or.ddit.vo.FileVO;
 @Mapper
 public interface BrokerNameCardMapper {
 
-    // 1. 회원별 명함 리스트 조회
+    // 1. 회원 리스트
     List<FileVO> selectNameCardListByMember(String mbrCd);
 
     // 2. 명함 이미지 업로드
@@ -28,6 +28,10 @@ public interface BrokerNameCardMapper {
 
     // 새 대표명함 지정
     int setMainNameCard(@Param("nameCardId") String nameCardId, @Param("mbrCd") String mbrCd);
+    
+    //파일 가져올꺼얌
+    FileVO selectIntroCardByMember(@Param("mbrCd") String mbrCd, @Param("docTypeCd") String docTypeCd);
+
     
     
 }

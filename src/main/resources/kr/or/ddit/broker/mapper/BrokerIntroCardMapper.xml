@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kr.or.ddit.broker.mapper.BrokerIntroCardMapper">
 
-  <!-- 1. 소개카드 단건 조회 (가장 최근 등록) -->
-  <select id="selectIntroCardByMember" parameterType="string" resultType="kr.or.ddit.vo.FileVO">
+  <!-- 회원별 인트로카드 단건 조회 (최신) -->
+  <select id="selectIntroCardByMember" parameterType="map" resultType="kr.or.ddit.vo.FileVO">
     SELECT *
       FROM FILES
      WHERE FILE_SOURCE_REF = 'BROKER_INTRO'
        AND FILE_SOURCE_ID = #{mbrCd}
-       AND DOC_TYPE_CD = #{docTypeCd}  <!-- DESC_{mbrCd} 형식 -->
+       AND DOC_TYPE_CD = #{docTypeCd}
      ORDER BY REG_DTM DESC
      FETCH FIRST 1 ROWS ONLY
   </select>
 
-  <!-- 2. 소개카드 이미지 저장 (INSERT) -->
-  <insert id="insertIntroCardFile" parameterType="kr.or.ddit.vo.FileVO">
+  <!-- 인트로카드 이미지 저장 -->
+  <insert id="insertIntroCardFile" parameterType="kr.or.ddit.vo.FileVO" useGeneratedKeys="true" keyProperty="fileId">
     INSERT INTO FILES (
       FILE_ID, FILE_ATTACH_SEQ, FILE_SOURCE_REF, FILE_SOURCE_ID,
       FILE_ORIGINALNAME, FILE_SAVEDNAME, FILE_MIME, FILE_DIR,
@@ -27,14 +28,40 @@
     )
   </insert>
 
-  <!-- 3. 소개카드 이미지 삭제 -->
+  <!-- 인트로카드 이미지 삭제 -->
   <delete id="deleteIntroCardFile" parameterType="map">
     DELETE FROM FILES
      WHERE FILE_ID = #{fileId}
        AND FILE_ATTACH_SEQ = #{fileAttachSeq}
        AND FILE_SOURCE_REF = 'BROKER_INTRO'
   </delete>
+  
+  <select id="selectFile" parameterType="string" resultType="kr.or.ddit.vo.FileVO">
+    SELECT *
+      FROM FILES
+     WHERE FILE_ID = #{fileId}
+</select>
 
 
+
+<delete id="deleteFileById">
+    DELETE FROM FILES WHERE FILE_ID = #{fileId}
+</delete>
+<update id="updateFile" >
+UPDATE FILES
+SET
+	FILE_DIR = #{fileDir}
+	, FILE_SOURCE_ID = #{fileSourceId}
+	, FILE_ATTACH_SEQ = #{fileAttachSeq}
+	, FILE_SOURCE_REF = #{fileSourceRef}
+	, FILE_SAVEDNAME = #{fileSavedname}
+	, FILE_ORIGINALNAME = #{fileOriginalname}
+	, FILE_MIME = #{fileMime}
+	, FILE_SIZE = #{fileSize}
+	, DOC_TYPE_CD = #{docTypeCd}
+	, FILE_PATH_URL = #{filePathUrl}
+	, REG_DTM = #{regDtm}
+WHERE FILE_ID = #{fileId}
+</update>
 
 </mapper>

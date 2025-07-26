@@ -1,119 +1,200 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>가상계좌</title>
-  <link rel="stylesheet" href="/app/css/building/main.css">
+  <title>가상계좌 관리</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #f8fbfe;
       padding: 30px;
     }
 
     h2 {
-      margin-bottom: 10px;
-    }
-
-    .notice {
-      background-color: #f9f9f9;
-      border-left: 4px solid #ccc;
-      padding: 15px;
-      font-size: 14px;
       margin-bottom: 20px;
-      line-height: 1.6;
-    }
-
-    .btn-group {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-
-    .btn {
-      padding: 8px 16px;
-      font-size: 14px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .btn-blue {
-      background-color: #00aaff;
-      color: white;
-    }
-
-    .btn-outline {
-      border: 1px solid #ccc;
-      background-color: white;
+      font-size: 24px;
       color: #333;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
+      background-color: white;
+      margin-top: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     th, td {
       border: 1px solid #ddd;
-      padding: 10px;
+      padding: 12px;
       text-align: center;
+      font-size: 14px;
     }
 
     thead {
       background-color: #f2f2f2;
     }
 
-    .empty-message {
-      text-align: center;
-      color: #888;
-      padding: 30px 0;
+    .delete-btn {
+      float: right;
+      margin-top: 15px;
+      background-color: #e74c3c;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
 
-    .count-text {
-      margin-bottom: 10px;
+    .add-button {
+      float: right;
+      margin-top: 15px;
+      background-color: #00aaff;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .empty-message {
+      text-align: center;
+      padding: 30px;
+      color: #888;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 400px;
+    }
+
+    .modal-content input, .modal-content select {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 8px;
       font-size: 14px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .close {
+      float: right;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    #detailModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    #detailContent {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 400px;
     }
   </style>
 </head>
 <body>
 
-  <h2>가상계좌</h2>
+<h2>가상계좌 관리</h2>
 
-  <div class="notice">
-    <p>① 등록 절차 : 출금계좌 등록 → 가상계좌 신청 → 결제정보 심사 → 가상계좌 사용 승인 → 건물 연동</p>
-    <p>② 동일한 가상계좌는 결제기관(웰컴페이먼츠)에서 위탁발급됩니다.</p>
-    <p>③ 승인 후 가상계좌 관리자페이지(<a href="https://with.welcomefn.com/with" target="_blank">https://with.welcomefn.com/with</a>)에 로그인 가능합니다. (사전 비밀번호는 ID와 동일)</p>
-    <p>④ 가상계좌 삭제 시 유의 : 가상계좌 문서체크 실패, 테스트 이외로 마감으로 인한 자동해제, 건물 연동 해제, 임의마감 등으로 종료</p>
+<button class="add-button" onclick="openModal()">가상계좌 발급</button>
+
+<div id="emptyMessage" class="empty-message" style="display: none;">
+  등록된 가상계좌가 없습니다.
+</div>
+
+<table id="accountTable" style="display: none;">
+  <thead>
+    <tr>
+      <th>은행명</th>
+      <th>계좌번호</th>
+      <th>예금주</th>
+      <th>결제금액</th>
+      <th>만료일</th>
+      <th>요청방식</th>
+      <th>정산상태</th>
+      <th>관리</th>
+    </tr>
+  </thead>
+  <tbody id="vaTableBody"></tbody>
+</table>
+
+<div class="modal" id="accountModal" style="display:none;">
+  <div class="modal-content" style="position: relative; padding: 30px; width: 400px;">
+    <span class="close" onclick="closeModal()" style="position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer;">&times;</span>
+    <h3 style="margin-top: 0;">가상계좌 등록</h3>
+    <form id="vaForm" method="post" action="/virtualAccount/register">
+      <label>예금주</label>
+      <input type="text" name="customerName" required maxlength="20" style="width:100%; padding: 8px; margin-bottom: 10px;" />
+
+      <label>금액</label>
+      <input type="number" name="virtualAccountAmount" required min="1000" style="width:100%; padding: 8px; margin-bottom: 10px;" />
+
+      <label>만료일</label>
+      <input type="date" name="dueDate" required style="width:100%; padding: 8px; margin-bottom: 10px;" />
+
+      <label>은행</label>
+      <select name="bankCode" required style="width:100%; padding: 8px; margin-bottom: 10px;">
+        <option value="" disabled selected>은행 선택</option>
+        <option value="KOOKMIN">국민은행</option>
+        <option value="SHINHAN">신한은행</option>
+        <option value="WOORI">우리은행</option>
+        <option value="NONGHYEOP">NH농협</option>
+      </select>
+
+      <label>결제항목</label>
+      <select name="accountType" required style="width:100%; padding: 8px; margin-bottom: 10px;">
+        <option value="" disabled selected>-- 선택 --</option>
+        <option value="SUBSCRIPTION">정기구독</option>
+        <option value="MONTHLY">월세/관리비</option>
+        <option value="ONETIME">단건결제</option>
+      </select>
+
+      <input type="hidden" name="mbrCd" value="${loginMember.mbrCd}" />
+
+      <div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 20px;">
+        <button type="button" class="delete-btn" onclick="closeModal()" style="flex:1;">취소</button>
+        <button type="submit" class="add-button" style="flex:1; padding: 10px;">등록</button>
+      </div>
+    </form>
   </div>
+</div>
 
-  <div class="count-text">출금계좌 등록: <strong>0</strong>개 출금계좌 승인 완료</div>
+<!-- 상세보기할거임 -->
+<div id="detailModal">
+  <div id="detailContent"></div>
+</div>
 
-  <div class="btn-group">
-    <button class="btn btn-blue">출금계좌 추가</button>
-    <button class="btn btn-outline">가상계좌 삭제 자세히 보기</button>
-  </div>
-
-  <table>
-    <thead>
-      <tr>
-        <th>금융사명<br>(계좌구분)</th>
-        <th>출금계좌번호</th>
-        <th>예금주명</th>
-        <th>사업자번호</th>
-        <th>승인여부</th>
-        <th>관리자 ID</th>
-        <th>가상계좌 정보발송</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td colspan="7" class="empty-message">가상계좌 목록이 없습니다.</td>
-      </tr>
-    </tbody>
-  </table>
+<script src="/app/js/building/virtualAccount/virtualAccount.js"></script>
 
 </body>
 </html>

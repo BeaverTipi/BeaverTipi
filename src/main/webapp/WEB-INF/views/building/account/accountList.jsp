@@ -187,7 +187,12 @@
 	    </form>
 	  </div>
 	</div>
-
+		<!-- 상세보기 모달 -->
+		<div id="detailModal" class="modal" style="display:none;">
+		  <div class="modal-content" id="detailContent">
+		    <!-- 상세정보는 JS에서 동적으로 채워짐 -->
+		  </div>
+		</div>
 <script>
 	function openModal() {
 		  document.getElementById("accountModal").style.display = "flex";

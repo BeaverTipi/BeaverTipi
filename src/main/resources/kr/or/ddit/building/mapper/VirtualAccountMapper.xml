@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.ddit.building.mapper.VirtualAccountMapper">
+
+    <!-- 가상계좌 등록 -->
+    <insert id="insertVirtualAccount" parameterType="kr.or.ddit.vo.VirtualAccountVO">
+        INSERT INTO VIRTUAL_ACCOUNT (
+            VIRTUAL_ACCOUNT_ID, ACCOUNT_TYPE, ACCOUNT_NUMBER, BANK_CODE,
+            CUSTOMER_NAME, DUE_DATE, EXPIRED, SETTLEMENT_STATUS, SECRET, MBR_CD, VIRTUAL_ACCOUNT_AMOUNT
+        ) VALUES (
+            #{virtualAccountId}, #{accountType}, #{accountNumber}, #{bankCode},
+            #{customerName}, #{dueDate}, #{expired}, #{settlementStatus}, #{secret}, #{mbrCd}, #{virtualAccountAmount}
+        )
+    </insert>
+
+  <select id="selectVirtualAccountListByMember" parameterType="string" resultType="kr.or.ddit.vo.VirtualAccountVO">
+    SELECT
+      VIRTUAL_ACCOUNT_ID        AS virtualAccountId,
+	  ACCOUNT_TYPE              AS accountType,
+	  ACCOUNT_NUMBER            AS accountNumber,
+	  BANK_CODE                 AS bankCode,
+	  CUSTOMER_NAME             AS customerName,
+	  DUE_DATE                  AS dueDate,
+	  EXPIRED                   AS expired,
+	  SETTLEMENT_STATUS         AS settlementStatus,
+	  SECRET                    AS secret,
+	  MBR_CD                    AS mbrCd,
+	  VIRTUAL_ACCOUNT_AMOUNT    AS virtualAccountAmount
+    FROM VIRTUAL_ACCOUNT
+    WHERE MBR_CD = #{mbrCd}
+    ORDER BY DUE_DATE DESC
+  </select>
+
+    <!-- 단건조회 -->
+    <select id="selectVirtualAccountById" parameterType="string" resultType="kr.or.ddit.vo.VirtualAccountVO">
+        SELECT * FROM VIRTUAL_ACCOUNT WHERE VIRTUAL_ACCOUNT_ID = #{virtualAccountId}
+    </select>
+
+    <!-- 삭제 -->
+    <delete id="deleteVirtualAccount" parameterType="string">
+        DELETE FROM VIRTUAL_ACCOUNT WHERE VIRTUAL_ACCOUNT_ID = #{virtualAccountId}
+    </delete>
+</mapper>
