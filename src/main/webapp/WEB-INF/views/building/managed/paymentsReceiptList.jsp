@@ -56,7 +56,7 @@
       <input type="month" id="chgbillChargeMonth" value="<%= now.getYear() %>-<%= String.format("%02d", now.getMonthValue()) %>" />
     </div>
     <div class="filter-group">
-      <label>납기일 기간:</label>
+      <label>납기일자:</label>
       <input type="date" id="chgbillDueStartDate" /> ~ <input type="date" id="chgbillDueEndDate" />
     </div>
   </div>
@@ -67,8 +67,8 @@
     <tr>
       <th>No</th><th>건물명</th><th>층</th><th>호수</th><th>임차인명</th>
       <th class="sortable">청구금액</th><th class="sortable">납부금액</th>
-      <th class="sortable">납부상태</th><th class="sortable">청구일</th>
-      <th class="sortable">납기일</th><th class="sortable">납부일</th><th>청구계좌</th>
+      <th class="sortable">납부상태</th><th class="sortable">청구일자</th>
+      <th class="sortable">납기일자</th><th class="sortable">납부일자</th><th>청구계좌</th>
     </tr>
   </thead>
   <tbody>
@@ -78,71 +78,6 @@
 <!-- 📎 페이지네이션 버튼 영역 -->
 <div class="pagination" id="paginationContainer"></div>
 
-
-<div class="modal">
-  <h2>청구 상세 정보</h2>
-
-  <!-- 기본 정보 -->
-  <div class="info-block">
-    <p><strong>건물명:</strong> ${item.bldgNm}</p>
-    <p><strong>호수:</strong> ${item.unitRoom}</p>
-    <p><strong>청구일:</strong> ${item.billDate}</p>
-    <p><strong>납기일:</strong> ${item.dueDate}</p>
-    <p><strong>완납일:</strong> ${item.paidDate || '-'}</p>
-    <p><strong>청구상태:</strong> ${item.status}</p>
-  </div>
-
-  <!-- 공용관리비 항목 -->
-  <div class="charge-section">
-    <h3>공용 관리비</h3>
-    <ul>
-      <li>청소비: ${cleanFee} 원</li>
-      <li>승강기 유지비: ${elevatorFee} 원</li>
-      <li>공용 전기료: ${publicElectricFee} 원</li>
-      <li>공용 수도료: ${publicWaterFee} 원</li>
-      <li>일반 운영비: ${operationFee} 원</li>
-      <li>경비 인건비: ${guardFee} 원</li>
-      <li>방역 소독비: ${disinfectionFee} 원</li>
-      <li>소모품비: ${supplyFee} 원</li>
-      <li>소방 설비 유지비: ${fireSafetyFee} 원</li>
-      <li>보안 시스템 유지비: ${securityFee} 원</li>
-    </ul>
-  </div>
-
-  <!-- 개인 에너지 사용량 -->
-  <div class="energy-section">
-    <h3>에너지 사용 내역</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>항목</th><th>사용량</th><th>비용</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>가스</td><td>${gasUsage} ㎥</td><td>${gasFee} 원</td>
-        </tr>
-        <tr>
-          <td>수도</td><td>${waterUsage} ㎥</td><td>${waterFee} 원</td>
-        </tr>
-        <tr>
-          <td>전기</td><td>${electricUsage} kWh</td><td>${electricFee} 원</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- 청구액 및 납부액 -->
-  <div class="amount-section">
-    <p><strong>청구액:</strong> ${item.totalCharge} 원</p>
-
-    <div class="editable-field">
-      <label for="paidAmount"><strong>납부액:</strong></label>
-      <input type="number" id="paidAmount" value="${item.paidAmount}" readonly>
-      <button onclick="toggleEdit(this)">수정</button>
-    </div>
-  </div>
-</div>
 
 <script>
   window.rentalPtyId = "${rentalPtyId}";
