@@ -67,7 +67,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         for (ChargeComparisonDto dto : resultMap.values()) {
-            int diff = dto.getPreviousAmount() - dto.getTwoMonthsAgo();
+            int diff = dto.getTwoMonthsAgo() - dto.getPreviousAmount() ;
             dto.setDiffAmount(diff);
             dto.setEnergyUsageDiffPercent(dto.getPreviousAmount() != 0 ? (int)((diff * 100.0) / dto.getPreviousAmount()) : 0);
         }

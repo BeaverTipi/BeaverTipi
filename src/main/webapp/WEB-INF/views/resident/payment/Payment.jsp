@@ -468,13 +468,25 @@ select[name="bldgIdParam"] {
         <div class="total-charge-box">
         <h3>📦 이번 달 청구 금액</h3>
         <p class="total-charge-amount">
-          <fmt:formatNumber value="${currentChargeAmount}" type="number" currencySymbol="₩" />
+          <fmt:formatNumber value="${currentChargeAmount}" type="currency" currencySymbol="₩" />
         </p>
-        <c:if test="${totalSavedAmount > 0}">
-          <p style="font-size:13px; color:#2ecc71; margin-top:6px;">
-            💚 전월 대비 <strong><fmt:formatNumber value="${totalSavedAmount}" type="currency" /></strong> 절감되었습니다
-          </p>
-        </c:if>
+        <c:choose>
+		  <c:when test="${totalSavedAmount > 0}">
+		    <p style="font-size:13px; color:#2ecc71; margin-top:6px;">
+		      💚 전월 대비 <strong><fmt:formatNumber value="${totalSavedAmount}" type="currency" /></strong> 절감되었습니다
+		    </p>
+		  </c:when>
+		  <c:when test="${totalSavedAmount < 0}">
+		    <p style="font-size:13px; color:#e74c3c; margin-top:6px;">
+		      🔺 전월 대비 <strong><fmt:formatNumber value="${-totalSavedAmount}" type="currency" /></strong> 증가하였습니다
+		    </p>
+		  </c:when>
+		  <c:otherwise>
+		    <p style="font-size:13px; color:#999; margin-top:6px;">
+		      전월과 동일한 금액이 청구되었습니다
+		    </p>
+		  </c:otherwise>
+		</c:choose>
       </div>
        <div class="combined-paybox">
 		  <h3>💳 결제 방식</h3>
@@ -524,6 +536,7 @@ select[name="bldgIdParam"] {
 <script src="https://js.tosspayments.com/v1"></script>
 <script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/building/move-in/residentList.js"></script>
+<script src="${pageContext.request.contextPath}/app/js/building/move-in/residentPayment.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const unitSelect = document.getElementById("unitSelect");

@@ -73,26 +73,7 @@
     display: flex;
     justify-content: flex-end;
     gap: 6px;
-    -webkit-text-stroke: 1.5px black; 
   }
-  
-
-    .text {
-        font-size: 70px;
-        font-weight: 900;
-        -webkit-text-fill-color: transparent;
-        -webkit-text-stroke: 1px red;
-    }
-    
-    .outline-text {
-  font-size: 80px;
-  font-weight: bold;
-  color: transparent;                      /* 내부 색 없애기 */
-  -webkit-text-stroke: 2px red;            /* 외곽선만 빨간색으로 */
-  -webkit-text-fill-color: transparent;    /* 사파리 대응 */
-}
-
-
 
   .description-box h1 span {
     opacity: 0;
@@ -170,8 +151,6 @@
   </style>
 </head>
 <body>
-<h1 class="outline-text">퇴사로</h1>
-<p class="text">텍스트</p>
 <div class="main-section">
       <div class="image-wrapper">
         <img class="main-image" src="${pageContext.request.contextPath}/volt/assets/img/다운로드 (18).png" alt="대표 주택 이미지">

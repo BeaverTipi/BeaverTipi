@@ -12,7 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Slf4j
 public class PaymentController {
-	private final String successURL = "http://localhost/resident/dataState/bill";
+	
+	private final String successURL = "https://swdev.beavertipi.com/resident/payment/success";
 	
 	@PostMapping("/ajax/payment/resident")
 	public PaymentTosspamentsRawVO formProcess(

@@ -110,7 +110,7 @@ function loadComplaints(bldgId = currentBuildingId, page = 1, pageSize = 10) {
     .then(res => {
       const { postList, pagination, loginMbrCd, isLandlord } = res.data;
       renderComplaintPosts(postList, loginMbrCd, isLandlord,page,pageSize);
-      renderPagination(pagination,page,pageSize);
+      renderPagination(pagination, currentBuildingId, page, pageSize);
     })
     .catch(err => console.error("민원 목록 불러오기 실패:", err));
 }
