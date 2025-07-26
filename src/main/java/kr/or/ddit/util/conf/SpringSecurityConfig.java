@@ -195,6 +195,7 @@ public class SpringSecurityConfig {
 					.requestMatchers(new AntPathRequestMatcher("account/login/**")).anonymous()
 					.requestMatchers(new AntPathRequestMatcher("account/logout/**")).authenticated()
 					.requestMatchers(new AntPathRequestMatcher("/resident/chat/**")).authenticated()
+					.requestMatchers(new AntPathRequestMatcher("/broker/chat/**")).authenticated()
 					.requestMatchers(new AntPathRequestMatcher("/account/read")).authenticated()
 					.requestMatchers(new AntPathRequestMatcher("/admin/**")).hasAnyRole("ADMIN")
 					.requestMatchers(new AntPathRequestMatcher("/tenancy/**")).hasAnyRole("TENANCY")
