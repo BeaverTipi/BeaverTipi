@@ -15,16 +15,19 @@ public class VirtualAccountDeleteController {
     @Autowired
     private VirtualAccountService service;
 
-    @PostMapping("/delete")
+    @PostMapping("/delete/{virtualAccountId}")
     public void delete(
-        @RequestParam("virtualAccountId") String virtualAccountId,
+    	@PathVariable("virtualAccountId") String virtualAccountId,
+        
         @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
     ) {
-        MemberVO member = principal != null ? principal.getRealUser() : null;
+    	MemberVO member = principal != null ? principal.getRealUser() : null;
         if (member == null || member.getMbrCd() == null) {
             throw new RuntimeException("회원코드가 누락되었습니다.");
         }
-        service.removeVirtualAccount(virtualAccountId);
+
+        String mbrCd = member.getMbrCd();
+        service.deleteVirtualAccount(virtualAccountId, member.getMbrCd());
     }
 
 }

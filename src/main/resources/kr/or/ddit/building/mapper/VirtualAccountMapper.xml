@@ -3,7 +3,7 @@
 
 <mapper namespace="kr.or.ddit.building.mapper.VirtualAccountMapper">
 
-    <!-- 가상계좌 등록 -->
+    
     <insert id="insertVirtualAccount" parameterType="kr.or.ddit.vo.VirtualAccountVO">
         INSERT INTO VIRTUAL_ACCOUNT (
             VIRTUAL_ACCOUNT_ID, ACCOUNT_TYPE, ACCOUNT_NUMBER, BANK_CODE,
@@ -14,31 +14,33 @@
         )
     </insert>
 
-  <select id="selectVirtualAccountListByMember" parameterType="string" resultType="kr.or.ddit.vo.VirtualAccountVO">
-    SELECT
-      VIRTUAL_ACCOUNT_ID        AS virtualAccountId,
-	  ACCOUNT_TYPE              AS accountType,
-	  ACCOUNT_NUMBER            AS accountNumber,
-	  BANK_CODE                 AS bankCode,
-	  CUSTOMER_NAME             AS customerName,
-	  DUE_DATE                  AS dueDate,
-	  EXPIRED                   AS expired,
-	  SETTLEMENT_STATUS         AS settlementStatus,
-	  SECRET                    AS secret,
-	  MBR_CD                    AS mbrCd,
-	  VIRTUAL_ACCOUNT_AMOUNT    AS virtualAccountAmount
-    FROM VIRTUAL_ACCOUNT
-    WHERE MBR_CD = #{mbrCd}
-    ORDER BY DUE_DATE DESC
-  </select>
+	  <select id="selectVirtualAccountListByMember" parameterType="string" resultType="kr.or.ddit.vo.VirtualAccountVO">
+	    SELECT
+	      VIRTUAL_ACCOUNT_ID        AS virtualAccountId,
+		  ACCOUNT_TYPE              AS accountType,
+		  ACCOUNT_NUMBER            AS accountNumber,
+		  BANK_CODE                 AS bankCode,
+		  CUSTOMER_NAME             AS customerName,
+		  DUE_DATE                  AS dueDate,
+		  EXPIRED                   AS expired,
+		  SETTLEMENT_STATUS         AS settlementStatus,
+		  SECRET                    AS secret,
+		  MBR_CD                    AS mbrCd,
+		  VIRTUAL_ACCOUNT_AMOUNT    AS virtualAccountAmount
+	    FROM VIRTUAL_ACCOUNT
+	    WHERE MBR_CD = #{mbrCd}
+	    ORDER BY DUE_DATE DESC
+	  </select>
 
-    <!-- 단건조회 -->
+    
     <select id="selectVirtualAccountById" parameterType="string" resultType="kr.or.ddit.vo.VirtualAccountVO">
         SELECT * FROM VIRTUAL_ACCOUNT WHERE VIRTUAL_ACCOUNT_ID = #{virtualAccountId}
     </select>
 
-    <!-- 삭제 -->
-    <delete id="deleteVirtualAccount" parameterType="string">
-        DELETE FROM VIRTUAL_ACCOUNT WHERE VIRTUAL_ACCOUNT_ID = #{virtualAccountId}
-    </delete>
-</mapper>
+    
+	<delete id="deleteVirtualAccount">
+	  DELETE FROM VIRTUAL_ACCOUNT
+	  WHERE VIRTUAL_ACCOUNT_ID = #{virtualAccountId}
+	    AND MBR_CD = #{mbrCd}
+	</delete>
+	</mapper>

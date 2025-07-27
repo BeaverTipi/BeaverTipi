@@ -42,9 +42,10 @@ public class VirtualAccountServiceImpl implements VirtualAccountService {
         return mapper.selectVirtualAccountById(virtualAccountId);
     }
 
+
     @Override
-    @Transactional
-    public int removeVirtualAccount(String virtualAccountId) {
-        return mapper.deleteVirtualAccount(virtualAccountId);
+    public void deleteVirtualAccount(String virtualAccountId, String mbrCd) {
+        mapper.deleteVirtualAccount(virtualAccountId, mbrCd);
     }
+    
 }

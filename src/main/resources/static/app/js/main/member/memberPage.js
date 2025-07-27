@@ -29,14 +29,14 @@ function fixBlockedPage() {
 	const visibleModal = document.querySelector(".modal.show");
 	const hasBackdrop = document.querySelector(".modal-backdrop");
 
-	// ✅ 1. 모달이 보이지 않는데 backdrop만 남아있으면 제거
+	// 1. 모달이 보이지 않는데 backdrop만 남아있으면 제거
 	if (!visibleModal && hasBackdrop) {
 		console.warn("🧹 잘못 남은 modal backdrop 제거됨");
 		hasBackdrop.remove();
 		document.body.classList.remove("modal-open");
 	}
 
-	// ✅ 2. aria-hidden인데 포커스 가능한 모달들 inert 처리
+	// 2. aria-hidden인데 포커스 가능한 모달들 inert 처리
 	document.querySelectorAll('.modal[aria-hidden="true"]').forEach(modal => {
 		modal.style.display = "none";
 		modal.setAttribute("inert", ""); // focus 차단
@@ -49,13 +49,13 @@ document.addEventListener("hidden.bs.modal", () => {
 	document.querySelectorAll(".modal-backdrop").forEach(b => b.remove());
 });
 
-// ✅ DOM 로드 시 실행
+// DOM 로드 시 실행
 document.addEventListener("DOMContentLoaded", () => {
 	console.log("✅ memberPage.js 시작됨");
 
 	fixBlockedPage(); // 👉 백드롭, 포커스 문제 제거
 
-	// 👉 탭 초기화
+	// 탭 초기화
 	const urlParams = new URLSearchParams(window.location.search);
 	if (urlParams.get("success") === "true") {
 		sessionStorage.removeItem("attemptedSolId");
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		openTab(defaultTabId);
 	}
 
-	// 👉 솔루션 클릭 시 solId 저장
+	// 솔루션 클릭 시 solId 저장
 	document.querySelectorAll("form[action^='/payment/business']").forEach((form, idx) => {
 		const button = form.querySelector("button[type='submit']");
 		const solIdInput = form.querySelector("input[name='solId']");
