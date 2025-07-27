@@ -1,7 +1,9 @@
 package kr.or.ddit.broker.controller;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +60,7 @@ public class RestContractAuthorizationController {
 			String encrypted = payload.get("encrypted");
 			log.debug("💬 수신된 encrypted: {}", encrypted);
 			log.debug("💬 수신된 iv: {}", iv);
+			
 			if (encrypted == null || iv == null) {
 				resultJson = objectMapper
 						.writeValueAsString(Map.of("success", false, "message", "암호화된 요청 또는 IV 누락", "signYn", "N"));
@@ -68,6 +71,7 @@ public class RestContractAuthorizationController {
 				String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
 				Map<String, Object> parsedRequest = objectMapper.readValue(decryptedJson, new TypeReference<>() {
 				});
+				log.debug("{} --- {}",parsedRequest.get("_method"), parsedRequest.get("encryptedContId"));
 				String method = String.valueOf(parsedRequest.get("_method"));
 				if (!"GET".equalsIgnoreCase(method)) {
 					resultJson = objectMapper.writeValueAsString(
@@ -82,7 +86,7 @@ public class RestContractAuthorizationController {
 				ContractVO contract = contService.readContractInfo(contId);
 				log.debug("-----<> 계약 VO 출력:: {}", contract);
 
-				/** 2. 회원 로그인상태 확인 및 인가처리 밑작업 */
+				/** 2. 회원 인가처리 */
 				if ((auth == null || !auth.isAuthenticated()) && principal == null)
 					return reject("로그인이 필요합니다.");
 
@@ -104,18 +108,32 @@ public class RestContractAuthorizationController {
 
 				if (userRole == null)
 					return reject("접근 권한이 없습니다.");
+				log.debug("-----<><><><><>  role:: {}", userRole);
 
-				/** 3. 응답 데이터 구성 */
-				// ✅ signerInfo
+				/** 3. 계약 참여자 정보(signers) 구성 */
+				String lesseeTelno = contract.getContLesseeTelno();
+				String lessorTelno = contract.getContTenancyTelno();
+				String agentTelno = contract.getContBrokerTelno();
+				Map<String, String> partyTelnoParam = Map.of(
+						"lesseeTelno", lesseeTelno,
+						"lessorTelno", lessorTelno,
+						"agentTelno", agentTelno,
+						"userRole", userRole);
+				List<Map<String, Object>> signers = contService.readContractPartyInfo(partyTelnoParam);
+				
+				/** 4. 응답 데이터 구성 */
 				Map<String, Object> responseMap = new LinkedHashMap<>();
 				responseMap.put("success", true);
-				responseMap.put("signYn", "Y");
 				responseMap.put("contId", contId);
 				responseMap.put("role", userRole);
+				responseMap.put("code", user.getMbrCd());
 				responseMap.put("name", user.getMbrNm());
 				responseMap.put("telno", user.getMbrTelno());
+				responseMap.put("id", user.getMbrId());
 				responseMap.put("ipAddr", request.getRemoteAddr());
-				responseMap.put("mbrId", user.getMbrId());
+				responseMap.put("isValid", true);
+			    responseMap.put("tempPdfUrl", null);
+				responseMap.put("signers", signers);
 				log.debug("^ㅂ^^ㅂ^^ㅂ^^ㅂ^^ㅂ^^ㅂ^ {}", user.getMbrTelno());
 				resultJson = objectMapper.writeValueAsString(responseMap);
 				return ResponseEntity.ok(aes256Util.encryptWithDynamicIV(resultJson));

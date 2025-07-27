@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,6 +43,8 @@ import jakarta.validation.Validator;
 import kr.or.ddit.broker.mapper.BrokerMapper;
 import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
 import kr.or.ddit.broker.service.BrokerContractService;
+import kr.or.ddit.main.mapper.MemberMapper;
+import kr.or.ddit.main.member.service.MemberService;
 import kr.or.ddit.util.calc.CalcOnContract;
 import kr.or.ddit.util.crypto.AES256Util;
 import kr.or.ddit.util.file.Base64DecodedMultipartFile;
@@ -55,6 +58,7 @@ import kr.or.ddit.vo.ContractVO;
 import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
+import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.broker.dto.StandardLeaseFormDTO;
 import kr.or.ddit.vo.TenancyVO;
 import lombok.RequiredArgsConstructor;
@@ -84,7 +88,10 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	private Validator validator;
 	@Autowired
 	private AES256Util aes256Util;
-	
+	@Autowired
+	private MemberMapper memberMapper;
+	@Autowired
+	private MemberService memberService;
 
 	/**
 	 * @param principal 내에서 불러온 Broker의 mbrCd
@@ -97,13 +104,102 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	}
 
 	/**
-	 * @param partyInfoParams :Map.of("lstgId",lstgId,"lesseeCd",lesseeCd);
-	 * @return 중개인, 임대인, 임차인 세 명에 대한 정보를 담은 Map
+	 * @param List<signers>: 서명페이지에서 쓸 signers 객체(리스트) 초기값 로딩
+	 * @return 계약참여자의 상태 관리를 위한 signers의 초기값
 	 */
 	@Override
-	public Map<String, Object> readContractPartyInfo(Map<String, String> partyInfoParams) {
-		Map<String, Object> contractPartyInfo = null;
-		return contractPartyInfo;
+	public List<Map<String, Object>> readContractPartyInfo(Map<String, String> partyTelnoParam) {
+		
+		String lesseeTelno = partyTelnoParam.get("lesseeTelno");
+		String lessorTelno = partyTelnoParam.get("lessorTelno");
+		String agentTelno = partyTelnoParam.get("agentTelno");
+		String userRole = partyTelnoParam.get("userRole");
+		
+		MemberVO lesseeInfo = mapper.selectMemberByTelno(lesseeTelno);
+		MemberVO lessorInfo = mapper.selectMemberByTelno(lessorTelno);
+		MemberVO agentInfo = mapper.selectMemberByTelno(agentTelno);
+		
+	    if (lesseeInfo == null || lessorInfo == null || agentInfo == null) {
+	        throw new IllegalArgumentException("계약 참여자 중 일부 정보를 찾을 수 없습니다.");
+	    }
+		
+	    ///MAP.of로는 null값 불가능. 이렇게 만든 Map은 immutable(값도 수정 못함)
+//		Map<String, Object> lessee = Map.of(
+//				"role", "LESSEE",
+//				"name", lesseeInfo.getMbrNm(),
+//				"telno", lesseeInfo.getMbrTelno(),
+//				"connected", false,
+//				"signedAt", false,
+//				"isValid", false,
+//				"isRejected", false,
+//				"tempPdfUrl", null
+//				);
+//		Map<String, Object> lessor = Map.of(
+//				"role", "LESSOR",
+//				"name", lessorInfo.getMbrNm(),
+//				"telno", lessorInfo.getMbrTelno(),
+//				"connected", false,
+//				"signedAt", false,
+//				"isValid", false,
+//				"isRejected", false,
+//				"tempPdfUrl", null
+//				);
+//		Map<String, Object> agent = Map.of(
+//				"role", "AGENT",
+//				"name", agentInfo.getMbrNm(),
+//				"telno", agentInfo.getMbrTelno(),
+//				"connected", false,
+//				"signedAt", false,
+//				"isValid", false,
+//				"isRejected", false,
+//				"tempPdfUrl", null
+//				);
+	    
+	    Map<String, Object> lessee = new HashMap<>();
+	    lessee.put("role", "LESSEE");
+	    lessee.put("code", lesseeInfo.getMbrCd());
+	    lessee.put("id", lesseeInfo.getMbrId());
+	    lessee.put("name", lesseeInfo.getMbrNm());
+	    lessee.put("telno", lesseeInfo.getMbrTelno());
+	    lessee.put("connected", false);
+	    lessee.put("signedAt", null);
+	    lessee.put("isValid", null);
+	    lessee.put("isRejected", false);
+
+	    Map<String, Object> lessor = new HashMap<>();
+	    lessor.put("role", "LESSOR");
+	    lessor.put("code", lessorInfo.getMbrCd());
+	    lessor.put("id", lessorInfo.getMbrId());
+	    lessor.put("name", lessorInfo.getMbrNm());
+	    lessor.put("telno", lessorInfo.getMbrTelno());
+	    lessor.put("connected", false);
+	    lessor.put("signedAt", null);
+	    lessor.put("isValid", null);
+	    lessor.put("isRejected", false);
+
+	    Map<String, Object> agent = new HashMap<>();
+	    agent.put("role", "AGENT");
+	    agent.put("code", agentInfo.getMbrCd());
+	    agent.put("id", agentInfo.getMbrId());
+	    agent.put("name", agentInfo.getMbrNm());
+	    agent.put("telno", agentInfo.getMbrTelno());
+	    agent.put("connected", false);
+	    agent.put("signedAt", null);
+	    agent.put("isValid", null);
+	    agent.put("isRejected", false);
+		
+//		if("LESSEE".equals(userRole))lessee.put("connected", true);
+//		if("LESSOR".equals(userRole))lessor.put("connected", true);
+//		if("AGENT".equals(userRole))agent.put("connected", true);
+		
+		switch (userRole) {
+		case "LESSEE" -> lessee.put("connected", true);
+		case "LESSOR" -> lessor.put("connected", true);
+		case "AGENT" -> agent.put("connected", true);
+		}
+		
+		List<Map<String, Object>> signers = List.of(lessee, lessor, agent);
+		return signers;
 	}
 
 	/**

@@ -28,25 +28,26 @@ public class SignerStatusAssembler {
         String role = vo.getContDtSignType();
 
         String telno = switch (role) {
-            case "LESSEE" -> contract.getContLesseeTelno();
-            case "LESSOR" -> contract.getContTenancyTelno();
-            case "AGENT" -> contract.getContBrokerTelno();
-            default -> null;
+            case "LESSEE" 	-> contract.getContLesseeTelno();
+            case "LESSOR" 	-> contract.getContTenancyTelno();
+            case "AGENT" 	-> contract.getContBrokerTelno();
+            default 		-> null;
         };
         
         Boolean isRejected = "REJECTED".equalsIgnoreCase(vo.getContDtSignStat()) ? true : null;
         
+       
+        
+        
         return SignerStatusDTO.builder()
                 .role(role)
                 .mbrCd(vo.getMbrCd())
+                .mbrNm(vo.getMbrCd()) // 또는 JOIN된 mbrNm
                 .signedAt(LocalDateTime.parse(vo.getContDtSignDtm(), formatter))
                 .hashVal(vo.getContDtSignHashVal())
                 .ipAddr(vo.getContDtIpAddr())
-                .mbrNm(vo.getMbrCd()) // 또는 JOIN된 mbrNm
                 .telno(telno)
-//                .isRejected(isRejected)
-//                .tempPdfUrl(vo.getContDtSignImg())
-//                .connected(false)
+                .isRejected(isRejected)
                 .build();
     }
 

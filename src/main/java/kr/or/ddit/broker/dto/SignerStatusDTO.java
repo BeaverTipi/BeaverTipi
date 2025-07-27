@@ -69,4 +69,6 @@ public class SignerStatusDTO {
     /**hash 검증 성공 여부
      */
     private Boolean isValid;
+    
+    private Boolean isRejected;
 }

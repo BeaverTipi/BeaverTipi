@@ -44,7 +44,7 @@ public interface BrokerContractService {
 	
 	public List<TenancyVO> readTenancyList(String rentalPtyId);
 	
-	public Map<String, Object> readContractPartyInfo(Map<String, String> partyInfoParams);
+	public List<Map<String, Object>> readContractPartyInfo(Map<String, String> partyInfoParams);
 	
 	public List<ContractVO> readContractList(String mbrCd);
 

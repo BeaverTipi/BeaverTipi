@@ -116,6 +116,7 @@ public interface BrokerMapper {
     
     public BrokerVO selectBrokerInfo(String mbrCd);
     public MemberVO selectLesseeInfo(String mbrCd);
+    public MemberVO selectMemberByTelno(String telno);
 
 
 	/**

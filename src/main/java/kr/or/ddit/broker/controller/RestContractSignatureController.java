@@ -30,6 +30,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -169,10 +170,7 @@ public class RestContractSignatureController {
 	}
 
 	@PostMapping("/signature/upload")
-	public ResponseEntity<?> uploadSignature(
-			Principal principal
-			, @RequestBody Map<String, String> payload
-	) {
+	public ResponseEntity<?> uploadSignature(Principal principal, @RequestBody Map<String, String> payload) {
 		String resultJson = "";
 		try {
 			// 1. 복호화
@@ -193,7 +191,10 @@ public class RestContractSignatureController {
 			log.debug("<><><><><> DIGITALSIGN:: {}", digitalSign);
 
 			String telno = authUnpack.getSigner(principal).getMbrTelno();
-			log.debug("hashVal 생성한당 ^0^^0^^0^^)^ baseData: {} \n telno: {}, contId: {}, contDtSignType: {}, contDtSignDtm: {}", digitalSign.getContDtBaseData(), telno, digitalSign.getContId(), digitalSign.getContDtSignType(), digitalSign.getContDtSignDtm());
+			log.debug(
+					"hashVal 생성한당 ^0^^0^^0^^)^ baseData: {} \n telno: {}, contId: {}, contDtSignType: {}, contDtSignDtm: {}",
+					digitalSign.getContDtBaseData(), telno, digitalSign.getContId(), digitalSign.getContDtSignType(),
+					digitalSign.getContDtSignDtm());
 			// 2. 서명 이미지 생성
 //			String base64 = extractBase64(digitalSign.getContDtBaseData());
 //			MultipartFile signImage = new Base64DecodedMultipartFile(Base64.getDecoder().decode(base64),
@@ -236,8 +237,8 @@ public class RestContractSignatureController {
 			FileVO tempContr = fileService.uploadAndSaveTempSignedContract(signedPdf, digitalSign);
 
 			// 7. 성공 응답
-			resultJson = objectMapper
-					.writeValueAsString(Map.of("success", true, "fileUrl", tempContr.getFilePathUrl()));
+			resultJson = objectMapper.writeValueAsString(
+					Map.of("success", true, "fileUrl", tempContr.getFilePathUrl(), "fileId", tempContr.getFileId()));
 			return ResponseEntity.ok(aes256Util.encryptWithDynamicIV(resultJson));
 
 		} catch (Exception e) {
@@ -559,6 +560,54 @@ public class RestContractSignatureController {
 			return ResponseEntity.ok(Map.of("success", true, "base64", base64));
 		} catch (Exception e) {
 			return ResponseEntity.status(500).body(Map.of("success", false, "message", "PDF 로딩 실패"));
+		}
+	}
+
+	@PostMapping("/pdf/delete-temp")
+	public ResponseEntity<?> deleteTempSignedPdf(@RequestBody Map<String, String> payload) throws JsonMappingException, JsonProcessingException {
+		String iv = payload.get("iv");
+		String encrypted = payload.get("encrypted");
+		if (iv == null || encrypted == null)
+			return ResponseEntity.badRequest().body("암호화된 요청 또는 IV 누락");
+
+		String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
+
+		// 📦 2. JSON → Map 변환
+		Map<String, Object> parsedRequest = objectMapper.readValue(decryptedJson, new TypeReference<>() {
+		});
+		String method = String.valueOf(parsedRequest.get("_method"));
+		if (!"DELETE".equalsIgnoreCase(method))
+			return ResponseEntity.badRequest().body("지원하지 않는 요청 방식입니다.");
+
+//#######################   Unchecked Cast   ###############################################
+//		List<String> tempPdfFileIds = (List<String>) parsedRequest.get("tempPdfFileIds");
+//		Type safety: Unchecked cast from Object to List<String>
+		Object tempPdfFileIdsObj = parsedRequest.get("tempPdfFileIds");
+		List<String> tempPdfFileIds = null;
+		if (tempPdfFileIdsObj instanceof List<?> list) {
+			boolean allStrings = list.stream().allMatch(item -> item instanceof String);
+			if (allStrings) {
+				tempPdfFileIds = list.stream().map(item -> (String) item).toList(); // Java 16+ toList() returns
+																					// unmodifiable List
+			} else {
+				throw new IllegalArgumentException("tempPdfFileIds must be a list of strings.");
+			}
+		} else {
+			throw new IllegalArgumentException("tempPdfFileIds is not a list.");
+		}
+//##########################################################################################
+		if (tempPdfFileIds == null || tempPdfFileIds.isEmpty()) {
+			return ResponseEntity.badRequest().body(Map.of("success", false, "message", "fileIds 누락"));
+		}
+
+		try {
+			for (String fileId : tempPdfFileIds) {
+				fileService.deleteFile(fileId);
+			}
+			return ResponseEntity.ok(Map.of("success", true));
+		} catch (Exception e) {
+			log.error("임시 PDF 삭제 실패", e);
+			return ResponseEntity.status(500).body(Map.of("success", false, "message", "서버 오류"));
 		}
 	}
 

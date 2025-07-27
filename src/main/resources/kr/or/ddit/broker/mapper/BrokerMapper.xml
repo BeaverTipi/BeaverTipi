@@ -314,4 +314,23 @@
 	 WHERE CDS.CONT_ID = #{contId}
 	 ORDER BY CDS.CONT_DT_SIGN_TYPE
 </select>
+<select id="selectMemberByTelno" parameterType="String" resultType="MemberVO">
+	SELECT
+		MBR_CD
+		, MBR_ID
+		, MBR_PW
+		, MBR_NM
+		, MBR_NNM
+		, MBR_TELNO
+		, MBR_EML_ADDR
+		, MBR_BASIC_ADDR
+		, MBR_DETAIL_ADDR
+		, MBR_PROFIL_IMAGE
+		, MBR_FRST_REG_DT
+		, MBR_STATUS_CODE
+		, MBR_DELETE_DATE
+		, MBR_ZIP
+	  FROM MEMBER
+	 WHERE MBR_TELNO = #{telNo}
+</select>
 </mapper>
