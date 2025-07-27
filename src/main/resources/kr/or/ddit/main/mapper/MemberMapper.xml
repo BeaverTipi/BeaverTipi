@@ -330,4 +330,16 @@ FROM MEMBER
 		</if>
 		WHERE MBR_CD = #{mbrCd}
 	</update>
+	
+	<select id="selectMemberByMbrCd" parameterType="String" resultType="MemberVO">
+	    SELECT 
+	        MBR_CD
+	        , MBR_ID
+	    FROM 
+	        MEMBER
+	    WHERE 
+	        MBR_CD = #{mbrCd}
+</select>
+
+	
 </mapper>

@@ -1,5 +1,7 @@
 package kr.or.ddit.vo;
 import java.io.Serializable;
+import java.util.List;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -18,4 +20,6 @@ public class ReportVO extends BoardVO implements Serializable { // BoardVO 상�
 	private String rptTargetMbrCd;
 	// 매물 삭제 여부 (Listing 테이블에서 가져옴)
 	private String lstgDel;
+	
+	private List<FileVO> attachFiles;
 }

@@ -71,8 +71,17 @@ public class BrokerChatController {
         @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
 
         String mbrCd = principal.getRealUser().getMbrCd();
+        String loginMbrId = principal.getRealUser().getMbrId();
+        
         BrokerChatroomVO bcVO = service.getChatInfo(crId);
         List<ChatMessageVO> messages = service.getMessages(crId);
+        
+        MemberVO sellerMemberVO = service.getMemberByMbrCd(bcVO.getSellerCd());
+        MemberVO inquirerMemberVO = service.getMemberByMbrCd(bcVO.getInquirerCd());
+        
+        model.addAttribute("loginMbrId", loginMbrId);
+        model.addAttribute("sellerMemberVO", sellerMemberVO);
+        model.addAttribute("inquirerMemberVO", inquirerMemberVO);
 
         model.addAttribute("mbrCd", mbrCd);
         model.addAttribute("messages", messages);

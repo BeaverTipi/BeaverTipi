@@ -176,14 +176,11 @@ function fetchPdf(file) {
 
                 canvas.width = scaledViewport.width;
                 canvas.height = scaledViewport.height;
-
-                // 캔버스 요소를 수평 중앙에 배치 (수직 중앙은 flexbox가 처리)
+	
                 canvas.style.marginLeft = `${(containerWidth - canvas.width) / 2}px`;
-                // 캔버스 자체의 수직 중앙 정렬을 위해 margin-top 사용
-                // 여기서는 flex-direction: column과 align-items: center로 인해 이미 수평 중앙 정렬이 되므로,
-                // 수직 정렬은 flex-grow와 margin: auto로 처리됩니다.
-                canvas.style.marginTop = 'auto'; // flex-grow와 함께 사용 시 유용
-                canvas.style.marginBottom = 'auto'; // flex-grow와 함께 사용 시 유용
+
+                canvas.style.marginTop = 'auto';
+                canvas.style.marginBottom = 'auto';
 
                 canvas.style.display = 'block';
 
@@ -216,11 +213,10 @@ function renderImage(file) {
     };
 
     img.onload = () => {
-        const parentDiv = canvas.parentElement; // .file-display-section
+        const parentDiv = canvas.parentElement;
         const containerWidth = parentDiv.offsetWidth - (parseInt(getComputedStyle(parentDiv).paddingLeft) || 0) - (parseInt(getComputedStyle(parentDiv).paddingRight) || 0);
         const containerHeight = parentDiv.offsetHeight - (parseInt(getComputedStyle(parentDiv).paddingTop) || 0) - (parseInt(getComputedStyle(parentDiv).paddingBottom) || 0);
 
-        // H5와 버튼 영역의 높이를 고려하여 캔버스에 할당할 실제 사용 가능 높이 계산
         const h5Height = document.querySelector(".file-display-section h5").offsetHeight + parseInt(getComputedStyle(document.querySelector(".file-display-section h5")).marginBottom || 0);
         const controlsHeight = document.getElementById("pdf-controls").offsetHeight + parseInt(getComputedStyle(document.getElementById("pdf-controls")).marginTop || 0);
         const availableHeightForCanvas = containerHeight - h5Height - controlsHeight;
@@ -229,7 +225,7 @@ function renderImage(file) {
         let height = img.height;
 
         const aspectRatio = width / height;
-        const containerAspectRatio = containerWidth / availableHeightForCanvas; // 캔버스 사용 가능 높이 기준
+        const containerAspectRatio = containerWidth / availableHeightForCanvas;
 
         if (aspectRatio > containerAspectRatio) {
             // 이미지가 컨테이너보다 넓을 경우 (너비에 맞춤)
@@ -244,10 +240,9 @@ function renderImage(file) {
         canvas.width = width;
         canvas.height = height;
 
-        // 캔버스 요소를 수평 중앙에 배치 (수직 중앙은 flexbox가 처리)
         canvas.style.marginLeft = `${(containerWidth - canvas.width) / 2}px`;
-        canvas.style.marginTop = 'auto'; // flex-grow와 함께 사용 시 유용
-        canvas.style.marginBottom = 'auto'; // flex-grow와 함께 사용 시 유용
+        canvas.style.marginTop = 'auto';
+        canvas.style.marginBottom = 'auto';
         canvas.style.display = 'block';
 
         ctx.drawImage(img, 0, 0, width, height);
@@ -309,13 +304,12 @@ $(document).ready(function() {
             selectedFiles.push(file);
         }
         renderFileTable();
-        // 첫 파일이 선택되었거나, 기존에 파일이 없었다면 새로 추가된 첫 파일을 미리보기
-        // 또는 새로운 파일 추가 시 마지막 추가된 파일로 미리보기
+
         if (selectedFiles.length > 0) {
             currentPreviewIndex = 0;
             fetchPdfOrImage(selectedFiles[currentPreviewIndex]);
         }
-        this.value = ''; // input[type="file"]의 값 초기화 (동일 파일을 다시 선택해도 change 이벤트 발생시키기 위함)
+        this.value = '';
     });
 
     // 2. 미리보기 컨트롤 버튼 이벤트 리스너
@@ -350,9 +344,6 @@ $(document).ready(function() {
             return;
         }
 
-        // 파일 첨부는 필수가 아니므로, 필요하다면 여기에 최소 파일 개수 유효성 검사 추가
-        // 예: if (selectedFiles.length === 0) { alert("증거 자료를 최소 1개 이상 첨부해야 합니다."); return; }
-
         const formData = new FormData(this); // 폼의 모든 데이터를 FormData 객체로 생성
 
         // selectedFiles 배열에 있는 파일들을 FormData에 추가
@@ -367,16 +358,24 @@ $(document).ready(function() {
             headers: {
                 'Content-Type': 'multipart/form-data' // 파일 업로드 시 필수
             },
-            // onUploadProgress: progressEvent => { // 진행률 표시 (선택 사항)
-            //     const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            //     console.log(`업로드 진행률: ${percentCompleted}%`);
-            // }
         })
         .then(response => {
             console.log("응답:", response.data);
-            if (response.data.status === "success") { // 컨트롤러에서 status와 message를 반환한다고 가정
+            if (response.data.status === "success") {
                 alert(response.data.message);
-                history.back(); // 성공 시 이전 페이지로 돌아가기
+                
+                // ▼▼▼ 이 부분에 팝업 여부 확인 로직 추가 ▼▼▼
+                // 현재 창이 다른 창(부모 창)에 의해 열렸는지 확인
+                if (window.opener && !window.opener.closed) {
+                    // 부모 창이 존재하고 닫히지 않았다면, 현재 팝업 창을 닫음
+                    window.close(); 
+                } else {
+                    // 부모 창이 없거나 이미 닫혔다면, 이전 페이지로 이동 (또는 다른 처리)
+                    // 이 경우, 사용자가 북마크나 직접 URL로 접근한 상황일 수 있습니다.
+                    history.back(); 
+                }
+                // ▲▲▲ 팝업 여부 확인 로직 추가 ▲▲▲
+
             } else {
                 alert(response.data.message || "신고 접수 처리 중 알 수 없는 오류가 발생했습니다.");
             }

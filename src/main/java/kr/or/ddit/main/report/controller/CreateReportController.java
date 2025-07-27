@@ -66,23 +66,14 @@ public class CreateReportController {
         return "main/report/createReport";
     }
 
-    /**
-     * 신고 작성 폼 제출을 처리하고, 새로운 신고를 생성합니다.
-     * 성공/실패 여부를 JSON으로 반환하여 클라이언트에서 alert 창을 띄웁니다.
-     * @param reportVO 신고 게시글 및 신고 상세 정보를 담은 ReportVO 객체
-     * @param attachFiles 첨부된 파일 목록 (광고 요청 컨트롤러와 동일하게 List 사용)
-     * @param auth 인증 객체 (MemberAdsController와 동일)
-     * @param principal 사용자 상세 정보 (MemberAdsController와 동일)
-     * @return Map<String, String> 형태의 JSON 응답 (status, message)
-     */
     @PostMapping("/create")
     @ResponseBody
     public Map<String, String> createReport(
             @ModelAttribute @Valid ReportVO reportVO, // ReportVO가 BoardVO를 상속하므로 그대로 사용
             BindingResult bindingResult,
-            @RequestPart(value = "attachFiles", required = false) List<MultipartFile> attachFiles, // List<MultipartFile>로 변경
+            @RequestPart(value = "attachFiles", required = false) List<MultipartFile> attachFiles,
             
-            Authentication auth, // Authentication 추가
+            Authentication auth,
             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal // RealUserWrapper 추가
     ) {
         log.info("신고 생성 요청 - ReportVO: {}", reportVO);
@@ -90,7 +81,7 @@ public class CreateReportController {
 
         Map<String, String> response = new HashMap<>();
 
-        // 1. 로그인 사용자 확인 및 작성자 정보 설정 (MemberAdsController 방식 참조)
+        // 1. 로그인 사용자 확인 및 작성자 정보 설정
         if (principal != null) {
             MemberVO member = principal.getRealUser();
             if (member != null && member.getMbrCd() != null) {
@@ -109,12 +100,12 @@ public class CreateReportController {
             return response;
         }
 
-        reportVO.setBrdCode("RPT"); // 게시글 구분 코드를 '신고'로 명시
+        reportVO.setBrdCode("RPT");
 
         // 2. 서비스 호출하여 신고 생성 및 파일 처리
         try {
             // Service 메소드에 ReportVO와 List<MultipartFile>을 함께 전달
-            boolean success = createReportService.createReport(reportVO, attachFiles); // 반환 타입 boolean으로 변경
+            boolean success = createReportService.createReport(reportVO, attachFiles);
             if (success) {
                 response.put("status", "success");
                 response.put("message", "신고가 성공적으로 접수되었습니다.");

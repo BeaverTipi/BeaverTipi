@@ -6,6 +6,7 @@ import kr.or.ddit.vo.BrokerChatParticipantVO;
 import kr.or.ddit.vo.BrokerChatroomVO;
 import kr.or.ddit.vo.ChatMessageVO;
 import kr.or.ddit.vo.ListingVO;
+import kr.or.ddit.vo.MemberVO;
 
 public interface BrokerChatService {
 
@@ -29,4 +30,6 @@ public interface BrokerChatService {
 	public BrokerChatroomVO getChatInfo(String crId);
 	
 	public BrokerChatroomVO getChatInfoWithLstg(String lstgId, String inquirerCd);
+	
+	public MemberVO getMemberByMbrCd(String mbrCd);
 }

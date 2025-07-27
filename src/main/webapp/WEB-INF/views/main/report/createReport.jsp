@@ -78,7 +78,7 @@
                     </c:if>
                 </div>
                 <div class="form-group">
-                    <label for="rptTargetId">신고 매물 ID<span class="text-danger">*</span></label>
+                    <label for="rptTargetId">신고 대상 ID<span class="text-danger">*</span></label>
                     <c:set var="isRptTargetIdPredefined" value="${not empty reportVO.rptTargetId}" />
    
                     <form:input path="rptTargetId" class="form-control" id="rptTargetId"

@@ -20,4 +20,6 @@ public interface MemberMapper {
 	public int updateMember(MemberVO member);
 	
 	public String selectNextMbrCd();
+	
+	public MemberVO selectMemberByMbrCd(String mbrCd);
 }

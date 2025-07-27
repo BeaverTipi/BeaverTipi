@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import jakarta.inject.Inject;
 import kr.or.ddit.admin.mapper.ReportPostMapper;
 import kr.or.ddit.util.file.mapper.FileMapper;
+import kr.or.ddit.util.file.service.FileService;
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.vo.BoardVO;
 import kr.or.ddit.vo.FileVO;
@@ -25,7 +26,9 @@ public class ReportPostServiceImpl implements ReportPostService {
     private ReportPostMapper reportPostMapper;
 
 	@Autowired
-    private FileMapper fileMapper;
+    private FileService fileService;
+	
+	private static final String RP_FILE_SOURCE_REF = "RP_BOARD";
 
     @Override
     public List<ReportVO> selectReportedPostList(PaginationInfo<ReportVO> pagingVO) {
@@ -45,13 +48,16 @@ public class ReportPostServiceImpl implements ReportPostService {
     @Override
     public ReportVO selectReportDetail(String reportId) {
         ReportVO reportDetail = reportPostMapper.selectReportDetailByReportId(reportId);
-        log.info("Report Detail fetched (ReportVO): {}", reportDetail);
 
         if (reportDetail != null && reportDetail.getBrdNo() != null) {
-            log.debug("Found reportDetail for reportId: {}, brdNo: {}", reportId, reportDetail.getBrdNo());
-
+            // **디버깅 필수: reportDetail.getBrdNo() 값이 예상대로 나오는지 확인**
+            // **디버깅 필수: fileService.readFileList 호출 후 attachedFiles에 데이터가 있는지 확인**
+            List<FileVO> attachedFiles = fileService.readFileList(RP_FILE_SOURCE_REF, reportDetail.getBrdNo());
+            reportDetail.setAttachFiles(attachedFiles);
+            log.debug("Found reportDetail for reportId: {}, brdNo: {}, Attached Files Count: {}",
+                      reportId, reportDetail.getBrdNo(), attachedFiles != null ? attachedFiles.size() : 0);
         } else {
-            log.warn("No report detail found or brdNo is null for reportId: {}", reportId);
+            log.warn("No report detail found or brdNo is null for reportId: {}. No attempt to fetch files.", reportId);
         }
         return reportDetail;
     }

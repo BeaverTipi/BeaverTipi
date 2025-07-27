@@ -9,11 +9,15 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/common_admin.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/board/userList.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/business/filePopup.css">
 </head>
 <body>
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script> <script>
+    	var contextPath = '${pageContext.request.contextPath}'; // contextPath 변수 선언 추가
+	</script>
     <script src="${pageContext.request.contextPath}/app/js/admin/board/userList.js"></script>
 
 <h2 class="board-title">회원 & 매물 신고 관리</h2>
@@ -175,6 +179,29 @@
                         <option value="PROC">접수처리중</option>
                         <option value="COMP">처리완료</option>
                     </select>
+                </div>
+                
+                <hr>
+                <h5>첨부파일</h5>
+                <div id="fileDataHolder" data-filelist=''></div> 
+                <div class="file-preview-area">
+                    <div class="file-list-section">
+                        <button id="toggleFileListBtn" type="button" class="btn btn-sm btn-info mb-2">첨부파일 목록 보기</button>
+                        <table border="1" id="fileTable" class="table table-bordered table-sm">
+                            <thead>
+                                <tr><th>파일명</th><th>크기</th></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="file-display-section">
+                        <canvas id="pdfCanvas" class="img-fluid border"></canvas>
+                        <div id="pdf-controls" class="d-flex justify-content-center mt-2">
+                            <button id="prevBtn" class="btn btn-sm btn-outline-secondary mr-1">이전</button>
+                            <span>페이지 <span id="fileIndex">0</span> / <span id="totalCount">0</span></span>
+                            <button id="nextBtn" class="btn btn-sm btn-outline-secondary ml-1">다음</button>
+                        </div>
+                    </div>
                 </div>
 
             </div>

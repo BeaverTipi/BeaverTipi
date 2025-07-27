@@ -6,16 +6,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.main.mapper.BrokerChatMapper;
+import kr.or.ddit.main.mapper.MemberMapper;
 import kr.or.ddit.vo.BrokerChatParticipantVO;
 import kr.or.ddit.vo.BrokerChatroomVO;
 import kr.or.ddit.vo.ChatMessageVO;
 import kr.or.ddit.vo.ListingVO;
+import kr.or.ddit.vo.MemberVO;
 
 @Service
 public class BrokerChatServiceImpl implements BrokerChatService {
 
 	@Autowired
 	BrokerChatMapper mapper;
+	@Autowired
+	MemberMapper memberMapper;
 	
 	@Override
 	public void createChatRoom(BrokerChatroomVO bcVO) {
@@ -77,6 +81,11 @@ public class BrokerChatServiceImpl implements BrokerChatService {
 		// TODO Auto-generated method stub
 		return mapper.selectChatInfoWithLstg(lstgId, inquirerCd);
 	}
-
+	
+	@Override
+    public MemberVO getMemberByMbrCd(String mbrCd) {
+        // 실제 DB에서 MemberVO를 조회하는 로직 (예: mybatis 매퍼 호출)
+        return memberMapper.selectMemberByMbrCd(mbrCd);
+    }
 
 }
