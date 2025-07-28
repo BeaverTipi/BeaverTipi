@@ -50,9 +50,12 @@ public class RestContractAuthorizationController {
 	private MemberService memService;
 
 	@PostMapping
-	public ResponseEntity<?> contractSignPageAuthorize(@RequestBody Map<String, String> payload,
-			@AuthenticationPrincipal Authentication auth, Principal principal, HttpServletRequest request)
-			throws Exception {
+	public ResponseEntity<?> contractSignPageAuthorize(
+			@RequestBody Map<String, String> payload
+			, @AuthenticationPrincipal Authentication auth
+			, Principal principal
+			, HttpServletRequest request
+	) throws Exception {
 		String resultJson = "";
 		try {
 			/** 1. 복호화 */

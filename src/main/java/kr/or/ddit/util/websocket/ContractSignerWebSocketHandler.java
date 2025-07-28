@@ -3,13 +3,17 @@ package kr.or.ddit.util.websocket;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,7 +49,7 @@ public class ContractSignerWebSocketHandler extends TextWebSocketHandler {
                 .add(session);
             session.getAttributes().put("contId", contId);
 
-            log.info("----<><>WebSocket 연결 성공: contId={}, role={}, session={}", contId, role, session.getId());
+            log.info("----<><>[REALTIME-WS] WebSocket 연결 성공: contId={}, role={}, session={}", contId, role, session.getId());
 
             // JOINED 메시지 전파
             ObjectMapper mapper = new ObjectMapper();
@@ -97,32 +101,93 @@ public class ContractSignerWebSocketHandler extends TextWebSocketHandler {
             log.warn("무시된 WebSocket 문자열 메시지: {}", msgPayload);
             return;
         }
+        
 
-        for (WebSocketSession s : contractSessions.get(contId)) {
-            if (s.isOpen() && !s.getId().equals(session.getId())) {
-                try {
-                    s.sendMessage(message);
-                } catch (Exception e) {
-                    log.error("--<><>WebSocket 메시지 전송 실패: {}", e.getMessage());
+        try {
+            // JSON 파싱
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> json = mapper.readValue(msgPayload, new TypeReference<>() {});
+            String type = (String) json.get("type");
+            Object payload = json.get("payload");
+            
+            // ✅ INIT_REQUEST → 전체 브로드캐스트로 SET_INIT_RESPONSE
+            if ("INIT_REQUEST".equals(type)) {
+                log.info("[REALTIME_WS] SET_INIT_REQUEST 수신: contId={}", contId);
+
+                Map<String, Object> response = new HashMap<>();
+                response.put("type", "INIT_RESPONSE");
+                response.put("contId", contId);
+                response.put("payload", payload); // Signer[] 형태
+
+                String responseJson = mapper.writeValueAsString(response);
+
+                for (WebSocketSession s : contractSessions.getOrDefault(contId, Set.of())) {
+                    if (s.isOpen()) {
+                    	try {
+                        s.sendMessage(new TextMessage(responseJson));
+                    	} catch(Exception e) {
+                    		log.error("--<><> [INIT-] WebSocket 메시지 전송 실패: {}", e.getMessage());
+                    	}
+                    }
+                }
+
+                return; // 💡 SET_INIT_REQUEST는 여기서 끝
+            }
+            
+
+            // ✅ "JOINED" 메시지는 자기 자신 포함 전체 브로드캐스트
+            if ("JOINED".equals(type)) {
+                for (WebSocketSession s : contractSessions.getOrDefault(contId, Collections.emptySet())) {
+                    if (s.isOpen()) {
+                        try {
+                            s.sendMessage(message);
+                        } catch (Exception e) {
+                            log.error("--<><> [JOINED] WebSocket 메시지 전송 실패: {}", e.getMessage());
+                        }
+                    }
+                }
+                return;
+            }
+
+            // ✅ 나머지 메시지들은 기존처럼 자기 자신 제외 브로드캐스트
+            for (WebSocketSession s : contractSessions.getOrDefault(contId, Collections.emptySet())) {
+                if (s.isOpen() && !s.getId().equals(session.getId())) {
+                    try {
+                        s.sendMessage(message);
+                    } catch (Exception e) {
+                        log.error("--<><> WebSocket 메시지 전송 실패: {}", e.getMessage());
+                    }
                 }
             }
+
+        } catch (Exception ex) {
+            log.error("❌ WebSocket 메시지 파싱 실패 또는 전파 오류", ex);
         }
     }
 
 
     // 필요 시 외부에서 호출할 수 있는 broadcast 메서드
     public void broadcastToContract(String contId, String message) {
-        Set<WebSocketSession> sessions = contractSessions.get(contId);
-        if (sessions != null) {
-            for (WebSocketSession s : sessions) {
-                if (s.isOpen()) {
-                    try {
-                        s.sendMessage(new TextMessage(message));
-                    } catch (Exception e) {
-                        log.error("--<><>외부 broadcast 실패: {}", e.getMessage());
+    	try {
+            JSONObject json = new JSONObject(message);
+            String type = json.optString("type");
+
+            // ❌ SET_* 타입은 broadcast 안 함
+            if (type != null && type.startsWith("SET_")) {
+                System.out.println("⚠️ broadcast 차단된 SET_* 메시지: " + type);
+                return;
+            }
+
+            Set<WebSocketSession> sessions = contractSessions.get(contId);
+            if (sessions != null) {
+                for (WebSocketSession ws : sessions) {
+                    if (ws.isOpen()) {
+                        ws.sendMessage(new TextMessage(message));
                     }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

@@ -368,6 +368,8 @@ public class RestContractSignatureController {
 				}
 			}
 
+			
+//			log.debug("129842389nfqcuyhyjuhm ----<><><<> {}", defaultSigners.toString());
 			// 4. 응답 JSON
 			resultJson = objectMapper.writeValueAsString(Map.of("success", true, "signers", defaultSigners));
 			return ResponseEntity.ok(aes256Util.encryptWithDynamicIV(resultJson));
