@@ -72,6 +72,8 @@ function closeModal() {
 
 // 등록
 document.addEventListener('DOMContentLoaded', () => {
+	
+	
   fetchList();
 
   const form = document.getElementById('vaForm');
