@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,25 +18,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import jakarta.inject.Inject;
 import kr.or.ddit.admin.report.service.ReportPostService;
-import kr.or.ddit.util.renderer.DefaultPaginationRenderer;
+import kr.or.ddit.util.file.service.FileService;
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.util.page.SimpleSearch;
-import kr.or.ddit.vo.BoardVO;
-import kr.or.ddit.vo.ReportVO;
+import kr.or.ddit.util.renderer.DefaultPaginationRenderer;
 import kr.or.ddit.vo.ReportSearchVO; // ReportSearchVO 임포트 추가
+import kr.or.ddit.vo.ReportVO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/admin/report")
+@RequestMapping("")
 public class ReportUserListController {
 
 	@Autowired
     private ReportPostService reportPostService;
+	
+	@Autowired
+    private FileService fileService;
 
-    @GetMapping("userList")
+    @GetMapping("/admin/report/userList")
     public String selectReportedPostList(
         @RequestParam(name="page", required = false, defaultValue = "1") int currentPage,
         @ModelAttribute("detailSearch") ReportSearchVO detailSearch, // ReportVO -> ReportSearchVO로 변경
@@ -79,8 +84,26 @@ public class ReportUserListController {
         return "admin/report/userList";
     }
 
-    // 이하는 이전과 동일 (List<ReportVO>, ReportVO, Map 사용)
-    @PostMapping("updateStatuses")
+    // 파일 미리보기/다운로드를 위한 엔드포인트
+    @GetMapping("/admin/report/file/preview/{fileId}")
+    public ResponseEntity<Resource> previewFile(@PathVariable String fileId) {
+        log.info("파일 미리보기 요청. fileId: {}", fileId);
+        try {
+            // FileService의 downloadFile 메서드를 호출하여 Resource를 반환받음
+            // 이 downloadFile 메서드가 Content-Type 헤더를 올바르게 설정하는 책임도 가짐
+            return fileService.downloadFile(fileId);
+
+        } catch (Exception e) {
+            // 파일 조회 또는 S3에서 가져오는 중 오류 발생 시
+            log.error("파일 미리보기 중 오류 발생. fileId: {}", fileId, e);
+            // 클라이언트에게 404 (Not Found) 또는 500 (Internal Server Error) 응답을 보냄.
+            // 이렇게 해야 application/json 형태의 오류 메시지가 아닌, 올바른 HTTP 상태 코드를 반환
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500 에러 반환
+        }
+    }
+    
+    // List<ReportVO>, ReportVO, Map 사용
+    @PostMapping("/axios/admin/report/updateStatuses")
     @ResponseBody
     public String updateReportStatuses(@RequestBody List<ReportVO> rptStatusUpdates) {
         try {
@@ -98,7 +121,7 @@ public class ReportUserListController {
         }
     }
 
-    @GetMapping("/detail/{reportId}")
+    @GetMapping("/axios/admin/report/detail/{reportId}")
     @ResponseBody
     public ReportVO getReportDetail(@PathVariable String reportId) {
         log.info("신고 상세 조회 요청. reportId: {}" + reportId);
@@ -111,7 +134,7 @@ public class ReportUserListController {
         return reportDetail;
     }
 
-    @PostMapping("/updateMemberStatus")
+    @PostMapping("/axios/admin/report/updateMemberStatus")
     @ResponseBody
     public String updateMemberStatus(@RequestParam String mbrCd, @RequestParam String mbrStatus) {
         log.info("updateMemberStatus called. mbrCd: {}, mbrStatus: {}", mbrCd, mbrStatus);
@@ -124,7 +147,7 @@ public class ReportUserListController {
         }
     }
 
-    @PostMapping("/updateListingDeleteStatus")
+    @PostMapping("/axios/admin/report/updateListingDeleteStatus")
     @ResponseBody
     public String updateListingDeleteStatus(@RequestParam String lstgId, @RequestParam String lstgDel) {
         log.info("updateListingDeleteStatus called. lstgId: {}, lstgDel: {}", lstgId, lstgDel);

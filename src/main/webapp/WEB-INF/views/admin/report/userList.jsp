@@ -15,9 +15,18 @@
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script> <script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>
+    	// pdf.worker.min.js가 CDN에서 로드되는지 확인
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
+    </script> 
+    <script>
     	var contextPath = '${pageContext.request.contextPath}'; // contextPath 변수 선언 추가
 	</script>
+	
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_APP_KEY&libraries=services,clusterer"></script>
+
+    <script src="${pageContext.request.contextPath}/app/js/main/mainMap/mainKakaoMap.js"></script>
     <script src="${pageContext.request.contextPath}/app/js/admin/board/userList.js"></script>
 
 <h2 class="board-title">회원 & 매물 신고 관리</h2>

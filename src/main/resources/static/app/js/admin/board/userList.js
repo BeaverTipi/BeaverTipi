@@ -164,7 +164,7 @@ function renderImage(fileId) {
             width = width * (maxHeight / height);
             height = maxHeight;
         }
-        
+
         canvas.width = width;
         canvas.height = height;
         ctx.drawImage(img, 0, 0, width, height);
@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         const reportId = $(this).data('report-id');
 
-        axios.get(`${contextPath}/admin/report/detail/${reportId}`) // contextPath 사용
+        axios.get(`${contextPath}/axios/admin/report/detail/${reportId}`) // contextPath 사용
             .then(response => {
                 const data = response.data; // data는 이제 ReportVO 객체입니다.
                 console.log("신고 상세 정보:", data); // 데이터 확인용 로그
@@ -316,8 +316,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 $('#modalBrdCont').html(data.brdCont ? data.brdCont.replace(/\n/g, '<br>') : '내용 없음');
 
                 const isListingReport = (data.rptCode === 'LSTG');
-                $('#modalTargetIdLabel').text(isListingReport ? '피신고매물 ID : ' : '피신고자 ID : ');
-                $('#modalRptTargetId').text(data.rptTargetId || 'N/A');
+                const $modalTargetIdLabel = $('#modalTargetIdLabel');
+                const $modalRptTargetId = $('#modalRptTargetId'); // 이 요소를 변경합니다.
 
                 const $memberSpecificInfo = $('#memberSpecificInfo');
                 const $modalNewMbrStatus = $('#modalNewMbrStatus');
@@ -327,7 +327,33 @@ document.addEventListener('DOMContentLoaded', function() {
                 $memberSpecificInfo.hide();
                 $listingSpecificInfo.hide();
 
+                // --- 매물 신고일 경우 링크 추가 로직 시작 ---
                 if (isListingReport) {
+                    $modalTargetIdLabel.text('피신고매물 ID : ');
+                    const lstgId = data.rptTargetId; // 매물 ID를 가져옴
+
+                    // <span id="modalRptTargetId"> 대신 클릭 가능한 <a> 태그를 생성
+                    const listingLinkHtml = `<a href="#" class="listing-detail-link" data-lstg-id="${lstgId}">${lstgId || 'N/A'}</a>`;
+                    $modalRptTargetId.html(listingLinkHtml); // HTML로 설정
+                    $modalRptTargetId.data('lstg-id', lstgId); // jQuery data()에도 저장
+
+                    // 동적으로 생성된 <a> 태그(클래스: .listing-detail-link)에 클릭 이벤트 리스너 추가
+                    // .off()를 사용하여 기존 이벤트 리스너 중복 등록 방지
+                    $modalRptTargetId.off('click', '.listing-detail-link').on('click', '.listing-detail-link', function(event) {
+                        event.preventDefault(); // 링크 기본 동작(페이지 이동) 방지
+                        event.stopPropagation(); // 부모 요소 클릭 이벤트(report-row) 전파 방지
+                        const clickedLstgId = $(this).data('lstg-id');
+                        console.log("매물 상세 모달 열기 요청:", clickedLstgId);
+
+                        // mainKakaoMap.js 또는 listRenderer.js에 정의된 window.openDetailModal 함수 호출
+                        if (typeof window.openDetailModal === 'function') {
+                            window.openDetailModal(clickedLstgId);
+                        } else {
+                            console.error("window.openDetailModal 함수를 찾을 수 없습니다. 스크립트 로드 순서를 확인해주세요.");
+                            alert("매물 상세 페이지를 불러올 수 없습니다.");
+                        }
+                    });
+
                     $listingSpecificInfo.show();
                     // ReportVO에 lstgDel이 직접 있다면 data.lstgDel, ListingVO 내에 있다면 data.listingVO.lstgDel 확인 필요
                     $('#modalNewLtsgDel').val(data.lstgDel);
@@ -337,7 +363,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     $('#btnProcessAllChanges').removeData('original-mbr-status');
                     $('#btnProcessAllChanges').removeData('mbr-cd');
 
-                } else {
+                } else { // 회원 신고일 경우 (매물 신고가 아님)
+                    $modalTargetIdLabel.text('피신고자 ID : ');
+                    $modalRptTargetId.html(data.rptTargetId || 'N/A'); // 다시 일반 텍스트로 설정
+                    $modalRptTargetId.removeData('lstg-id'); // 매물 데이터 제거
+                    $modalRptTargetId.off('click', '.listing-detail-link'); // 혹시 모를 이벤트 리스너 제거
+
                     $memberSpecificInfo.show();
                     // ReportVO에 rptTargetMbrStatus가 직접 있다면 data.rptTargetMbrStatus, MemberVO 내에 있다면 data.memberVO.mbrStatus 확인 필요
                     $('#modalNewMbrStatus').val(data.rptTargetMbrStatus);
@@ -347,17 +378,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     $('#btnProcessAllChanges').removeData('original-lstg-del');
                     $('#btnProcessAllChanges').removeData('lstg-id');
                 }
+                // --- 매물 신고일 경우 링크 추가 로직 끝 ---
 
                 $('#modalRptStatusCode').val(data.rptStatusCode);
                 $('#btnProcessAllChanges').data('report-id', data.rptId);
                 $('#btnProcessAllChanges').data('original-rpt-status', data.rptStatusCode);
-                
+
                 // --- 첨부파일 관련 로직 시작 ---
                 // ReportVO에 attachFileList라는 이름으로 첨부파일 목록이 넘어온다고 가정
                 const fileDataHolder = document.querySelector("#reportDetailModal #fileDataHolder");
                 // data.attachFileList가 null이거나 정의되지 않았다면 빈 배열 사용
-                const fileListJson = JSON.stringify(data.attachFileList || []); 
-                fileDataHolder.setAttribute("data-filelist", fileListJson);
+                const fileListJson = JSON.stringify(data.attachFiles || []);
+				fileDataHolder.setAttribute("data-filelist", fileListJson);
 
                 currentFileList = JSON.parse(fileListJson);
                 currentIndex = 0; // 항상 첫 번째 파일부터 시작
@@ -381,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // #reportDetailModal 내의 버튼들을 선택
                 $('#reportDetailModal #prevBtn').off('click').on('click', prevFile);
                 $('#reportDetailModal #nextBtn').off('click').on('click', nextFile);
-                
+
                 // 첨부파일 목록 보기/숨기기 버튼 이벤트 리스너 재등록
                 const toggleBtn = document.querySelector("#reportDetailModal #toggleFileListBtn");
                 const fileTable = document.querySelector("#reportDetailModal #fileTable");
@@ -399,7 +431,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 // --- 첨부파일 관련 로직 끝 ---
 
-                $('#reportDetailModal').modal('show');
+                $('#reportDetailModal').modal('show'); // 신고 상세 모달 표시
             })
             .catch(error => {
                 console.error('신고 상세 정보 로드 실패:', error);
@@ -433,7 +465,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (newRptStatusCode !== originalRptStatus) {
             changesMade = true;
             promises.push(
-                axios.post(`${contextPath}/admin/report/updateStatuses`, [{ rptId: reportId, rptStatusCode: newRptStatusCode }])
+                axios.post(`${contextPath}/axios/admin/report/updateStatuses`, [{ rptId: reportId, rptStatusCode: newRptStatusCode }])
                     .then(response => {
                         if (response.data.status === 'success') {
                             successMessages.push('신고 처리 상태가 성공적으로 변경되었습니다.');
@@ -451,7 +483,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (mbrCd && newMbrStatus !== originalMbrStatus) {
             changesMade = true;
             promises.push(
-                axios.post(`${contextPath}/admin/report/updateMemberStatus`, null, {
+                axios.post(`${contextPath}/axios/admin/report/updateMemberStatus`, null, {
                     params: { mbrCd: mbrCd, mbrStatus: newMbrStatus }
                 })
                 .then(response => {
@@ -471,7 +503,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (lstgId && newLstgDel !== originalLstgDel) {
             changesMade = true;
             promises.push(
-                axios.post(`${contextPath}/admin/report/updateListingDeleteStatus`, null, {
+                axios.post(`${contextPath}/axios/admin/report/updateListingDeleteStatus`, null, {
                     params: { lstgId: lstgId, lstgDel: newLstgDel }
                 })
                 .then(response => {
@@ -506,19 +538,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     alert(finalMessage || "처리 완료 (메시지 없음)");
                     $('#reportDetailModal').modal('hide');
-                    window.location.reload();
+                    window.location.reload(); // 페이지 새로고침하여 변경사항 반영
                 })
                 .catch(allErrors => {
                     console.error('모든 Promise 처리 중 오류 발생:', allErrors);
                     alert('일부 변경 사항 처리 중 오류가 발생했습니다.');
                     $('#reportDetailModal').modal('hide');
-                    window.location.reload();
+                    window.location.reload(); // 페이지 새로고침하여 변경사항 반영
                 });
         }
     });
-    
+
     // 모달이 닫힐 때 파일 미리보기 상태 초기화
-    // #adsDetailModal -> #reportDetailModal 변경
     $('#reportDetailModal').on('hidden.bs.modal', function () {
         currentFileList = [];
         currentIndex = 0;
@@ -531,9 +562,5 @@ document.addEventListener('DOMContentLoaded', function() {
         canvas.height = 1;
         renderFileTable(); // 파일 목록 테이블도 초기화
         updatePageIndicator(); // 페이지 인디케이터 초기화
-
-        // 불필요한 광고 관련 반려 내용 필드 초기화 로직 제거
-        // $('#rejectMessageGroup').hide();
-        // $('#modalAdsRejectMessage').val('');
     });
 });

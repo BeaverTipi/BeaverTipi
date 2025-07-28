@@ -38,7 +38,7 @@ public class CreateReportServiceImpl implements CreateReportService {
      */
     @Override
     @Transactional // 여러 DB 작업이 하나의 단위로 처리되도록 트랜잭션 설정
-    public boolean createReport(ReportVO reportVO, List<MultipartFile> attachFiles) { // 반환 타입 boolean으로 변경
+    public boolean createReport(ReportVO reportVO, List<MultipartFile> attachFiles) {
         try {
             // 1. BOARD 테이블에 게시글 정보 삽입
             // ReportVO가 BoardVO를 상속했으므로, ReportVO 객체 자체가 BoardVO의 필드들을 가지고 있습니다.

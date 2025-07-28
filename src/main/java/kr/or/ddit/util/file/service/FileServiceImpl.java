@@ -228,7 +228,13 @@ public class FileServiceImpl implements FileService {
         FileVO condition = new FileVO();
         condition.setFileSourceRef(sourceRef);
         condition.setFileSourceId(sourceId);
-        return mapper.selectFileList(condition);
+
+        try {
+            return mapper.selectFileList(condition);
+        } catch (Exception e) {
+            log.error("파일 목록 조회 중 오류 발생 (sourceRef: {}, sourceId: {}): {}", sourceRef, sourceId, e.getMessage(), e);
+            return new ArrayList<>();
+        }
     }
     @Override
     public InputStream getFileStream(String fileId) {

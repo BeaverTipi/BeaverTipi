@@ -1,5 +1,14 @@
 @charset "UTF-8";
 
+.listing-detail-link {
+    cursor: pointer; /* 마우스 오버 시 손가락 모양 커서 */
+}
+
+.listing-detail-link:hover {
+    color: #f3c78e !important; /* (초기화 버튼이랑 같은 색) */
+    text-decoration: none; /* 호버 시 밑줄 제거 (선택 사항) */
+}
+
 /* 모달의 select 박스 크기 조절 */
 #modalNewMbrStatus, #modalRptStatusCode, #modalNewLtsgDel {
 	width: auto;
@@ -10,7 +19,7 @@
     cursor: pointer; /* 마우스 커서를 포인터로 변경하여 클릭 가능함을 시각적으로 알림 */
 }
 #reportedUserTable tbody tr:hover td {
-	color: #f3c78e; /* 원하는 색상으로 변경(초기화 버튼이랑 같은 색) */
+	color: #f3c78e; /* (초기화 버튼이랑 같은 색) */
 }
 
 #btnProcessAllChanges {

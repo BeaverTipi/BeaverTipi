@@ -158,6 +158,7 @@
             R.RPT_TARGET_ID,
             R.RPT_STATUS_CODE,
             R.RPT_CODE,
+            R.RPT_DEL_YN,
             M.MBR_STATUS_CODE AS RPT_TARGET_MBR_STATUS,
             M.MBR_ID AS RPT_TARGET_MBR_CD,
             L.LSTG_DEL AS LSTG_DEL

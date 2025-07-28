@@ -28,7 +28,7 @@ public class ReportPostServiceImpl implements ReportPostService {
 	@Autowired
     private FileService fileService;
 	
-	private static final String RP_FILE_SOURCE_REF = "RP_BOARD";
+	private static final String RP_FILE_SOURCE_REF = "RPT_BOARD";
 
     @Override
     public List<ReportVO> selectReportedPostList(PaginationInfo<ReportVO> pagingVO) {
@@ -49,15 +49,21 @@ public class ReportPostServiceImpl implements ReportPostService {
     public ReportVO selectReportDetail(String reportId) {
         ReportVO reportDetail = reportPostMapper.selectReportDetailByReportId(reportId);
 
+        // reportDetail이 null이 아니고, 첨부파일이 연결될 Board Number(brdNo)가 있을 경우에만 파일 조회
         if (reportDetail != null && reportDetail.getBrdNo() != null) {
-            // **디버깅 필수: reportDetail.getBrdNo() 값이 예상대로 나오는지 확인**
-            // **디버깅 필수: fileService.readFileList 호출 후 attachedFiles에 데이터가 있는지 확인**
-            List<FileVO> attachedFiles = fileService.readFileList(RP_FILE_SOURCE_REF, reportDetail.getBrdNo());
+            // 이제 이 쿼리는 'RPT_BOARD'와 'brdNo'를 기준으로 파일을 찾게 됩니다.
+            // 파일 저장 시점의 FILE_SOURCE_REF, FILE_SOURCE_ID와 완벽하게 일치하게 됩니다.
+            List<FileVO> attachedFiles = fileService.readFileList(RP_FILE_SOURCE_REF, reportDetail.getBrdNo()); 
+
             reportDetail.setAttachFiles(attachedFiles);
-            log.debug("Found reportDetail for reportId: {}, brdNo: {}, Attached Files Count: {}",
+            log.debug("Found reportDetail for reportId: {}, BrdNo: {}, Attached Files Count: {}",
                       reportId, reportDetail.getBrdNo(), attachedFiles != null ? attachedFiles.size() : 0);
         } else {
             log.warn("No report detail found or brdNo is null for reportId: {}. No attempt to fetch files.", reportId);
+            // 이 경우 attachFiles는 기본적으로 빈 리스트로 유지되거나, 필요에 따라 초기화할 수 있습니다.
+            if (reportDetail != null) {
+                reportDetail.setAttachFiles(List.of()); // 빈 리스트로 명시적 설정
+            }
         }
         return reportDetail;
     }
