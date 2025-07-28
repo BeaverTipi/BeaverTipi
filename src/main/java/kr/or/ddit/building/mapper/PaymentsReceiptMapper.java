@@ -19,7 +19,7 @@ public interface PaymentsReceiptMapper {
 	List<Map<String, Object>> selectMonthlyChargeBillSummary(
 		    @Param("rentalPtyId") String rentalPtyId,
 		    @Param("chgbillChargeMonth") String chgbillChargeMonth
-		);;
+		);
 	
 	public String selectRentalPtyId(String mbrCd);
 	
@@ -37,8 +37,13 @@ public interface PaymentsReceiptMapper {
 	
 	public int selectChargeBillHistoryCount(ChargeBillHistoryDTO cbhDTO);
 	
-	public List<IntegratedMgmtFeeDTO> selectIntegratedMgmtFee(ChargeBillHistoryDTO cbhDTO);
 	
-	public List<EnergyUsageDTO> selectEnergyUsage(ChargeBillHistoryDTO cbhDTO);
+	public List<EnergyUsageDTO> selectOwnEnergyUsage(@Param("chgbillChargeMonth") String chgbillChargeMonth, @Param("unitId") String unitId);
+	
+	public List<IntegratedMgmtFeeDTO> selectManagementFee(@Param("chgbillChargeMonth") String chgbillChargeMonth, @Param("unitId") String unitId);
+	
+	public ChargeBillVO selectChargebill(@Param("chgbillChargeMonth") String chgbillChargeMonth, @Param("unitId") String unitId );
+	
+	
 	
 }

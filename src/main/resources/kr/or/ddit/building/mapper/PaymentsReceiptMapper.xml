@@ -113,21 +113,31 @@ and rental_pty_id = #{rentalPtyId}
   ]]>
 </select>
 
-<select id="selectIntegratedMgmtFee" resultType="kr.or.ddit.building.chargeBill.dto.IntegratedMgmtFeeDTO">
-select *
-from integrated_management_fee
-where int_mna_fee_cd = #{chgbillChargeMonth}
-and unit_id=#{unitId}
 
+
+<!-- 상세정보 영역 -->
+<select id="selectOwnEnergyUsage" resultType= "kr.or.ddit.building.chargeBill.dto.EnergyUsageDTO">
+SELECT DUM_COMP ,TOTAL_ENERGY_CHARGE_AMT, TOTAL_ENERGY_USAGE_QTY
+FROM HOUSEHOLD_ENERGY_MONTHLY_USAGE
+WHERE DUM_MONTH = #{chgbillChargeMonth}
+AND UNIT_ID = #{unitId}
 </select>
 
-<select id="selectEnergyUsage" resultType ="kr.or.ddit.building.chargeBill.dto.EnergyUsageDTO">
-select *
-from household_energy_monthly_usage
-where dum_month = #{chgbillChargeMonth}
-and unit_id=#{unitId}
+<select id="selectManagementFee" resultType="kr.or.ddit.building.chargeBill.dto.IntegratedMgmtFeeDTO">
+SELECT INT_MAN_FEE_CD, INTG_FEE_AMOUNT
+FROM INTEGRATED_MANAGEMENT_FEE
+WHERE INTG_FEE_ID = #{chgbillChargeMonth}
+AND UNIT_ID = #{unitId}
 </select>
 
-
+<select id="selectChargebill" resultType="ChargeBillVO">
+SELECT a.*, c.BLDG_NM, b.UNIT_ROOM, d.MBR_NM
+FROM charge_bill a
+INNER JOIN unit b ON (a.unit_id = b.unit_id)
+INNER JOIN building c ON (b.bldg_id = c.bldg_id)
+INNER JOIN member d ON (b.mbr_cd = d.mbr_cd)
+WHERE a.CHGBILL_CHARGE_MONTH = #{chgbillChargeMonth}
+AND a.UNIT_ID = #{unitId}
+</select>
 
 </mapper>

@@ -3,11 +3,17 @@ package kr.or.ddit.building.chargeBill.dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 public class ChargeBillHistoryDTO implements Serializable{
+	@JsonProperty 
 	public String chgbillChargeMonth;
+	
 	public String rentalPtyId;
 	public String unitId;
 	public String bldgId;

@@ -5,7 +5,9 @@ import java.util.Map;
 
 import kr.or.ddit.building.chargeBill.dto.ChargeBillHistoryDTO;
 import kr.or.ddit.building.chargeBill.dto.EnergyUsageDTO;
+import kr.or.ddit.building.chargeBill.dto.IntegratedMgmtFeeDTO;
 import kr.or.ddit.vo.BuildingVO;
+import kr.or.ddit.vo.ChargeBillVO;
 import kr.or.ddit.vo.UnitVO;
 
 public interface PaymentsReceiptService {
@@ -22,5 +24,9 @@ public interface PaymentsReceiptService {
 
     public List<UnitVO> getUnits(String bldgId, String rentalPtyId);
     
-    public List<EnergyUsageDTO> getEnergyUsage(ChargeBillHistoryDTO cbhDTO);
+    public List<EnergyUsageDTO> getEnergyUsage(String chgbillChargeMonth, String unitId);
+    
+    public List<IntegratedMgmtFeeDTO> getManagementFee(String chgbillChargeMonth, String unitId);
+    
+    public ChargeBillVO getChargebill(String chgbillChargeMonth, String unitId);
 }

@@ -9,20 +9,27 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import kr.or.ddit.building.chargeBill.dto.ChargeBillHistoryDTO;
+import kr.or.ddit.building.chargeBill.dto.EnergyUsageDTO;
+import kr.or.ddit.building.chargeBill.dto.IntegratedMgmtFeeDTO;
 import kr.or.ddit.building.chargeBill.service.PaymentsReceiptService;
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.BuildingVO;
+import kr.or.ddit.vo.ChargeBillVO;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.UnitVO;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequestMapping("/building/payments/receipt")
+@Slf4j
 public class PaymentsReceiptController {
 
 	@Autowired
@@ -98,5 +105,21 @@ public class PaymentsReceiptController {
 		return service.getUnits(bldgId, rentalPtyId);
 	}
 	
+	@GetMapping("/list/history/details")
+	public String getDetails(
+		@RequestParam("chgbillChargeMonth") String chgbillChargeMonth,
+		@RequestParam("unitId") String unitId,
+	    Model model
+	) {
+		ChargeBillVO cbVO = service.getChargebill(chgbillChargeMonth, unitId);
+	    List<EnergyUsageDTO> energyUsage = service.getEnergyUsage(chgbillChargeMonth, unitId);
+	    List<IntegratedMgmtFeeDTO> managementFee = service.getManagementFee(chgbillChargeMonth, unitId);
+	    
+	    model.addAttribute("cbVO", cbVO);               
+	    model.addAttribute("energyUsage", energyUsage);    
+	    model.addAttribute("managementFee", managementFee); 
+
+	    return "building/managed/chargebillDetailModal"; 
+	}
 	
 }
