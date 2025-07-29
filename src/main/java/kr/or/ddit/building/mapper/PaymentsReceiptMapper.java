@@ -42,7 +42,7 @@ public interface PaymentsReceiptMapper {
 	
 	public List<IntegratedMgmtFeeDTO> selectManagementFee(@Param("chgbillChargeMonth") String chgbillChargeMonth, @Param("unitId") String unitId);
 	
-	public ChargeBillVO selectChargebill(@Param("chgbillChargeMonth") String chgbillChargeMonth, @Param("unitId") String unitId );
+	public ChargeBillHistoryDTO selectChargebill(@Param("chgbillChargeMonth") String chgbillChargeMonth, @Param("unitId") String unitId );
 	
 	
 	

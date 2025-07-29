@@ -111,11 +111,15 @@ public class PaymentsReceiptController {
 		@RequestParam("unitId") String unitId,
 	    Model model
 	) {
-		ChargeBillVO cbVO = service.getChargebill(chgbillChargeMonth, unitId);
+
+		ChargeBillHistoryDTO cbhDTO = service.getChargebill(chgbillChargeMonth, unitId);
 	    List<EnergyUsageDTO> energyUsage = service.getEnergyUsage(chgbillChargeMonth, unitId);
 	    List<IntegratedMgmtFeeDTO> managementFee = service.getManagementFee(chgbillChargeMonth, unitId);
 	    
-	    model.addAttribute("cbVO", cbVO);               
+
+	    
+	    
+	    model.addAttribute("cbhDTO", cbhDTO);               
 	    model.addAttribute("energyUsage", energyUsage);    
 	    model.addAttribute("managementFee", managementFee); 
 

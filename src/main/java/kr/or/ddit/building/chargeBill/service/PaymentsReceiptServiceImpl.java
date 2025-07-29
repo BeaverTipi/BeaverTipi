@@ -68,7 +68,7 @@ public class PaymentsReceiptServiceImpl implements PaymentsReceiptService {
 	}
 
 	@Override
-	public ChargeBillVO getChargebill(String chgbillChargeMonth, String unitId) {
+	public ChargeBillHistoryDTO getChargebill(String chgbillChargeMonth, String unitId) {
 		// TODO Auto-generated method stub
 		return mapper.selectChargebill(chgbillChargeMonth, unitId);
 	}

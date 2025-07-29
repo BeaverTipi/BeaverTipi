@@ -1,139 +1,207 @@
-<!-- 
- * == 개정이력(Modification Information) ==
- *   
- *   수정일      			수정자           수정내용
- *  ============   	============== =======================
- *  2025. 7. 28.     		김재윤           최초 생성
- *
--->
-
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html>
+<%@ page contentType="text/html; charset=UTF-8" language="java"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+<title>관리비 상세정보</title>
+<link rel="stylesheet" href="/app/css/building/chargeBill/giro.css">
 <style>
-/* ✅ 전체 박스 스타일 */
-.resident-block {
-  border: none;
-  background: #fff;
-  padding: 24px;
-  margin: 20px auto;
-  max-width: 820px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
-  font-family: 'Noto Sans KR', sans-serif;
+body {
+	font-family: 'Noto Sans KR', sans-serif;
+	font-size: 14px;
+	color: #222;
 }
 
-/* ✅ 상단 제목 영역 */
+.charge-wrap {
+	line-height: 1.6;
+}
+
+.desc-box {
+	background-color: #f7f9fc;
+	padding: 1rem;
+	border-radius: 6px;
+	border: 1px solid #ddd;
+	font-size: 14px;
+	font-weight: 500;
+	color: #222;
+	font-family: 'Noto Sans KR', sans-serif;
+	white-space: pre-line;
+}
+
+.desc-box span {
+	font-weight: 500;
+	font-size: 14px;
+	color: #222;
+	font-family: inherit;
+}
+
+.charge-item label, .charge-item span, .resident-title, .btn-close-modal
+	{
+	font-weight: 500;
+	font-size: 14px;
+	color: #222;
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
 .resident-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  border-bottom: 1px solid #ddd;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	margin-bottom: 1.2rem;
+	border-bottom: 1px solid #ddd;
+	padding-bottom: 0.4rem;
 }
 
 .resident-title {
-  font-size: 22px;
-  font-weight: 600;
-  color: #333;
+	font-size: 1.2rem;
+	font-weight: 600;
+	color: #222;
 }
 
-.usage-month {
-  font-size: 14px;
-  color: #888;
-}
-
-/* ✅ 버튼 */
 .btn-close-modal {
-  background-color: #333;
-  color: #fff;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
+	background-color: #333;
+	color: #fff;
+	border: none;
+	padding: 6px 12px;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 13px;
 }
-
-/* ✅ 정보 블록 (문장형 정보) */
-.info-block {
-  margin-top: 12px;
-  font-size: 15px;
-  color: #222;
-  line-height: 1.8;
-}
-
-.info-block p {
-  margin: 4px 0;
-}
-
-/* ✅ 청구설명 강조 */
-.desc {
-  margin-top: 10px;
-  padding: 10px 12px;
-  background-color: #f0f4f8;
-  border-left: 4px solid #4a90e2
 </style>
-
 </head>
 <body>
-<div class="resident-block" id="resident_${cbhDTO.unitId}">
+	<div class="charge-wrap">
 
-  <!-- 🏠 타이틀: 건물 + 호수 + 세대주 -->
-  <div class="resident-header">
-    <h4 class="resident-title">
-      ${cbhDTO.bldgNm} ${cbhDTO.unitRoom}호 ${cbhDTO.mbrNm}
-    </h4>
-    <small class="usage-month">
-      ${cbhDTO.chgbillChargeMonth} 청구
-    </small>
-    <button class="btn-close-modal" onclick="closeModal()">닫기</button>
-  </div>
+		<!-- 타이틀 -->
+		<div class="resident-header">
+			<h2 class="resident-title">${cbhDTO.bldgNm}${cbhDTO.unitRoom}호
+				${cbhDTO.mbrNm}님 ${fn:substring(cbhDTO.chgbillChargeMonth, 0, 4)}년
+				${fn:substring(cbhDTO.chgbillChargeMonth, 4, 6)}월 청구</h2>
+			<button class="btn-close-modal" onclick="closeModal()">닫기</button>
+		</div>
 
-  <!-- 💬 청구 요약 정보 -->
-  <div class="info-block">
-    <p>${cbhDTO.chgbillDate} 청구일 / 납부기한 ${cbhDTO.chgbillDueDate}</p>
-    <p>납부상태: ${cbhDTO.chgbillStatus} / 납부일자: ${cbhDTO.chgbillPaidDate}</p>
-    <p>청구계좌: ${cbhDTO.chgbillAccNum}</p>
-    <p>총 청구액: ${cbhDTO.chgbillAmount}원</p>
-    <p class="desc">${cbhDTO.chgbillDesc}</p>
-  </div>
+		<!-- 기본 청구 정보 -->
+		<div class="charge-section">
+			<div class="charge-row">
+				<div class="charge-item">
+					<label>청구일</label>
+					<fmt:parseDate value="${cbhDTO.chgbillDate}" pattern="yyyyMMdd"
+						var="parsedIssueDate" />
+					<span><fmt:formatDate value="${parsedIssueDate}"
+							pattern="yyyy년 M월 d일" /></span>
+				</div>
+				<div class="charge-item">
+					<label>납기일</label>
+					<fmt:parseDate value="${cbhDTO.chgbillDueDate}" pattern="yyyyMMdd"
+						var="parsedDueDate" />
+					<span><fmt:formatDate value="${parsedDueDate}"
+							pattern="yyyy년 M월 d일" /></span>
+				</div>
+			</div>
+			<div class="charge-row">
+				<div class="charge-item">
+					<label>납부일</label>
+					<c:choose>
+						<c:when
+							test="${empty cbhDTO.chgbillPaidDate or cbhDTO.chgbillPaidDate == '0'}">
+							<span></span>
+						</c:when>
+						<c:otherwise>
+							<fmt:parseDate value="${cbhDTO.chgbillPaidDate}"
+								pattern="yyyyMMdd" var="parsedPaidDate" />
+							<span><fmt:formatDate value="${parsedPaidDate}"
+									pattern="yyyy년 M월 d일" /></span>
+						</c:otherwise>
+					</c:choose>
+				</div>
+				<div class="charge-item">
+					<label>납부상태</label> <span> <c:choose>
+							<c:when test="${cbhDTO.chgbillStatus == '001'}">미납</c:when>
+							<c:when test="${cbhDTO.chgbillStatus == '002'}">완납</c:when>
+							<c:when test="${cbhDTO.chgbillStatus == '004'}">연체</c:when>
+							<c:otherwise>기타</c:otherwise>
+						</c:choose>
+					</span>
+				</div>
+			</div>
+			<div class="charge-row">
+				<div class="charge-item">
+					<label>청구계좌</label><span>${cbhDTO.chgbillAccNum}</span>
+				</div>
+				<div class="charge-item">
+					<label>총 청구액</label><span>${cbhDTO.chgbillAmount}원</span>
+				</div>
+			</div>
+		</div>
 
-  <!-- 💡 통합 관리비 -->
-  <c:forEach var="fee" items="${managementFee}">
-    <div class="info-row">
-      <span>${fee.intManFeeCd}</span>  
-      <span>${fee.intgFeeAmount}원</span>
-    </div>
-  </c:forEach>
+		<!-- 공용 관리비 항목 -->
+		<div class="charge-section">
+			<h3>공용 관리비 항목</h3>
+			<c:set var="count" value="0" />
+			<div class="charge-row">
+				<c:forEach var="fee" items="${managementFee}" varStatus="vs">
+					<div class="charge-item">
+						<label> <c:choose>
+								<c:when test="${fee.intManFeeCd == '001'}">청소비</c:when>
+								<c:when test="${fee.intManFeeCd == '002'}">승강기 유지비</c:when>
+								<c:when test="${fee.intManFeeCd == '003'}">공용 전기료</c:when>
+								<c:when test="${fee.intManFeeCd == '004'}">공용 수도료</c:when>
+								<c:when test="${fee.intManFeeCd == '005'}">일반 운영비</c:when>
+								<c:when test="${fee.intManFeeCd == '006'}">경비 인건비</c:when>
+								<c:when test="${fee.intManFeeCd == '007'}">방역 소독비</c:when>
+								<c:when test="${fee.intManFeeCd == '008'}">소모품비</c:when>
+								<c:when test="${fee.intManFeeCd == '009'}">소방 설비 유지비</c:when>
+								<c:when test="${fee.intManFeeCd == '010'}">보안 시스템 유지비</c:when>
+								<c:otherwise>기타 항목</c:otherwise>
+							</c:choose>
+						</label> <span>${fee.intgFeeAmount}원</span>
+					</div>
+					<c:set var="count" value="${count + 1}" />
+					<c:if test="${count % 2 == 0 && !vs.last}">
+			</div>
+			<div class="charge-row">
+				</c:if>
+				</c:forEach>
+			</div>
+		</div>
 
-  <!-- 🔌 에너지 사용량 -->
-  <c:forEach var="energy" items="${energyUsage}">
-    <div class="info-row">
-      <c:choose>
-        <c:when test="${energy.dumComp == 'electric'}">
-          <span>전기: ${energy.totalEnergyUsageQty}kWh / ${energy.totalEnergyChargeAmt}원</span>
-        </c:when>
-        <c:when test="${energy.dumComp == 'water'}">
-          <span>수도: ${energy.totalEnergyUsageQty}㎥ / ${energy.totalEnergyChargeAmt}원</span>
-        </c:when>
-        <c:when test="${energy.dumComp == 'gas'}">
-          <span>가스: ${energy.totalEnergyUsageQty}㎥ / ${energy.totalEnergyChargeAmt}원</span>
-        </c:when>
-      </c:choose>
-    </div>
-  </c:forEach>
+		<!-- 에너지 사용 내역 -->
+		<div class="charge-section">
+			<h3>에너지 사용 내역</h3>
+			<c:forEach var="energy" items="${energyUsage}">
+				<div class="charge-row">
+					<div class="charge-item">
+						<label> <c:choose>
+								<c:when test="${energy.dumComp == '001'}">전기 사용량</c:when>
+								<c:when test="${energy.dumComp == '002'}">수도 사용량</c:when>
+								<c:when test="${energy.dumComp == '003'}">가스 사용량</c:when>
+								<c:otherwise>기타 사용량</c:otherwise>
+							</c:choose>
+						</label> <span> ${energy.totalEnergyUsageQty} <c:choose>
+								<c:when test="${energy.dumComp == '001'}">kWh</c:when>
+								<c:when test="${energy.dumComp == '002'}">㎥</c:when>
+								<c:when test="${energy.dumComp == '003'}">㎥</c:when>
+								<c:otherwise></c:otherwise>
+							</c:choose>
+						</span>
+					</div>
+					<div class="charge-item">
+						<label>청구금액</label> <span>${energy.totalEnergyChargeAmt}원</span>
+					</div>
+				</div>
+			</c:forEach>
+		</div>
 
-  <!-- 청구액 + 설명 -->
-<div class="info-block">
-  <p>총 청구액: ${cbhDTO.chgbillAmount}원</p>
-  <p class="desc">
-    ${cbhDTO.chgbillDesc}
-  </p>
-</div>
-</div>
+		<!-- 📝 청구 설명 -->
+		<div class="charge-section">
+			<label>청구 설명</label>
+			<div class="desc-box">
+				<span>${cbhDTO.chgbillDesc}</span>
+			</div>
+		</div>
+
+	</div>
+	<!-- charge-wrap -->
 </body>
 </html>

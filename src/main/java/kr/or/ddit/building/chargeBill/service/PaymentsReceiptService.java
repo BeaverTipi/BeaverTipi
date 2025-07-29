@@ -28,5 +28,5 @@ public interface PaymentsReceiptService {
     
     public List<IntegratedMgmtFeeDTO> getManagementFee(String chgbillChargeMonth, String unitId);
     
-    public ChargeBillVO getChargebill(String chgbillChargeMonth, String unitId);
+    public ChargeBillHistoryDTO getChargebill(String chgbillChargeMonth, String unitId);
 }

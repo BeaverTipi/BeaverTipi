@@ -130,7 +130,7 @@ WHERE INTG_FEE_ID = #{chgbillChargeMonth}
 AND UNIT_ID = #{unitId}
 </select>
 
-<select id="selectChargebill" resultType="ChargeBillVO">
+<select id="selectChargebill" resultType="kr.or.ddit.building.chargeBill.dto.ChargeBillHistoryDTO">
 SELECT a.*, c.BLDG_NM, b.UNIT_ROOM, d.MBR_NM
 FROM charge_bill a
 INNER JOIN unit b ON (a.unit_id = b.unit_id)
