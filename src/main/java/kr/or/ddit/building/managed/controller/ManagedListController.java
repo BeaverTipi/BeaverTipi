@@ -15,7 +15,8 @@ import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.TenancyAccountVO;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Controller
 @RequestMapping("/building/managed")
 public class ManagedListController {
@@ -31,6 +32,13 @@ public class ManagedListController {
         String rentalPtyId = memberVO.getTenancy().getRentalPtyId();
 
         List<BuildingVO> buildingList = managedService.selectBuildingListByRentalPtyId(rentalPtyId);
+        
+        log.info("반복문으로 로그 뽑아버리기!! size={}", buildingList.size());
+        for (BuildingVO building : buildingList) {
+            List<TenancyAccountVO> accList = managedService.selectAccountsByRentalPtyId(building.getRentalPtyId());
+            building.setAccList(accList);
+            log.info("빌딩명={}, 계좌개수={}", building.getBldgNm(), accList.size());
+        }
         
         for (BuildingVO building : buildingList) {
             List<TenancyAccountVO> accList = managedService.selectAccountsByRentalPtyId(building.getRentalPtyId());
