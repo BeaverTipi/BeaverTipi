@@ -16,11 +16,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(of="brdNo")
-public class BoardVO implements Serializable{
+@EqualsAndHashCode(of = "brdNo")
+public class BoardVO implements Serializable {
 	private String brdDelYnGrpCd;
 	private String brdCtgryGrpCd;
-	@NotBlank(groups = {UpdateGroup.class, DeleteGroup.class})
+	@NotBlank(groups = { UpdateGroup.class, DeleteGroup.class })
 	private String brdNo;
 	@NotBlank
 	private String brdCode;
@@ -36,43 +36,83 @@ public class BoardVO implements Serializable{
 	private Integer brdVwCnt;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDateTime brdModDtm;
-	@NotBlank(groups = {InsertGroup.class, DeleteGroup.class})
+	@NotBlank(groups = { InsertGroup.class, DeleteGroup.class })
 	private String brdDelYn;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDateTime brdEndDtm;
-	
+	private LocalDate brdEndDtm;
+
 	private String noticeType;
 	private String faqCtgry;
 	private String qnaCtgry;
-	private String noticeTypeName;	
+	private String noticeTypeName;
 	private List<NoticeVO> notice;
 	private BoardCartegoryVO boardCartegory;
 	private List<FAQVO> faq;
 	private List<QnAVO> qna;
-	
-	private List<FileVO> attachFiles;	// 첨부파일 목록 필드
-	
-	// 시스템 관리자 관련
-	private String brdCtgryValue;
-	
-    private MemberVO member;
-    
-    // ReportUserList를 위한 메서드
-    public String getFormattedBrdPblsDtm() {
-        if (this.brdPblsDtm == null) {
-            return "";
-        }
-        // JSP에서 원하는 "yyyy-MM-dd HH:mm" 포맷에 맞춰 포맷터 정의
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        return this.brdPblsDtm.format(formatter);
-    }
-    
-    private AdsClientVO adsClientVO;	// BoardVO에 AdsClientVO 객체를 포함시켜주는 필드
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate adsReqPblsStartDtFrom; // 광고 요청 게재 시작날짜 From
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate adsReqPblsEndDtTo;     // 광고 요청 게재 종료날짜 To
-    
- 
+	private List<FileVO> attachFiles; // 첨부파일 목록 필드
+
+	// ======================== 시스템 관리자 관련 ========================
+	private String brdCtgryValue;
+	private String brdCtgryCode; 
+	private String brdCtgryName; 
+
+	private String brdCodeName;  
+
+	// FAQ 전용
+	private String faqCtgryName;  
+
+	// QNA 전용
+	private String qnaStatus;  
+	private String qnaStatusName; 
+	private String qnaCtgryName;  
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate qnaAnsweredAt;  
+
+	// 검색용 날짜 범위 필터
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate brdPblsDtmStart;
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate brdPblsDtmEnd;
+	
+	public String getAdFormattedBrdPblsDtm() {
+		if (this.brdPblsDtm == null) {
+			return "";
+		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		return this.brdPblsDtm.format(formatter);
+		
+	}
+	
+	public String getAdFormattedBrdEndsDtm() {
+		if (this.brdEndDtm == null) {
+			return "";
+		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		return this.brdEndDtm.format(formatter);
+		
+	}
+	
+	// ======================== 시스템 관리자 끝 ========================
+
+	private MemberVO member;
+
+	// ReportUserList를 위한 메서드
+	public String getFormattedBrdPblsDtm() {
+		if (this.brdPblsDtm == null) {
+			return "";
+		}
+		// JSP에서 원하는 "yyyy-MM-dd HH:mm" 포맷에 맞춰 포맷터 정의
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		return this.brdPblsDtm.format(formatter);
+	}
+
+	private AdsClientVO adsClientVO; // BoardVO에 AdsClientVO 객체를 포함시켜주는 필드
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate adsReqPblsStartDtFrom; // 광고 요청 게재 시작날짜 From
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate adsReqPblsEndDtTo; // 광고 요청 게재 종료날짜 To
+
 }

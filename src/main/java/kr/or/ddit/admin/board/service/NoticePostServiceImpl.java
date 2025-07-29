@@ -2,6 +2,7 @@ package kr.or.ddit.admin.board.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.admin.mapper.NoticePostMapper;
@@ -43,5 +44,25 @@ public class NoticePostServiceImpl implements NoticePostService {
 	@Override
 	public int getTotalBoardRecord(PaginationInfo<BoardVO> paging) {
 		return mapper.selectTotalBoardRecord(paging);
+	}
+
+	@Override
+	public int createFAQ(BoardVO board) {
+		return mapper.insertFAQ(board);
+	}
+
+	@Override
+	public int updateFAQ(BoardVO board) {
+		return mapper.updateFAQ(board);
+	}
+
+	@Override
+	public int createQna(BoardVO board) {
+		return mapper.insertQna(board);
+	}
+
+	@Override
+	public int updateQna(BoardVO board) {
+		return mapper.updateQna(board);
 	}
 }

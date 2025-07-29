@@ -10,15 +10,13 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 
-<!-- ✅ FAQ 게시판 리스트 -->
-<!-- ✅ FAQ 게시판 리스트 (아코디언 구조) -->
 <table class="table">
 	<thead>
 		<tr>
 			<th>No</th>
 			<th>제목</th>
 			<th>게시일자</th>
-			<th>카테고리</th> <!-- FAQCT -->
+			<th>카테고리</th> 
 			<th>첨부</th>
 		</tr>
 	</thead>
@@ -33,11 +31,13 @@
 						<td class="faq-title" style="cursor:pointer;">
 							<c:out value="${board.brdTitlNm}" />
 						</td>
-						<td><c:out value="${board.brdPblsDtmFormatted}" /></td>
+						<td><c:out value="${board.adFormattedBrdPblsDtm}" /></td>
 						<td><c:out value="${board.brdCtgryName}" /></td>
 						<td>
-							<img src="${pageContext.request.contextPath}/volt/assets/img/file-download-svgrepo-com.svg" 
-							     width="20" height="20" alt="첨부파일" />
+						  <c:if test="${not empty board.attachFiles}">
+						    <img src="${pageContext.request.contextPath}/volt/assets/img/file-download-svgrepo-com.svg"
+						         width="20" height="20" alt="첨부파일" />
+						  </c:if>
 						</td>
 					</tr>
 					<tr class="faq-content" data-index="${status.index}" style="display:none;">

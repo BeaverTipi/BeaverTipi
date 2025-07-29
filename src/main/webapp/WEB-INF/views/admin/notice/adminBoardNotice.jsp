@@ -10,21 +10,20 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 
-<!-- ✅ 공용 CSS 기반 테이블 -->
 <table class="table">
 	<thead>
 		<tr>
 			<th>No</th>
 			<th>제목</th>
 			<th>게시일자</th>
-			<th>종료일시</th>
+			<th>종료일자</th>
 			<th>공지상태</th>
 			<th>첨부</th>
 		</tr>
 	</thead>
 	<tbody>
 		<c:choose>
-			<c:when test="${boardList != null and boardList.size() > 0}">
+			<c:when test="${not empty boardList}">
 				<c:forEach items="${boardList}" var="board" varStatus="status">
 					<tr>
 						<td>
@@ -35,8 +34,8 @@
 								${board.brdTitlNm}
 							</a>
 						</td>
-						<td>${board.brdPblsDtmFormatted}</td>
-						<td>${board.brdEndDtmFormatted}</td>
+							<td>${board.adFormattedBrdPblsDtm}</td>
+							<td>${board.adFormattedBrdEndsDtm}</td>
 						<td>
 						  <c:choose>
 							  <c:when test="${board.noticeTypeName == '일반'}">

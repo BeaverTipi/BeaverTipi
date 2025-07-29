@@ -1,5 +1,7 @@
 package kr.or.ddit.admin.board.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -18,44 +20,61 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin/notice")
 public class NoticePostListController {
 
-    private final NoticePostService service;
+	private final NoticePostService service;
 
-    @GetMapping("/list")
-    public String boardList(
-        @RequestParam(name = "page", defaultValue = "1") int page,
-        @RequestParam(name = "tab", defaultValue = "notice") String tab,
-        Model model
-    ) {
-        // ① 탭에 따라 BRD_CODE 결정
-        String brdCode = switch (tab) {
-            case "notice" -> "007";
-            case "faq" -> "009";
-            case "qna" -> "008";
-            default -> "007";
-        };
+	@GetMapping("/list")
+	public String boardList(@RequestParam(name = "page", defaultValue = "1") int page,
+			@RequestParam(name = "tab", defaultValue = "notice") String tab,
+			@RequestParam(name = "ctgryCode", required = false) String ctgryCode,
+			@RequestParam(name = "statusCode", required = false) String statusCode,
+			@RequestParam(name = "keyword", required = false) String keyword,
+			@RequestParam(name = "startDate", required = false) String startDate,
+			@RequestParam(name = "endDate", required = false) String endDate, Model model) {
+		
+		String brdCode = switch (tab) {
+		case "notice" -> "S0001";
+		case "qna" -> "S0002";
+		case "faq" -> "S0003";
+		default -> "S0001";
+		};
 
-        // ② 페이징 및 검색 조건 구성
-        PaginationInfo<BoardVO> paging = new PaginationInfo<>();
-        paging.setCurrentPageNo(page);
+		PaginationInfo<BoardVO> paging = new PaginationInfo<>();
+		paging.setCurrentPageNo(page);
 
-        BoardVO condition = new BoardVO();
-        condition.setBrdCode(brdCode);
-        paging.setDetailSearch(condition);
+		BoardVO condition = new BoardVO();
+		condition.setBrdCode(brdCode);
+		condition.setBrdTitlNm(keyword);
+		condition.setBrdCont(keyword);
 
-        // ③ 전체 레코드 수 조회
-        int totalRecord = service.getTotalBoardRecord(paging);
-        paging.setTotalRecordCount(totalRecord);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        // ④ 게시글 리스트 조회 (BOARD + FAQ/QNA 조인 포함)
-        List<BoardVO> boardList = service.readBoardList(paging);
+		if (startDate != null && !startDate.isBlank()) {
+			condition.setBrdPblsDtmStart(LocalDate.parse(startDate, formatter));
+		}
+		if (endDate != null && !endDate.isBlank()) {
+			condition.setBrdPblsDtmEnd(LocalDate.parse(endDate, formatter));
+		}
 
-        // ⑤ View로 전달
-        model.addAttribute("boardList", boardList);
-        model.addAttribute("paging", paging);
-        model.addAttribute("codeValue", brdCode); // 탭 식별용
-        model.addAttribute("activeTab", tab);     // 탭 활성화용
+		if ("faq".equals(tab)) {
+			condition.setFaqCtgry(ctgryCode);
+		} else if ("qna".equals(tab)) {
+			condition.setQnaCtgry(ctgryCode);
+			condition.setQnaStatus(statusCode);
+		}
+		paging.setDetailSearch(condition);
 
-        return "admin/notice/adminNoticeList";
-    }
+		int totalRecord = service.getTotalBoardRecord(paging);
+		paging.setTotalRecordCount(totalRecord);
+		List<BoardVO> boardList = service.readBoardList(paging);
+
+		model.addAttribute("boardList", boardList);
+		model.addAttribute("paging", paging);
+		model.addAttribute("codeValue", brdCode);
+		model.addAttribute("activeTab", tab);
+		
+		System.out.println(">>> brdCode = " + brdCode);
+		
+		return "admin/notice/adminNoticeList";
+	}
 
 }

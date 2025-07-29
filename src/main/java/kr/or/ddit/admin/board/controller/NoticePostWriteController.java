@@ -17,49 +17,36 @@ import kr.or.ddit.admin.code.service.CommonCodeService;
 import kr.or.ddit.util.validate.InsertGroup;
 import kr.or.ddit.vo.BoardVO;
 import kr.or.ddit.vo.MemberVO;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/admin/notice/write")
 public class NoticePostWriteController {
 
-	@Autowired
-	private NoticePostService service;
-	
-	@Autowired
-	private CommonCodeService commonCode;
+	private final NoticePostService service;
+	private final CommonCodeService commonCode;
 
 	static final String MODELNAME = "board";
 
-	@ModelAttribute("board")
+	@ModelAttribute(MODELNAME)
 	public BoardVO prepareBoard(@AuthenticationPrincipal(expression = "realUser") MemberVO authMember) {
 		BoardVO board = new BoardVO();
 		board.setBrdCode("007");
-		board.setBrdCtgryGrpCd("BRDCT");
+		board.setBrdCtgryGrpCd("BRDCT"); 
 		if (authMember != null) {
 			board.setMbrCd(authMember.getMbrCd());
 		}
 		return board;
 	}
 
-//	@InitBinder("board")
-//	public void initBinder(WebDataBinder binder,
-//			@AuthenticationPrincipal(expression = "realUser") MemberVO authMember) {
-//		Object target = binder.getTarget();
-//		if (target instanceof BoardVO && authMember != null) {
-//			BoardVO board = (BoardVO) target;
-//			if (board.getMbrCd() == null || board.getMbrCd().isBlank()) {
-//				board.setMbrCd(authMember.getMbrCd());
-//			}
-//		}
-//	}
-
 	@GetMapping
-	public String noticewriteForm(Model model) {
+	public String noticeWriteForm(Model model) {
 		model.addAttribute("pageTitle", "새 공지사항 등록");
 		model.addAttribute("brdCodeList", commonCode.readCommonCodeList("BRDCT"));
 		model.addAttribute("noticeTypeList", commonCode.readCommonCodeList("NOTPE"));
-		model.addAttribute("faqCtgryList", commonCode.readCommonCodeList("QNACT"));
-		model.addAttribute("qnaCtgryList", commonCode.readCommonCodeList("FAQCT"));
+		model.addAttribute("faqCtgryList", commonCode.readCommonCodeList("FAQCT"));
+		model.addAttribute("qnaCtgryList", commonCode.readCommonCodeList("QNACT"));
 		return "admin/notice/adminNoticeForm";
 	}
 

@@ -12,7 +12,6 @@
 
 	<h1 class="board-title">게시판</h1>
 
-	<!-- ✅ 탭 메뉴 -->
 	<ul class="nav nav-tabs customtab" role="tablist">
 		<li class="nav-item ${activeTab eq 'notice' ? 'active' : ''}"><a
 			class="nav-link" href="?tab=notice">공지사항</a></li>
@@ -22,7 +21,6 @@
 			class="nav-link" href="?tab=qna">QNA</a></li>
 	</ul>
 
-	<!-- ✅ 탭에 따른 리스트 JSP include -->
 	<c:choose>
 		<c:when test="${activeTab eq 'notice'}">
 			<jsp:include page="/WEB-INF/views/admin/notice/adminBoardNotice.jsp" />
@@ -35,7 +33,6 @@
 		</c:when>
 	</c:choose>
 
-	<!-- ✅ 페이징 영역 -->
 	<c:if test="${paging != null and paging.totalPageCount > 0}">
 		<div class="pagination-wrapper">
 			<a href="?page=1&tab=${activeTab}"
@@ -62,7 +59,6 @@
 		</div>
 	</c:if>
 
-	<!-- ✅ 버튼 영역 -->
 	<div class="write-buttons">
 		<button class="btn-success"
 			onclick="location.href='${pageContext.request.contextPath}/admin/notice/write?tab=${activeTab}'">추가</button>

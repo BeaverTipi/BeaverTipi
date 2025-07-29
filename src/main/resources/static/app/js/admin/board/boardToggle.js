@@ -1,12 +1,13 @@
 /**
+ *
  * 
  */
 document.addEventListener("DOMContentLoaded", () => {
 	function toggleDetail(code) {
 		const mapping = {
-			'007': '#noticeDetailBox',
-			'008': '#qnaDetailBox',
-			'009': '#faqDetailBox'
+			'S0001': '#noticeDetailBox',
+			'S0002': '#qnaDetailBox',
+			'S0003': '#faqDetailBox'
 		};
 
 		Object.values(mapping).forEach(selector => {
@@ -24,7 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	}
 
-	// Summernote 초기화 함수
 	function initSummernote(selector) {
 		const $el = $(selector);
 		if ($el.length === 0 || $el.next('.note-editor').length > 0) return;
@@ -36,28 +36,34 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	}
 
-	// 게시판 유형 라디오 버튼 변경 시 상세영역 토글
-	const radios = document.querySelectorAll('input[name="brdCode"]');
+	
+	const brdCodeHidden = document.getElementById("brdCodeHidden");
+	const radios = document.querySelectorAll('input[name="brdCtgryValue"]');
 	radios.forEach(radio => {
-		radio.addEventListener('change', function() {
-			toggleDetail(this.value);
+		radio.addEventListener("change", function () {
+			const selectedCode = this.dataset.syncCode || this.value;
+			if (brdCodeHidden) {
+				brdCodeHidden.value = selectedCode;
+			}
+			toggleDetail(selectedCode);
 		});
 	});
 
-	// 최초 체크된 유형 반영
-	const selected = document.querySelector('input[name="brdCode"]:checked');
-	if (selected) {
-		toggleDetail(selected.value);
+	
+	const selected = document.querySelector('input[name="brdCtgryValue"]:checked');
+	if (selected && brdCodeHidden) {
+		const selectedCode = selected.dataset.syncCode || selected.value;
+		brdCodeHidden.value = selectedCode;
+		toggleDetail(selectedCode);
 	}
 
-	// ✅ FAQ 게시판만 아코디언 토글
+	
 	const faqTitles = document.querySelectorAll(".faq-title");
 	faqTitles.forEach(title => {
-		title.addEventListener("click", function() {
+		title.addEventListener("click", function () {
 			const index = this.closest("tr")?.dataset?.index;
 			const contentRow = document.querySelector(`.faq-content[data-index='${index}']`);
 
-			// 열려있는 다른 row 닫기
 			document.querySelectorAll(".faq-content").forEach(row => {
 				if (row !== contentRow) row.style.display = "none";
 			});
@@ -68,15 +74,14 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	});
 
-	// ✅ 기존 리스트 toggle 유지 (공지사항/QnA용)
+	
 	const titleLinks = document.querySelectorAll(".toggle-detail");
 	titleLinks.forEach(link => {
-		link.addEventListener("click", function(e) {
+		link.addEventListener("click", function (e) {
 			e.preventDefault();
 			const currentRow = this.closest("tr");
 			const currentDetailRow = currentRow.nextElementSibling;
 
-			// 모든 row 닫기
 			document.querySelectorAll(".toggle-detail").forEach(otherLink => {
 				const otherRow = otherLink.closest("tr");
 				const otherDetailRow = otherRow.nextElementSibling;
@@ -85,7 +90,6 @@ document.addEventListener("DOMContentLoaded", () => {
 				}
 			});
 
-			// 현재 row만 토글
 			if (currentDetailRow && currentDetailRow.style) {
 				currentDetailRow.style.display =
 					currentDetailRow.style.display === "none" ? "table-row" : "none";

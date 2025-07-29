@@ -10,15 +10,14 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 
-<!-- ✅ QnA 게시판 리스트 -->
 <table class="table">
 	<thead>
 		<tr>
 			<th>No</th>
 			<th>제목</th>
 			<th>회원명</th>
-			<th>카테고리</th>  <!-- QNACT -->
-			<th>상태</th>      <!-- QNAST -->
+			<th>카테고리</th>  
+			<th>상태</th>      
 		</tr>
 	</thead>
 	<tbody>
@@ -34,7 +33,7 @@
 								${board.brdTitlNm}
 							</a>
 						</td>
-						<td>${board.brdPblsDtmFormatted}</td>
+						<td><c:out value="${board.memberVO.mbrNm}" /></td> 
 						<td><c:out value="${board.qnaCtgryName}" /></td>
 						<td>
 							<c:choose>
