@@ -192,7 +192,18 @@ public class PaginationInfo<T> {
 			        if (vo.getSearchSaleMax() != null) {
 			            sb.append("&detailSearch.searchSaleMax=").append(vo.getSearchSaleMax());
 			        }
-
+			        if (vo.getSearchLeaseMin() != null) {
+			            sb.append("&detailSearch.searchLeaseMin=").append(vo.getSearchLeaseMin());
+			        }
+			        if (vo.getSearchLeaseMax() != null) {
+			            sb.append("&detailSearch.searchLeaseMax=").append(vo.getSearchLeaseMax());
+			        }
+			        if (vo.getSearchRegDateFrom() != null) {
+			            sb.append("&detailSearch.searchRegDateFrom=").append(URLEncoder.encode(vo.getSearchRegDateFrom().toString(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (vo.getSearchRegDateTo() != null) {
+			            sb.append("&detailSearch.searchRegDateTo=").append(URLEncoder.encode(vo.getSearchRegDateTo().toString(), StandardCharsets.UTF_8.toString()));
+			        }
 			    } catch (UnsupportedEncodingException e) {
 			        System.err.println("URL Encoding failed for ListingSearchFormVO: " + e.getMessage());
 			    }

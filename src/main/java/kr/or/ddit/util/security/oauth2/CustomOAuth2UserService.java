@@ -10,6 +10,9 @@ import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import kr.or.ddit.main.mapper.MemberMapper;
+import kr.or.ddit.util.validate.exception.MemberStatusInactiveException;
+import kr.or.ddit.util.validate.exception.MemberStatusSuspenedException;
+import kr.or.ddit.util.validate.exception.MemberStatusWithdrawnException;
 import kr.or.ddit.util.validate.exception.UserNotRegisteredException;
 import kr.or.ddit.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +48,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         log.info("소셜 로그인 이메일: {}", email);
 
         MemberVO member = memberMapper.selectMemberByMail(email);
-
+		
         if (member == null) {
             throw new OAuth2AuthenticationException(
                 new OAuth2Error("register-required"),
@@ -55,6 +58,17 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             throw new OAuth2AuthenticationException( 
             		new OAuth2Error("deleted-user", "탈퇴한 회원입니다.", null)
             		);
+        }
+        
+        String status = member.getMbrStatusCode();
+        if(status.equals("SUSPENDED")) {
+        	throw new MemberStatusSuspenedException();
+        }
+        if(status.equals("INACTIVE")) {
+        	throw new MemberStatusInactiveException();
+        }
+        if(status.equals("WITHDRAWN")) {
+        	throw new MemberStatusWithdrawnException();
         }
 
         return new OAuth2MemberVOWrapperForKakao(oAuth2User, member);

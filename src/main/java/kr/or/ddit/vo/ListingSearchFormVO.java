@@ -1,6 +1,7 @@
 package kr.or.ddit.vo;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 import lombok.Data;
 
@@ -16,7 +17,9 @@ public class ListingSearchFormVO implements Serializable {
     // 💰 보증금 검색 범위 (만원 단위)
     private Integer searchDepositMin;
     private Integer searchDepositMax;
-
+    
+    private Integer searchLeaseMin;
+    private Integer searchLeaseMax;
     // 💵 월세 검색 범위 (만원 단위)
     private Integer searchMonthlyMin;
     private Integer searchMonthlyMax;
@@ -24,4 +27,8 @@ public class ListingSearchFormVO implements Serializable {
     // 🏠 매매가 검색 범위 (만원 단위)
     private Integer searchSaleMin;
     private Integer searchSaleMax;
+    
+    private LocalDate searchRegDateFrom;
+    private LocalDate searchRegDateTo;
+
 }

@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -60,7 +61,7 @@ public class RentalOwnerProductListController {
     @ResponseBody
     public List<ListingVO> listRooms(
     		@AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
-    		@RequestParam("address") String lstgAdd
+    		@RequestBody Map<String, String> payload
     ){
     	 MemberVO loginUser = principal.getRealUser();
     	 log.info("***** loginUser : {}", loginUser);
@@ -68,6 +69,7 @@ public class RentalOwnerProductListController {
              throw new NoLoginException();
          }
          String rentalPtyId = loginUser.getTenancy().getRentalPtyId();
+         String lstgAdd = payload.get("address");
          
          ListingVO listing = new ListingVO();
  		listing.setRentalPtyId(rentalPtyId);
@@ -75,7 +77,6 @@ public class RentalOwnerProductListController {
  		
  		List<ListingVO> rooms = service.readRoomsList(listing);
  		
- 		log.info("***** rooms : {}", rooms);
          return rooms;
     }
 

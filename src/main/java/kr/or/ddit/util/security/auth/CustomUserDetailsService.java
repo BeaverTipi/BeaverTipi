@@ -5,6 +5,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import kr.or.ddit.main.mapper.MemberMapper;
+import kr.or.ddit.util.validate.exception.MemberStatusInactiveException;
+import kr.or.ddit.util.validate.exception.MemberStatusSuspenedException;
+import kr.or.ddit.util.validate.exception.MemberStatusWithdrawnException;
 import kr.or.ddit.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,17 @@ public class CustomUserDetailsService implements UserDetailsService{
 
 		if(realUser==null) {
 			throw new UsernameNotFoundException(String.format("%s 회원 없음", username));
+		}
+		String status = realUser.getMbrStatusCode();
+		
+		if(status.equals("SUSPENDED")) {
+			throw new MemberStatusSuspenedException();
+		}
+		if(status.equals("INACTIVE")) {
+			throw new MemberStatusInactiveException();
+		}
+		if(status.equals("WITHDRAWN")) {
+			throw new MemberStatusWithdrawnException();
 		}
 		
 		return new MemberVOWrapper(realUser,deleteValue);

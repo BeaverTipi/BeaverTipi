@@ -8,6 +8,9 @@ import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 import kr.or.ddit.main.mapper.MemberMapper;
+import kr.or.ddit.util.validate.exception.MemberStatusInactiveException;
+import kr.or.ddit.util.validate.exception.MemberStatusSuspenedException;
+import kr.or.ddit.util.validate.exception.MemberStatusWithdrawnException;
 import kr.or.ddit.util.validate.exception.OidcUserNotRegisteredException;
 import kr.or.ddit.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +53,18 @@ public class CustomOidcUserService extends OidcUserService{
 			throw new OidcUserNotRegisteredException(oidcUser, clientRegistration);
 		}else if(realUser.getMbrStatusCode().equals(deleteValue)) {
 			throw new OAuth2AuthenticationException(new OAuth2Error("deleted-user"), "이미 탈퇴한 회원입니다.");
+		}
+		
+		String status = realUser.getMbrStatusCode();
+		
+		if(status.equals("SUSPENDED")) {
+			throw new MemberStatusSuspenedException();
+		}
+		if(status.equals("INACTIVE")) {
+			throw new MemberStatusInactiveException();
+		}
+		if(status.equals("WITHDRAWN")) {
+			throw new MemberStatusWithdrawnException();
 		}
 		
 		 return new OAuth2MemberVOWrapper(oidcUser, realUser,"dummy");

@@ -2,7 +2,6 @@ package kr.or.ddit.main.member.controller;
 
 import java.util.Map;
 
-import org.springframework.boot.web.server.Cookie.SameSite;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +21,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.or.ddit.util.security.jwt.CookieBearerTokenResolver;
 import kr.or.ddit.util.security.jwt.JwtProvider;
+import kr.or.ddit.util.validate.exception.MemberStatusInactiveException;
+import kr.or.ddit.util.validate.exception.MemberStatusSuspenedException;
+import kr.or.ddit.util.validate.exception.MemberStatusWithdrawnException;
 import kr.or.ddit.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 // 인증서버 역할. 위임장 token의 형태로 해줌.
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 public class MemberLoginController {
 	private final AuthenticationManager authenticationManager;
@@ -94,9 +98,36 @@ public class MemberLoginController {
 				.header(HttpHeaders.SET_COOKIE, tokenCookie)
 				.build();
 		} catch (AuthenticationException e) {
-		return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED)
-							.body(Map.of("error", 401, "message",e.getMessage()));
-	}
+		    log.error("로그인 실패 예외: {}", e.getClass().getName());
+		    log.error("로그인 실패 메시지: {}", e.getMessage());
+		    if (e.getCause() != null) {
+		        log.error("▶ 원인 예외 타입: {}", e.getCause().getClass().getName());
+		        log.error("▶ 원인 예외 메시지: {}", e.getCause().getMessage());
+		    }
+
+		    String errorCode = "INVALID_CREDENTIALS";
+		    String errorMessage = "아이디 또는 비밀번호가 일치하지 않습니다.";
+
+		    Throwable cause = e.getCause();
+		    if (cause instanceof MemberStatusSuspenedException) {
+		        errorCode = "SUSPENDED";
+		        errorMessage = cause.getMessage();
+		    } else if (cause instanceof MemberStatusInactiveException) {
+		        errorCode = "INACTIVE";
+		        errorMessage = cause.getMessage();
+		    } else if (cause instanceof MemberStatusWithdrawnException) {
+		        errorCode = "WITHDRAWN";
+		        errorMessage = cause.getMessage();
+		    }
+
+		    return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED)
+		            .body(Map.of(
+		                    "error", 401,
+		                    "code", errorCode,
+		                    "message", errorMessage
+		            ));
+		}
+
 
 	}
 

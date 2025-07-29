@@ -53,25 +53,20 @@ document.addEventListener("DOMContentLoaded", function() {
 				.then(() => {
 					const params = new URLSearchParams(location.search);
 					const redirect = params.get("redirect");
-					if(redirect){
-					location.href = redirect;
-					}else{
+					if (redirect) {
+						location.href = redirect;
+					} else {
 						location.reload();
 					}
 				})
 				.catch(err => {
 					if (err.response && err.response.status === 401) {
+						const { message } = err.response.data;
+						let displayMessage = message;
 						Swal.fire({
 							icon: "error",
 							title: "로그인 실패",
-							text: "아이디 또는 비밀번호가 올바르지 않습니다.",
-							confirmButtonText: '확인'
-						});
-					} else {
-						Swal.fire({
-							icon: "error",
-							title: "오류",
-							text: "예기치 않은 오류가 발생했습니다.",
+							text: displayMessage,
 							confirmButtonText: '확인'
 						});
 					}

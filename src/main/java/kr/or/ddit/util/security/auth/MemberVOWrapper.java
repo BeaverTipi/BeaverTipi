@@ -15,7 +15,7 @@ public class MemberVOWrapper extends User implements RealUserWrapper<MemberVO> {
 		super(
 				realUser.getMbrId()
 				, realUser.getMbrPw()
-				, !realUser.getMbrStatusCode().equals(deleteValue)
+				, realUser.getMbrStatusCode().equals(deleteValue)
 				, true
 				, true
 				, true

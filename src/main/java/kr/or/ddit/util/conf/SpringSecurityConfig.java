@@ -192,8 +192,9 @@ public class SpringSecurityConfig {
 					.requestMatchers(new AntPathRequestMatcher("/ajax/admin/businessAds/approvedAds")).permitAll()
 					.requestMatchers(WHITE_LIST).permitAll()
 					.requestMatchers(new AntPathRequestMatcher(registerUrl)).anonymous()
-					.requestMatchers(new AntPathRequestMatcher("account/login/**")).anonymous()
-					.requestMatchers(new AntPathRequestMatcher("account/logout/**")).authenticated()
+					.requestMatchers(new AntPathRequestMatcher("/account/login/**")).anonymous()
+					.requestMatchers(new AntPathRequestMatcher("/account/logout/**")).authenticated()
+					.requestMatchers(new AntPathRequestMatcher("/main/report/createForm/**")).authenticated()
 					.requestMatchers(new AntPathRequestMatcher("/resident/chat/**")).authenticated()
 					.requestMatchers(new AntPathRequestMatcher("/broker/chat/**")).authenticated()
 					.requestMatchers(new AntPathRequestMatcher("/account/read")).authenticated()
@@ -220,15 +221,14 @@ public class SpringSecurityConfig {
 					.successHandler(successHandler())
 					.failureHandler(failureHandler())
 					.userInfoEndpoint(user -> 
-	        user
-	            .userService(oAuth2UserService()) // 카카오 등
-	            .oidcUserService(oidcUserService()) // 구글
-	    )
+						user
+			            .userService(oAuth2UserService()) // 카카오 등
+			            .oidcUserService(oidcUserService()) // 구글
+							)
 					)
 			.formLogin(login ->
 				login
 					.loginPage("/login")
-					
 				)
 			
 			.requestCache(requestCache->
