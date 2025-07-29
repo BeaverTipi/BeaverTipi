@@ -50,7 +50,6 @@
       border-bottom: 2.5px solid #00aaff;
       background: #f8fbfe;
     }
-    /* --- 추가: 네가 준 매물/건물관리 기본 테이블 스타일 보존 --- */
     h2 { margin-bottom: 20px; font-size: 24px; color: #333;}
     .building-link {
       color: #007bff;
@@ -74,7 +73,6 @@
       border: 1px solid #ddd;
       border-radius: 5px;
     }
-    /* listing-manage.css 내 추가 테이블/폼 스타일 그대로 사용 */
   </style>
 </head>
 <body>
@@ -86,12 +84,67 @@
     <button class="tab" id="tab2Btn" onclick="showTab(2)">내 매물 관리</button>
   </div>
 
-  <!-- 탭1: 내 건물 관리 -->
+  <!-- 탭1: 내 건물 관리 (검색폼 추가) -->
   <div id="tab1Panel">
     <div class="container mt-4">
       <div class="card">
         <div class="card-body">
           <h2 class="mb-4">내 건물 관리</h2>
+
+          <!-- 내 매물관리와 동일한 검색 폼 -->
+          <form:form modelAttribute="searchForm"
+            action="${pageContext.request.contextPath}/building/managed/list"
+            method="get" class="search-section">
+            <input type="hidden" name="page" value="${pagingVO.currentPageNo}" id="currentPageNoInput" />
+
+            <div class="search-grid-container">
+              <div class="search-grid-left">
+                <div class="search-grid-row">
+                  <div class="search-item">
+                    <label>건물명</label>
+                    <form:input path="searchBuildingName" cssClass="form-control" placeholder="건물명 입력" />
+                  </div>
+                  <div class="search-item">
+                    <label>호수</label>
+                    <form:input path="searchRoomNum" cssClass="form-control" placeholder="예: 101호" />
+                  </div>
+                  <div class="search-item">
+                    <label>상태</label>
+                    <form:select path="searchStatus" cssClass="form-control">
+                      <c:forEach var="code" items="${statusCodeList}">
+                        <form:option value="${code.codeValue}">${code.codeName}</form:option>
+                      </c:forEach>
+                    </form:select>
+                  </div>
+                  <div class="search-item  full-width">
+                    <label>등록일</label>
+                    <div class="d-flex">
+                      <form:input type="date" path="searchRegDateFrom" cssClass="form-control mr-1" />
+                      <span class="date-separator">~</span>
+                      <form:input type="date" path="searchRegDateTo" cssClass="form-control" />
+                    </div>
+                  </div>
+                </div>
+                <div class="search-grid-row">
+                  <div class="search-item ">
+                    <label>유형</label>
+                    <form:select path="searchType" id="searchTypeSelect" cssClass="form-control">
+                      <c:forEach var="typeCode" items="${typeSaleCodeList}">
+                        <form:option value="${typeCode.codeValue}">${typeCode.codeName}</form:option>
+                      </c:forEach>
+                    </form:select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="search-grid-right">
+              <div class="button-area">
+                <button type="submit" class="btn-search">검색</button>
+                <button type="reset" class="btn-reset" id="resetBtn">초기화</button>
+              </div>
+            </div>
+          </form:form>
+
           <div class="table-responsive">
             <table class="table table-bordered table-hover text-center">
               <thead class="thead-light">
@@ -137,22 +190,18 @@
     </div>
   </div>
 
-  <!-- 탭2: 내 매물 관리 (네가 맨 처음 준 구조를 그대로!) -->
+  <!-- 탭2: 내 매물 관리 (기존 그대로) -->
   <div id="tab2Panel" style="display: none;">
     <div class="container mt-4">
       <div class="card">
         <div class="card-body">
           <h2 class="mb-4">내 매물 관리</h2>
-
           <form:form modelAttribute="searchForm"
             action="${pageContext.request.contextPath}/building/product/list"
             method="get" class="search-section">
             <input type="hidden" name="page" value="${pagingVO.currentPageNo}" id="currentPageNoInput" />
-            <!-- ✅ 전체를 하나의 grid로 구성 -->
             <div class="search-grid-container">
-              <!-- ✅ 왼쪽 영역: 검색 조건 -->
               <div class="search-grid-left">
-                <!-- 1. 건물명 / 호수 / 상태 / 등록일 -->
                 <div class="search-grid-row">
                   <div class="search-item">
                     <label>건물명</label>
@@ -179,7 +228,6 @@
                     </div>
                   </div>
                 </div>
-                <!-- 2. 거래유형 -->
                 <div class="search-grid-row">
                   <div class="search-item ">
                     <label>거래유형</label>
@@ -189,9 +237,7 @@
                       </c:forEach>
                     </form:select>
                   </div>
-                  <!-- 조건부 필드 -->
                   <div id="conditionalFields" style="display: none;">
-                    <!-- 전세금 -->
                     <div class="search-item full-width row-deposit">
                       <label id="depositLabel">전세금</label>
                       <div class="input-range">
@@ -200,7 +246,6 @@
                         <form:input path="searchDepositMax" cssClass="form-control" placeholder="최대" />
                       </div>
                     </div>
-                    <!-- 월세 -->
                     <div class="search-item full-width row-monthly">
                       <label>월세</label>
                       <div class="input-range">
@@ -209,7 +254,6 @@
                         <form:input path="searchMonthlyMax" cssClass="form-control" placeholder="최대" />
                       </div>
                     </div>
-                    <!-- 매매가 -->
                     <div class="search-item full-width row-sale" style="display: none;">
                       <label>매매가</label>
                       <div class="d-flex">
@@ -222,16 +266,13 @@
                 </div>
               </div>
             </div>
-            <!-- ✅ 오른쪽 버튼 영역 -->
             <div class="search-grid-right">
               <div class="button-area">
                 <button type="submit" class="btn-search">검색</button>
                 <button type="reset" class="btn-reset" id="resetBtn">초기화</button>
               </div>
             </div>
-            <!-- search-grid-container 끝 -->
           </form:form>
-
           <div class="table-responsive">
             <table class="table table-bordered table-hover text-center">
               <thead class="thead-light">
@@ -287,7 +328,6 @@
               </tbody>
             </table>
           </div>
-
           <div class="pagination-wrapper mt-4">
             <nav aria-label="Page navigation">
               <ul class="pagination justify-content-center">${pagingHTML}</ul>
