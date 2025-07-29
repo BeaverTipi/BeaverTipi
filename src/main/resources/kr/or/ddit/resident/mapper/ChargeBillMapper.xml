@@ -123,6 +123,7 @@
 <update id="updateChargeBillAfterPayment">
   UPDATE CHARGE_BILL
      SET CHGBILL_PAY_AMOUNT = CHGBILL_PAY_AMOUNT + #{chgbillPayAmount},
+     	 CHGBILL_PAID_DATE = TO_CHAR(SYSDATE,'YYYYMMDD'),
          CHGBILL_STATUS = CASE
            WHEN CHGBILL_PAY_AMOUNT + #{chgbillPayAmount} >= CHGBILL_AMOUNT THEN '002'
            ELSE CHGBILL_STATUS

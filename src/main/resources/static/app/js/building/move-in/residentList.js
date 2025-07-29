@@ -1,5 +1,3 @@
-
-
 document.addEventListener('DOMContentLoaded', () => {
 	const urlParams = new URLSearchParams(window.location.search);
 	if (urlParams.get("success") === "true") {
@@ -11,11 +9,32 @@ document.addEventListener('DOMContentLoaded', () => {
 		})
 	}
 	console.log("✅ residentList.js 실행됨");
-
+	
 	// 🏢 건물 선택 셀렉터
 	const selector = document.querySelector('select[name="bldgIdParam"]');
 	const savedBldgId = localStorage.getItem("selectedBuildingId");
-
+	
+	// ✅ 첫 진입 시 unitIdParam 없으면 자동 리다이렉트
+	if (!urlParams.get("unitIdParam") && savedBldgId) {
+	  axios.get("/ajax/resident/api/units", {
+	    params: { bldgId: savedBldgId }
+	  })
+	  .then(res => {
+	    const unitList = res.data;
+	    if (unitList.length > 0) {
+	      const firstUnitId = unitList[0].unitId;
+	      const newUrl = new URL(window.location.origin + "/resident/payment");
+	      newUrl.searchParams.set("bldgIdParam", savedBldgId);
+	      newUrl.searchParams.set("unitIdParam", firstUnitId);
+	      newUrl.searchParams.set("autoredirect", "true");
+	      window.location.href = newUrl.toString();
+	    }
+	  })
+	  .catch(err => {
+	    console.error("초기 유닛 자동 조회 실패:", err);
+	  });
+	}
+	
 	// 🔄 납부 버튼 이벤트 등록
 	const payButton = document.querySelector('.pay-button');
 	if (payButton) {
@@ -26,18 +45,46 @@ document.addEventListener('DOMContentLoaded', () => {
 	if (selector && savedBldgId) {
 		selector.value = savedBldgId;
 	}
-
-	// 건물 선택 변경 시 로컬 저장 후 폼 제출
 	if (selector) {
-		selector.addEventListener("change", () => {
-			console.log("🔧 건물 선택 변경됨:", selector.value);
-			localStorage.setItem("selectedBuildingId", selector.value);
-			const form = selector.closest("form");
-			if (form) form.submit();
-		});
+	  selector.addEventListener("change", () => {
+	    const selectedBldgId = selector.value;
+	    localStorage.setItem("selectedBuildingId", selectedBldgId);
+	    console.log("🔧 건물 선택 변경됨:", selectedBldgId);
+	
+	    // 🔍 새 건물에 대한 unitId 조회
+	    axios.get("/ajax/resident/api/units", {
+	      params: { bldgId: selectedBldgId }
+	    })
+	    .then(res => {
+	      const unitList = res.data;
+	      if (unitList.length > 0) {
+	        const newUnitId = unitList[0].unitId;
+	
+	        // ✅ URL 수동 구성 후 이동
+	        const newUrl = new URL(window.location.origin + "/resident/payment");
+	        newUrl.searchParams.set("bldgIdParam", selectedBldgId);
+	        newUrl.searchParams.set("unitIdParam", newUnitId);
+	        newUrl.searchParams.set("autoredirect", "true");
+	
+	        window.location.href = newUrl.toString();
+	      } else {
+	        Swal.fire({
+	          icon: 'warning',
+	          title: '호수가 없습니다',
+	          text: '선택한 건물에 등록된 호수가 없습니다.'
+	        });
+	      }
+	    })
+	    .catch(err => {
+	      console.error("건물 변경 시 유닛 조회 실패:", err);
+	      Swal.fire({
+	        icon: 'error',
+	        title: '호수 조회 실패',
+	        text: '호수 데이터를 가져오는 중 문제가 발생했습니다.'
+	      });
+	    });
+	  });
 	}
-});
-
 function requestPayment() {
 	const tossPayments = TossPayments("test_ck_DLJOpm5QrlxRJLBQ0xqLrPNdxbWn"); // 실제 clientKey로 교체
 	const payButton = document.querySelector('.pay-button');
@@ -99,3 +146,4 @@ function requestPayment() {
 			});
 		});
 }
+});

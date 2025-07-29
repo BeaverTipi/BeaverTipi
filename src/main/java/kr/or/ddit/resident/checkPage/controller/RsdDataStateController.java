@@ -50,7 +50,18 @@ public class RsdDataStateController {
         if (allUnits == null || allUnits.isEmpty()) {
             return "resident:/member/register";
         }
-
+        
+        if (bldgIdParam != null && (unitIdParam == null || chargeMonth == null)) {
+            List<UnitResidentVO> myUnits = paymentCheckService.getMyUnitsInBuilding(member.getMbrCd(), bldgIdParam);
+            if (!myUnits.isEmpty()) {
+                String firstUnitId = myUnits.get(0).getUnitId();
+                List<String> months = paymentCheckService.getAvailableChargeMonths(firstUnitId);
+                String latestMonth = months.isEmpty() ? getCurrentMonth() : months.get(0);
+                return "redirect:/resident/dataState/bill?bldgIdParam=" + bldgIdParam +
+                       "&unitIdParam=" + firstUnitId +
+                       "&chargeMonth=" + latestMonth;
+            }
+        }
 
         String selectedBldgId = (bldgIdParam == null || bldgIdParam.isBlank())
             ? allUnits.stream().min(Comparator.comparing(UnitResidentVO::getMoveInDt))
@@ -71,29 +82,34 @@ public class RsdDataStateController {
         // 기준 월에서 전월, 전전월 계산
         LocalDate baseDate = LocalDate.of(
             Integer.parseInt(baseMonth.substring(0, 4)),
-            Integer.parseInt(baseMonth.substring(4)),
+            Integer.parseInt(baseMonth.substring(4, 6)),
             1
         );
-
-        String previousMonth = baseMonth;
-        String twoMonthsAgo = baseDate.minusMonths(1).format(DateTimeFormatter.ofPattern("yyyyMM")); 
+        
+        String thisMonth = baseMonth;
+        String previousMonth = baseDate.minusMonths(1).format(DateTimeFormatter.ofPattern("yyyyMM")); 
         
         List<CheckComparisonDto> chargeComparison =
-            paymentCheckService.getMonthlyComparison(selectedUnitId, previousMonth, twoMonthsAgo);
+            paymentCheckService.getMonthlyComparison(selectedUnitId, previousMonth, thisMonth);
 
         List<CheckComparisonDto> currentCharges =
-        		paymentCheckService.getMonthlyCharges(selectedUnitId, previousMonth);
+        		paymentCheckService.getMonthlyCharges(selectedUnitId, thisMonth);
         
         Map<String, Map<String, Object>> energyComparison =
-            paymentCheckService.getEnergyComparison(selectedUnitId, previousMonth, twoMonthsAgo);
+            paymentCheckService.getEnergyComparison(selectedUnitId, previousMonth, thisMonth);
 
         List<String> availableMonths = paymentCheckService.getAvailableChargeMonths(selectedUnitId);
         
         
-        log.info("전월: {}", previousMonth);
-        log.info("전전월: {}", twoMonthsAgo);
+        log.info("🟠 기준월 (baseMonth): {}", baseMonth);
+        log.info("📦 당월 (thisMonth): {}", thisMonth);  // ✅ 명확하게 표시
+        log.info("🔸 전월 (previousMonth): {}", previousMonth);
         log.info("selectedUnitId: {}", selectedUnitId);
         log.info("📊 chargeComparison size: {}", chargeComparison.size());
+        log.info("📦 currentCharges size: {}", currentCharges.size());
+        for (CheckComparisonDto dto : currentCharges) {
+            log.info("➡️ currentCharge: {} - {}", dto.getFeeName(), dto.getChargeAmount());
+        }
         log.info("📈 energyComparison keys: {}", energyComparison.keySet());
         
         model.addAttribute("availableMonths", availableMonths);

@@ -241,161 +241,169 @@
     </div>
   </div>
   <script>
-document.addEventListener("DOMContentLoaded", () => {
-    const savedBldgId = localStorage.getItem("selectedBuildingId");
-    if (savedBldgId) {
-        const selector = document.querySelector("select[name='bldgIdParam']");
-        if (selector) {
-            selector.value = savedBldgId;
-            // 자동 제출
-            document.querySelector("#searchForm")?.submit();
-        }
-    }
-});
-</script>
+	  document.addEventListener("DOMContentLoaded", () => {
+		  const savedBldgId = localStorage.getItem("selectedBuildingId");
+	
+		  const urlParams = new URLSearchParams(window.location.search);
+		  const hasBldgId = urlParams.has("bldgIdParam");
+		  const hasUnitId = urlParams.has("unitIdParam");
+		  const hasMonth  = urlParams.has("chargeMonth");
+	
+		  if (savedBldgId && !hasBldgId && !hasUnitId && !hasMonth) {
+		    const selector = document.querySelector("select[name='bldgIdParam']");
+		    if (selector) {
+		      selector.value = savedBldgId;
+		      document.querySelector("#billSearchForm")?.submit(); // ✅ 정확한 폼 ID
+		    }
+		  }
+		});
+	</script>
   <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const unitSelect  = document.querySelector('select[name="unitIdParam"]');
-  const yearSelect  = document.querySelector('select[name="yearSelect"]');
-  const monthSelect = document.querySelector('select[name="monthSelect"]');
-  const bldgId      = document.querySelector('select[name="bldgIdParam"]')?.value || "";
-
-  const handleChange = () => {
-    const unitId = unitSelect?.value;
-    const year   = yearSelect?.value;
-    const month  = monthSelect?.value;
-    if (!unitId || !year || !month || year === '년도 선택' || month === '월 선택') return;
-
-    axios.get('/ajax/resident/api/payment/charge-info', {
-      params: { unitId, bldgId, year, month }
-    }).then(res => {
-      renderChargeInfo(res.data); // ✅ 기존 함수 그대로 활용
-    }).catch(err => {
-      console.error(err);
-      Swal.fire("에러", "데이터를 불러오는 중 문제가 발생했습니다.", "error");
-    });
-  };
-
-  unitSelect?.addEventListener('change', handleChange);
-  yearSelect?.addEventListener('change', handleChange);
-  monthSelect?.addEventListener('change', handleChange);
-});
-</script>
+	document.addEventListener('DOMContentLoaded', () => {
+	  const unitSelect  = document.querySelector('select[name="unitIdParam"]');
+	  const yearSelect  = document.querySelector('select[name="yearSelect"]');
+	  const monthSelect = document.querySelector('select[name="monthSelect"]');
+	  const bldgId      = document.querySelector('select[name="bldgIdParam"]')?.value || "";
+	
+	  const handleChange = () => {
+	    const unitId = unitSelect?.value;
+	    const year   = yearSelect?.value;
+	    const month  = monthSelect?.value;
+	    if (!unitId || !year || !month || year === '년도 선택' || month === '월 선택') return;
+	
+	    axios.get('/ajax/resident/api/payment/charge-info', {
+	      params: { unitId, bldgId, year, month }
+	    }).then(res => {
+	      renderChargeInfo(res.data); // ✅ 기존 함수 그대로 활용
+	    }).catch(err => {
+	      console.error(err);
+	      Swal.fire("에러", "데이터를 불러오는 중 문제가 발생했습니다.", "error");
+	    });
+	  };
+	
+	  unitSelect?.addEventListener('change', handleChange);
+	  yearSelect?.addEventListener('change', handleChange);
+	  monthSelect?.addEventListener('change', handleChange);
+	});
+	</script>
   
-<script>
-// ✅ 관리비 + 에너지 항목 라벨 구성
-const combinedLabels = [
-  <c:forEach var="item" items="${currentCharges}">
-    <c:if test="${item.feeName != '전기' and item.feeName != '가스' and item.feeName != '수도'}">
-      "${item.feeName}",
-    </c:if>
-  </c:forEach>
-  <c:forEach var="energyType" items="${['전기', '가스', '수도']}">
-    <c:if test="${not empty energyComparison[chargeMonth][energyType]}">
-      "${energyType}",
-    </c:if>
-  </c:forEach>
-];
-
-const prevCombinedValues = [
+	<script>
+	// ✅ 관리비 + 에너지 항목 라벨 구성
+	const combinedLabels = [
 	  <c:forEach var="item" items="${currentCharges}">
 	    <c:if test="${item.feeName != '전기' and item.feeName != '가스' and item.feeName != '수도'}">
-	      ${item.previousAmount != null ? item.previousAmount : 0},
+	      "${item.feeName}",
 	    </c:if>
 	  </c:forEach>
 	  <c:forEach var="energyType" items="${['전기', '가스', '수도']}">
-	    <c:if test="${not empty energyComparison[previousMonth][energyType]}">
-	      ${energyComparison[previousMonth][energyType].chargeAmt},
+	    <c:if test="${not empty energyComparison[chargeMonth][energyType]}">
+	      "${energyType}",
 	    </c:if>
 	  </c:forEach>
 	];
 	
-const currCombinedValues = [
-  <c:forEach var="item" items="${currentCharges}">
-    <c:if test="${item.feeName != '전기' and item.feeName != '가스' and item.feeName != '수도'}">
-      ${item.chargeAmount != null ? item.chargeAmount : 0},
-    </c:if>
-  </c:forEach>
-  <c:forEach var="energyType" items="${['전기', '가스', '수도']}">
-    <c:if test="${not empty energyComparison[chargeMonth][energyType]}">
-      ${energyComparison[chargeMonth][energyType].chargeAmt},
-    </c:if>
-  </c:forEach>
-];
+	const prevCombinedValues = [
+		  <c:forEach var="item" items="${currentCharges}">
+		    <c:if test="${item.feeName != '전기' and item.feeName != '가스' and item.feeName != '수도'}">
+		      ${item.previousAmount != null ? item.previousAmount : 0},
+		    </c:if>
+		  </c:forEach>
+		  <c:forEach var="energyType" items="${['전기', '가스', '수도']}">
+		    <c:if test="${not empty energyComparison[previousMonth][energyType]}">
+		      ${energyComparison[previousMonth][energyType].chargeAmt},
+		    </c:if>
+		  </c:forEach>
+		];
+		
+	const currCombinedValues = [
+	  <c:forEach var="item" items="${currentCharges}">
+	    <c:if test="${item.feeName != '전기' and item.feeName != '가스' and item.feeName != '수도'}">
+	      ${item.chargeAmount != null ? item.chargeAmount : 0},
+	    </c:if>
+	  </c:forEach>
+	  <c:forEach var="energyType" items="${['전기', '가스', '수도']}">
+	    <c:if test="${not empty energyComparison[chargeMonth][energyType]}">
+	      ${energyComparison[chargeMonth][energyType].chargeAmt},
+	    </c:if>
+	  </c:forEach>
+	];
+	
+	// ✅ 디버깅용 로그 (브라우저 콘솔 확인)
+	console.log("chargeMonth: ${chargeMonth}");
+	console.log("previousMonth: ${previousMonth}");
+	console.log("twoMonthsAgo : ${twoMonthsAgo}");
+	console.log("전월 값", prevCombinedValues);
+	console.log("당월 값", currCombinedValues);
+	console.log("라벨", combinedLabels);
+	
+	// ✅ Chart.js 생성
+	new Chart(document.getElementById('chargeChart'), {
+	  type: 'bar',
+	  data: {
+	    labels: combinedLabels,
+	    datasets: [
+	      {
+	        label: '전월',
+	        data: prevCombinedValues,
+	        backgroundColor: '#6c757d',
+	        order: 1
+	      },
+	      {
+	        label: '당월',
+	        data: currCombinedValues,
+	        backgroundColor: '#007bff',
+	        order: 2
+	      },
+	      {
+	        label: '당월 추세선',
+	        type: 'line',
+	        data: currCombinedValues,
+	        borderColor: '#ffc107',
+	        backgroundColor: 'transparent',
+	        tension: 0,
+	        pointRadius: 5,
+	        pointStyle: 'circle',
+	        pointBackgroundColor: '#ffc107',
+	        pointBorderColor: '#fff',
+	        pointBorderWidth: 1,
+	        fill: false,
+	        yAxisID: 'y',
+	        order: 3,
+	        clip: false,
+	        segment: {
+	          borderWidth: 2
+	        }
+	      }
+	    ]
+	  },
+	  options: {
+	    responsive: true,
+	    clip: false,
+	    layout: { padding: { top: 8 } },
+	    elements: {
+	      point: { radius: 5, backgroundColor: '#ffc107', borderColor: '#fff', borderWidth: 1 },
+	      line: { borderWidth: 2 },
+	      bar: { borderRadius: 2 }
+	    },
+	    plugins: {
+	      tooltip: {
+	        callbacks: {
+	          label: ctx => `${ctx.dataset.label}: ₩${ctx.formattedValue}`
+	        }
+	      }
+	    },
+	    scales: {
+	      y: {
+	        beginAtZero: true,
+	        ticks: {
+	          callback: val => '₩' + val.toLocaleString()
+	        }
+	      }
+	    }
+	  }
+	});
+	</script>
 
-// ✅ 디버깅용 로그 (브라우저 콘솔 확인)
-console.log("전월 값", prevCombinedValues);
-console.log("당월 값", currCombinedValues);
-console.log("라벨", combinedLabels);
-
-// ✅ Chart.js 생성
-new Chart(document.getElementById('chargeChart'), {
-  type: 'bar',
-  data: {
-    labels: combinedLabels,
-    datasets: [
-      {
-        label: '전월',
-        data: prevCombinedValues,
-        backgroundColor: '#6c757d',
-        order: 1
-      },
-      {
-        label: '당월',
-        data: currCombinedValues,
-        backgroundColor: '#007bff',
-        order: 2
-      },
-      {
-        label: '당월 추세선',
-        type: 'line',
-        data: currCombinedValues,
-        borderColor: '#ffc107',
-        backgroundColor: 'transparent',
-        tension: 0,
-        pointRadius: 5,
-        pointStyle: 'circle',
-        pointBackgroundColor: '#ffc107',
-        pointBorderColor: '#fff',
-        pointBorderWidth: 1,
-        fill: false,
-        yAxisID: 'y',
-        order: 3,
-        clip: false,
-        segment: {
-          borderWidth: 2
-        }
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    clip: false,
-    layout: { padding: { top: 8 } },
-    elements: {
-      point: { radius: 5, backgroundColor: '#ffc107', borderColor: '#fff', borderWidth: 1 },
-      line: { borderWidth: 2 },
-      bar: { borderRadius: 2 }
-    },
-    plugins: {
-      tooltip: {
-        callbacks: {
-          label: ctx => `${ctx.dataset.label}: ₩${ctx.formattedValue}`
-        }
-      }
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          callback: val => '₩' + val.toLocaleString()
-        }
-      }
-    }
-  }
-});
-</script>
-
-<script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
+	<script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
 </body>
 </html>

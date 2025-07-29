@@ -180,15 +180,6 @@
                 </select>
               </div>
 
-              <div class="search-item">
-                <label for="searchType">조건</label>
-                <select name="searchType" class="form-control">
-                  <option value="">-- 전체 --</option>
-                  <option value="title" <c:if test="${simpleSearch.searchType eq 'title'}">selected</c:if>>제목</option>
-                  <option value="content" <c:if test="${simpleSearch.searchType eq 'content'}">selected</c:if>>내용</option>
-                  <option value="title+content" <c:if test="${simpleSearch.searchType eq 'title+content'}">selected</c:if>>제목+내용</option>
-                </select>
-              </div>
 
               <div class="search-item">
                 <label>검색일자</label>
@@ -199,6 +190,15 @@
                 </div>
               </div>
 
+              <div class="search-item">
+                <label for="searchType">조건</label>
+                <select name="searchType" class="form-control">
+                  <option value="">-- 전체 --</option>
+                  <option value="title" <c:if test="${simpleSearch.searchType eq 'title'}">selected</c:if>>제목</option>
+                  <option value="content" <c:if test="${simpleSearch.searchType eq 'content'}">selected</c:if>>내용</option>
+                  <option value="title+content" <c:if test="${simpleSearch.searchType eq 'title+content'}">selected</c:if>>제목+내용</option>
+                </select>
+              </div>
               <div class="search-item">
                 <label for="searchWord">검색어</label>
                 <input type="text" name="searchWord" value="${simpleSearch.searchWord}" class="form-control" placeholder="검색어 입력" />

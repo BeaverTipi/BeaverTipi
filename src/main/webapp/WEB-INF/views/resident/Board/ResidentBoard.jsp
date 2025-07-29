@@ -202,22 +202,21 @@
           <div class="search-description">
             아름다운 우리 집 게시글 함께 만들어갑시다
           </div>
-
-
-<div class="post-list"></div>
-<div class="search-fields">
-  <!-- 건물 -->
-  <div class="search-item">
-    <label for="bldgIdParam">건물</label>
-    <select name="bldgIdParam" class="select-field">
-	  <option value="">건물 선택</option>
-	  <c:forEach var="unit" items="${unitList}">
-	    <option value="${unit.bldgId}" 
-	      <c:if test="${unit.bldgId eq param.bldgIdParam or unit.bldgId eq selectedBldgId}">selected</c:if>>
-	      ${unit.building.bldgNm}
-	    </option>
-	  </c:forEach>
-	</select>
+			<div class="post-list"></div>
+			<div class="search-fields">
+			  <!-- 건물 -->
+			  <div class="search-item">
+			    <label for="bldgIdParam">건물</label>
+			    <select name="bldgIdParam" class="select-field">
+				  <option value="">건물 선택</option>
+				  <c:forEach var="unit" items="${unitList}">
+				    <option value="${unit.bldgId}" 
+				      <c:if test="${unit.bldgId eq param.bldgIdParam or unit.bldgId eq selectedBldgId}">selected</c:if>>
+				      ${unit.building.bldgNm}
+				    </option>
+				  </c:forEach>
+				</select>
+				
 	<script>
   document.querySelector('select[name="bldgIdParam"]').addEventListener('change', function(event) {
     console.log("Selected Building ID:", event.target.value);  // 로그 추가
