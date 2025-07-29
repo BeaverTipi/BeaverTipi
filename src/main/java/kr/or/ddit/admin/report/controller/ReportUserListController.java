@@ -41,7 +41,7 @@ public class ReportUserListController {
     @GetMapping("/admin/report/userList")
     public String selectReportedPostList(
         @RequestParam(name="page", required = false, defaultValue = "1") int currentPage,
-        @ModelAttribute("detailSearch") ReportSearchVO detailSearch, // ReportVO -> ReportSearchVO로 변경
+        @ModelAttribute("detailSearch") ReportSearchVO detailSearch,
         @ModelAttribute("simpleSearch") SimpleSearch simpleSearch,
         Model model) {
 

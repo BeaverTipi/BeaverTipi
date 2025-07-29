@@ -23,10 +23,6 @@
     <script>
     	var contextPath = '${pageContext.request.contextPath}'; // contextPath 변수 선언 추가
 	</script>
-	
-	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_APP_KEY&libraries=services,clusterer"></script>
-
-    <script src="${pageContext.request.contextPath}/app/js/main/mainMap/mainKakaoMap.js"></script>
     <script src="${pageContext.request.contextPath}/app/js/admin/board/userList.js"></script>
 
 <h2 class="board-title">회원 & 매물 신고 관리</h2>
