@@ -1,4 +1,4 @@
-package kr.or.ddit.broker.dto;
+package kr.or.ddit.vo;
 
 
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SignatureDTO {
+public class SignatureVO {
 
     private String contId;
     private String signatureStatus;

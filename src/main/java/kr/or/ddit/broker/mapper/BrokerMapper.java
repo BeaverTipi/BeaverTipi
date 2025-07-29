@@ -13,6 +13,7 @@
 package kr.or.ddit.broker.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -25,6 +26,8 @@ import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.SignatureVO;
+import kr.or.ddit.vo.SignerVO;
 import kr.or.ddit.vo.TenancyVO;
 
 /**
@@ -108,7 +111,14 @@ public interface BrokerMapper {
 	
 	public FileVO selectContractFile(String contId); 
 	
-	
+	public SignatureVO selectSignature(String contId);
+	public int existsSignature(String contId);
+	public int insertSignature(SignatureVO signature);
+	public int updateSignature(SignatureVO signature);
+	public SignerVO selectSigner(Map<String, String> contIdAndRole);
+	public int existsSigner(Map<String, String> contIdAndRole);
+	public int insertSigner(SignerVO singer);
+	public int updateSigner(SignerVO signer);
 	
 	public List<CommonCodeVO> selectBankList();
 	public List<CommonCodeVO> selectLesserTypeList();

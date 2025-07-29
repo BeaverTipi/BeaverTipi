@@ -8,6 +8,12 @@
 	- 2025-07-09 최초작성
 	- 2025-07-10 매일수정중
  -->
+<resultMap id="SignerResultMap" type="SignerVO">
+    <result property="isJoined" column="IS_JOINED" typeHandler="kr.or.ddit.broker.mybatis.BooleanYNTypeHandler"/>
+    <result property="signedAt" column="SIGNED_AT" typeHandler="kr.or.ddit.broker.mybatis.LocalDateTimeStringTypeHandler"/>
+    <result property="isSigned" column="IS_SIGNED" typeHandler="kr.or.ddit.broker.mybatis.BooleanYNTypeHandler"/>
+    <result property="isValid" column="IS_VALID" typeHandler="kr.or.ddit.broker.mybatis.BooleanYNTypeHandler"/>
+</resultMap>
 
 <!-- Facility Option 정보 매핑 -->
 <resultMap id="ListingOptionMap" type="ListingOptionVO">
@@ -333,4 +339,141 @@
 	  FROM MEMBER
 	 WHERE MBR_TELNO = #{telNo}
 </select>
+
+<select id="existsSignature" parameterType="string" resultType="int">
+    SELECT COUNT(1)
+    FROM SIGNATURE
+    WHERE CONT_ID = #{contId}
+</select>
+<select id="selectSignature" parameterType="String" resultType="SignatureVO">
+	SELECT *
+	  FROM SIGNAUTRE
+	 WHERE CONT_ID = #{contId}
+</select>
+<insert id="insertSignature" parameterType="SignatureVO">
+    INSERT INTO SIGNATURE (
+        CONT_ID,
+        SIGNATURE_STATUS,
+        ORIGINAL_PDF_DATA,
+        LESSOR_SIGNED_PDF_DATA,
+        LESSOR_SIGNED_PDF_ID,
+        LESSOR_SIGNED_PDF_PATH,
+        LESSEE_SIGNED_PDF_DATA,
+        LESSEE_SIGNED_PDF_ID,
+        LESSEE_SIGNED_PDF_PATH,
+        AGENT_SIGNED_PDF_DATA,
+        AGENT_SIGNED_PDF_ID,
+        AGENT_SIGNED_PDF_PATH
+    ) VALUES (
+        #{contId},
+        #{signatureStatus},
+        #{originalPdfData},
+        #{lessorSignedPdfData},
+        #{lessorSignedPdfId},
+        #{lessorSignedPdfPath},
+        #{lesseeSignedPdfData},
+        #{lesseeSignedPdfId},
+        #{lesseeSignedPdfPath},
+        #{agentSignedPdfData},
+        #{agendSignedPdfId},
+        #{agentSignedPdfPath}
+    )
+</insert>
+<update id="updateSignature" parameterType="SignatureVO">
+    UPDATE SIGNATURE
+    SET
+        SIGNATURE_STATUS       = #{signatureStatus},
+        ORIGINAL_PDF_DATA      = #{originalPdfData},
+        LESSOR_SIGNED_PDF_DATA = #{lessorSignedPdfData},
+        LESSOR_SIGNED_PDF_ID   = #{lessorSignedPdfId},
+        LESSOR_SIGNED_PDF_PATH = #{lessorSignedPdfPath},
+        LESSEE_SIGNED_PDF_DATA = #{lesseeSignedPdfData},
+        LESSEE_SIGNED_PDF_ID   = #{lesseeSignedPdfId},
+        LESSEE_SIGNED_PDF_PATH = #{lesseeSignedPdfPath},
+        AGENT_SIGNED_PDF_DATA  = #{agentSignedPdfData},
+        AGENT_SIGNED_PDF_ID    = #{agendSignedPdfId},
+        AGENT_SIGNED_PDF_PATH  = #{agentSignedPdfPath}
+    WHERE CONT_ID = #{contId}
+</update>
+<select id="existsSigner" parameterType="map" resultType="int">
+    SELECT COUNT(1)
+    FROM SIGNER
+    WHERE CONT_ID = #{contId}
+      AND ROLE = #{role}
+</select>
+<select id="selectSigner" parameterType="map" resultMap="SignerResultMap">
+    SELECT
+        CONT_ID,
+        ROLE,
+        CODE,
+        ID,
+        NAME,
+        TELNO,
+        SIGNER_STATUS,
+        IP_ADDR,
+        IS_JOINED,
+        SIGNED_AT,
+        IS_SIGNED,
+        HASH_VAL,
+        IS_VALID,
+        BASE64,
+        TEMP_PDF_URL
+    FROM SIGNER
+    WHERE CONT_ID = #{contId}
+      AND ROLE = #{role}
+</select>
+<insert id="insertSigner" parameterType="SignerVO">
+    INSERT INTO SIGNER (
+        CONT_ID,
+        ROLE,
+        CODE,
+        ID,
+        NAME,
+        TELNO,
+        SIGNER_STATUS,
+        IP_ADDR,
+        IS_JOINED,
+        SIGNED_AT,
+        IS_SIGNED,
+        HASH_VAL,
+        IS_VALID,
+        BASE64,
+        TEMP_PDF_URL
+    ) VALUES (
+        #{contId},
+        #{role},
+        #{code},
+        #{id},
+        #{name},
+        #{telno},
+        #{signerStatus},
+        #{ipAddr},
+        #{isJoined, typeHandler=BooleanTypeHandler},
+        #{signedAt},
+        #{isSigned, typeHandler=BooleanTypeHandler},
+        #{hashVal},
+        #{isValid, typeHandler=BooleanTypeHandler},
+        #{base64},
+        #{tempPdfUrl}
+    )
+</insert>
+<update id="updateSigner" parameterType="SignerVO">
+    UPDATE SIGNER
+    SET
+        CODE          = #{code},
+        ID            = #{id},
+        NAME          = #{name},
+        TELNO         = #{telno},
+        SIGNER_STATUS = #{signerStatus},
+        IP_ADDR       = #{ipAddr},
+        IS_JOINED     = #{isJoined, typeHandler=BooleanTypeHandler},
+        SIGNED_AT     = #{signedAt},
+        IS_SIGNED     = #{isSigned, typeHandler=BooleanTypeHandler},
+        HASH_VAL      = #{hashVal},
+        IS_VALID      = #{isValid, typeHandler=BooleanTypeHandler},
+        BASE64        = #{base64},
+        TEMP_PDF_URL  = #{tempPdfUrl}
+    WHERE CONT_ID = #{contId}
+      AND ROLE = #{role}
+</update>
 </mapper>
