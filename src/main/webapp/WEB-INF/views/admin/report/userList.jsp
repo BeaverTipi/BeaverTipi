@@ -10,8 +10,10 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/common_admin.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/board/userList.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/business/filePopup.css">
+    <link rel="styleSheet" href="${pageContext.request.contextPath }/app/css/main/mainMap/kakaoMap.css">
 </head>
 <body>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -108,7 +110,7 @@
                         	<td>${(pagingVO.currentPageNo - 1) * pagingVO.recordCountPerPage + status.index + 1}</td>
                             <td>${report.brdTitlNm}</td>
                             <td>${report.rptTargetId}</td>
-                            <td>${report.mbrCd}</td>
+                            <td>${report.mbrId}</td>
                             <td>
                                 ${report.getFormattedBrdPblsDtm()}
                             </td>
@@ -213,6 +215,62 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" id="btnProcessAllChanges">저장</button>
                 <button type="button" class="btn btn-secondary" id="closeReportDetailModalBtn">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="listingDetailModal" tabindex="-1" aria-labelledby="listingDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="listingDetailModalLabel">매물 상세 정보 (확인용)</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="listing-image-gallery mb-4">
+                    <div class="main-image image-item">
+                        <img id="mainListingImage" class="img-fluid mb-2 border" style="max-height: 400px; object-fit: contain; cursor: pointer;" src="${pageContext.request.contextPath}/assets/img/illustrations/no-image.png" alt="대표 이미지">
+                    </div>
+                    <div class="thumbnail-grid d-flex flex-wrap justify-content-center">
+                        </div>
+                </div>
+
+                <div id="listingBasicInfo" class="mb-4">
+                    <h3 class="mb-3"><span id="detailListingTitle"></span></h3>
+                    <p><strong>가격:</strong> <span id="detailListingPrice"></span></p>
+                    <p><strong>주소:</strong> <span id="detailListingAddress"></span></p>
+                    <p><strong>평수:</strong> <span id="detailListingArea"></span></p>
+                    <p><strong>관리비:</strong> <span id="detailListingMaintFee"></span></p>
+                    <p><strong>층수:</strong> <span id="detailListingFloor"></span></p>
+                    <p><strong>옵션:</strong> <span id="detailListingOption"></span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="imageGalleryModal" tabindex="-1" aria-labelledby="imageGalleryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content bg-transparent border-0">
+            <div class="modal-body text-center p-0">
+                <img id="galleryFullImage" class="img-fluid" style="max-height: 90vh; object-fit: contain;">
+                <button type="button" class="close text-white position-absolute" style="top: 15px; right: 15px; font-size: 2rem;" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <a class="carousel-control-prev" href="#" role="button" data-slide="prev" id="galleryPrevBtn">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#" role="button" data-slide="next" id="galleryNextBtn">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
             </div>
         </div>
     </div>

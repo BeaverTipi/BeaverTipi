@@ -23,29 +23,33 @@
 
     <select id="selectReportedPostList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultMap="reportMap">
         SELECT
-            A.RPT_ID,
-            A.BRD_NO,
-            A.BRD_TITL_NM,
-            A.MBR_CD,
-            A.BRD_PBLS_DTM,
-            A.RPT_CODE,
-            A.RPT_TARGET_ID,
-            A.RPT_STATUS_CODE
+            A.RPT_ID
+            ,A.BRD_NO
+            ,A.BRD_TITL_NM
+            ,A.MBR_CD
+            ,A.BRD_PBLS_DTM
+            ,A.RPT_CODE
+            ,A.RPT_TARGET_ID
+            ,A.RPT_STATUS_CODE
+            ,A.MBR_ID
         FROM (
             SELECT
                 ROW_NUMBER() OVER (ORDER BY B.BRD_PBLS_DTM DESC) AS RNUM,
-                B.BRD_NO,
-                B.BRD_TITL_NM,
-                B.MBR_CD,
-                B.BRD_PBLS_DTM,
-                R.RPT_ID,
-                R.RPT_CODE,
-                R.RPT_TARGET_ID,
-                R.RPT_STATUS_CODE
+                B.BRD_NO
+                ,B.BRD_TITL_NM
+                ,B.MBR_CD
+                ,B.BRD_PBLS_DTM
+                ,R.RPT_ID
+                ,R.RPT_CODE
+                ,R.RPT_TARGET_ID
+                ,R.RPT_STATUS_CODE
+                ,M.MBR_ID
             FROM
                 BOARD B
             JOIN
                 REPORT R ON B.BRD_NO = R.BRD_NO
+            JOIN
+                MEMBER M ON B.MBR_CD = M.MBR_CD
             WHERE
                 1=1
                 AND R.RPT_DEL_YN = 'N'
@@ -63,7 +67,7 @@
                         AND B.BRD_TITL_NM LIKE '%' || #{detailSearch.searchTitle} || '%'
                     </if>
                     <if test="detailSearch.searchWriter != null and detailSearch.searchWriter != ''">
-                        AND B.MBR_CD LIKE '%' || #{detailSearch.searchWriter} || '%'
+                        AND M.MBR_ID LIKE '%' || #{detailSearch.searchWriter} || '%'
                     </if>
                     <if test="detailSearch.searchReportedTargetId != null and detailSearch.searchReportedTargetId != ''">
                         AND R.RPT_TARGET_ID LIKE '%' || #{detailSearch.searchReportedTargetId} || '%'
@@ -149,19 +153,19 @@
 
     <select id="selectReportDetailByReportId" parameterType="string" resultMap="reportMap">
         SELECT
-            R.RPT_ID,
-            R.BRD_NO,
-            B.BRD_TITL_NM,
-            B.BRD_CONT,
-            B.MBR_CD,
-            B.BRD_PBLS_DTM,
-            R.RPT_TARGET_ID,
-            R.RPT_STATUS_CODE,
-            R.RPT_CODE,
-            R.RPT_DEL_YN,
-            M.MBR_STATUS_CODE AS RPT_TARGET_MBR_STATUS,
-            M.MBR_ID AS RPT_TARGET_MBR_CD,
-            L.LSTG_DEL AS LSTG_DEL
+            R.RPT_ID
+            ,R.BRD_NO
+            ,B.BRD_TITL_NM
+            ,B.BRD_CONT
+            ,B.MBR_CD
+            ,B.BRD_PBLS_DTM
+            ,R.RPT_TARGET_ID
+            ,R.RPT_STATUS_CODE
+            ,R.RPT_CODE
+            ,R.RPT_DEL_YN
+            ,M.MBR_STATUS_CODE AS RPT_TARGET_MBR_STATUS
+            ,M.MBR_ID AS RPT_TARGET_MBR_CD
+            ,L.LSTG_DEL AS LSTG_DEL
         FROM REPORT R
         JOIN BOARD B ON R.BRD_NO = B.BRD_NO
         LEFT JOIN MEMBER M ON R.RPT_CODE = 'MEMB' AND R.RPT_TARGET_ID = M.MBR_ID

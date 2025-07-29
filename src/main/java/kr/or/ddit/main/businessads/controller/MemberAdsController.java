@@ -39,22 +39,12 @@ public class MemberAdsController {
      */
     @GetMapping("/requestForm")
     public String adsRequestForm(Model model) {
-        // 폼 초기화를 위해 빈 VO 객체를 모델에 추가할 수 있습니다.
-        // 예를 들어, commandObject 형태로 BoardVO와 AdsClientVO를 미리 설정하여 폼에 바인딩할 수 있습니다.
         model.addAttribute("boardVO", new BoardVO());
         model.addAttribute("adsClientVO", new AdsClientVO());
         log.info("광고 요청 폼 페이지 로드");
         return "main/ads/adsForm"; // 예시 JSP 경로
     }
 
-    /**
-     * 회원이 작성한 광고 요청 데이터를 처리하고 저장합니다.
-     * @param boardVO 광고 게시글 정보 (제목, 내용 등)
-     * @param adsClientVO 광고주 정보 (사업장명, 담당자 등)
-     * @param attachFiles 첨부된 파일 목록 (Optional)
-     * @param model Model 객체
-     * @return 리다이렉트 경로 또는 결과 페이지
-     */
     @PostMapping("/request")
     public String processAdsRequest(
             @ModelAttribute("boardVO") @Valid BoardVO boardVO, // 폼 데이터 바인딩
@@ -82,13 +72,13 @@ public class MemberAdsController {
     	} else {
     	    log.warn("로그인하지 않은 사용자의 광고 요청 시도.");
     	    model.addAttribute("message", "로그인이 필요합니다.");
-    	    return "redirect:/"; // 로그인 페이지로 리다이렉트 (경로에 맞게 수정)
+    	    return "redirect:/"; // 로그인 페이지로 리다이렉트
     	}
         
     	log.info("광고 요청 데이터 접수: BoardVO={}, AdsClientVO={}", boardVO, adsClientVO);
         if (attachFiles != null && !attachFiles.isEmpty()) {
             log.info("첨부 파일 개수: {}", attachFiles.size());
-            // 여기서 파일 처리 로직도 memberAdsService로 위임할 것입니다.
+            // 여기서 파일 처리 로직도 memberAdsService로 위임
         }
 
         // 실제 광고 요청 저장 로직은 Service 계층으로 위임합니다.

@@ -30,15 +30,14 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/main/report")
+@RequestMapping("/member/report")
 public class CreateReportController {
 
     @Autowired
     private CreateReportService createReportService;
 
-    
     /**
-     * 신고 작성 폼 페이지를 반환합니다.
+     * 신고 작성 폼 페이지를 반환
      * @param targetId 신고 대상의 ID
      * @param type 신고 유형
      * @param model Model 객체
@@ -48,9 +47,10 @@ public class CreateReportController {
     public String createReportForm(
             @RequestParam(value = "targetId", required = false) String targetId,
             @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "rptTargetNm", required = false) String rptTargetNm,
             Model model
     ) {
-        log.info("신고 작성 폼 요청. targetId: {}, type: {}", targetId, type);
+        log.info("신고 작성 폼 요청. targetId: {}, type: {}", targetId, type, rptTargetNm);
 
         ReportVO reportVO = new ReportVO();
         if (targetId != null && !targetId.isEmpty()) {
@@ -59,8 +59,13 @@ public class CreateReportController {
         if (type != null && !type.isEmpty()) {
             reportVO.setRptCode(type);
         }
+        if (rptTargetNm != null && !rptTargetNm.isEmpty()) {
+            reportVO.setRptTargetNm(rptTargetNm);
+        }
 
         model.addAttribute("reportVO", reportVO); // ReportVO를 modelAttribute로 사용
+        model.addAttribute("targetIdFromUrl", targetId);
+        model.addAttribute("rptTargetNmFromUrl", rptTargetNm);
         
         System.out.println("DEBUG: reportVO.rptTargetId = " + reportVO.getRptTargetId());
         return "main/report/createReport";

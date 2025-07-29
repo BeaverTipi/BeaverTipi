@@ -29,10 +29,10 @@
                     <label>회원구분</label>
                     <form:select path="userRoleId" id="memberTypeSelect" cssClass="select-field">
                         <form:option value="">--전체--</form:option>
-                        <form:option value="USER" label="일반회원"/>
-                        <form:option value="TENANCY" label="임대인"/>
-                        <form:option value="BROKER" label="중개인"/>
-                        <form:option value="ADMIN" label="관리자"/> 
+                        <form:option value="ROLE_USER" label="일반회원"/>
+                        <form:option value="ROLE_TENANCY" label="임대인"/>
+                        <form:option value="ROLE_BROKER" label="중개인"/>
+                        <form:option value="ROLE_ADMIN" label="관리자"/> 
                     </form:select>
                 </div>
                 <div class="search-item">
@@ -101,10 +101,10 @@
 		                      <c:if test="${not empty member.memRoleList}">
 		                      	<c:forEach items="${member.memRoleList}" var="role" varStatus="status">
 		                        	<c:choose>
-		                				<c:when test="${role.userRoleId eq 'USER'}">일반회원</c:when>
-		                				<c:when test="${role.userRoleId eq 'TENANCY'}">임대인</c:when>
-		               					<c:when test="${role.userRoleId eq 'BROKER'}">중개인</c:when>
-		               					<c:when test="${role.userRoleId eq 'ADMIN'}">관리자</c:when>
+		                				<c:when test="${role.userRoleId eq 'ROLE_USER'}">일반회원</c:when>
+		                				<c:when test="${role.userRoleId eq 'ROLE_TENANCY'}">임대인</c:when>
+		               					<c:when test="${role.userRoleId eq 'ROLE_BROKER'}">중개인</c:when>
+		               					<c:when test="${role.userRoleId eq 'ROLE_ADMIN'}">관리자</c:when>
 		                				<c:otherwise>${role.userRoleId}</c:otherwise> 
 		            				</c:choose>
 		           					<c:if test="${!status.last}">, </c:if>

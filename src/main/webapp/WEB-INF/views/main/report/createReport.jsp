@@ -38,7 +38,7 @@
     <h2 class="mb-4">신고 작성</h2>
     
     <%-- multipart/form-data 인코딩 타입 설정 및 commandName 지정 --%>
-    <form:form id="createReportForm" action="${pageContext.request.contextPath}/main/report/create" 
+    <form:form id="createReportForm" action="${pageContext.request.contextPath}/member/report/create" 
                method="post" enctype="multipart/form-data" 
                modelAttribute="reportVO"> <%-- ReportVO를 modelAttribute로 설정 --%>
         
@@ -63,11 +63,10 @@
             <div class="card-body">
                 <div class="form-group">
                     <label for="rptCode">신고 유형 <span class="text-danger">*</span></label>
-                    <%-- 신고 유형이 이미 설정되어 있다면 disabled 및 사용자에게 표시 --%>
+					<!-- 신고 유형이 이미 설정되어 있다면 disabled 및 사용자에게 표시 -->
                     <c:set var="isRptCodePredefined" value="${not empty reportVO.rptCode}"/>
                     
                     <form:select path="rptCode" class="form-control" id="rptCode" required="true">					    
-                        <form:option value="" label="-- 신고 유형 선택 --"/>
                         <form:option value="MEMB" label="회원"/>
                         <form:option value="LSTG" label="매물"/>
                     </form:select>
@@ -77,29 +76,44 @@
                         <input type="hidden" name="rptCode" value="${reportVO.rptCode}"/>
                     </c:if>
                 </div>
-                <div class="form-group">
-                    <label for="rptTargetId">신고 대상 ID<span class="text-danger">*</span></label>
+                <div class="form-group" id="rptTargetIdGroup" 
+                     style="display: ${reportVO.rptCode eq 'MEMB' ? 'block' : 'none'};">
+                    <label for="rptTargetId">신고 대상 <span class="text-danger">*</span></label>
                     <c:set var="isRptTargetIdPredefined" value="${not empty reportVO.rptTargetId}" />
    
                     <form:input path="rptTargetId" class="form-control" id="rptTargetId"
 				                placeholder="신고 대상의 ID를 입력하세요"
 				                required="true"/>
-    
                     <form:errors path="rptTargetId" cssClass="text-danger"/>
                     <c:if test="${isRptTargetIdPredefined}">
-                        <small class="form-text text-muted">신고 대상 ID가 자동으로 입력되었습니다.</small>
+                        <small class="form-text text-muted">신고 대상이 자동으로 입력되었습니다.</small>
+                    </c:if>
+                </div>
+                
+                
+			    <!--신고 대상 이름 입력 필드 (LSTG 유형일 때만 표시) -->
+                <div class="form-group" id="rptTargetNmGroup" 
+                     style="display: ${reportVO.rptCode eq 'LSTG' ? 'block' : 'none'};">
+                    <label for="rptTargetNm">신고할 매물명 <span class="text-danger">*</span></label>
+                    <c:set var="isRptTargetNmPredefined" value="${reportVO.rptCode eq 'LSTG' and not empty rptTargetNmFromUrl}" />
+					<!-- rptTargetNm을 form:input으로 직접 바인딩 -->
+                    <form:input path="rptTargetNm" class="form-control" id="rptTargetNm"
+                                placeholder="신고할 매물명을 입력하세요"
+                                required="true"/>
+                    <form:errors path="rptTargetNm" cssClass="text-danger"/>
+                    <c:if test="${isRptTargetNmPredefined}">
+                        <small class="form-text text-muted">신고 대상 이름(매물명)이 자동으로 입력되었습니다.</small>
                     </c:if>
                 </div>
             </div>
         </div>
 
-        <%-- 파일 첨부 영역 (광고 폼과 동일한 UI 및 input name/id 사용) --%>
         <div class="card mb-4">
             <div class="card-header">증거 자료 첨부</div>
             <div class="card-body">
                 <div class="form-group">
                     <label for="attachFiles">파일 선택</label>
-                    <%-- multiple 속성을 추가하여 여러 파일 선택 가능하도록 함 --%>
+					<!-- multiple 속성을 추가하여 여러 파일 선택 가능하도록 했음 -->
                     <input type="file" class="form-control-file" id="attachFiles" name="attachFiles" multiple>
                     <h4></h4>
                     <small class="form-text text-muted">신고 내용을 뒷받침할 이미지, PDF 등 증거 자료를 첨부해주세요.</small>
@@ -113,7 +127,7 @@
                                 <tr><th>파일명</th><th>크기</th><th></th></tr>
                             </thead>
                             <tbody>
-                                <%-- 파일 목록이 동적으로 추가될 영역 --%>
+
                             </tbody>
                         </table>
                     </div>
@@ -144,6 +158,62 @@ $(function(){
 	
 	var isRptTargetIdPredefined = ${isRptTargetIdPredefined};
     $("#rptTargetId").prop("readonly", isRptTargetIdPredefined);
+    
+	var isRptTargetNmPredefined = ${isRptTargetNmPredefined};
+    $("#rptTargetNm").prop("readonly", isRptTargetNmPredefined);
+    
+    var rptCodeFromModel = "${reportVO.rptCode}"; // 컨트롤러에서 넘겨받은 rptCode 값
+    var targetIdFromUrl = "${targetIdFromUrl}"; // URL 파라미터 targetId (실제 ID)
+    var rptTargetNmFromUrl = "${rptTargetNmFromUrl}"; // URL 파라미터 rptTargetNm (매물명);
+
+    // 초기 로드 시 필드 가시성 및 값 설정
+    if (rptCodeFromModel === 'MEMB') {
+        $("#rptTargetId").val(targetIdFromUrl).prop("readonly", targetIdFromUrl !== "");
+        $("#rptTargetNmGroup").hide(); // rptTargetNmGroup 숨김
+        $("#rptTargetNm").prop("required", false); // rptTargetNm 필수 해제
+    } else if (rptCodeFromModel === 'LSTG') {
+        $("#rptTargetIdGroup").hide(); // rptTargetIdGroup 숨김
+        $("#rptTargetNmGroup").show(); // rptTargetNmGroup 보임
+        $("#rptTargetNm").val(rptTargetNmFromUrl).prop("readonly", rptTargetNmFromUrl !== "").prop("required", true); // rptTargetNm에 값 설정 및 필수 설정
+    } else {
+        // 기본 상태 (선택되지 않았을 때)
+        $("#rptTargetNmGroup").hide(); // 기본적으로 rptTargetNmGroup 숨김
+        $("#rptTargetNm").prop("required", false); // rptTargetNm 필수 해제
+        $("#rptTargetId").prop("readonly", false); // rptTargetId readonly 해제
+    }
+
+    // 신고 유형(rptCode) 변경 시 동적 처리 (사용자가 직접 선택 가능할 때)
+    $("#rptCode").on('change', function() {
+        var selectedRptCode = $(this).val();
+        // rptTargetId 필드는 항상 보이므로 값과 readonly만 변경
+        $("#rptTargetId").val(""); // 신고 유형 변경 시 ID 초기화
+        $("#rptTargetId").prop("readonly", false).prop("required", true); 
+
+        if (selectedRptCode === 'MEMB') {
+            $("#rptTargetNmGroup").hide();
+            $("#rptTargetNm").val("").prop("required", false).prop("readonly", false);
+        } else if (selectedRptCode === 'LSTG') {
+            $("#rptTargetNmGroup").show();
+            $("#rptTargetNm").val("").prop("required", true).prop("readonly", false);
+        } else {
+            // 다른 값 선택 시 (만약 있다면) - 기본 상태로 복원
+            $("#rptTargetNmGroup").hide();
+            $("#rptTargetNm").val("").prop("required", false).prop("readonly", false);
+        }
+    });
+
+    // 폼 제출 시 required 속성 관리 (중요)
+    $("#createReportForm").on('submit', function() {
+        var currentRptCode = $("#rptCode").val();
+        if (currentRptCode === 'MEMB') {
+            $("#rptTargetId").prop("required", true);
+            $("#rptTargetNm").prop("required", false); // 매물명 필드는 필수 아님
+        } else if (currentRptCode === 'LSTG') {
+            $("#rptTargetId").prop("required", true); // 매물 ID도 필수
+            $("#rptTargetNm").prop("required", true); // 매물명 필드 필수
+        }
+        return true; // 폼 제출 계속
+    });
 }) 
 </script>
 

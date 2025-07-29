@@ -27,7 +27,7 @@
         )
     </insert>
 
-    <!-- **새로 추가할 쿼리: REPORT 테이블에 신고 상세 정보 삽입** -->
+    <!-- 새로 추가할 쿼리 : REPORT 테이블에 신고 상세 정보 삽입 -->
     <insert id="insertReport" parameterType="kr.or.ddit.vo.ReportVO">
         INSERT INTO REPORT (
             BRD_NO

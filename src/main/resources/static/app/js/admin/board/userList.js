@@ -207,6 +207,221 @@ function updatePageIndicator() {
     }
 }
 
+let listingGalleryImages = []; // 매물 갤러리 이미지 URL 저장 배열
+let currentGalleryIndex = 0;   // 현재 보고 있는 이미지 인덱스
+
+// window.openDetailModal 함수: 매물 상세 정보를 불러와 모달을 띄우는 핵심 함수
+window.openDetailModal = function(lstgId) {
+    console.log("매물 상세 확인용 모달 열기 요청:", lstgId);
+    // userList 페이지에서는 조회수 로그가 필요 없을 수 있습니다.
+    // 만약 필요하다면 아래 코드를 유지하고, 로그인 사용자 ID (window.loggedInUserId)가 userList.jsp에서 정의되어야 합니다.
+    const mbrCd = window.loggedInUserId || '';
+    fetch('/map/api/viewLog', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+            lstgId: lstgId,
+            mbrCd: mbrCd
+        })
+    }).catch(console.warn);
+
+    // /map/api/detail은 listRenderer.js에서 사용하는 API와 동일합니다.
+    const url = `${contextPath}/map/api/detail?lstgId=${lstgId}&mbrCd=${encodeURIComponent(mbrCd)}`;
+    axios.get(url)
+        .then(response => {
+            const data = response.data;
+            if (!data || Object.keys(data).length === 0) {
+                throw new Error("매물 상세 데이터가 비어있습니다.");
+            }
+            window.showDetailModal(data);
+        })
+        .catch(error => {
+            console.error("매물 상세 정보 로드 실패:", error);
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'error',
+                    title: '매물 정보 로드 실패',
+                    text: error.message || '매물 정보를 불러오는 중 오류가 발생했습니다.',
+                    confirmButtonText: '확인'
+                });
+            } else {
+                alert('매물 정보를 불러오는 중 오류가 발생했습니다: ' + (error.message || '알 수 없는 오류'));
+            }
+            $('#listingDetailModal').modal('hide');
+        });
+};
+
+// 매물 상세 정보를 모달에 표시하는 함수
+window.showDetailModal = function(data) {
+    // #listingDetailModal 에 데이터 바인딩
+    // listRenderer.js에서 사용한 필드명(대문자)에 맞춰 바인딩합니다.
+    $('#detailListingTitle').text(data.LSTG_NM || '-');
+    $('#detailListingPrice').text(getDepositText(data));
+    $('#detailListingAddress').text(`${data.LSTG_ADD || ''} ${data.LSTG_ADD2 || ''}`);
+    $('#detailListingArea').text(`${data.LSTG_EX_AREA || '-'}㎡ / ${data.LSTG_GR_AREA || '-'}㎡`);
+    $('#detailListingMaintFee').text(data.LSTG_MGMT_PRICE ? `${data.LSTG_MGMT_PRICE.toLocaleString()}만원` : '없음');
+    $('#detailListingFloor').text(data.LSTG_FLOOR || 'N/A');
+    $('#detailListingOption').html(renderOptionsFromData(data.LSTG_OPTN, data.facilityOptionList));
+
+    // 이미지 갤러리 설정 (실제 fileList 데이터를 사용)
+    const mainImgEl = document.getElementById('mainListingImage');
+    const thumbnailGrid = document.querySelector('#listingDetailModal .thumbnail-grid');
+    const noImageSrc = `${contextPath}/assets/img/illustrations/no-image.png`;
+
+    listingGalleryImages = []; // 이미지 배열 초기화
+
+    // 서버 응답의 fileList에서 이미지 URL 구성
+    if (data.fileList && Array.isArray(data.fileList) && data.fileList.length > 0) {
+        data.fileList.sort((a, b) => (a.fileOrd || 0) - (b.fileOrd || 0)); // fileOrd로 정렬
+        data.fileList.forEach(file => {
+            listingGalleryImages.push(`${contextPath}/file/read/${file.fileId}`);
+        });
+    }
+
+    // 대표 이미지 설정
+    mainImgEl.src = listingGalleryImages[0] || noImageSrc;
+    mainImgEl.onerror = function() { this.src = noImageSrc; };
+
+    // 썸네일 설정
+    let thumbnailHtml = '';
+    const thumbnailsToShow = listingGalleryImages.slice(1, 5); // 대표 이미지 제외한 최대 4개 썸네일
+    const hiddenCount = listingGalleryImages.length > 5 ? listingGalleryImages.length - 5 : 0; // 나머지 이미지 개수
+
+    if (listingGalleryImages.length > 0) {
+        thumbnailsToShow.forEach((src, index) => {
+            const actualIndex = index + 1; // 실제 이미지 배열에서의 인덱스
+            const isLastThumbnail = (index === thumbnailsToShow.length - 1);
+
+            if (isLastThumbnail && hiddenCount > 0) {
+                 thumbnailHtml += `
+                    <div class="image-item thumbnail-more" style="cursor:pointer; width:80px; height:80px; overflow:hidden; margin:5px; border:1px solid #ddd; position: relative;">
+                        <img src="${src}" alt="썸네일" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='${noImageSrc}'" data-index="${actualIndex}">
+                        <div class="more-count" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">+${hiddenCount}</div>
+                    </div>
+                `;
+            } else {
+                thumbnailHtml += `
+                    <div class="image-item" style="cursor:pointer; width:80px; height:80px; overflow:hidden; margin:5px; border:1px solid #ddd;">
+                        <img src="${src}" alt="썸네일" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='${noImageSrc}'" data-index="${actualIndex}">
+                    </div>
+                `;
+            }
+        });
+        // 썸네일이 0개인 경우 (이미지가 대표이미지 1개인 경우)
+        if (listingGalleryImages.length === 1 && thumbnailsToShow.length === 0) {
+            thumbnailHtml = ''; // 썸네일 영역을 비워둠
+        }
+    } else {
+        // 이미지가 아예 없을 경우, "No Image" 썸네일이라도 하나 표시
+        thumbnailHtml = `
+            <div class="image-item" style="width:80px; height:80px; overflow:hidden; margin:5px; border:1px solid #ddd;">
+                <img src="${noImageSrc}" alt="No Image" style="width:100%; height:100%; object-fit:cover;">
+            </div>`;
+    }
+    thumbnailGrid.innerHTML = thumbnailHtml;
+
+    // 갤러리 이미지 클릭 이벤트 (대표 이미지 + 썸네일)
+    $(mainImgEl).off('click').on('click', function() {
+        openGalleryModal(0); // 대표 이미지 클릭 시 0번 인덱스로 갤러리 열기
+    });
+
+    $(thumbnailGrid).off('click', '.image-item img').on('click', '.image-item img', function() {
+        const index = parseInt($(this).data('index'));
+        openGalleryModal(index);
+    });
+
+    // 모달 표시
+    $('#listingDetailModal').modal('show');
+};
+
+// 가격 정보 텍스트 반환 헬퍼 함수 (listRenderer.js에서 복사)
+const getDepositText = (item) => {
+    const type = String(item.LSTG_TYPE_SALE);
+    const lease = item.LSTG_LEASE || 0;
+    const leaseM = item.LSTG_LEASE_M || 0;
+
+    switch (type) {
+        case '001': return `전세금: ${lease.toLocaleString()}원`;
+        case '002': return `보증금: ${lease.toLocaleString()}원 / 월세: ${leaseM.toLocaleString()}만원`;
+        case '003': return `매매가: ${lease.toLocaleString()}원`;
+        default: return '-';
+    }
+};
+
+// 옵션 렌더링 함수 (LSTG_OPTN 또는 facilityOptionList 처리)
+const renderOptionsFromData = (lstgOptnString, facilityOptionList) => {
+    let optionsHtml = '';
+    if (lstgOptnString) {
+        optionsHtml += `<p>${lstgOptnString}</p>`;
+    } else if (Array.isArray(facilityOptionList) && facilityOptionList.length > 0) {
+        optionsHtml += `
+            <ul class="facility-options" style="list-style: none; padding: 0;">
+                ${facilityOptionList.map(opt => `<li style="display: inline-block; margin-right: 10px;">${opt.facOptNm}</li>`).join('')}
+            </ul>
+        `;
+    } else {
+        optionsHtml = '<p>제공된 옵션 없음</p>';
+    }
+    return optionsHtml;
+};
+
+
+// 갤러리 확대 모달 열기
+function openGalleryModal(index) {
+    const modal = document.getElementById('imageGalleryModal'); // userList.jsp에서 정의한 ID
+    const imgEl = document.getElementById('galleryFullImage');
+    const fallback = `${contextPath}/assets/img/illustrations/no-image.png`;
+
+    if (typeof index !== 'number' || index < 0 || index >= listingGalleryImages.length) {
+        index = 0; // 유효하지 않은 인덱스면 0으로 설정
+    }
+    currentGalleryIndex = index;
+
+    imgEl.onerror = null; // 기존 오류 핸들러 제거
+    imgEl.src = listingGalleryImages[currentGalleryIndex];
+    imgEl.onerror = function() { // 이미지 로드 실패 시 대체 이미지 설정
+        if (imgEl.src !== fallback) { // 이미 대체 이미지면 중복 설정 방지
+            imgEl.src = fallback;
+        }
+    };
+
+    // Bootstrap 모달 사용
+    $(modal).modal('show');
+    updateGalleryControls(); // 갤러리 이전/다음 버튼 상태 업데이트
+}
+
+// 갤러리 이미지 변경 (이전/다음 버튼)
+function changeGalleryImage(delta) {
+    currentGalleryIndex += delta;
+    if (currentGalleryIndex < 0) currentGalleryIndex = listingGalleryImages.length - 1; // 마지막 이미지로 순환
+    if (currentGalleryIndex >= listingGalleryImages.length) currentGalleryIndex = 0; // 첫 이미지로 순환
+
+    const imgEl = document.getElementById('galleryFullImage');
+    const fallback = `${contextPath}/assets/img/illustrations/no-image.png`;
+
+    imgEl.onerror = null;
+    imgEl.src = listingGalleryImages[currentGalleryIndex];
+    imgEl.onerror = function() {
+        if (imgEl.src !== fallback) {
+            imgEl.src = fallback;
+        }
+    };
+    updateGalleryControls();
+}
+
+// 갤러리 컨트롤 (이전/다음 버튼) 가시성 업데이트 및 이벤트 바인딩
+function updateGalleryControls() {
+    const prevBtn = document.getElementById('galleryPrevBtn');
+    const nextBtn = document.getElementById('galleryNextBtn');
+
+    if (listingGalleryImages.length <= 1) { // 이미지가 하나 이하면 버튼 숨김
+        if (prevBtn) $(prevBtn).hide();
+        if (nextBtn) $(nextBtn).hide();
+    } else { // 이미지가 여러 개면 버튼 표시 및 이벤트 바인딩
+        if (prevBtn) $(prevBtn).show().off('click').on('click', (e) => { e.preventDefault(); changeGalleryImage(-1); });
+        if (nextBtn) $(nextBtn).show().off('click').on('click', (e) => { e.preventDefault(); changeGalleryImage(1); });
+    }
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     const searchForm = document.getElementById('searchForm');
@@ -562,5 +777,159 @@ document.addEventListener('DOMContentLoaded', function() {
         canvas.height = 1;
         renderFileTable(); // 파일 목록 테이블도 초기화
         updatePageIndicator(); // 페이지 인디케이터 초기화
+    });
+    
+    
+    $(document).on('click', '.report-row', function(e) {
+        if ($(e.target).closest('button, select').length) {
+            return;
+        }
+
+        e.preventDefault();
+        const reportId = $(this).data('report-id');
+
+        axios.get(`${contextPath}/axios/admin/report/detail/${reportId}`)
+            .then(response => {
+                const data = response.data;
+                console.log("신고 상세 정보:", data);
+
+                $('#modalReportId').text(data.rptId || 'null');
+                $('#modalBrdTitlNm').text(data.brdTitlNm  ? data.brdTitlNm : '제목 없음');
+                $('#modalBrdCont').html(data.brdCont ? data.brdCont.replace(/\n/g, '<br>') : '내용 없음');
+
+                const isListingReport = (data.rptCode === 'LSTG');
+                const $modalTargetIdLabel = $('#modalTargetIdLabel');
+                const $modalRptTargetId = $('#modalRptTargetId');
+
+                const $memberSpecificInfo = $('#memberSpecificInfo');
+                const $modalNewMbrStatus = $('#modalNewMbrStatus');
+                const $listingSpecificInfo = $('#listingSpecificInfo');
+                const $modalNewLtsgDel = $('#modalNewLtsgDel');
+
+                $memberSpecificInfo.hide();
+                $listingSpecificInfo.hide();
+
+                if (isListingReport) {
+                    $modalTargetIdLabel.text('피신고매물 ID : ');
+                    const lstgId = data.rptTargetId;
+
+                    const listingLinkHtml = `<a href="#" class="listing-detail-link" data-lstg-id="${lstgId}">${lstgId || 'N/A'}</a>`;
+                    $modalRptTargetId.html(listingLinkHtml);
+                    $modalRptTargetId.data('lstg-id', lstgId);
+
+                    $modalRptTargetId.off('click', '.listing-detail-link').on('click', '.listing-detail-link', function(event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        const clickedLstgId = $(this).data('lstg-id');
+                        console.log("매물 상세 모달 열기 요청:", clickedLstgId);
+
+                        if (typeof window.openDetailModal === 'function') {
+                            $('#reportDetailModal').modal('hide'); // 현재 신고 상세 모달 닫기
+                            window.openDetailModal(clickedLstgId); // 매물 상세 모달 열기
+                        } else {
+                            console.error("window.openDetailModal 함수를 찾을 수 없습니다.");
+                            if (typeof Swal !== 'undefined') {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '오류',
+                                    text: '매물 상세 페이지를 불러올 수 없습니다.',
+                                    confirmButtonText: '확인'
+                                });
+                            } else {
+                                alert("매물 상세 페이지를 불러올 수 없습니다.");
+                            }
+                        }
+                    });
+
+                    $listingSpecificInfo.show();
+                    $('#modalNewLtsgDel').val(data.lstgDel);
+
+                    $('#btnProcessAllChanges').data('original-lstg-del', data.lstgDel);
+                    $('#btnProcessAllChanges').data('lstg-id', data.rptTargetId);
+                    $('#btnProcessAllChanges').removeData('original-mbr-status');
+                    $('#btnProcessAllChanges').removeData('mbr-cd');
+
+                } else {
+                    $modalTargetIdLabel.text('피신고자 ID : ');
+                    $modalRptTargetId.html(data.rptTargetId || 'N/A');
+                    $modalRptTargetId.removeData('lstg-id');
+                    $modalRptTargetId.off('click', '.listing-detail-link');
+
+                    $memberSpecificInfo.show();
+                    $('#modalNewMbrStatus').val(data.rptTargetMbrStatus);
+
+                    $('#btnProcessAllChanges').data('original-mbr-status', data.rptTargetMbrStatus);
+                    $('#btnProcessAllChanges').data('mbr-cd', data.rptTargetMbrCd);
+                    $('#btnProcessAllChanges').removeData('original-lstg-del');
+                    $('#btnProcessAllChanges').removeData('lstg-id');
+                }
+
+                $('#modalRptStatusCode').val(data.rptStatusCode);
+                $('#btnProcessAllChanges').data('report-id', data.rptId);
+                $('#btnProcessAllChanges').data('original-rpt-status', data.rptStatusCode);
+
+                // --- 첨부파일 관련 로직 시작 ---
+                const fileDataHolder = document.querySelector("#reportDetailModal #fileDataHolder");
+                const fileListJson = JSON.stringify(data.attachFiles || []);
+				fileDataHolder.setAttribute("data-filelist", fileListJson);
+
+                currentFileList = JSON.parse(fileListJson);
+                currentIndex = 0;
+
+                renderFileTable();
+                updatePageIndicator();
+
+                if (currentFileList.length > 0) {
+                    fetchPdfOrImage(currentFileList[currentIndex]);
+                } else {
+                    const canvas = document.querySelector("#reportDetailModal #pdfCanvas");
+                    const ctx = canvas.getContext("2d");
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    canvas.width = 1;
+                    canvas.height = 1;
+                }
+
+                $('#reportDetailModal #prevBtn').off('click').on('click', prevFile);
+                $('#reportDetailModal #nextBtn').off('click').on('click', nextFile);
+
+                const toggleBtn = document.querySelector("#reportDetailModal #toggleFileListBtn");
+                const fileTable = document.querySelector("#reportDetailModal #fileTable");
+                fileTable.style.display = "none";
+                toggleBtn.innerText = "첨부파일 목록 보기";
+
+                $(toggleBtn).off('click').on('click', () => {
+                    if (fileTable.style.display === "none" || fileTable.style.display === "") {
+                        fileTable.style.display = "table";
+                        toggleBtn.innerText = "첨부파일 목록 숨기기";
+                    } else {
+                        fileTable.style.display = "none";
+                        toggleBtn.innerText = "첨부파일 목록 보기";
+                    }
+                });
+                // --- 첨부파일 관련 로직 끝 ---
+
+                $('#reportDetailModal').modal('show');
+            })
+            .catch(error => {
+                console.error('신고 상세 정보 로드 실패:', error);
+                alert('신고 상세 정보를 불러오는 데 실패했습니다.');
+            });
+    });
+
+    $('#closeReportDetailModalBtn').on('click', function() {
+        $('#reportDetailModal').modal('hide');
+    });
+
+    $('#btnProcessAllChanges').on('click', function() { /* ... */ });
+
+    $('#reportDetailModal').on('hidden.bs.modal', function () { /* ... */ });
+
+
+    // 매물 상세 모달이 닫힐 때 갤러리 상태 초기화 (추가)
+    $('#listingDetailModal').on('hidden.bs.modal', function () {
+        listingGalleryImages = []; // 이미지 배열 초기화
+        currentGalleryIndex = 0;   // 인덱스 초기화
+        document.getElementById('mainListingImage').src = `${contextPath}/assets/img/illustrations/no-image.png`;
+        document.querySelector('#listingDetailModal .thumbnail-grid').innerHTML = ''; // 썸네일 초기화
     });
 });

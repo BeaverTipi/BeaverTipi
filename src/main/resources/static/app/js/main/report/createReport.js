@@ -364,17 +364,12 @@ $(document).ready(function() {
             if (response.data.status === "success") {
                 alert(response.data.message);
                 
-                // ▼▼▼ 이 부분에 팝업 여부 확인 로직 추가 ▼▼▼
-                // 현재 창이 다른 창(부모 창)에 의해 열렸는지 확인
                 if (window.opener && !window.opener.closed) {
                     // 부모 창이 존재하고 닫히지 않았다면, 현재 팝업 창을 닫음
                     window.close(); 
                 } else {
-                    // 부모 창이 없거나 이미 닫혔다면, 이전 페이지로 이동 (또는 다른 처리)
-                    // 이 경우, 사용자가 북마크나 직접 URL로 접근한 상황일 수 있습니다.
                     history.back(); 
                 }
-                // ▲▲▲ 팝업 여부 확인 로직 추가 ▲▲▲
 
             } else {
                 alert(response.data.message || "신고 접수 처리 중 알 수 없는 오류가 발생했습니다.");

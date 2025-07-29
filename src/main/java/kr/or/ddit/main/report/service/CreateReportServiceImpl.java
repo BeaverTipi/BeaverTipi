@@ -54,9 +54,9 @@ public class CreateReportServiceImpl implements CreateReportService {
             log.debug("새로 생성된 BRD_NO: {}", generatedBrdNo);
 
             // 2. REPORT 테이블에 신고 상세 정보 삽입
-            // ReportVO의 rptId 필드는 CreateReportMapper.xml의 selectKey에 의해 자동 생성되어 채워질 것입니다.
+            // ReportVO의 rptId 필드는 CreateReportMapper.xml의 selectKey에 의해 자동 생성되어 채워짐
             reportVO.setBrdNo(generatedBrdNo); // BOARD 테이블에서 생성된 brdNo를 ReportVO에 설정
-            reportVO.setRptStatusCode("REG"); // 초기 신고 상태는 '등록'으로 설정 (DB 디폴트 값과 일치시키기)
+            reportVO.setRptStatusCode("REG"); // 초기 신고 상태는 '등록'으로 설정(디폴트 값)
 
             int reportInsertResult = createReportMapper.insertReport(reportVO);
             if (reportInsertResult == 0) {
@@ -78,7 +78,7 @@ public class CreateReportServiceImpl implements CreateReportService {
                     "RPT_DOC" // 파일 문서 유형 코드 (신고 문서 유형으로 구분)
                 );
 
-                // fileService.uploadMultipleFiles 내부에서 파일 처리 실패 시 예외를 던진다고 가정합니다.
+                // fileService.uploadMultipleFiles 내부에서 파일 처리 실패 시 예외를 던짐
                 // 따라서 여기서 별도의 uploadedFiles.isEmpty() 검증은 필요 없을 수 있습니다.
                 log.debug("FileService를 통한 파일 업로드 및 DB 저장 완료. 처리된 파일 수: {}", uploadedFiles.size());
             } else {
@@ -89,7 +89,7 @@ public class CreateReportServiceImpl implements CreateReportService {
             return true; // 모든 작업 성공
         } catch (Exception e) {
             log.error("신고 요청 저장 중 오류 발생: {}", e.getMessage(), e);
-            // @Transactional에 의해 RuntimeException 또는 다른 체크되지 않은 예외 발생 시 자동 롤백됩니다.
+            // @Transactional에 의해 RuntimeException 또는 다른 체크되지 않은 예외 발생 시 자동 롤백
             return false; // 작업 실패
         }
     }

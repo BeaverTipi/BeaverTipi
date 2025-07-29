@@ -71,7 +71,6 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public List<MemberVO> readMemberList() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

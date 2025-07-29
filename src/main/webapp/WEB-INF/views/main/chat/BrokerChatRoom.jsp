@@ -92,7 +92,7 @@
         }
 
         // 신고 작성 페이지 URL 생성
-        var reportUrl = contextPath + "/main/report/createForm?targetId=" + reportTargetId + "&type=" + reportType;
+        var reportUrl = contextPath + "/member/report/createForm?targetId=" + reportTargetId + "&type=" + reportType;
 		
         // 채팅하던 페이지에서 신고 작성 페이지 열기
 //         window.location.href = reportUrl;

@@ -609,10 +609,10 @@ window.bindDetailModalEvents = function(detailData) {
     if (warningIcon) {
         warningIcon.addEventListener('click', () => {
             const lstgIdToReport = detailData.LSTG_ID || detailData.lstgId;
+            const rptTargetNmToReport = detailData.LSTG_NM || detailData.lstgNm;
             if (lstgIdToReport) {
-                // `contextPath`는 JSP에서 정의된 전역 변수여야 합니다.
-                // 이 변수가 없으면 오류가 발생합니다.
-                window.location.href = `${contextPath}/main/report/createForm?targetId=${lstgIdToReport}&type=LSTG`;
+                // `contextPath`는 JSP에서 정의된 전역 변수
+                window.location.href = `${contextPath}/member/report/createForm?targetId=${lstgIdToReport}&type=LSTG&rptTargetNm=${encodeURIComponent(rptTargetNmToReport)}`;
             } else {
                 console.error("신고할 매물 ID를 찾을 수 없습니다.");
                 alert("신고할 매물 정보를 가져올 수 없습니다. 다시 시도해 주세요.");
