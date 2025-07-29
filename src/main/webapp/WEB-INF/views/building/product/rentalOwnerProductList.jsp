@@ -116,14 +116,7 @@
                       </c:forEach>
                     </form:select>
                   </div>
-                  <div class="search-item  full-width">
-                    <label>등록일</label>
-                    <div class="d-flex">
-                      <form:input type="date" path="searchRegDateFrom" cssClass="form-control mr-1" />
-                      <span class="date-separator">~</span>
-                      <form:input type="date" path="searchRegDateTo" cssClass="form-control" />
-                    </div>
-                  </div>
+                 
                 </div>
                 <div class="search-grid-row">
                   <div class="search-item ">
@@ -134,7 +127,16 @@
                       </c:forEach>
                     </form:select>
                   </div>
+                  <div class="search-item  full-width">
+                    <label>등록일</label>
+                    <div class="d-flex">
+                      <form:input type="date" path="searchRegDateFrom" cssClass="form-control mr-1" />
+                      <span class="date-separator">~</span>
+                      <form:input type="date" path="searchRegDateTo" cssClass="form-control" />
+                    </div>
+                  </div>
                 </div>
+                 
               </div>
             </div>
             <div class="search-grid-right">
@@ -219,48 +221,23 @@
                       </c:forEach>
                     </form:select>
                   </div>
-                  <div class="search-item  full-width">
-                    <label>등록일</label>
-                    <div class="d-flex">
-                      <form:input type="date" path="searchRegDateFrom" cssClass="form-control mr-1" />
-                      <span class="date-separator">~</span>
-                      <form:input type="date" path="searchRegDateTo" cssClass="form-control" />
-                    </div>
-                  </div>
+
                 </div>
                 <div class="search-grid-row">
                   <div class="search-item ">
-                    <label>거래유형</label>
+                    <label>유형</label>
                     <form:select path="searchType" id="searchTypeSelect" cssClass="form-control">
                       <c:forEach var="typeCode" items="${typeSaleCodeList}">
                         <form:option value="${typeCode.codeValue}">${typeCode.codeName}</form:option>
                       </c:forEach>
                     </form:select>
                   </div>
-                  <div id="conditionalFields" style="display: none;">
-                    <div class="search-item full-width row-deposit">
-                      <label id="depositLabel">전세금</label>
-                      <div class="input-range">
-                        <form:input path="searchDepositMin" cssClass="form-control" placeholder="최소" />
-                        <span class="date-separator">~</span>
-                        <form:input path="searchDepositMax" cssClass="form-control" placeholder="최대" />
-                      </div>
-                    </div>
-                    <div class="search-item full-width row-monthly">
-                      <label>월세</label>
-                      <div class="input-range">
-                        <form:input path="searchMonthlyMin" cssClass="form-control" placeholder="최소" />
-                        <span class="date-separator">~</span>
-                        <form:input path="searchMonthlyMax" cssClass="form-control" placeholder="최대" />
-                      </div>
-                    </div>
-                    <div class="search-item full-width row-sale" style="display: none;">
-                      <label>매매가</label>
-                      <div class="d-flex">
-                        <form:input path="searchSaleMin" cssClass="form-control mr-1" placeholder="최소" />
-                        <span class="date-separator">~</span>
-                        <form:input path="searchSaleMax" cssClass="form-control" placeholder="최대" />
-                      </div>
+					<div class="search-item  full-width">
+                    <label>등록일</label>
+                    <div class="d-flex">
+                      <form:input type="date" path="searchRegDateFrom" cssClass="form-control mr-1" />
+                      <span class="date-separator">~</span>
+                      <form:input type="date" path="searchRegDateTo" cssClass="form-control" />
                     </div>
                   </div>
                 </div>
@@ -281,10 +258,8 @@
                   <th>건물명</th>
                   <th>상태</th>
                   <th>거래유형</th>
-                  <th>전세금</th>
-                  <th>보증금</th>
-                  <th>월세</th>
-                  <th>매매가</th>
+                  
+                  <th>등록일자</th>
                 </tr>
               </thead>
               <tbody id="listingTableBody">
@@ -317,10 +292,9 @@
                             <c:otherwise>기타</c:otherwise>
                           </c:choose>
                         </td>
-                        <td>${empty listing.lstgLease ? '-' : listing.lstgLease}</td>
-                        <td>${empty listing.lstgLeaseM ? '-' : listing.lstgLeaseM}</td>
-                        <td>${empty listing.lstgLeaseAmt ? '-' : listing.lstgLeaseAmt}</td>
-                        <td>-</td>
+                        <td>${empty listing.lstgRegDate ? '-' : listing.lstgRegDate}</td>
+                       
+                        
                       </tr>
                     </c:forEach>
                   </c:otherwise>
