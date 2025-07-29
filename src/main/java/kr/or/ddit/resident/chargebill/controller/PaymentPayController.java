@@ -89,7 +89,7 @@ public class PaymentPayController {
         String previousMonth = getPreviousMonth();
         String twoMonthsAgo = getTwoMonthsAgo();
         
-        log.info("전월 월: {}, 전전월 월: {}", previousMonth,twoMonthsAgo);
+        log.info("전월 월: {}, 전전월 월: {}", twoMonthsAgo,previousMonth);
         
 
         // ✅ DTO 기반 비교 결과 조회
@@ -100,7 +100,7 @@ public class PaymentPayController {
         
         Map<String, Map<String, Object>> energySummary =
                 paymentService.getEnergyUsageSummary(unitId, currentMonth, previousMonth);
-
+        
         List<CommonCodeVO> payment = service.readCommonCodeList("PAY")
         	    .stream()
         	    .collect(Collectors.collectingAndThen(
@@ -112,8 +112,7 @@ public class PaymentPayController {
         log.info("currentMonth: {}, previousMonth: {}", currentMonth, previousMonth);
         log.info("energySummary: {}", energySummary);
         
-        Long currentChargeAmount = paymentService.getCurrentChargeAmount(unitId,currentMonth);
-        log.info("getCurrentChargeAmount : ", currentChargeAmount);
+        int currentChargeAmount = paymentService.getCurrentChargeAmount(unitId,currentMonth);
         model.addAttribute("currentChargeAmount", currentChargeAmount);
         
         log.info("납부 관련 공통 코드: {}", payment);
@@ -143,7 +142,7 @@ public class PaymentPayController {
         return LocalDate.now().minusMonths(1).format(DateTimeFormatter.ofPattern("yyyyMM"));
     }
     private String getTwoMonthsAgo() {
-        return LocalDate.now().minusMonths(2).format(DateTimeFormatter.ofPattern("yyyyMM")); // 202505
+        return LocalDate.now().minusMonths(2).format(DateTimeFormatter.ofPattern("yyyyMM")); 
     }
     
 }

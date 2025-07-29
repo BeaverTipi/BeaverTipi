@@ -11,12 +11,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.or.ddit.resident.checkPage.dto.CheckComparisonDto;
 import kr.or.ddit.resident.checkPage.service.PaymentCheckService;
 import kr.or.ddit.resident.unitResident.service.UnitResidentService;
+import kr.or.ddit.util.page.SimpleSearch;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.UnitResidentVO;
@@ -33,71 +35,79 @@ public class RsdDataStateController {
     @Autowired
     private PaymentCheckService paymentCheckService; // ✅ 새 서비스 연결
 
-    @GetMapping("/dataState/energy")
-    public String showEnergyUsage() {
-        return "resident/dataState/EnergyUsage";
-    }
-
     @GetMapping("/dataState/bill")
     public String showUtilityBill(
         Model model,
         @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
         @RequestParam(required = false) String bldgIdParam,
-        @RequestParam(required = false) String yearSelect,
-        @RequestParam(required = false) String monthSelect
+        @RequestParam(required = false) String unitIdParam,
+        @RequestParam(required = false) String chargeMonth,
+        @ModelAttribute("search") SimpleSearch simpleSearch
     ) {
         MemberVO member = principal.getRealUser();
-        List<UnitResidentVO> units = unitResidentService.getUnitsByMember(member.getMbrCd());
-        if (units == null || units.isEmpty()) {
+        List<UnitResidentVO> allUnits = unitResidentService.getUnitsByMember(member.getMbrCd());
+        
+        if (allUnits == null || allUnits.isEmpty()) {
             return "resident:/member/register";
         }
 
-        String chargeMonth;
-        if (yearSelect != null && monthSelect != null &&
-            !"년도 선택".equals(yearSelect) && !monthSelect.equals("월 선택")) {
-            
-            String paddedMonth = String.format("%02d", Integer.parseInt(monthSelect));
-            chargeMonth = yearSelect + paddedMonth;  // ex: "202507"
-        } else {
-            chargeMonth = getCurrentMonth();
-        }
-        
-        String tempBldgId = (bldgIdParam == null || bldgIdParam.isBlank())
-            ? units.stream().min(Comparator.comparing(UnitResidentVO::getMoveInDt))
-                .map(UnitResidentVO::getBldgId).orElse(units.get(0).getBldgId())
+
+        String selectedBldgId = (bldgIdParam == null || bldgIdParam.isBlank())
+            ? allUnits.stream().min(Comparator.comparing(UnitResidentVO::getMoveInDt))
+                .map(UnitResidentVO::getBldgId).orElse(allUnits.get(0).getBldgId())
             : bldgIdParam;
 
-        final String selectedBldgId = tempBldgId;
-        String unitId = units.stream()
-            .filter(u -> selectedBldgId.equals(u.getBldgId()))
-            .findFirst().map(UnitResidentVO::getUnitId)
-            .orElse(units.get(0).getUnitId());
+        List<UnitResidentVO> units = paymentCheckService.getMyUnitsInBuilding(member.getMbrCd(), selectedBldgId);
 
-        // ⏰ 당월, 전월 계산
-        String currentMonth = getCurrentMonth();
-        String previousMonth = getPreviousMonth();
+        String selectedUnitId = (unitIdParam == null || unitIdParam.isBlank())
+            ? units.stream().filter(u -> selectedBldgId.equals(u.getBldgId()))
+                .findFirst().map(UnitResidentVO::getUnitId).orElse(units.get(0).getUnitId())
+            : unitIdParam;
 
-        // 📊 공과금 비교
+        String baseMonth = (chargeMonth != null && !chargeMonth.isBlank())
+        		? chargeMonth
+        				: getCurrentMonth();
+        
+        // 기준 월에서 전월, 전전월 계산
+        LocalDate baseDate = LocalDate.of(
+            Integer.parseInt(baseMonth.substring(0, 4)),
+            Integer.parseInt(baseMonth.substring(4)),
+            1
+        );
+
+        String previousMonth = baseMonth;
+        String twoMonthsAgo = baseDate.minusMonths(1).format(DateTimeFormatter.ofPattern("yyyyMM")); 
+        
         List<CheckComparisonDto> chargeComparison =
-            paymentCheckService.getMonthlyComparison(unitId, currentMonth, previousMonth);
+            paymentCheckService.getMonthlyComparison(selectedUnitId, previousMonth, twoMonthsAgo);
 
-        // 📊 에너지 비교
+        List<CheckComparisonDto> currentCharges =
+        		paymentCheckService.getMonthlyCharges(selectedUnitId, previousMonth);
+        
         Map<String, Map<String, Object>> energyComparison =
-            paymentCheckService.getEnergyComparison(unitId, currentMonth, previousMonth);
+            paymentCheckService.getEnergyComparison(selectedUnitId, previousMonth, twoMonthsAgo);
+
+        List<String> availableMonths = paymentCheckService.getAvailableChargeMonths(selectedUnitId);
         
-        log.info("📊 이전 달 에너지 데이터: {}", energyComparison.get(previousMonth));
         
-        model.addAttribute("unitList", units);
+        log.info("전월: {}", previousMonth);
+        log.info("전전월: {}", twoMonthsAgo);
+        log.info("selectedUnitId: {}", selectedUnitId);
+        log.info("📊 chargeComparison size: {}", chargeComparison.size());
+        log.info("📈 energyComparison keys: {}", energyComparison.keySet());
+        
+        model.addAttribute("availableMonths", availableMonths);
+        model.addAttribute("unitList", allUnits);
+        model.addAttribute("unitsInBuilding", units);
         model.addAttribute("selectedBldgId", selectedBldgId);
-        model.addAttribute("bldgIdParam", bldgIdParam);
-        model.addAttribute("chargeMonth", currentMonth); // ⬅️ 기준은 최신 달
-        model.addAttribute("chargeComparison", chargeComparison);
-        model.addAttribute("energyComparison", energyComparison);
+        model.addAttribute("selectedUnitId", selectedUnitId);
+        model.addAttribute("chargeMonth", baseMonth); // 기준 월 표시용
         model.addAttribute("previousMonth", previousMonth);
-        model.addAttribute("yearSelect",yearSelect);
-        model.addAttribute("monthSelect",monthSelect);
-        
-        return "resident/dataState/UtilityBillList"; // 💡 이 JSP에서 비교값 출력
+        model.addAttribute("chargeComparison", chargeComparison);
+        model.addAttribute("currentCharges", currentCharges);
+        model.addAttribute("energyComparison", energyComparison);
+
+        return "resident/dataState/UtilityBillList";
     }
 
 	// 날짜 포맷 유틸
@@ -109,5 +119,7 @@ public class RsdDataStateController {
 	    return LocalDate.now().minusMonths(1).format(DateTimeFormatter.ofPattern("yyyyMM"));
 	}
 
-	
+	  private String getTwoMonthsAgo() {
+	        return LocalDate.now().minusMonths(2).format(DateTimeFormatter.ofPattern("yyyyMM")); 
+	    }
 }

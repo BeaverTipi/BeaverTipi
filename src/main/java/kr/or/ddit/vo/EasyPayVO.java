@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(of="easyPayId")
 public class EasyPayVO implements Serializable{
+	private String paymentKey;
 	private String easyPayId;
 	private String provider;
 	private Integer amount;

@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PaymentController {
 	
-	private final String successURL = "https://swdev.beavertipi.com/resident/payment/success";
+	private final String successURL = "http://localhost/resident/payment";
 	
 	@PostMapping("/ajax/payment/resident")
 	public PaymentTosspamentsRawVO formProcess(

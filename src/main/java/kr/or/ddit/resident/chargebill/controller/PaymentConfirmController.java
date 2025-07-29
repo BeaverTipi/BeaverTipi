@@ -39,10 +39,6 @@ public class PaymentConfirmController {
                                      .body("❌ 납부 권한이 없는 유닛입니다.");
             }
             
-            // 실제 납부 처리 호출
-            paymentService.payChargeBill(dto);
-
-            
             return ResponseEntity.ok(Map.of("message","✅ 납부 완료"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("❌ 납부 실패: " + e.getMessage());

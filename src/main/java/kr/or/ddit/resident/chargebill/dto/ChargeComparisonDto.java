@@ -12,5 +12,7 @@ public class ChargeComparisonDto {
 	private int twoMonthsAgo;
 	private int diffAmount;
 	private int energyUsageCurrent;
+	private int energyUsagePrevious;        
+	private int energyUsageTwoMonthsAgo;    
 	private int energyUsageDiffPercent;
 }

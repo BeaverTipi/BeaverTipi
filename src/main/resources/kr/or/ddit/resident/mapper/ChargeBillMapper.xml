@@ -87,24 +87,22 @@
   </select>
 
   <!-- ⚡ 에너지 사용 요약 -->
-  <select id="selectEnergyUsageSummary" resultType="map">
-    SELECT
-      hemu.DUM_MONTH AS chargeMonth,
-      ec.CODE_NAME AS energyTypeName,
-      SUM(hemu.TOTAL_ENERGY_USAGE_QTY) AS usageQty,
-      SUM(hemu.TOTAL_ENERGY_CHARGE_AMT) AS chargeAmt
-    FROM HOUSEHOLD_ENERGY_MONTHLY_USAGE hemu
-    LEFT JOIN COMMON_CODE ec
-      ON ec.CODE_GROUP = 'ENEG'
-     AND ec.CODE_VALUE = hemu.ENEG_TYPE
-    WHERE hemu.UNIT_ID = #{unitId}
-      AND hemu.DUM_MONTH IN
-      <foreach item="month" collection="months" open="(" separator="," close=")">
-        #{month}
-      </foreach>
-    GROUP BY hemu.DUM_MONTH, ec.CODE_NAME
-    ORDER BY hemu.DUM_MONTH, ec.CODE_NAME
-  </select>
+<select id="selectEnergyUsageSummary" resultType="map">
+  SELECT
+    hemu.DUM_MONTH AS chargeMonth,
+    hemu.DUM_COMP   AS energyTypeCode,
+    SUM(hemu.TOTAL_ENERGY_USAGE_QTY) AS usageQty,
+    SUM(hemu.TOTAL_ENERGY_CHARGE_AMT) AS chargeAmt
+  FROM HOUSEHOLD_ENERGY_MONTHLY_USAGE hemu
+  WHERE hemu.UNIT_ID = #{unitId}
+    AND hemu.DUM_MONTH IN
+    <foreach item="month" collection="months" open="(" separator="," close=")">
+      #{month}
+    </foreach>
+  GROUP BY hemu.DUM_MONTH, hemu.DUM_COMP
+  ORDER BY hemu.DUM_MONTH, hemu.DUM_COMP
+</select>
+
 
   <!-- 📌 월별 관리비 항목 -->
   <select id="selectMonthlyCharges" resultType="map">
@@ -124,9 +122,9 @@
   
 <update id="updateChargeBillAfterPayment">
   UPDATE CHARGE_BILL
-     SET CHGBILL_PAY_AMOUNT = CHGBILL_PAY_AMOUNT + #{amount},
+     SET CHGBILL_PAY_AMOUNT = CHGBILL_PAY_AMOUNT + #{chgbillPayAmount},
          CHGBILL_STATUS = CASE
-           WHEN CHGBILL_PAY_AMOUNT + #{amount} >= CHGBILL_AMOUNT THEN '002'
+           WHEN CHGBILL_PAY_AMOUNT + #{chgbillPayAmount} >= CHGBILL_AMOUNT THEN '002'
            ELSE CHGBILL_STATUS
          END
    WHERE CHGBILL_CHARGE_MONTH = #{chgbillChargeMonth}
@@ -153,18 +151,29 @@
     #{unitId},
     #{bldgId},
     #{paymentKey},
-    #{amount},
+    #{chgbillPayAmount},
     SYSDATE,
-    #{method},
-    #{methodGrpCd}
+    #{chgbillPayMethod},
+    #{chgbillPayMethodGrpCd}
   )
 </insert>
 <!-- ✅ 특정 청구서의 납부 상태 정보 조회 -->
 <select id="selectChargeBillInfo" resultType="ChargeBillVO">
-  SELECT CHGBILL_PAY_AMOUNT, CHGBILL_AMOUNT
-    FROM CHARGE_BILL
-   WHERE CHGBILL_CHARGE_MONTH = #{chgbillChargeMonth}
-     AND UNIT_ID = #{unitId}
+	SELECT CHGBILL_CHARGE_MONTH,
+			RENTAL_PTY_ID,
+			UNIT_ID, BLDG_ID,
+			CHGBILL_AMOUNT,
+			CHGBILL_STATUS,
+			CHGBILL_STATUS_GRP_CD,
+			CHGBILL_DUE_DATE,
+			CHGBILL_PAID_DATE,
+			CHGBILL_DESC,
+			CHGBILL_ACC_NUM,
+			CHGBILL_PAY_AMOUNT,
+			CHGBILL_DATE
+	FROM CHARGE_BILL
+	WHERE CHGBILL_CHARGE_MONTH = #{chgbillChargeMonth}
+	AND UNIT_ID = #{unitId}
 </select>
 
 <select id="selectUnpaidChargeBills" resultMap="chargeBillResultMap">
@@ -178,6 +187,54 @@
   )
     AND CHGBILL_STATUS != '002' <!-- '002'은 납부 완료 상태 -->
 </select>
+
+<!-- TossPayments 결제 결과 저장 -->
+<insert id="insertTossPaymentInfo" parameterType="kr.or.ddit.vo.PaymentTosspamentsRawVO">
+  INSERT INTO PAYMENT_TOSSPAYMENTS_RAW (
+    PAYMENT_KEY,
+    VERSION_DATE,
+    TYPE,
+    ORDER_ID,
+    ORDER_NAME,
+    M_ID,
+    CURRENCY,
+    METHOD,
+    TOTAL_AMOUNT,
+    STATUS,
+    REQUEST_DATE,
+    APPROVE_DATE,
+    LAST_TRANSACTION_KEY,
+    SUPPLIED_AMOUNT,
+    COUNTRY,
+    BILLING_KEY
+  )
+  VALUES (
+    #{paymentKey},
+    #{versionDate},
+    #{type},
+    #{orderId},
+    #{orderName},
+    #{mId},
+    #{currency},
+    #{method},
+    #{totalAmount},
+    #{status},
+    #{requestDate},
+    #{approveDate},
+    #{lastTransactionKey},
+    #{suppliedAmount},
+    #{country},
+    #{customerKey} 
+  )
+</insert>
+
+<select id="selectChargeBillAvailableMonths" resultType="string">
+  SELECT DISTINCT CHGBILL_CHARGE_MONTH
+  FROM CHARGE_BILL
+  WHERE UNIT_ID = #{unitId}
+  ORDER BY CHGBILL_CHARGE_MONTH DESC
+</select>
+
 
 
 </mapper>

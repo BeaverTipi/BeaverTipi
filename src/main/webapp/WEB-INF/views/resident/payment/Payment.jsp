@@ -399,71 +399,82 @@ select[name="bldgIdParam"] {
 		  </tbody>
 		</table>
 
+		<div class="energy-summary">
+		  <c:forEach var="type" items="${energySummary[currentMonth]}">
+		    <c:set var="energyType" value="${type.key}" />
+		    <c:choose>
+		      <c:when test="${energyType eq '001'}">
+		        <c:set var="unitLabel" value="kWh" />
+		        <c:set var="energyTypeName" value="전기" />
+		      </c:when>
+		      <c:when test="${energyType eq '002'}">
+		        <c:set var="unitLabel" value="㎥" />
+		        <c:set var="energyTypeName" value="가스" />
+		      </c:when>
+		      <c:when test="${energyType eq '003'}">
+		        <c:set var="unitLabel" value="L" />
+		        <c:set var="energyTypeName" value="수도" />
+		      </c:when>
+		      <c:otherwise>
+		        <c:set var="unitLabel" value="" />
+		        <c:set var="energyTypeName" value="기타" />
+		      </c:otherwise>
+		    </c:choose>
+		
+		    <c:set var="currRow" value="${type.value}" />
+		    <c:set var="prevRow" value="${energySummary[previousMonth][energyType]}" />
+		    <c:set var="diffUsage" value="${currRow.usageQty - prevRow.usageQty}" />
+		    <c:set var="diffCharge" value="${currRow.chargeAmt - prevRow.chargeAmt}" />
+		
+		    <div class="energy-row">
+		      <div class="energy-label">🔹 ${energyTypeName}</div>
+		      <div class="energy-values">
+		        <div class="value-item">
+		          <span style="white-space:nowrap;">
+		            사용량: 
+		            <fmt:formatNumber value="${prevRow.usageQty}" type="number" groupingUsed="true"/>${unitLabel} → 
+		            <fmt:formatNumber value="${currRow.usageQty}" type="number" groupingUsed="true"/>${unitLabel}
+		          </span>
+		          <c:choose>
+		            <c:when test="${diffUsage > 0}">
+		              <span class="diff up">▲ <fmt:formatNumber value="${diffUsage}" type="number" groupingUsed="true"/>${unitLabel}</span>
+		            </c:when>
+		            <c:when test="${diffUsage < 0}">
+		              <span class="diff down">▼ <fmt:formatNumber value="${-diffUsage}" type="number" groupingUsed="true"/>${unitLabel}</span>
+		            </c:when>
+		            <c:otherwise>
+		              <span class="diff same">변화 없음</span>
+		            </c:otherwise>
+		          </c:choose>
+		        </div>
+		
+		        <div class="value-item">
+		          요금: 
+		          <fmt:formatNumber value="${prevRow.chargeAmt}" type="currency" /> → 
+		          <fmt:formatNumber value="${currRow.chargeAmt}" type="currency" />
+		          <c:choose>
+		            <c:when test="${diffCharge > 0}">
+		              <span class="diff up">▲ <fmt:formatNumber value="${diffCharge}" type="currency" /></span>
+		            </c:when>
+		            <c:when test="${diffCharge < 0}">
+		              <span class="diff down">▼ <fmt:formatNumber value="${-diffCharge}" type="currency" /></span>
+		            </c:when>
+		            <c:otherwise>
+		              <span class="diff same">변화 없음</span>
+		            </c:otherwise>
+		          </c:choose>
+		        </div>
+		      </div>
+		    </div>
+		  </c:forEach>
+		</div>
 
-         <div class="energy-summary">
-  <c:set var="electricCode" value="전기" />
-  <c:set var="gasCode" value="가스" />
-  <c:set var="waterCode" value="수도" />
-  <c:forEach var="type" items="${energySummary[currentMonth]}">
-    <c:set var="energyType" value="${type.key}" />
-    <c:if test="${energyType eq '전기' || energyType eq '가스' || energyType eq '수도'}">
-      <c:set var="currRow" value="${type.value}" />
-      <c:set var="prevRow" value="${energySummary[previousMonth][energyType]}" />
-      <c:set var="diffUsage" value="${currRow.usageQty - prevRow.usageQty}" />
-      <c:set var="diffCharge" value="${currRow.chargeAmt - prevRow.chargeAmt}" />
-      <c:set var="unitLabel" value="" />
-      <c:choose>
-        <c:when test="${energyType eq '전기'}"><c:set var="unitLabel" value="kWh"/></c:when>
-        <c:when test="${energyType eq '가스'}"><c:set var="unitLabel" value="㎥"/></c:when>
-        <c:when test="${energyType eq '수도'}"><c:set var="unitLabel" value="L"/></c:when>
-      </c:choose>
-
-      <div class="energy-row">
-        <div class="energy-label">🔹 ${energyType}</div>
-        <div class="energy-values">
-          <div class="value-item">
-          <span style="white-space:nowrap;">
-            사용량: 
-            <fmt:formatNumber value="${prevRow.usageQty}" type="number" groupingUsed="true"/>${unitLabel} → 
-            <fmt:formatNumber value="${currRow.usageQty}" type="number" groupingUsed="true"/>${unitLabel}
-            </span>
-            <c:choose>
-              <c:when test="${diffUsage > 0}">
-                <span class="diff up">▲ <fmt:formatNumber value="${diffUsage}" type="number" groupingUsed="true"/>${unitLabel}</span>
-              </c:when>
-              <c:when test="${diffUsage < 0}">
-                <span class="diff down">▼ <fmt:formatNumber value="${-diffUsage}" type="number" groupingUsed="true"/>${unitLabel}</span>
-              </c:when>
-              <c:otherwise><span class="diff same">변화 없음</span></c:otherwise>
-            </c:choose>
-          </div>
-
-          <div class="value-item">
-            요금: 
-            <fmt:formatNumber value="${prevRow.chargeAmt}" type="currency" /> → 
-            <fmt:formatNumber value="${currRow.chargeAmt}" type="currency" />
-            <c:choose>
-              <c:when test="${diffCharge > 0}">
-                <span class="diff up">▲ <fmt:formatNumber value="${diffCharge}" type="currency" /></span>
-              </c:when>
-              <c:when test="${diffCharge < 0}">
-                <span class="diff down">▼ <fmt:formatNumber value="${-diffCharge}" type="currency" /></span>
-              </c:when>
-              <c:otherwise><span class="diff same">변화 없음</span></c:otherwise>
-            </c:choose>
-          </div>
-        </div>
-      </div>
-    </c:if>
-  </c:forEach>
-</div>
         </div>
       </div>
       <div class="ad-sidebar">
         <div class="ad-box">
           <h3>📢 이벤트 안내</h3>
           <p>관리비 자동이체 시 스타벅스 기프티콘 증정!</p>
-          <img src="/images/ad-banner.jpg" alt="광고 배너" style="width:100%; border-radius:6px; margin-top:10px;" />
         </div>
         <div class="total-charge-box">
         <h3>📦 이번 달 청구 금액</h3>
@@ -502,7 +513,7 @@ select[name="bldgIdParam"] {
 			  class="pay-button"
 			  data-name="<fmt:formatDate value='${prevDate}' pattern='yyyy년 MM월 관리비'/>"
 			  data-pay="${currentChargeAmount}"
-			>
+			  data-charge-month="${currentMonth}">
 			  💰 납부하기
 			</button>
 		</div>
@@ -534,7 +545,6 @@ select[name="bldgIdParam"] {
     </div>
   </div>
 <script src="https://js.tosspayments.com/v1"></script>
-<script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/building/move-in/residentList.js"></script>
 <script src="${pageContext.request.contextPath}/app/js/building/move-in/residentPayment.js"></script>
 <script>
@@ -563,11 +573,6 @@ select[name="bldgIdParam"] {
       }
     });
   });
-
-  function renderChargeInfo(data) {
-    // 여기에 표, 차트 등 렌더링 로직 작성
-    console.log("청구 내역:", data);
-  }
 </script>
 
 

@@ -13,14 +13,14 @@ public class ChargeBillVO implements Serializable {
     private String unitId;
     private String bldgId;
     private String chgbillChargeMonth;
-    private Long chgbillAmount;
+    private int chgbillAmount;
     private String chgbillStatus;
     private String chgbillStatusGrpCd;
     private String chgbillDueDate;   // yyyyMMdd
     private String chgbillPaidDate;  // yyyyMMdd
     private String chgbillDesc;
     private String chgbillAccNum;
-    private Long chgbillPayAmount;
+    private int chgbillPayAmount;
     
     // 코드명 정보
     private String chgbillStatusName;

@@ -1,7 +1,8 @@
-<!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -147,43 +148,35 @@
       <div class="top-title-row">
         <h2>📄 ${chargeMonth} 공과금 및 관리비 상세내역</h2>
       </div>
-   <!-- 광고 + 드롭박스 정렬 행 -->
-<div class="top-banner-filter-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
-  <!-- ⬅️ 광고 배너 (왼쪽) -->
-  <div class="ad-banner" style="flex-grow: 1;">
-<div style="background: #fff; border: 2px dashed var(--primary); border-radius: 8px;
-            padding: 0.6rem 1rem; display: flex; align-items: center; gap: 10px; width: 100%;">
-      <img src="${pageContext.request.contextPath}/images/ad-banner.png" alt="광고" style="height: 36px;" />
-      <span style="color: var(--primary); font-weight: 500;">
-        🎁 자동납부 시 기프티콘 100% 증정 이벤트!
-      </span>
-    </div>
-  </div>
-
-  <!-- ➡️ 드롭박스 (오른쪽) -->
-  <div class="top-select-row" style="flex-shrink: 0; margin-left: 1rem;">
-    <form id="billSearchForm" method="get" action="/resident/dataState/bill" style="display: flex; gap: 0.5rem;">
-      <select name="bldgIdParam" onchange="document.getElementById('billSearchForm').submit();">
-        <c:forEach var="unit" items="${unitList}">
-          <option value="${unit.bldgId}" <c:if test="${selectedBldgId eq unit.bldgId}">selected</c:if>>
-            ${unit.building.bldgNm}
-          </option>
-        </c:forEach>
-      </select>
-      <select name="yearSelect" onchange="document.getElementById('billSearchForm').submit();">
-        <c:forEach var="y" begin="2022" end="2025">
-          <option value="${y}" <c:if test="${yearSelect eq y}">selected</c:if>>${y}년</option>
-        </c:forEach>
-      </select>
-      <select name="monthSelect" onchange="document.getElementById('billSearchForm').submit();">
-        <c:forEach var="m" begin="1" end="12">
-          <c:set var="mm" value="${m lt 10 ? '0' + m : m}" />
-          <option value="${mm}" <c:if test="${monthSelect eq mm}">selected</c:if>>${m}월</option>
-        </c:forEach>
-      </select>
-    </form>
-  </div>
-</div>
+      <div class="top-banner-filter-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+        <div class="ad-banner" style="flex-grow: 1;">
+          <div style="background: #fff; border: 2px dashed var(--primary); border-radius: 8px; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 10px; width: 100%;">
+            <span style="color: var(--primary); font-weight: 500;">
+              🎁 자동납부 시 기프티콘 100% 증정 이벤트!
+            </span>
+          </div>
+        </div>
+        <div class="top-select-row" style="flex-shrink: 0; margin-left: 1rem;">
+          <form id="billSearchForm" method="get" action="/resident/dataState/bill" style="display: flex; gap: 0.5rem;">
+            <select name="bldgIdParam">
+              <c:forEach var="unit" items="${unitList}">
+                <option value="${unit.bldgId}" <c:if test="${selectedBldgId eq unit.bldgId}">selected</c:if>>${unit.building.bldgNm}</option>
+              </c:forEach>
+            </select>
+            <select name="unitIdParam" id="unitSelect">
+              <c:forEach var="unit" items="${unitsInBuilding}">
+                <option value="${unit.unitId}" <c:if test="${selectedUnitId eq unit.unitId}">selected</c:if>>${unit.unit.unitRoom}호</option>
+              </c:forEach>
+            </select>
+            <select name="chargeMonth">
+              <c:forEach var="m" items="${availableMonths}">
+                <option value="${m}" <c:if test="${m eq chargeMonth}">selected</c:if>>${m}</option>
+              </c:forEach>
+            </select>
+            <button type="submit" class="search-button" style="margin-left: 10px;">검색</button>
+          </form>
+        </div>
+      </div>
 
     <div class="main-section">
         <c:if test="${empty chargeComparison and empty energyComparison[chargeMonth]}">
@@ -193,39 +186,39 @@
         </c:if>
       <div class="bill-box">
         <h3>관리비 내역</h3>
-        <c:forEach var="type" items="${energyComparison[chargeMonth]}">
-        <c:set var="energyType" value="${type.key}" />
-        <c:set var="data" value="${type.value}" />
-        <c:if test="${not empty data}">
-          <div class="summary-entry">
-            <span>${energyType}</span>
-            <span>
-              사용량 :
-              <fmt:formatNumber value="${data.usageQty}" type="number" groupingUsed="true" />
-              <span class="unit-label">
-                <c:choose>
-                  <c:when test="${energyType eq '전기'}">kWh</c:when>
-                  <c:when test="${energyType eq '가스'}">㎥</c:when>
-                  <c:when test="${energyType eq '수도'}">㎥</c:when>
-                </c:choose>
-              </span>
-              <span class="price-item">
-                <span class="won-symbol">₩</span>
-                <span class="amount">
-                  <fmt:formatNumber value="${data.chargeAmt}" type="number" groupingUsed="true" />
-                </span> 원
-              </span>
-            </span>
-          </div>
-        </c:if>
-      </c:forEach>
-        <c:forEach var="item" items="${chargeComparison}">
+			<c:forEach var="entry" items="${energyComparison[chargeMonth]}">
+			  <c:set var="energyType" value="${entry.key}" />
+			  <c:set var="data" value="${entry.value}" />
+			  <c:if test="${not empty data}">
+			    <div class="summary-entry">
+			      <span>${energyType}</span>
+			      <span>
+			        사용량 :
+			        <fmt:formatNumber value="${data['usageQty']}" type="number" groupingUsed="true" />
+			        <span class="unit-label">
+			          <c:choose>
+			            <c:when test="${energyType eq '전기'}">kWh</c:when>
+			            <c:when test="${energyType eq '가스'}">㎥</c:when>
+			            <c:when test="${energyType eq '수도'}">㎥</c:when>
+			          </c:choose>
+			        </span>
+			        <span class="price-item">
+			          <span class="won-symbol">₩</span>
+			          <span class="amount">
+			            <fmt:formatNumber value="${data['chargeAmt']}" type="number" groupingUsed="true" />
+			          </span> 원
+			        </span>
+			      </span>
+			    </div>
+			  </c:if>
+			</c:forEach>
+        <c:forEach var="item" items="${currentCharges}">
           <div class="summary-entry">
             <span>${item.feeName}</span>
             <span class="price-item">
               <span class="won-symbol">₩</span>
               <span class="amount">
-                <fmt:formatNumber value="${item.previousAmount}" type="number" groupingUsed="true" />
+                <fmt:formatNumber value="${item.chargeAmount}" type="number" groupingUsed="true" />
               </span> 원
             </span>
           </div>
@@ -247,37 +240,95 @@
       </ul>
     </div>
   </div>
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+    const savedBldgId = localStorage.getItem("selectedBuildingId");
+    if (savedBldgId) {
+        const selector = document.querySelector("select[name='bldgIdParam']");
+        if (selector) {
+            selector.value = savedBldgId;
+            // 자동 제출
+            document.querySelector("#searchForm")?.submit();
+        }
+    }
+});
+</script>
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const unitSelect  = document.querySelector('select[name="unitIdParam"]');
+  const yearSelect  = document.querySelector('select[name="yearSelect"]');
+  const monthSelect = document.querySelector('select[name="monthSelect"]');
+  const bldgId      = document.querySelector('select[name="bldgIdParam"]')?.value || "";
+
+  const handleChange = () => {
+    const unitId = unitSelect?.value;
+    const year   = yearSelect?.value;
+    const month  = monthSelect?.value;
+    if (!unitId || !year || !month || year === '년도 선택' || month === '월 선택') return;
+
+    axios.get('/ajax/resident/api/payment/charge-info', {
+      params: { unitId, bldgId, year, month }
+    }).then(res => {
+      renderChargeInfo(res.data); // ✅ 기존 함수 그대로 활용
+    }).catch(err => {
+      console.error(err);
+      Swal.fire("에러", "데이터를 불러오는 중 문제가 발생했습니다.", "error");
+    });
+  };
+
+  unitSelect?.addEventListener('change', handleChange);
+  yearSelect?.addEventListener('change', handleChange);
+  monthSelect?.addEventListener('change', handleChange);
+});
+</script>
   
 <script>
-//✅ 관리비 + 에너지 항목 합친 label
+// ✅ 관리비 + 에너지 항목 라벨 구성
 const combinedLabels = [
-  <c:forEach var="item" items="${chargeComparison}" varStatus="vs">
-    "${item.feeName}"<c:if test="${!vs.last}">,</c:if>
-  </c:forEach>,
-  "전기", "가스", "수도"
+  <c:forEach var="item" items="${currentCharges}">
+    <c:if test="${item.feeName != '전기' and item.feeName != '가스' and item.feeName != '수도'}">
+      "${item.feeName}",
+    </c:if>
+  </c:forEach>
+  <c:forEach var="energyType" items="${['전기', '가스', '수도']}">
+    <c:if test="${not empty energyComparison[chargeMonth][energyType]}">
+      "${energyType}",
+    </c:if>
+  </c:forEach>
 ];
 
-// ✅ 관리비 + 에너지 전전월 값
 const prevCombinedValues = [
-  <c:forEach var="item" items="${chargeComparison}" varStatus="vs">
-    ${item.previousAmount}<c:if test="${!vs.last}">,</c:if>
-  </c:forEach>,
-  ${energyComparison[previousMonth]['전기'].chargeAmt},
-  ${energyComparison[previousMonth]['가스'].chargeAmt},
-  ${energyComparison[previousMonth]['수도'].chargeAmt}
-];
-
-// ✅ 관리비 + 에너지 당월 값
+	  <c:forEach var="item" items="${currentCharges}">
+	    <c:if test="${item.feeName != '전기' and item.feeName != '가스' and item.feeName != '수도'}">
+	      ${item.previousAmount != null ? item.previousAmount : 0},
+	    </c:if>
+	  </c:forEach>
+	  <c:forEach var="energyType" items="${['전기', '가스', '수도']}">
+	    <c:if test="${not empty energyComparison[previousMonth][energyType]}">
+	      ${energyComparison[previousMonth][energyType].chargeAmt},
+	    </c:if>
+	  </c:forEach>
+	];
+	
 const currCombinedValues = [
-  <c:forEach var="item" items="${chargeComparison}" varStatus="vs">
-    ${item.chargeAmount}<c:if test="${!vs.last}">,</c:if>
-  </c:forEach>,
-  ${energyComparison[chargeMonth]['전기'].chargeAmt},
-  ${energyComparison[chargeMonth]['가스'].chargeAmt},
-  ${energyComparison[chargeMonth]['수도'].chargeAmt}
+  <c:forEach var="item" items="${currentCharges}">
+    <c:if test="${item.feeName != '전기' and item.feeName != '가스' and item.feeName != '수도'}">
+      ${item.chargeAmount != null ? item.chargeAmount : 0},
+    </c:if>
+  </c:forEach>
+  <c:forEach var="energyType" items="${['전기', '가스', '수도']}">
+    <c:if test="${not empty energyComparison[chargeMonth][energyType]}">
+      ${energyComparison[chargeMonth][energyType].chargeAmt},
+    </c:if>
+  </c:forEach>
 ];
 
-// ✅ Chart 생성
+// ✅ 디버깅용 로그 (브라우저 콘솔 확인)
+console.log("전월 값", prevCombinedValues);
+console.log("당월 값", currCombinedValues);
+console.log("라벨", combinedLabels);
+
+// ✅ Chart.js 생성
 new Chart(document.getElementById('chargeChart'), {
   type: 'bar',
   data: {
@@ -310,7 +361,7 @@ new Chart(document.getElementById('chargeChart'), {
         fill: false,
         yAxisID: 'y',
         order: 3,
-        clip: false, // ✅ 쉼표 추가!
+        clip: false,
         segment: {
           borderWidth: 2
         }
@@ -319,25 +370,12 @@ new Chart(document.getElementById('chargeChart'), {
   },
   options: {
     responsive: true,
-    clip: false, // ✅ 전체 차트 기준 clip도 꺼줘야 확실함
-    layout: {
-         padding: {
-           top: 8
-         }
-       },
+    clip: false,
+    layout: { padding: { top: 8 } },
     elements: {
-      point: {
-        radius: 5,
-        backgroundColor: '#ffc107',
-        borderColor: '#fff',
-        borderWidth: 1
-      },
-      line: {
-        borderWidth: 2
-      },
-      bar: {
-        borderRadius: 2
-      }
+      point: { radius: 5, backgroundColor: '#ffc107', borderColor: '#fff', borderWidth: 1 },
+      line: { borderWidth: 2 },
+      bar: { borderRadius: 2 }
     },
     plugins: {
       tooltip: {
@@ -357,7 +395,7 @@ new Chart(document.getElementById('chargeChart'), {
   }
 });
 </script>
+
 <script src="${pageContext.request.contextPath}/app/js/building/move-in/buildingSelect.js"></script>
-<script src="${pageContext.request.contextPath}/app/js/resident/residentBuliding.js"></script>
 </body>
 </html>
