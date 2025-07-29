@@ -13,7 +13,7 @@ import kr.or.ddit.vo.VirtualAccountVO;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
-@RequestMapping("/virtualAccount")
+@RequestMapping("building/virtualAccount")
 public class VirtualAccountRegistController {
 
     @Autowired

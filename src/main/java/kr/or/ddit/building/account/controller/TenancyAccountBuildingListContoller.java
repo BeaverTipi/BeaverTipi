@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("/building/account")
+@RequestMapping("building/virtualAccount")
 public class TenancyAccountBuildingListContoller {
 
     @Autowired

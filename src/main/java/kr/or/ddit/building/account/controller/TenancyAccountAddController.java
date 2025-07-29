@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Controller
-@RequestMapping("/building/account")
+@RequestMapping("building/virtualAccount")
 public class TenancyAccountAddController {
 
 
@@ -59,6 +59,6 @@ public class TenancyAccountAddController {
         // 등록 처리
         accountService.createAccount(account);
 
-        return "redirect:/building/account/list";
+        return "redirect:/building/virtualAccount";
     }
 }

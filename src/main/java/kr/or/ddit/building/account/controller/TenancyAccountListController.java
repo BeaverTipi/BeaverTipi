@@ -34,13 +34,13 @@ import kr.or.ddit.vo.TenancyAccountVO;
  *
  */
 @Controller
-@RequestMapping("/building/account")
+@RequestMapping("building/virtualAccount")
 public class TenancyAccountListController {
 
     @Autowired
     private TenancyAccountService accountService;
 
-    @GetMapping("/list")
+    @GetMapping("accountList")
     public String accountList(
         @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
         Model model
@@ -58,6 +58,6 @@ public class TenancyAccountListController {
         String rentalPtyId = accountService.findRentalPtyIdByMbrCd(mbrCd);
         model.addAttribute("rentalPtyId", rentalPtyId);
 
-        return "building/account/accountList";
+        return "building/payments/virtualAccount";
     }
 }

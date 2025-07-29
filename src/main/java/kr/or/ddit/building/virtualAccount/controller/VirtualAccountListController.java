@@ -14,30 +14,13 @@ import kr.or.ddit.vo.VirtualAccountVO;
 
 
 @RestController
-@RequestMapping("/virtualAccount")
+@RequestMapping("building/virtualAccount")
 public class VirtualAccountListController {
 
     @Autowired
     private VirtualAccountService service;
 
-//    @GetMapping("/list")
-//    @ResponseBody
-//    public List<VirtualAccountVO> test(@AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
-//        MemberVO member = principal != null ? principal.getRealUser() : null;
-//        String mbrCd = member != null ? member.getMbrCd() : null;
-//        return service.getVirtualAccountListByMember(mbrCd);
-//    }
-    
-//    @GetMapping("/list")
-//    @ResponseBody
-//    public ResponseEntity<?> list(@AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
-//        MemberVO member = principal != null ? principal.getRealUser() : null;
-//        String mbrCd = member != null ? member.getMbrCd() : null;
-//
-//        List<VirtualAccountVO> list = service.getVirtualAccountListByMember(mbrCd);
-//        System.out.println("가져온 리스트 크기: " + list.size());
-//        return ResponseEntity.ok(list);
-//    }
+
 
     
     @GetMapping("/list")

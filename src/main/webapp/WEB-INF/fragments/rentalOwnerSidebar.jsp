@@ -137,14 +137,10 @@
         <div class="multi-level collapse " role="list"
           id="submenu-pages" aria-expanded="false">
           <ul class="flex-column nav">
+            
             <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/building/account/list">
-                <span class="sidebar-text">수납 계좌 내역</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/building/virtualAccount">
-                <span class="sidebar-text">가상 계좌</span>
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/virtualAccount/accountList">
+                <span class="sidebar-text">계좌 내역</span>
               </a>
             </li>
             <li class="nav-item">

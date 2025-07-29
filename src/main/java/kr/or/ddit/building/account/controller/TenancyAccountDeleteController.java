@@ -35,15 +35,15 @@ import kr.or.ddit.vo.TenancyAccountVO;
  *
  */
 @Controller
-@RequestMapping("/building/account")
+@RequestMapping("building/virtualAccount")
 public class TenancyAccountDeleteController {
 
     @Autowired
     private TenancyAccountService accountService;
 
-    @PostMapping("/delete")
+    @PostMapping("/deleteAccount")
     public String deleteAccount(@ModelAttribute TenancyAccountVO account) {
         accountService.removeAccount(account);
-        return "redirect:/building/account/list";
+        return "redirect:/building/virtualAccount";
     }
 }

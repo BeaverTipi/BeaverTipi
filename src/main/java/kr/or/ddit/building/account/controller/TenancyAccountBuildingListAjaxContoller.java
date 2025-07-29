@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/building/account")
+@RequestMapping("building/virtualAccount")
 public class TenancyAccountBuildingListAjaxContoller {
 	 @Autowired
 	    private TenancyAccountService accountService;
@@ -36,7 +36,7 @@ public class TenancyAccountBuildingListAjaxContoller {
 	        model.addAttribute("accountList", accountService.retrieveAccountList(mbrCd));
 	        model.addAttribute("rentalPtyId", rentalPtyId);
 
-	        return "building/account/accountList";  // JSP 경로
+	        return "/building/payments/virtualAccount";  // JSP 경로
 	    }
 	}
 

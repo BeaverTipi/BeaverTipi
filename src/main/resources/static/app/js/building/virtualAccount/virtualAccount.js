@@ -15,7 +15,7 @@ const accountTypeToLabel = {
 
 // 리스트
 async function fetchList() {
-  const res = await fetch('/virtualAccount/list');
+  const res = await fetch('/building/virtualAccount/list');
   const table = document.getElementById('accountTable');
   const empty = document.getElementById('emptyMessage');
   const tbody = document.getElementById('vaTableBody');
@@ -54,7 +54,7 @@ async function fetchList() {
 // 삭제
 function deleteVA(vaId) {
   if (confirm('정말 삭제하시겠습니까?')) {
-    fetch(`/virtualAccount/delete/${vaId}`, {
+    fetch(`/building/virtualAccount/delete/${vaId}`, {
       method: 'POST'
     }).then(() => fetchList());
   }
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const formData = new FormData(form);
 
-    const res = await fetch('/virtualAccount/register', {
+    const res = await fetch('/building/virtualAccount/register', {
       method: 'POST',
       body: formData
     });

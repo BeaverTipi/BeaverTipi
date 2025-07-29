@@ -10,7 +10,7 @@ import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.VirtualAccountVO;
 
 @RestController
-@RequestMapping("/virtualAccount")
+@RequestMapping("building/virtualAccount")
 public class VirtualAccountDetailController {
 
     @Autowired

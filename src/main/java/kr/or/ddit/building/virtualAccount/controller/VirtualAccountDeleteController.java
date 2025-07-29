@@ -9,7 +9,7 @@ import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.MemberVO;
 
 @RestController
-@RequestMapping("/virtualAccount")
+@RequestMapping("building/virtualAccount")
 public class VirtualAccountDeleteController {
 
     @Autowired
