@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import jakarta.servlet.http.HttpServletRequest;
+import kr.or.ddit.broker.dto.SignerDTO;
 import kr.or.ddit.vo.ContractDigitalSignVO;
 import kr.or.ddit.vo.ContractVO;
 import kr.or.ddit.vo.FileVO;
@@ -45,6 +47,7 @@ public interface BrokerContractService {
 	public List<TenancyVO> readTenancyList(String rentalPtyId);
 	
 	public List<Map<String, Object>> readContractPartyInfo(Map<String, String> partyInfoParams);
+	public Map<String, SignerDTO> readContractPartyInfo2(Map<String, String> partyInfoParams, HttpServletRequest request);
 	
 	public List<ContractVO> readContractList(String mbrCd);
 

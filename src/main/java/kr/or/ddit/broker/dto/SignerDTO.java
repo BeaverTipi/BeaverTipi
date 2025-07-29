@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Data
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,26 +33,23 @@ public class SignerDTO {
 //    @Pattern(regexp = "^01[016789]-\\d{3,4}-\\d{4}$")
     private String telno;
 
+    private String signerStatus;
+    
     @Pattern(regexp = "^\\d{1,3}(\\.\\d{1,3}){3}$")
     private String ipAddr;
 
-    @NotNull
-    @Pattern(regexp = "JOINED|SIGNED|REJECTED")
-    private String status;
+    private Boolean isJoined;
 
     private LocalDateTime signedAt;
+    
+    private Boolean isSigned;
 
     private String hashVal;
 
     @NotNull
     private Boolean isValid;
 
-    @NotNull
-    private Boolean isRejected;
-
     private String base64;
 
     private String tempPdfUrl;
-
-    private Boolean connected;
 }

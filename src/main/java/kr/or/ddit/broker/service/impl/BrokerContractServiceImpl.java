@@ -38,6 +38,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import kr.or.ddit.broker.mapper.BrokerMapper;
@@ -59,6 +60,8 @@ import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.broker.dto.SignerDTO;
+import kr.or.ddit.broker.dto.SignerStatusDTO;
 import kr.or.ddit.broker.dto.StandardLeaseFormDTO;
 import kr.or.ddit.vo.TenancyVO;
 import lombok.RequiredArgsConstructor;
@@ -201,7 +204,87 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 		List<Map<String, Object>> signers = List.of(lessee, lessor, agent);
 		return signers;
 	}
-
+	@Override
+	public Map<String, SignerDTO> readContractPartyInfo2(
+			Map<String, String> partyTelnoParam
+			, HttpServletRequest request
+	) {
+		String lesseeTelno = partyTelnoParam.get("lesseeTelno");
+		String lessorTelno = partyTelnoParam.get("lessorTelno");
+		String agentTelno = partyTelnoParam.get("agentTelno");
+		String userRole = partyTelnoParam.get("userRole");
+		String contId = partyTelnoParam.get("contId");
+		
+		MemberVO lesseeInfo = mapper.selectMemberByTelno(lesseeTelno);
+		MemberVO lessorInfo = mapper.selectMemberByTelno(lessorTelno);
+		MemberVO agentInfo = mapper.selectMemberByTelno(agentTelno);
+		
+	    if (lesseeInfo == null || lessorInfo == null || agentInfo == null) {
+	        throw new IllegalArgumentException("계약 참여자 중 일부 정보를 찾을 수 없습니다.");
+	    }
+	    
+	    SignerDTO lessor = SignerDTO.builder()
+	    		.contId(contId)
+	    		.role("LESSOR")
+	    		.code(lessorInfo.getMbrCd())
+	    		.id(lessorInfo.getMbrId())
+	    		.name(lessorInfo.getMbrNm())
+	    		.telno(lessorInfo.getMbrTelno())
+	    		.signerStatus("")
+	    		.ipAddr("")
+	    		.isJoined(false)
+	    		.signedAt(null)
+	    		.isSigned(false)
+	    		.hashVal("")
+	    		.isValid(false)
+	    		.base64("")
+	    		.build();
+	    SignerDTO lessee = SignerDTO.builder()
+	    		.contId(contId)
+	    		.role("LESSEE")
+	    		.code(lesseeInfo.getMbrCd())
+	    		.id(lesseeInfo.getMbrId())
+	    		.name(lesseeInfo.getMbrNm())
+	    		.telno(lesseeInfo.getMbrTelno())
+	    		.signerStatus("")
+	    		.ipAddr("")
+	    		.isJoined(false)
+	    		.signedAt(null)
+	    		.isSigned(false)
+	    		.hashVal("")
+	    		.isValid(false)
+	    		.base64("")
+	    		.build();
+	    SignerDTO agent = SignerDTO.builder()
+	    		.contId(contId)
+	    		.role("AGENT")
+	    		.code(agentInfo.getMbrCd())
+	    		.id(agentInfo.getMbrId())
+	    		.name(agentInfo.getMbrNm())
+	    		.telno(agentInfo.getMbrTelno())
+	    		.signerStatus("")
+	    		.ipAddr("")
+	    		.isJoined(false)
+	    		.signedAt(null)
+	    		.isSigned(false)
+	    		.hashVal("")
+	    		.isValid(false)
+	    		.base64("")
+	    		.build();
+		switch (userRole) {
+			case "LESSOR" -> {lessor.setIsJoined(true); lessor.setIpAddr(request.getRemoteAddr());}
+			case "LESSEE" -> {lessee.setIsJoined(true); lessee.setIpAddr(request.getRemoteAddr());}
+			case "AGENT"  -> {agent.setIsJoined(true);  agent.setIpAddr(request.getRemoteAddr());}
+		}
+		
+		Map<String, SignerDTO> signers = new HashMap<>();
+		signers.put("LESSOR", lessor);
+		signers.put("LESSEE", lessee);
+		signers.put("AGENT", agent);
+		return signers;
+	}
+	
+	
 	/**
 	 *
 	 */

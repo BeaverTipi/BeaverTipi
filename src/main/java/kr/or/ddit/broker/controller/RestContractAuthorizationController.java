@@ -19,10 +19,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
+import kr.or.ddit.broker.dto.SignatureDTO;
+import kr.or.ddit.broker.dto.SignatureStateDTO;
+import kr.or.ddit.broker.dto.SignerDTO;
 import kr.or.ddit.broker.service.BrokerContractService;
 import kr.or.ddit.main.member.service.MemberService;
 import kr.or.ddit.util.crypto.AES256Util;
+import kr.or.ddit.util.file.service.FileService;
 import kr.or.ddit.vo.ContractVO;
+import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.MemberVO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,6 +53,8 @@ public class RestContractAuthorizationController {
 	private BrokerContractService contService;
 	@Autowired
 	private MemberService memService;
+	@Autowired
+	private FileService fileService;
 
 	@PostMapping
 	public ResponseEntity<?> contractSignPageAuthorize(
@@ -121,24 +128,47 @@ public class RestContractAuthorizationController {
 						"lesseeTelno", lesseeTelno,
 						"lessorTelno", lessorTelno,
 						"agentTelno", agentTelno,
-						"userRole", userRole);
-				List<Map<String, Object>> signers = contService.readContractPartyInfo(partyTelnoParam);
+						"userRole", userRole,
+						"contId", contId);
+//				List<Map<String, Object>> signers = contService.readContractPartyInfo(partyTelnoParam);
+				Map<String, SignerDTO> signers = contService.readContractPartyInfo2(partyTelnoParam, request);
+				
+				FileVO contractFile = contService.readContractPDFFile(contId);
+				SignatureDTO signature = SignatureDTO.builder()
+						.contId(contId)
+						.signatureStatus("P_NOT_YET")
+						.originalPdfData("")///
+						.lessorSignedPdfData("")
+						.lessorSignedPdfId("")
+						.lessorSignedPdfPath("")
+						.lesseeSignedPdfData("")
+						.lesseeSignedPdfId("")
+						.lesseeSIgnedPdfPath("")
+						.agendSignedPdfId("")
+						.agentSignedPdfData("")
+						.agentSignedPdfPath("")
+						.build();
 				
 				/** 4. 응답 데이터 구성 */
 				Map<String, Object> responseMap = new LinkedHashMap<>();
+				responseMap.put("myRole", userRole);
+				responseMap.put("globalContId", contId);
 				responseMap.put("success", true);
-				responseMap.put("contId", contId);
-				responseMap.put("role", userRole);
-				responseMap.put("code", user.getMbrCd());
-				responseMap.put("name", user.getMbrNm());
-				responseMap.put("telno", user.getMbrTelno());
-				responseMap.put("id", user.getMbrId());
-				responseMap.put("ipAddr", request.getRemoteAddr());
-				responseMap.put("isValid", true);
-			    responseMap.put("tempPdfUrl", null);
+//				responseMap.put("contId", contId);
+//				responseMap.put("role", userRole);
+//				responseMap.put("code", user.getMbrCd());
+//				responseMap.put("name", user.getMbrNm());
+//				responseMap.put("telno", user.getMbrTelno());
+//				responseMap.put("id", user.getMbrId());
+//				responseMap.put("ipAddr", request.getRemoteAddr());
+//				responseMap.put("isValid", true);
+//			    responseMap.put("tempPdfUrl", null);
+//				responseMap.put("signers", signers);
+				responseMap.put("signature", signature);
 				responseMap.put("signers", signers);
 				log.debug("^ㅂ^^ㅂ^^ㅂ^^ㅂ^^ㅂ^^ㅂ^ {}", user.getMbrTelno());
 				resultJson = objectMapper.writeValueAsString(responseMap);
+				log.debug("----<><> {}", resultJson);
 				return ResponseEntity.ok(aes256Util.encryptWithDynamicIV(resultJson));
 			} catch (Exception e) {
 				log.error("❌ 복호화 실패 - 암호문 또는 IV 문제", e);

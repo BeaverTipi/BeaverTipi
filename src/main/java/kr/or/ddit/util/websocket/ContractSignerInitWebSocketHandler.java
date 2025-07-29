@@ -1,6 +1,5 @@
 package kr.or.ddit.util.websocket;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
@@ -8,125 +7,70 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class ContractSignerInitWebSocketHandler extends TextWebSocketHandler {
 
-	private final Map<String, Set<WebSocketSession>> initSessions = new ConcurrentHashMap<>();
-	private final ObjectMapper mapper = new ObjectMapper();
+    // 계약별 세션 저장
+    private final Map<String, Set<WebSocketSession>> contractSessions = new ConcurrentHashMap<>();
 
-	@Override
-	public void afterConnectionEstablished(WebSocketSession session) {
-	    String query = session.getUri().getQuery(); // ✅ 이게 null일 수 있음
-	    if (query == null || !query.contains("contId=")) {
-	        log.warn("[INIT_WS] 잘못된 접속 요청");
-	        try {
-	            session.close(CloseStatus.BAD_DATA); // ❌ 바로 종료
-	        } catch (Exception ignored) {}
-	        return;
-	    }
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) {
+        String contId = getQueryParam(session, "contId");
+        String role = getQueryParam(session, "role");
 
-	    try {
-	        Map<String, String> queryMap = Arrays.stream(query.split("&"))
-	            .map(s -> s.split("="))
-	            .filter(arr -> arr.length == 2)
-	            .collect(Collectors.toMap(arr -> arr[0], arr -> arr[1]));
+        contractSessions.computeIfAbsent(contId, k -> Collections.newSetFromMap(new ConcurrentHashMap<>())).add(session);
+        session.getAttributes().put("contId", contId);
 
-	        String contId = queryMap.getOrDefault("contId", null);
-	        String role = queryMap.getOrDefault("role", null);
+        log.info("[INIT_WS] 연결됨: contId={}, role={}, session={}", contId, role, session.getId());
+    }
 
-	        // ✅ contId/role 둘 중 하나라도 null이면 종료시키는 걸로 보완
-	        if (contId == null || role == null) {
-	            log.warn("[INIT_WS] contId 또는 role 누락");
-	            session.close(CloseStatus.BAD_DATA);
-	            return;
-	        }
+    @Override
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        String raw = message.getPayload();
+        String[] parts = raw.split(":", 4);
 
-	        initSessions.computeIfAbsent(contId, k -> new CopyOnWriteArraySet<>()).add(session);
-	        session.getAttributes().put("contId", contId);
-	        session.getAttributes().put("role", role);
+        if (parts.length < 4) {
+            log.warn("[INIT_WS] 잘못된 메시지 포맷: {}", raw);
+            return;
+        }
 
-	        log.info("[INIT_WS] 연결 성공: contId={}, role={}, session={}", contId, role, session.getId());
+        String type = parts[0];
+        String contId = parts[1];
+        String role = parts[2];
+        String payload = parts[3];
 
-	    } catch (Exception e) {
-	        log.error("[INIT_WS] 접속 처리 중 오류:", e);
-	    }
-	}
+        log.debug("[INIT_WS] 수신 → type={}, contId={}, role={}, payload={}", type, contId, role, payload);
 
-	@Override
-	protected void handleTextMessage(WebSocketSession session, TextMessage message) {
-		String contId = (String) session.getAttributes().get("contId");
-		String senderRole = (String) session.getAttributes().get("role");
+        if ("INIT_REQUEST".equals(type)) {
+            // INIT_REQUEST는 같은 계약에 연결된 모든 세션에 브로드캐스트
+            broadcast(contId, raw);
+        }
+    }
 
-		if (contId == null || senderRole == null) {
-			log.warn("[INIT_WS] 세션 정보 누락");
-			return;
-		}
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+        String contId = (String) session.getAttributes().get("contId");
+        if (contId != null) {
+            contractSessions.getOrDefault(contId, Collections.emptySet()).remove(session);
+            log.info("[INIT_WS] 연결 종료: contId={}, session={}", contId, session.getId());
+        }
+    }
 
-		String raw = message.getPayload();
-		Map<String, Object> parsed;
-		try {
-			parsed = mapper.readValue(raw, Map.class);
-		} catch (Exception e) {
-			log.warn("[INIT_WS] JSON 파싱 실패: {}", raw);
-			return;
-		}
+    private void broadcast(String contId, String message) throws Exception {
+        for (WebSocketSession s : contractSessions.getOrDefault(contId, Collections.emptySet())) {
+            if (s.isOpen()) {
+                s.sendMessage(new TextMessage(message));
+            }
+        }
+    }
 
-		String type = (String) parsed.get("type");
-		String msgContId = (String) parsed.get("contId");
-		Object payload = parsed.get("payload");
-
-		if (!"INIT_REQUEST".equals(type) || !contId.equals(msgContId) || payload == null) {
-			log.warn("[INIT_WS] 무시된 메시지: {}", raw);
-			return;
-		}
-
-		for (WebSocketSession s : initSessions.getOrDefault(contId, Set.of())) {
-			String targetRole = (String) s.getAttributes().get("role");
-
-			// 동일인이 아닌 경우만 전파
-			if (!senderRole.equals(targetRole) && s.isOpen()) {
-				try {
-				    Map<String, Object> response = new HashMap<>();
-				    response.put("type", "INIT_RESPONSE");
-				    response.put("contId", contId);
-				    response.put("role", targetRole);
-
-				    // ✅ 항상 배열로 래핑
-				    List<Object> wrappedPayload = new ArrayList<>();
-				    if (payload instanceof List) {
-				        wrappedPayload = (List<Object>) payload;
-				    } else {
-				        wrappedPayload.add(payload);
-				    }
-
-				    response.put("payload", wrappedPayload);
-
-				    s.sendMessage(new TextMessage(mapper.writeValueAsString(response)));
-				    log.info("[INIT_WS] INIT_RESPONSE 전송: to={}, contId={}", targetRole, contId);
-
-				} catch (Exception e) {
-				    log.error("[INIT_WS] 전송 실패: {}", e.getMessage());
-				}
-			}
-		}
-	}
-
-	@Override
-	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-		String contId = (String) session.getAttributes().get("contId");
-		if (contId != null) {
-			Set<WebSocketSession> sessions = initSessions.get(contId);
-			if (sessions != null) {
-				sessions.remove(session);
-				if (sessions.isEmpty()) {
-					initSessions.remove(contId);
-				}
-			}
-		}
-		log.info("[INIT_WS] 종료: contId={}, session={}", contId, session.getId());
-	}
+    private String getQueryParam(WebSocketSession session, String key) {
+        return Arrays.stream(Objects.requireNonNull(session.getUri()).getQuery().split("&"))
+                .filter(param -> param.startsWith(key + "="))
+                .map(param -> param.split("=")[1])
+                .findFirst()
+                .orElse(null);
+    }
 }
