@@ -348,19 +348,59 @@ INSERT INTO VIRTUAL_ACCOUNT (
 	, #{mbrCd}
 )
 </insert>
+<insert id="insertPaymentTosspaymentsRaw">
+  INSERT INTO PAYMENT_TOSSPAYMENTS_RAW (
+    PAYMENT_KEY,
+    VERSION_DATE,
+    TYPE,
+    ORDER_ID,
+    ORDER_NAME,
+    M_ID,
+    CURRENCY,
+    METHOD,
+    STATUS,
+    TOTAL_AMOUNT,
+    REQUEST_DATE,
+    APPROVE_DATE,
+    LAST_TRANSACTION_KEY,
+    SUPPLIED_AMOUNT,
+    COUNTRY,
+    BILLING_KEY
+  ) VALUES (
+    #{paymentKey},
+    #{versionDate},
+    #{type},
+    #{orderId},
+    #{orderName},
+    #{mId},
+    #{currency},
+    #{method},
+    #{status},
+    #{totalAmount},
+    #{requestDate},
+    #{approveDate},
+    #{lastTransactionKey},
+    #{suppliedAmount},
+    #{country},
+    #{billingKey}
+  )
+</insert>
+
 <insert id="insertEasyPay">
 INSERT INTO EASY_PAY (
     EASY_PAY_ID,
     PROVIDER,
     AMOUNT,
     DISCOUNT_AMOUNT,
-    MBR_CD
+    MBR_CD,
+    PAYMENT_KEY
 ) VALUES (
 	#{easyPayId}
 	, #{provider}
 	, #{amount}
 	, #{discountAmount}
 	, #{mbrCd}
+	, #{paymentKey}
 )
 </insert>
 <select id="selectTenancy">

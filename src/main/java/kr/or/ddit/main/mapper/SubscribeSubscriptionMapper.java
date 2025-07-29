@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.CardVO;
 import kr.or.ddit.vo.EasyPayVO;
+import kr.or.ddit.vo.PaymentTosspamentsRawVO;
 import kr.or.ddit.vo.RoleAchievedVO;
 import kr.or.ddit.vo.SolutionSubscriptionPaymentVO;
 import kr.or.ddit.vo.SolutionSubscriptionVO;
@@ -40,4 +41,5 @@ public interface SubscribeSubscriptionMapper {
 	public Integer insertCard(CardVO cardVO);
 	public Integer insertEasyPay(EasyPayVO easyPay);
 	public Integer insertVirtualAccount(VirtualAccountVO va);
+	public Integer insertPaymentTosspaymentsRaw(PaymentTosspamentsRawVO toss);
 }

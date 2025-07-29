@@ -5,9 +5,11 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingOptionVO;
+import kr.or.ddit.vo.ListingSearchFormVO;
 import kr.or.ddit.vo.ListingVO;
 
 @Mapper
@@ -16,8 +18,6 @@ public interface RentalOwnerProductMapper {
     // 매물 등록
 	public Integer insertProduct(ListingVO listing);
 
-    // 매물 목록 조회
-	public List<ListingVO> selectProductList(String mbrCd);
 
     // 매물 상세 조회
 	public ListingVO selectProductById(String lstgId);
@@ -39,4 +39,11 @@ public interface RentalOwnerProductMapper {
 	public Integer deleteOptionByLstgId(String lstgId);
 
 	public Integer updateDelYnListing(ListingVO listing);
+	// 매물 목록 조회
+	public Integer selectProductCount(@Param("pagingVO")PaginationInfo<ListingSearchFormVO> pagingVO);
+
+	public List<ListingVO> selectProductList(@Param("pagingVO") PaginationInfo<ListingSearchFormVO>  pagingVO);
+
+
+	public List<ListingVO> selectRoomsList(ListingVO listing);
 }

@@ -25,6 +25,7 @@ public class PaymentTosspamentsRawVO implements Serializable{
 	private String lastTransactionKey;
 	private Integer suppliedAmount;
 	private String country;
+	private String billingKey;
 	
 	private Integer amount;
 	private String customerName;

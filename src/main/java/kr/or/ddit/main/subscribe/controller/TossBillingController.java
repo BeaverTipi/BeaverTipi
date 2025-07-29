@@ -1,7 +1,5 @@
 package kr.or.ddit.main.subscribe.controller;
 
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,16 +23,16 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import kr.or.ddit.main.subscribe.service.SubscribeSubsriptionService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.util.validate.exception.CardException;
+import kr.or.ddit.util.validate.exception.EasyPayException;
+import kr.or.ddit.util.validate.exception.RoleAchivedException;
+import kr.or.ddit.util.validate.exception.SubscriptionException;
+import kr.or.ddit.util.validate.exception.TosspaymentsException;
+import kr.or.ddit.util.validate.exception.VirtualAccountException;
 import kr.or.ddit.vo.CardVO;
-import kr.or.ddit.vo.EasyPayVO;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.PaymentTosspamentsRawVO;
-import kr.or.ddit.vo.RoleAchievedVO;
-import kr.or.ddit.vo.SolutionSubscriptionPaymentVO;
-import kr.or.ddit.vo.SolutionSubscriptionVO;
 import kr.or.ddit.vo.SolutionVO;
-import kr.or.ddit.vo.SolutionnSubscriptionAutopayMethodVO;
-import kr.or.ddit.vo.VirtualAccountVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -184,58 +182,26 @@ public class TossBillingController {
             }
 
             Map<String, Object> result = response.getBody();
-            log.info("✅ Toss API 응답 결과: {}", result);
-            String billingKey = (String) result.get("billingKey");
-            String approvedAtRaw = (String) result.get("authenticatedAt");
-
-            OffsetDateTime offsetDateTime = OffsetDateTime.parse(approvedAtRaw);
-            LocalDate approvedAt = offsetDateTime.toLocalDate();
-
-            // 2. 사용자 정보 추출
             String mbrCd = principal.getRealUser().getMbrCd();
 
-
-            // 3. DB 저장 처리
-            SolutionnSubscriptionAutopayMethodVO methodVO = new SolutionnSubscriptionAutopayMethodVO();
-            methodVO.setMbrCd(mbrCd);
-            methodVO.setAutomethBillingkey(billingKey);
-            methodVO.setAutomethProvider("toss");
-            methodVO.setAutomethPaytype("001");
-            methodVO.setAutomethIsActive("Y");
-            methodVO.setAutomethPaytypeGrpCd("PAYTP");
-            methodVO.setAutomethIsActiveGrpCd("YNFG");
-            methodVO.setAutomethStartedAt(approvedAt);
-
-            SolutionSubscriptionPaymentVO paymentVO = new SolutionSubscriptionPaymentVO();
-            paymentVO.setBillingKey(billingKey);
-            paymentVO.setCustomerKey(customerKey);
-            paymentVO.setMbrCd(mbrCd);
-
-            RoleAchievedVO roleAchievedVO = new RoleAchievedVO();
-            roleAchievedVO.setMbrCd(mbrCd);
-            roleAchievedVO.setUserRoleId("ROLE_"+role);
+            service.saveAutopayAndFirstPayment(result,mbrCd,customerKey,role,solId);
             
-            CardVO cardVO =new CardVO();
-            Map<String,String> map = (Map<String,String>)result.get("card");
-            cardVO.setIssuerCode(map.get("issuerCode").toString());
-            cardVO.setAcquirerCode(map.get("acquirerCode").toString());
-            cardVO.setCardNumber(map.get("number").toString());
-            cardVO.setCardType(map.get("cardType").toString());
-            cardVO.setOwnerType(map.get("ownerType").toString());
-            cardVO.setMbrCd(mbrCd);
-            
-            SolutionSubscriptionVO subscriptionVO = new SolutionSubscriptionVO();
-            subscriptionVO.setMbrCd(mbrCd);
-            subscriptionVO.setSolId(solId);
-            SolutionVO solutionVO = new SolutionVO();
-            solutionVO.setSolCcCd("BROKER".equalsIgnoreCase(role) ? "002" : "001");
-            subscriptionVO.setSolution(solutionVO);
-
-            service.saveAutopayAndFirstPayment(methodVO, paymentVO, roleAchievedVO, subscriptionVO, cardVO);
             redirectAttributes.addFlashAttribute("message", "결제에 성공했습니다.");
             return new RedirectView("/account/read?success=true");
 
-        } catch (Exception e) {
+        } catch (SubscriptionException e) {
+            log.error("billing-success 처리 오류", e);
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            return new RedirectView(current+"?fail=true");
+        } catch (RoleAchivedException e) {
+            log.error("billing-success 처리 오류", e);
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            return new RedirectView(current+"?fail=true");
+        } catch (CardException e) {
+        	log.error("billing-success 처리 오류", e);
+        	redirectAttributes.addFlashAttribute("message", e.getMessage());
+        	return new RedirectView(current+"?fail=true");
+		} catch (Exception e) {
             log.error("billing-success 처리 오류", e);
             redirectAttributes.addFlashAttribute("message", e.getMessage());
             return new RedirectView(current+"?fail=true");
@@ -273,69 +239,45 @@ public class TossBillingController {
             
             if (response.getStatusCode().is2xxSuccessful()) {
                 Map<String, Object> data = response.getBody();
-                String approvedAtRaw = (String) data.get("approvedAt");
-                LocalDate approvedAt = LocalDate.parse(approvedAtRaw.substring(0, 10));
                 String mbrCd = principal.getRealUser().getMbrCd();
-           
-                SolutionSubscriptionPaymentVO paymentVO = new SolutionSubscriptionPaymentVO();
-                paymentVO.setCustomerKey("CUST-" + mbrCd);
-                paymentVO.setMbrCd(mbrCd);
 
-                RoleAchievedVO roleAchievedVO = new RoleAchievedVO();
-                roleAchievedVO.setMbrCd(mbrCd);
-                roleAchievedVO.setUserRoleId("ROLE_" + role);
-
-                SolutionSubscriptionVO subscriptionVO = new SolutionSubscriptionVO();
-                subscriptionVO.setMbrCd(mbrCd);
-                subscriptionVO.setSolId(solId);
-                SolutionVO solutionVO = new SolutionVO();
-                solutionVO.setSolCcCd("BROKER".equalsIgnoreCase(role) ? "002" : "001");
-                subscriptionVO.setSolution(solutionVO);
-
-                service.savePaymentResult(paymentVO, roleAchievedVO, subscriptionVO);
+                service.savePaymentResult(data,mbrCd,solId,role);
                 
-                Map<String, Object> cardMap = (Map<String, Object>) data.get("card");
-                Map<String, Object> easyPayMap = (Map<String, Object>) data.get("easyPay");
-                Map<String, Object> vaMap = (Map<String, Object>) data.get("virtualAccount");
-                if( cardMap !=null && !cardMap.isEmpty() ) {
-                	CardVO card = new CardVO();
-                	card.setIssuerCode(cardMap.get("issuerCode").toString());
-                	card.setAcquirerCode(cardMap.get("acquirerCode").toString());
-                	card.setCardNumber(cardMap.get("number").toString());
-                	card.setCardType(cardMap.get("cardType").toString());
-                	card.setOwnerType(cardMap.get("ownerType").toString());
-                	card.setMbrCd(mbrCd);
-                	service.createCard(card);
-                }
-                if(easyPayMap != null && !easyPayMap.isEmpty()) {
-                	EasyPayVO easyPay = new EasyPayVO();	
-                	easyPay.setProvider(easyPayMap.get("provider").toString());
-                	easyPay.setAmount((Integer)easyPayMap.get("amount"));
-                	easyPay.setDiscountAmount((Integer)easyPayMap.get("discountAmount"));
-                	easyPay.setMbrCd(mbrCd);
-                	service.createEasyPay(easyPay);
-                }
-                if (vaMap != null && !vaMap.isEmpty()) {
-                	VirtualAccountVO va = new VirtualAccountVO();
-                	va.setAccountNumber((String) vaMap.get("accountNumber"));
-                	va.setBankCode((String) vaMap.get("bankCode"));
-                	va.setCustomerName((String) vaMap.get("customerName"));
-                	va.setAccountType((String) vaMap.get("accountType"));
-                	va.setDueDate((String) vaMap.get("dueDate"));
-                	va.setExpired((String) vaMap.get("expired"));
-                	va.setSettlementStatus((String) vaMap.get("settlementStatus"));
-                	va.setSecret((String) vaMap.get("secret"));
-                	va.setMbrCd(mbrCd);
-                	service.createVirtualAccount(va);
-                }
+              
                 redirectAttributes.addFlashAttribute("message", "결제에 성공했습니다.");
                 return new RedirectView("/account/read?success=true");
             } else {
             	redirectAttributes.addFlashAttribute("message", "결제에 실패했습니다.");
                 return new RedirectView(current+"?fail=true");
             }
-        } catch (Exception e) {
-            log.error("일반결제 처리 중 오류", e);
+        } catch (TosspaymentsException e) {
+            log.error("payment-success 처리 오류", e);
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            return new RedirectView(current+"?fail=true");
+        } catch (SubscriptionException e) {
+        	log.error("payment-success 처리 오류", e);
+        	redirectAttributes.addFlashAttribute("message", e.getMessage());
+        	return new RedirectView(current+"?fail=true");
+        } catch (RoleAchivedException e) {
+            log.error("payment-success 처리 오류", e);
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            return new RedirectView(current+"?fail=true");
+        } catch (CardException e) {
+        	log.error("payment-success 처리 오류", e);
+        	redirectAttributes.addFlashAttribute("message", e.getMessage());
+        	return new RedirectView(current+"?fail=true");
+	        
+	    } catch (VirtualAccountException e) {
+	    	log.error("payment-success 처리 오류", e);
+	    	redirectAttributes.addFlashAttribute("message", e.getMessage());
+	    	return new RedirectView(current+"?fail=true");
+	    
+		} catch (EasyPayException e) {
+			log.error("payment-success 처리 오류", e);
+			redirectAttributes.addFlashAttribute("message", e.getMessage());
+			return new RedirectView(current+"?fail=true");
+		} catch (Exception e) {
+            log.error("payment-success 처리 오류", e);
             redirectAttributes.addFlashAttribute("message", e.getMessage());
             return new RedirectView(current+"?fail=true");
         }

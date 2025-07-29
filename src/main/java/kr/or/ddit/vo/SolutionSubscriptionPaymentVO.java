@@ -16,5 +16,6 @@ public class SolutionSubscriptionPaymentVO implements Serializable{
 	private String customerKey;
 	private String subsPaymentFailMsg;
 	private String mbrCd;
+	private String paymentKey;
 	
 }

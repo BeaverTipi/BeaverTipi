@@ -11,8 +11,6 @@
 		<result property="brdEndDtm" column="BRD_END_DTM" />
 		<result property="brdDelYn" column="BRD_DEL_YN" />
 		<result property="brdCtgryGrpCd" column="BRD_CTGRY_GRP_CD" />
-		<result property="mbr.mbrCd" column="MBR_CD" />
-		<result property="mbr.mbrId" column="MBR_ID" />
 		<result property="noticeTypeName" column="BRD_CODE_NAME" />
 		<result property="faqCtgry" column="FAQ_CTGRY" />
 		<result property="qnaCtgry" column="QNA_CTGRY" />

@@ -4,9 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-import kr.or.ddit.vo.BoardVO; // ⭐ BoardVO import 포함 ⭐
 import kr.or.ddit.vo.BusinessAdsSearchVO;
 import kr.or.ddit.vo.BusinessApproveSearchVO;
+import kr.or.ddit.vo.ListingSearchFormVO;
 import kr.or.ddit.vo.MemberSearchVO;
 import kr.or.ddit.vo.ReportSearchVO;
 import lombok.Getter;
@@ -149,6 +149,55 @@ public class PaginationInfo<T> {
 			        System.err.println("URL Encoding failed for BusinessApproveSearchVO: " + e.getMessage());
 			    }
 			}
+			// ListingSearchFormVO 처리 로직
+			else if (this.detailSearch instanceof ListingSearchFormVO) {
+			    ListingSearchFormVO vo = (ListingSearchFormVO) this.detailSearch;
+			    try {
+			        if (vo.getMbrCd() != null && !vo.getMbrCd().isEmpty()) {
+			            sb.append("&detailSearch.mbrCd=").append(URLEncoder.encode(vo.getMbrCd(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (vo.getSearchBuildingName() != null && !vo.getSearchBuildingName().isEmpty()) {
+			            sb.append("&detailSearch.searchBuildingName=").append(URLEncoder.encode(vo.getSearchBuildingName(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (vo.getSearchRoomNum() != null && !vo.getSearchRoomNum().isEmpty()) {
+			            sb.append("&detailSearch.searchRoomNum=").append(URLEncoder.encode(vo.getSearchRoomNum(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (vo.getSearchStatus() != null && !vo.getSearchStatus().isEmpty()) {
+			            sb.append("&detailSearch.searchStatus=").append(URLEncoder.encode(vo.getSearchStatus(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (vo.getSearchType() != null && !vo.getSearchType().isEmpty()) {
+			            sb.append("&detailSearch.searchType=").append(URLEncoder.encode(vo.getSearchType(), StandardCharsets.UTF_8.toString()));
+			        }
+
+			        // 💰 보증금 범위
+			        if (vo.getSearchDepositMin() != null) {
+			            sb.append("&detailSearch.searchDepositMin=").append(vo.getSearchDepositMin());
+			        }
+			        if (vo.getSearchDepositMax() != null) {
+			            sb.append("&detailSearch.searchDepositMax=").append(vo.getSearchDepositMax());
+			        }
+
+			        // 💵 월세 범위
+			        if (vo.getSearchMonthlyMin() != null) {
+			            sb.append("&detailSearch.searchMonthlyMin=").append(vo.getSearchMonthlyMin());
+			        }
+			        if (vo.getSearchMonthlyMax() != null) {
+			            sb.append("&detailSearch.searchMonthlyMax=").append(vo.getSearchMonthlyMax());
+			        }
+
+			        // 🏠 매매가 범위
+			        if (vo.getSearchSaleMin() != null) {
+			            sb.append("&detailSearch.searchSaleMin=").append(vo.getSearchSaleMin());
+			        }
+			        if (vo.getSearchSaleMax() != null) {
+			            sb.append("&detailSearch.searchSaleMax=").append(vo.getSearchSaleMax());
+			        }
+
+			    } catch (UnsupportedEncodingException e) {
+			        System.err.println("URL Encoding failed for ListingSearchFormVO: " + e.getMessage());
+			    }
+			}
+
 			// 광고
 			if (this.detailSearch instanceof BusinessAdsSearchVO) {
 				BusinessAdsSearchVO businessAdsSearchVO = (BusinessAdsSearchVO) this.detailSearch;
@@ -197,4 +246,5 @@ public class PaginationInfo<T> {
 
 		return sb.toString();
 	}
+
 }

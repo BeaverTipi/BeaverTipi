@@ -11,11 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.or.ddit.main.mapper.SubscribeSubscriptionMapper;
 import kr.or.ddit.main.subscribe.service.SubscribeSubsriptionService;
 import kr.or.ddit.resident.chargebill.dto.ChargeComparisonDto;
 import kr.or.ddit.resident.chargebill.dto.PaymentConfirmRequest;
 import kr.or.ddit.resident.mapper.ChargeBillMapper;
 import kr.or.ddit.resident.mapper.UnitResidentMapper;
+import kr.or.ddit.util.validate.exception.CardException;
+import kr.or.ddit.util.validate.exception.EasyPayException;
+import kr.or.ddit.util.validate.exception.VirtualAccountException;
 import kr.or.ddit.vo.CardVO;
 import kr.or.ddit.vo.ChargeBillPaymentLogVO;
 import kr.or.ddit.vo.ChargeBillVO;
@@ -32,7 +36,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Autowired
     private ChargeBillMapper mapper;
-
+    
+    @Autowired
+    private SubscribeSubscriptionMapper subscriptionMapper;
     @Autowired
     private UnitResidentMapper unitResidentMapper;
     
@@ -276,7 +282,9 @@ public class PaymentServiceImpl implements PaymentService {
         	card.setCardType(cardMap.get("cardType").toString());
         	card.setOwnerType(cardMap.get("ownerType").toString());
         	card.setMbrCd(mbrCd);
-        	service.createCard(card);
+        	if(subscriptionMapper.insertCard(card)<1) {
+    			throw new CardException();
+    		}
         }
         if(easyPayMap != null && !easyPayMap.isEmpty()) {
         	EasyPayVO easyPay = new EasyPayVO();	
@@ -285,7 +293,9 @@ public class PaymentServiceImpl implements PaymentService {
         	easyPay.setAmount((Integer)easyPayMap.get("amount"));
         	easyPay.setDiscountAmount((Integer)easyPayMap.get("discountAmount"));
         	easyPay.setMbrCd(mbrCd);
-        	service.createEasyPay(easyPay);
+        	if(subscriptionMapper.insertEasyPay(easyPay)<1) {
+    			throw new EasyPayException();
+    		}
         }
         if (vaMap != null && !vaMap.isEmpty()) {
         	VirtualAccountVO va = new VirtualAccountVO();
@@ -298,7 +308,9 @@ public class PaymentServiceImpl implements PaymentService {
         	va.setSettlementStatus((String) vaMap.get("settlementStatus"));
         	va.setSecret((String) vaMap.get("secret"));
         	va.setMbrCd(mbrCd);
-        	service.createVirtualAccount(va);
+        	if(subscriptionMapper.insertVirtualAccount(va)<1) {
+    			throw new VirtualAccountException();
+    		}
         }
 
 	   }

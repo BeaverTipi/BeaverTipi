@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.broker.mapper.BrokerDashBoardMapper">
+<!-- 수수료 총합 -->
+<select id="selectCommissionTotal" resultType="long">
+  SELECT NVL(SUM(CONT_TAX_AMOUNT), 0)
+  FROM CONTRACT
+  WHERE MBR_CD_BROK = #{mbrCd}
+    AND CONT_DTM &gt;=
+      CASE
+        WHEN #{period} = 'today' THEN TRUNC(SYSDATE)
+        WHEN #{period} = 'week' THEN TRUNC(SYSDATE, 'IW')
+        WHEN #{period} = 'month' THEN TRUNC(SYSDATE, 'MM')
+        WHEN #{period} = 'year' THEN TRUNC(SYSDATE, 'YYYY')
+        WHEN #{period} = 'quarter' THEN TRUNC(SYSDATE, 'Q')
+      END
+</select>
+
+<!-- 계약 상태 요약 -->
+<select id="selectContractStatusSummary" resultType="map">
+  SELECT
+  	COUNT(*) AS TOTAL,
+    SUM(CASE WHEN CONT_STAT_CD = '002' THEN 1 ELSE 0 END) AS SUCCESS,
+    SUM(CASE WHEN CONT_STAT_CD = '003' THEN 1 ELSE 0 END) AS CANCEL,
+    SUM(CASE WHEN CONT_STAT_CD = '001' THEN 1 ELSE 0 END) AS PENDING
+  FROM CONTRACT
+  WHERE MBR_CD_BROK = #{mbrCd}
+    AND CONT_DTM &gt;=
+      CASE
+        WHEN #{period} = 'today' THEN TRUNC(SYSDATE)
+        WHEN #{period} = 'week' THEN TRUNC(SYSDATE, 'IW')
+        WHEN #{period} = 'month' THEN TRUNC(SYSDATE, 'MM')
+        WHEN #{period} = 'year' THEN TRUNC(SYSDATE, 'YYYY')
+        WHEN #{period} = 'quarter' THEN TRUNC(SYSDATE, 'Q')
+      END
+</select>
+
+<!-- 수수료 트렌드 -->
+<select id="selectCommissionTrend" resultType="map">
+  SELECT 
+    TO_CHAR(CONT_DTM, 'YYYY-MM-DD') AS label,
+    SUM(CONT_TAX_AMOUNT) AS total
+  FROM CONTRACT
+  WHERE MBR_CD_BROK = #{mbrCd}
+    AND CONT_DTM &gt;=
+      CASE 
+        WHEN #{period} = 'today' THEN TRUNC(SYSDATE)
+        WHEN #{period} = 'week' THEN TRUNC(SYSDATE, 'IW')
+        WHEN #{period} = 'month' THEN TRUNC(SYSDATE, 'MM')
+        WHEN #{period} = 'year' THEN TRUNC(SYSDATE, 'YYYY')
+        WHEN #{period} = 'quarter' THEN TRUNC(SYSDATE, 'Q')
+      END
+  GROUP BY TO_CHAR(CONT_DTM, 'YYYY-MM-DD')
+  ORDER BY label
+</select>
+
+<!-- 계약 트렌드 -->
+<select id="selectContractTrend" resultType="map">
+  SELECT
+    b.bucket,
+    s.CONT_STAT_CD,
+    COUNT(c.CONT_ID) AS count
+  FROM (
+    SELECT DISTINCT
+      CASE
+        WHEN #{period} = 'month' THEN TO_CHAR(CONT_DTM, 'YYYY-MM') || '-' || TO_CHAR(CONT_DTM, 'W') || '주차'
+        WHEN #{period} = 'week' THEN TO_CHAR(CONT_DTM, 'YYYY-MM-DD')
+        WHEN #{period} = 'quarter' THEN TO_CHAR(CONT_DTM, 'Q') || '분기'
+        WHEN #{period} = 'year' THEN TO_CHAR(CONT_DTM, 'MM') || '월'
+        ELSE TO_CHAR(CONT_DTM, 'YYYY-MM-DD')
+      END AS bucket
+    FROM CONTRACT
+    WHERE MBR_CD_BROK = #{mbrCd}
+      AND CONT_DTM &gt;=
+        CASE
+          WHEN #{period} = 'today' THEN TRUNC(SYSDATE)
+          WHEN #{period} = 'week' THEN TRUNC(SYSDATE, 'IW')
+          WHEN #{period} = 'month' THEN TRUNC(SYSDATE, 'MM')
+          WHEN #{period} = 'quarter' THEN TRUNC(SYSDATE, 'Q')
+          WHEN #{period} = 'year' THEN TRUNC(SYSDATE, 'YYYY')
+        END
+  ) b
+  CROSS JOIN (
+    SELECT '001' AS CONT_STAT_CD FROM DUAL
+    UNION ALL
+    SELECT '002' FROM DUAL
+    UNION ALL
+    SELECT '003' FROM DUAL
+  ) s
+  LEFT JOIN CONTRACT c
+    ON (
+      CASE
+        WHEN #{period} = 'month' THEN TO_CHAR(c.CONT_DTM, 'YYYY-MM') || '-' || TO_CHAR(c.CONT_DTM, 'W') || '주차'
+        WHEN #{period} = 'week' THEN TO_CHAR(c.CONT_DTM, 'YYYY-MM-DD')
+        WHEN #{period} = 'quarter' THEN TO_CHAR(c.CONT_DTM, 'Q') || '분기'
+        WHEN #{period} = 'year' THEN TO_CHAR(c.CONT_DTM, 'MM') || '월'
+        ELSE TO_CHAR(c.CONT_DTM, 'YYYY-MM-DD')
+      END
+    ) = b.bucket
+    AND c.CONT_STAT_CD = s.CONT_STAT_CD
+    AND c.MBR_CD_BROK = #{mbrCd}
+    AND c.CONT_DTM &gt;=
+      CASE
+        WHEN #{period} = 'today' THEN TRUNC(SYSDATE)
+        WHEN #{period} = 'week' THEN TRUNC(SYSDATE, 'IW')
+        WHEN #{period} = 'month' THEN TRUNC(SYSDATE, 'MM')
+        WHEN #{period} = 'quarter' THEN TRUNC(SYSDATE, 'Q')
+        WHEN #{period} = 'year' THEN TRUNC(SYSDATE, 'YYYY')
+      END
+  GROUP BY b.bucket, s.CONT_STAT_CD
+  ORDER BY b.bucket, s.CONT_STAT_CD
+</select>
+
+
+
+<select id="selectWeeklySchedule" resultType="map">
+  SELECT
+    SCD_ID,
+    SCD_TITL_NM,
+    TO_CHAR(SCD_STR_DTM, 'YYYY-MM-DD HH24:MI:SS') AS SCD_STR_DTM,
+    TO_CHAR(SCD_END_DTM, 'YYYY-MM-DD HH24:MI:SS') AS SCD_END_DTM,
+    SCD_LEVEL
+  FROM SCHEDULE
+  WHERE MBR_CD = #{mbrCd}
+    AND SCD_STR_DTM BETWEEN TRUNC(SYSDATE, 'IW') AND TRUNC(SYSDATE, 'IW') + 6
+    AND SCD_DEL_YN = 'N'
+  ORDER BY SCD_STR_DTM
+</select>
+
+
+<select id="selectNewListings" resultType="map">
+  SELECT LSTG_ID
+  , LSTG_NM
+  , LSTG_ADD
+  , LSTG_ADD2
+  , LSTG_LEASE
+  , LSTG_LEASE_AMT
+  , LSTG_LEASE_M
+  , LSTG_REG_DATE
+  , LSTG_TYPE_SALE
+  FROM LISTING
+  WHERE MBR_CD = #{mbrCd}
+    AND LSTG_REG_DATE &gt;= SYSDATE - 7
+  ORDER BY LSTG_REG_DATE DESC
+</select>
+
+<select id="selectUnpopularListings" resultType="map">
+  SELECT
+    L.LSTG_ID,
+    L.LSTG_NM,
+    L.LSTG_ADD,
+    L.LSTG_ADD2,
+    L.LSTG_LEASE,
+    L.LSTG_LEASE_AMT,
+    L.LSTG_LEASE_M,
+    L.LSTG_REG_DATE,
+    L.LSTG_TYPE_SALE,
+    NVL(VT.VIEW_COUNT, 0) AS VIEW_COUNT,
+    NVL(QT.QUESTION_COUNT, 0) AS QUESTION_COUNT,
+    NVL(VT.VIEW_COUNT, 0) + NVL(QT.QUESTION_COUNT, 0) AS TOTAL_INTERACTION
+  FROM LISTING L
+  LEFT OUTER JOIN (
+    SELECT LSTG_ID, COUNT(*) AS VIEW_COUNT
+    FROM LSTG_VIEW_LOG
+    GROUP BY LSTG_ID
+  ) VT ON L.LSTG_ID = VT.LSTG_ID
+  LEFT OUTER JOIN (
+    SELECT LSTG_ID, COUNT(*) AS QUESTION_COUNT
+    FROM BROKER_CHATROOM
+    GROUP BY LSTG_ID
+  ) QT ON L.LSTG_ID = QT.LSTG_ID
+  WHERE L.MBR_CD = #{mbrCd}
+  ORDER BY TOTAL_INTERACTION ASC
+  FETCH FIRST 5 ROWS ONLY
+</select>
+
+
+<select id="selectLongVacantListings" resultType="map">
+  SELECT
+    L.LSTG_ID,
+    L.LSTG_NM,
+    L.LSTG_ADD,
+    L.LSTG_ADD2,
+    L.LSTG_LEASE,
+    L.LSTG_LEASE_AMT,
+    L.LSTG_LEASE_M,
+    L.LSTG_TYPE_SALE,
+    L.LSTG_REG_DATE,
+    TRUNC(SYSDATE - L.LSTG_REG_DATE) AS VACANT_DAYS
+  FROM LISTING L
+  WHERE L.MBR_CD = #{mbrCd}
+    AND L.LSTG_PROD_STAT = '001'
+  ORDER BY VACANT_DAYS DESC
+  FETCH FIRST 5 ROWS ONLY
+</select>
+
+
+<select id="selectListingStats" resultType="map">
+  SELECT
+    L.LSTG_ID,
+    L.LSTG_NM,
+    L.LSTG_ADD,
+    L.LSTG_ADD2,
+    L.LSTG_TYPE_SALE,
+    NVL(VT.VIEW_COUNT, 0) AS VIEWS,
+    NVL(QT.QUESTION_COUNT, 0) AS INQUIRIES,
+    NVL(VT.VIEW_COUNT, 0) + NVL(QT.QUESTION_COUNT, 0) AS TOTAL_INTERACTION
+  FROM LISTING L
+  LEFT OUTER JOIN (
+    SELECT LSTG_ID, COUNT(*) AS VIEW_COUNT
+    FROM LSTG_VIEW_LOG
+    WHERE 1=1
+    <if test="period == 'today'">
+      AND TRUNC(VIEW_DTM) = TRUNC(SYSDATE)
+    </if>
+    <if test="period == 'week'">
+      AND VIEW_DTM >= TRUNC(SYSDATE, 'IW')
+    </if>
+    <if test="period == 'month'">
+      AND VIEW_DTM >= TRUNC(SYSDATE, 'MM')
+    </if>
+    <if test="period == 'quarter'">
+      AND VIEW_DTM >= TRUNC(SYSDATE, 'Q')
+    </if>
+    <if test="period == 'year'">
+      AND VIEW_DTM >= TRUNC(SYSDATE, 'YYYY')
+    </if>
+    GROUP BY LSTG_ID
+  ) VT ON L.LSTG_ID = VT.LSTG_ID
+  LEFT OUTER JOIN (
+    SELECT LSTG_ID, COUNT(*) AS QUESTION_COUNT
+    FROM BROKER_CHATROOM
+    WHERE 1=1
+    <if test="period == 'today'">
+      AND TRUNC(CR_CRE_DTM) = TRUNC(SYSDATE)
+    </if>
+    <if test="period == 'week'">
+      AND CR_CRE_DTM >= TRUNC(SYSDATE, 'IW')
+    </if>
+    <if test="period == 'month'">
+      AND CR_CRE_DTM >= TRUNC(SYSDATE, 'MM')
+    </if>
+    <if test="period == 'quarter'">
+      AND CR_CRE_DTM >= TRUNC(SYSDATE, 'Q')
+    </if>
+    <if test="period == 'year'">
+      AND CR_CRE_DTM >= TRUNC(SYSDATE, 'YYYY')
+    </if>
+    GROUP BY LSTG_ID
+  ) QT ON L.LSTG_ID = QT.LSTG_ID
+  WHERE L.MBR_CD = #{mbrCd}
+  ORDER BY TOTAL_INTERACTION DESC
+</select>
+
+
+</mapper>

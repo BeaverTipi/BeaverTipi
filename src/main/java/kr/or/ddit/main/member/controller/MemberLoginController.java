@@ -90,8 +90,6 @@ public class MemberLoginController {
 		SecurityContextHolder.setContext(newContext);
 		securityContextRepository.saveContext(newContext, req, resp);
 		
-		
-		
 		return ResponseEntity.ok()
 				.header(HttpHeaders.SET_COOKIE, tokenCookie)
 				.build();
