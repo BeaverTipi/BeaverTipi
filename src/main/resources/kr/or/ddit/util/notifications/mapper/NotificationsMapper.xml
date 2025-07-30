@@ -145,4 +145,29 @@ FROM (	SELECT NOTIF_ID
         ORDER BY NOTIF_DT DESC
   		) A
 </select>
+<insert id="insertDefaultNotification">
+INSERT INTO NOTIFICATIONS(
+	NOTIF_ID
+	, MBR_CD
+	, NOTIF_TITLE
+	, NOTIF_MSG
+	, NOTIF_DT
+	, NOTIF_TYPE_CD
+	, NOTIF_TYPE_GROUP_CD
+	, NOTIF_REF_URL
+	, NOTIF_READ_YN
+	, NOTIF_DEL_YN
+) VALUES (
+	#{notifId}
+	, #{mbrCd}
+	, #{notifTitle}
+	, #{notifMsg}
+	, SYSDATE
+	, #{notifTypeCd}
+	, 'NTFS'
+	, #{notifRefUrl}
+	, 'N'
+	, 'N'
+)
+</insert>
 </mapper>

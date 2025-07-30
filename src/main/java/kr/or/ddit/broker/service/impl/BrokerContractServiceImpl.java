@@ -688,4 +688,10 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	    return mapper.selectDtSignList(contId);
 	}
 
+	@Override
+	public FileVO readLatestSignedContractPdf(String contId) {
+		FileVO file = mapper.selectLatestSignedContractPdf(contId);
+		return file;
+	}
+
 }

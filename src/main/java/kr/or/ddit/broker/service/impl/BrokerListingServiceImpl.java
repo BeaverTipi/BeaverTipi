@@ -45,8 +45,15 @@ public class BrokerListingServiceImpl implements BrokerListingService {
 		return lstgList;
 	}
 
+	@Override
 	public ListingVO readLstgDetails(ListingVO listing) {
 		ListingVO lstg = mapper.selectLstgDetails(listing);
+		return lstg;
+	}
+	
+	@Override
+	public ListingVO readLstgDetailsById(String lstgId) {
+		ListingVO lstg = mapper.selectLstgDetailsById(lstgId);
 		return lstg;
 	}
 

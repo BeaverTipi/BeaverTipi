@@ -190,13 +190,21 @@ public class PDFServiceImpl implements PDFService {
 
     // 위치 추출용 메서드
     @Override
-    public SignaturePosition getPositionForRole(SignerRole role) {
-        return ROLE_POSITION_MAP.getOrDefault(role, new SignaturePosition(1, 50f, 50f, 100f, 40f));
+    public List<SignaturePosition> getPositionForRole(SignerRole role) {
+        return ROLE_POSITION_MAP.getOrDefault(
+        		role,
+        		List.of(new SignaturePosition(1, 50f, 50f, 100f, 40f))
+        );
     }
     
-    private static final Map<SignerRole, SignaturePosition> ROLE_POSITION_MAP = Map.of(
-    	    SignerRole.AGENT, new SignaturePosition(1, 100f, 100f, 120f, 40f),
-    	    SignerRole.LESSOR, new SignaturePosition(2, 300f, 150f, 100f, 50f),
-    	    SignerRole.LESSEE, new SignaturePosition(2, 100f, 150f, 100f, 50f)
+    private static final Map<SignerRole, List<SignaturePosition>> ROLE_POSITION_MAP = Map.of(
+    	    SignerRole.AGENT, List.of(
+    	    		new SignaturePosition(3, 205f, 437f, 50f, 25f),
+    	    		new SignaturePosition(3, 205f, 480f, 50f, 25f),
+    	    		new SignaturePosition(3, 483f, 437f, 50f, 25f),
+    	    		new SignaturePosition(3, 483f, 480f, 50f, 25f)
+    	    ),
+    	    SignerRole.LESSOR, List.of(new SignaturePosition(3, 500f, 646f, 70f, 35f)),
+    	    SignerRole.LESSEE, List.of(new SignaturePosition(3, 500f, 572f, 70f, 35f))
     	);
 }

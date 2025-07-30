@@ -169,8 +169,13 @@ public class RestContractSignatureController {
 		}
 	}
 
-	@PostMapping("/signature/upload")
-	public ResponseEntity<?> uploadSignature(Principal principal, @RequestBody Map<String, String> payload) {
+	
+	@PostMapping("/signature/upload/two/{signerRole}")
+	public ResponseEntity<?> uploadSignautreTwo(
+			Principal principal
+			, @RequestBody Map<String, String> payload
+			, @PathVariable(name = "signerRole") String signerRole
+	) {
 		String resultJson = "";
 		try {
 			// 1. 복호화
@@ -195,16 +200,13 @@ public class RestContractSignatureController {
 					"hashVal 생성한당 ^0^^0^^0^^)^ baseData: {} \n telno: {}, contId: {}, contDtSignType: {}, contDtSignDtm: {}",
 					digitalSign.getContDtBaseData(), telno, digitalSign.getContId(), digitalSign.getContDtSignType(),
 					digitalSign.getContDtSignDtm());
-			// 2. 서명 이미지 생성
-//			String base64 = extractBase64(digitalSign.getContDtBaseData());
-//			MultipartFile signImage = new Base64DecodedMultipartFile(Base64.getDecoder().decode(base64),
-//					"sign_" + digitalSign.getContDtSignId() + ".png", digitalSign.getContDtSignId(), "image/png");
+
 			String rawBase64 = digitalSign.getContDtBaseData(); // data:image/png;base64,...
 			String base64 = rawBase64.contains(",") ? rawBase64.split(",")[1] : rawBase64;
 			byte[] imageBytes = Base64.getDecoder().decode(base64);
 
 			String rawHash = digitalSign.getContDtBaseData() + telno + digitalSign.getContId()
-					+ digitalSign.getContDtSignType() + digitalSign.getContDtSignDtm();
+					+ signerRole + digitalSign.getContDtSignDtm();
 			String serverHash = DigestUtils.sha256Hex(rawHash);
 			if (!serverHash.equals(digitalSign.getContDtSignHashVal())) {
 				throw new IllegalStateException("전자서명 데이터 위변조 의심");
@@ -223,12 +225,25 @@ public class RestContractSignatureController {
 				return badRequest("원본 계약서를 불러올 수 없습니다.");
 
 			// 4. enum 역할 변환 및 좌표 템플릿 추출
-			SignerRole role = SignerRole.from(digitalSign.getContDtSignType());
-			PDFService.SignaturePosition pos = pdfService.getPositionForRole(role);
+			SignerRole role = SignerRole.from(/* digitalSign.getContDtSignType() */signerRole);
+//			PDFService.SignaturePosition pos = pdfService.getPositionForRole(role);
+			// 다중 좌표 추출
+			List<PDFService.SignaturePosition> positions = pdfService.getPositionForRole(role);
+
 
 			// 5. 서명 PDF 생성
-			List<PDFService.SignatureInfo> signList = List.of(new PDFService.SignatureInfo(role, imageBytes,
-					pos.pageNumber, pos.x, pos.y, pos.width, pos.height));
+			List<PDFService.SignatureInfo> signList = positions.stream()
+			        .map(pos -> new PDFService.SignatureInfo(
+			                role,
+			                imageBytes,
+			                pos.pageNumber,
+			                pos.x,
+			                pos.y,
+			                pos.width,
+			                pos.height
+			        ))
+			        .toList();
+
 			byte[] signedPdfBytes = pdfService.insertMultipleSignaturesToPDF(originalPdfBytes, signList);
 
 			// 6. 새 PDF를 S3에 업로드
@@ -236,6 +251,7 @@ public class RestContractSignatureController {
 					signedPdfBytes, "application/pdf");
 			FileVO tempContr = fileService.uploadAndSaveTempSignedContract(signedPdf, digitalSign);
 
+			
 			// 7. 성공 응답
 			resultJson = objectMapper.writeValueAsString(
 					Map.of("success", true, "fileUrl", tempContr.getFilePathUrl(), "fileId", tempContr.getFileId()));
@@ -247,6 +263,7 @@ public class RestContractSignatureController {
 					.body(Map.of("success", false, "message", "서명 업로드 중 오류 발생"));
 		}
 	}
+	
 
 	/**
 	 * 1.contId로 CONTRACT_DIGITAL_SIGN 테이블 조회 2.LESSEE|LESSOR|AGENT 역할 별로 서명 여부를 판단
@@ -400,21 +417,39 @@ public class RestContractSignatureController {
 			Map<String, Object> parsedRequest = objectMapper.readValue(decryptedJson, new TypeReference<>() {
 			});
 			String method = String.valueOf(parsedRequest.get("_method"));
-			if (!"POST".equalsIgnoreCase(method))
+			if (!"GET".equalsIgnoreCase(method))
 				return ResponseEntity.badRequest().body("지원하지 않는 요청 방식입니다.");
 
 			String contId = String.valueOf(parsedRequest.get("contId"));
 			if (contId == null || contId.isEmpty())
 				return ResponseEntity.badRequest().body("서명 페이지를 개설할 계약 ID가 없습니다.");
+			String role = String.valueOf(parsedRequest.get("role"));
+			if(role ==null || role.isBlank())
+				return ResponseEntity.badRequest().body("넌 누구야!");
 
-			// PDF 파일 조회 (sourceRef는 "CONTRACT_TEMP" 또는 상황에 따라 "CONTRACT" 등)
-			List<FileVO> files = fileService.readFileList("CONTR", contId);
-			if (files == null || files.isEmpty()) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "서명된 PDF 파일이 존재하지 않습니다."));
+			
+			
+//			// PDF 파일 조회 (sourceRef는 "CONTRACT_TEMP" 또는 상황에 따라 "CONTRACT" 등)
+//			List<FileVO> files = fileService.readFileList("CONTR", contId);
+//			if (files == null || files.isEmpty()) {
+//				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "서명된 PDF 파일이 존재하지 않습니다."));
+//			}
+//			FileVO signedPdf = files.get(0); // 첫 번째 파일 사용
+			
+			
+			//원본이 아니라, 최신 서명파일을 불러와야지 ㅇㅇ
+			FileVO latestFile = null;
+			latestFile = contService.readLatestSignedContractPdf(contId);
+			if(latestFile == null) {
+				latestFile = contService.readContractPDFFile(contId);
 			}
-
-			FileVO signedPdf = files.get(0); // 첫 번째 파일 사용
-			InputStream is = fileService.getFileStream(signedPdf.getFileId());
+//			String fileUrl = latestFile.getFilePathUrl(); // 커스텀 서비스 메소드
+//			
+//			if (fileUrl == null || fileUrl.isBlank()) {
+//				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "원본 PDF URL 없음"));
+//			}
+			log.debug("--<><<><> 이건 뭘까 ^0^   {}",latestFile.getFileId());
+			InputStream is = fileService.getFileStream(latestFile.getFileId());
 			byte[] fileBytes = is.readAllBytes();
 			String base64Pdf = Base64.getEncoder().encodeToString(fileBytes);
 
@@ -426,6 +461,60 @@ public class RestContractSignatureController {
 		}
 	}
 
+
+	@PostMapping("/pdf/url")
+	public ResponseEntity<?> getContractOriginalPdfUrl(
+			@RequestBody Map<String, String> payload
+	) {
+		try {
+			// 🔓 1. 복호화
+			String iv = payload.get("iv");
+			String encrypted = payload.get("encrypted");
+			if (iv == null || encrypted == null)
+				return ResponseEntity.badRequest().body("암호화된 요청 또는 IV 누락");
+
+			String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
+
+			// 📦 2. JSON → Map 변환
+			Map<String, Object> parsedRequest = objectMapper.readValue(decryptedJson, new TypeReference<>() {
+			});
+			String method = String.valueOf(parsedRequest.get("_method"));
+			if (!"GET".equalsIgnoreCase(method))
+				return ResponseEntity.badRequest().body("지원하지 않는 요청 방식입니다.");
+
+			String contId = String.valueOf(parsedRequest.get("contId"));
+			if (contId == null || contId.isBlank())
+				return ResponseEntity.badRequest().body("계약 ID 누락");
+			String role = String.valueOf(parsedRequest.get("role"));
+			if(role ==null || role.isBlank())
+				return ResponseEntity.badRequest().body("넌 누구야!");
+
+//			// 📄 3. 파일 서비스에서 원본 계약서 PDF URL 조회
+//			FileVO file = contService.readContractPDFFile(contId);
+//			if (file == null || file.getFilePathUrl() == null || file.getFilePathUrl().isBlank()) {
+//				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "원본 PDF가 존재하지 않습니다."));
+//			}
+			
+			//원본이 아니라, 최신 서명파일을 불러와야지 ㅇㅇ
+			FileVO latestSignedFile = contService.readLatestSignedContractPdf(contId);
+			if(latestSignedFile.getFileSavedname() == null || latestSignedFile.getFileSavedname().isBlank()) {
+				FileVO lstestSignedFile = contService.readContractPDFFile(contId);
+			}
+			
+			String fileUrl = latestSignedFile.getFilePathUrl(); // 커스텀 서비스 메소드
+
+			if (fileUrl == null || fileUrl.isBlank()) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "원본 PDF URL 없음"));
+			}
+
+			return ResponseEntity.ok(Map.of("success", true, "pdfUrl", fileUrl));
+		} catch (Exception e) {
+			log.error("PDF URL 조회 실패", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(Map.of("error", "PDF URL 조회 중 오류", "detail", e.getMessage()));
+		}
+	}
+	
 	@PostMapping("/pdf/meta")
 	public ResponseEntity<?> getContractPdfMeta(Principal principal, @RequestBody Map<String, String> payload) {
 		try {
@@ -469,47 +558,6 @@ public class RestContractSignatureController {
 		}
 	}
 
-	@PostMapping("/pdf/url")
-	public ResponseEntity<?> getContractOriginalPdfUrl(@RequestBody Map<String, String> payload) {
-		try {
-			// 🔓 1. 복호화
-			String iv = payload.get("iv");
-			String encrypted = payload.get("encrypted");
-			if (iv == null || encrypted == null)
-				return ResponseEntity.badRequest().body("암호화된 요청 또는 IV 누락");
-
-			String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
-
-			// 📦 2. JSON → Map 변환
-			Map<String, Object> parsedRequest = objectMapper.readValue(decryptedJson, new TypeReference<>() {
-			});
-			String method = String.valueOf(parsedRequest.get("_method"));
-			if (!"GET".equalsIgnoreCase(method))
-				return ResponseEntity.badRequest().body("지원하지 않는 요청 방식입니다.");
-
-			String contId = String.valueOf(parsedRequest.get("contId"));
-			if (contId == null || contId.isBlank())
-				return ResponseEntity.badRequest().body("계약 ID 누락");
-
-			// 📄 3. 파일 서비스에서 원본 계약서 PDF URL 조회
-			FileVO file = contService.readContractPDFFile(contId);
-			if (file == null || file.getFilePathUrl() == null || file.getFilePathUrl().isBlank()) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "원본 PDF가 존재하지 않습니다."));
-			}
-
-			String fileUrl = file.getFilePathUrl(); // 커스텀 서비스 메소드
-
-			if (fileUrl == null || fileUrl.isBlank()) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "원본 PDF URL 없음"));
-			}
-
-			return ResponseEntity.ok(Map.of("success", true, "pdfUrl", fileUrl));
-		} catch (Exception e) {
-			log.error("PDF URL 조회 실패", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(Map.of("error", "PDF URL 조회 중 오류", "detail", e.getMessage()));
-		}
-	}
 
 	@PostMapping("/pdf/base64")
 	public ResponseEntity<?> getPdfBase64(@RequestBody Map<String, String> payload) {

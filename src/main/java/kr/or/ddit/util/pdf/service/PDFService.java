@@ -19,7 +19,7 @@ public interface PDFService {
     		byte[] originalPdfBytes,
             List<SignatureInfo> signatureInfos)
             throws IOException, DocumentException;
-    SignaturePosition getPositionForRole(SignerRole role);
+    List<SignaturePosition> getPositionForRole(SignerRole role);
     public static class SignaturePosition {
         public int pageNumber;
         public float x;

@@ -77,5 +77,40 @@ public class NotificationsServiceImpl implements NotificationsService {
 		return mapper.selectNotificationListWithoutPaging(username);
 	}
 
+	@Override
+	public void createNotificationSignautrePageOpened(NotificationVO notification) {
+		if(mapper.insertDefaultNotification(notification)<1) {
+			throw new NotificationsException("전자서명 페이지 생성 알람을 넣던 중 오류가 발생했습니다.");
+		}
+	}
+
+	@Override
+	public void createNotificationSignaturePageLessorSigned(NotificationVO notification) {
+		if(mapper.insertDefaultNotification(notification)<1) {
+			throw new NotificationsException("임대인 서명완료 알람을 넣던 중 오류가 발생했습니다.");
+		}
+	}
+
+	@Override
+	public void createNotificationSignaturePageLesseeSigned(NotificationVO notification) {
+		if(mapper.insertDefaultNotification(notification)<1) {
+			throw new NotificationsException("임차인 서명완료 알람을 넣던 중 오류가 발생했습니다.");
+		}
+	}
+
+	@Override
+	public void createNotificationSignaturePageContractConclused(NotificationVO notification) {
+		if(mapper.insertDefaultNotification(notification)<1) {
+			throw new NotificationsException("계약 체결소식 알람을 넣던 중 오류가 발생했습니다.");
+		}
+	}
+
+	@Override
+	public void createNotificationSignaturePageContractRejected(NotificationVO notification) {
+		if(mapper.insertDefaultNotification(notification)<1) {
+			throw new NotificationsException("계약 파기소식 알람을 넣던 중 오류가 발생했습니다.");
+		}
+	}
+
 
 }

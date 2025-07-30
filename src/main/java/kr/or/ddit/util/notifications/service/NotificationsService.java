@@ -16,4 +16,9 @@ public interface NotificationsService {
 	public List<NotificationVO> readNotificationListWithoutPaging(String username);
 	public NotificationVO readAndReturn(String notifId);
 
+	public void createNotificationSignautrePageOpened(NotificationVO notification);
+	public void createNotificationSignaturePageLessorSigned(NotificationVO notification);
+	public void createNotificationSignaturePageLesseeSigned(NotificationVO notification);
+	public void createNotificationSignaturePageContractConclused(NotificationVO notification);
+	public void createNotificationSignaturePageContractRejected(NotificationVO notification);
 }

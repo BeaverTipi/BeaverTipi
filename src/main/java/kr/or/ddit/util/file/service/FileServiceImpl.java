@@ -303,7 +303,7 @@ public class FileServiceImpl implements FileService {
 	    vo.setFilePathUrl(fileUrl);
 	    // ^0^ LocalDateTime 형식:: "2025-07-26T01:01:07.614Z" 이건 바로 LocalDate로 변환 불가능 
 	    vo.setRegDtm(regDtm);
-	    vo.setFileDir("temp-contr");
+	    vo.setFileDir("tempContr");
 
 	    mapper.insertFile(vo);
 	    return vo;

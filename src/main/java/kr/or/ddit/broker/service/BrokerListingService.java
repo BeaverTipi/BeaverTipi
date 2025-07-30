@@ -32,6 +32,7 @@ public interface BrokerListingService {
 	public List<ListingVO> readLstgList(String mbrCd);
 	
 	public ListingVO readLstgDetails(ListingVO listing);
+	public ListingVO readLstgDetailsById(String lstgId);
 	
 	public List<FacilityOptionVO> readFacilityOptionList();
 	
@@ -40,4 +41,5 @@ public interface BrokerListingService {
 	public void modifyListing(ListingVO listing, List<MultipartFile> imageFiles, List<ListingOptionVO> optionList);
 
 	public void removeListing(ListingVO listing);
+
 }

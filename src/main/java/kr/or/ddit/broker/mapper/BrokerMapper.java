@@ -67,6 +67,7 @@ public interface BrokerMapper {
 	 */
 	public ListingVO selectLstgDetails(ListingVO listing);
 	public List<ListingWishlistVO> selectWishlistForLessee(String lstgId);
+	public ListingVO selectLstgDetailsById(String lstgId);
 	
 	/**
 	 * @param mbrCd: 중개인의 멤버코드
@@ -119,6 +120,8 @@ public interface BrokerMapper {
 	public int existsSigner(Map<String, String> contIdAndRole);
 	public int insertSigner(SignerVO singer);
 	public int updateSigner(SignerVO signer);
+	
+	public FileVO selectLatestSignedContractPdf(String contId);
 	
 	public List<CommonCodeVO> selectBankList();
 	public List<CommonCodeVO> selectLesserTypeList();

@@ -18,4 +18,6 @@ public interface NotificationsMapper {
 	public NotificationVO selectNotification(String notifId);
 	public Integer updateReadYn(String notifId);
 	public List<NotificationVO> selectNotificationListWithoutPaging(String username);
+	
+	public Integer insertDefaultNotification(NotificationVO notification);
 }	

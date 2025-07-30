@@ -48,6 +48,7 @@ public interface BrokerContractService {
 	
 	public List<Map<String, Object>> readContractPartyInfo(Map<String, String> partyInfoParams);
 	public Map<String, SignerDTO> readContractPartyInfo2(Map<String, String> partyInfoParams, HttpServletRequest request);
+	public FileVO readLatestSignedContractPdf(String contId);
 	
 	public List<ContractVO> readContractList(String mbrCd);
 

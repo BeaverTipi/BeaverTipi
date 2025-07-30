@@ -29,12 +29,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.servlet.http.HttpServletRequest;
+import kr.or.ddit.broker.dto.SignerDTO;
 import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
 import kr.or.ddit.broker.service.BrokerContractService;
+import kr.or.ddit.broker.service.BrokerListingService;
 import kr.or.ddit.util.batch.contract.ContractSignatureExpireJob;
 import kr.or.ddit.util.crypto.AES256Util;
+import kr.or.ddit.util.notifications.service.NotificationsService;
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.ContractVO;
+import kr.or.ddit.vo.ListingVO;
+import kr.or.ddit.vo.NotificationVO;
+import kr.or.ddit.vo.SignerVO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -53,6 +60,11 @@ public class RestBrokerContractProceedingController {
 	@Autowired
 	@Qualifier("customQuartzScheduler")
 	private Scheduler scheduler;
+	@Autowired
+	private NotificationsService notifService;
+	@Autowired
+	private BrokerListingService lstgService;
+	
 	
 	@PostMapping("/list")
 	public Map<String, String> contractList(
@@ -114,6 +126,7 @@ public class RestBrokerContractProceedingController {
 	public ResponseEntity<?> signPage(
 			Principal principal
 			, @RequestBody Map<String, String> payload
+			, HttpServletRequest request
 	) {
 		String resultJson = "";
 //		log.debug("🔍 현재 Scheduler 인스턴스의 JobFactory 클래스: {}", scheduler.getJobFactory().getClass().getName());
@@ -136,7 +149,7 @@ public class RestBrokerContractProceedingController {
 	        int updatedCount = contService.openContractSignaturePage(contId);
 	        if(updatedCount == 0) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 계약을 찾을 수 없거나 이미 개설된 상태입니다.");
 	        
-	        /** 4. Quartz Job 예약 (10분 후 서명 만료) */
+	        /** 4. Quartz Job 예약 (10_0분 후 서명 만료) */
 //	        log.debug("✅ [QuartzConfig] Scheduler가 사용하는 JobFactory: {}", scheduler.getJobFactory().getClass().getName());
 	        JobKey jobKey = JobKey.jobKey("expireSignPage-" + contId, "signpage");
 	        TriggerKey triggerKey = TriggerKey.triggerKey("expireSignPageTrigger-" + contId, "signpage");
@@ -171,6 +184,54 @@ public class RestBrokerContractProceedingController {
 	        log.debug("🔧 JobDetail: {}", jobDetail);
 	        log.debug("🔧 Trigger: {}", trigger);
 
+	        ContractVO contract = contService.readContractInfo(contId);
+			String lesseeTelno = contract.getContLesseeTelno();
+			String lessorTelno = contract.getContTenancyTelno();
+			String agentTelno = contract.getContBrokerTelno();
+			String userRole = "AGENT";
+			
+			ListingVO lstg = lstgService.readLstgDetailsById(contract.getLstgId());
+			String lstgName = lstg.getLstgNm();
+			String notifTitle = "[계약페이지 개설]";
+			String notifMsg = String.format("문의하신 매물 '%s'의 계약이 진행 중입니다. 임대인의 서명을 기다리는 중...", lstgName);
+			String notifRefUrl = String.format("https://dev.beavertipi.com/contract/%s", aes256Util.encrypt(contId));
+			
+			Map<String, String> partyTelnoParam = Map.of(
+					"lesseeTelno", lesseeTelno,
+					"lessorTelno", lessorTelno,
+					"agentTelno", agentTelno,
+					"userRole", userRole,
+					"contId", contId);
+//			List<Map<String, Object>> signers = contService.readContractPartyInfo(partyTelnoParam);
+			Map<String, SignerDTO> signers = contService.readContractPartyInfo2(partyTelnoParam, request);
+	        SignerDTO lessee = signers.get("LESSEE");
+	        SignerDTO lessor = signers.get("LESSOR");
+	        SignerDTO agent = signers.get("AGENT");
+	        String lesseeCd = lessee.getCode();
+	        String lessorCd = lessor.getCode();
+	        String agentCd = agent.getCode();
+	        
+	        NotificationVO notifToLessee = new NotificationVO();
+	        NotificationVO notifToLessor = new NotificationVO();
+	        NotificationVO notifToAgent = new NotificationVO();
+	        notifToLessee.setMbrCd(lesseeCd);
+	        notifToLessee.setNotifTitle(notifTitle);
+	        notifToLessee.setNotifMsg(notifMsg);
+	        notifToLessee.setNotifRefUrl(notifRefUrl);
+	        notifToLessee.setNotifTypeCd("091");
+	        notifToLessor.setMbrCd(lessorCd);
+	        notifToLessor.setNotifTitle(notifTitle);
+	        notifToLessor.setNotifMsg(notifMsg);
+	        notifToLessor.setNotifRefUrl(notifRefUrl);
+	        notifToLessor.setNotifTypeCd("091");
+	        notifToAgent.setMbrCd(agentCd);
+	        notifToAgent.setNotifTitle(notifTitle);
+	        notifToAgent.setNotifMsg(notifMsg);
+	        notifToAgent.setNotifRefUrl(notifRefUrl);
+	        notifToAgent.setNotifTypeCd("091");
+	        notifService.createNotificationSignautrePageOpened(notifToLessee);
+	        notifService.createNotificationSignautrePageOpened(notifToLessor);
+	        notifService.createNotificationSignautrePageOpened(notifToAgent);
 	        
 	        //DEBUG
 	        Instant now = Instant.now();

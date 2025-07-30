@@ -177,6 +177,11 @@
 	<include refid="sqlSelectLstgList" />
 	   AND L.LSTG_ID = #{lstgId}
 </select>
+<select id="selectLstgDetailsById" parameterType="Map" resultType="ListingVO">
+	SELECT *
+	  FROM LISTING
+	 WHERE LSTG_ID = #{lstgId}
+</select>
 <select id="selectWishlistForLessee" parameterType="String" resultType="ListingWishlistVO">
 	SELECT *
 	  FROM LISTING_WISHLIST LW
@@ -476,4 +481,16 @@
     WHERE CONT_ID = #{contId}
       AND ROLE = #{role}
 </update>
+<select id="selectLatestSignedContractPdf" parameterType="String">
+SELECT *
+FROM (
+    SELECT *
+    FROM FILES
+    WHERE FILE_SOURCE_REF = 'TEMP_CONTR'
+      AND FILE_SOURCE_ID = #{contId}
+    ORDER BY FILE_ATTACH_SEQ DESC
+) 
+WHERE ROWNUM = 1
+	
+</select>
 </mapper>
