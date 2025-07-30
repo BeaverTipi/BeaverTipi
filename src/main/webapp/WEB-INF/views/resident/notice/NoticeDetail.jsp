@@ -22,9 +22,7 @@
 	  font-weight: bold;
 	  color: var(--color-text);
 	}
-	.label-sm {
-	  width: 37px;  /* ✅ 일반 label보다 좁게 설정 */
-	}
+
 	</style>
 </head>
 <body>

@@ -309,8 +309,36 @@ select[name="bldgIdParam"] {
   cursor: pointer;
   min-width: 180px;
 }
-
-
+select[name="unitIdParam"] {
+  font-size: 14px;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #212529;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='black' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px;
+  cursor: pointer;
+  min-width: 80px;
+}
+.search-button {
+      height: 35px;
+      padding: 0 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+      background-color: #E17100;
+      color: white;
+}
+.search-button:hover {
+	background-color: #973C00;
+}
 .diff.up { color: #e74c3c; font-weight: bold; }
 .diff.down { color: #2ecc71; font-weight: bold; }
 .diff.same { color: #999; font-weight: bold; }

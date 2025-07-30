@@ -9,76 +9,153 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/resident/common_resident.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
-    .search-area {
-      margin-bottom: 30px;
-      border: 1px solid #ddd;
-      padding: 20px;
-      border-radius: 8px;
-      background-color: #fff;
-    }
-    
-.search-form {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  column-gap: 24px;
-  row-gap: 16px;
+/* ✅ 컨테이너 기본 스타일 */
+.container-wrapper {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  margin: 0 auto 40px;
+  width: 95%;
+  max-width: 1400px;
 }
 
-    .search-item {
-      display: flex;
-      flex-direction: column;
-    }
+.search-area {
+  margin-bottom: 30px;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+}
 
-    .search-item label {
-      font-weight: bold;
-      font-size: 14px;
-      margin-bottom: 8px;
-    }
+.search-grid-container {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  gap: 20px;
+}
 
-    .select-field,
-    .input-field {
-      padding: 8px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
+.search-grid-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
-    .select-field.short {
-      width: 120px;
-    }
+.search-grid-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px;
+}
 
-    .input-field.short {
-      width: 160px;
-    }
+.search-grid-right {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
 
-    .date-wrapper {
-      display: flex;
-      gap: 10px;
-    }
+.button-area {
+  display: flex;
+  gap: 10px;
+}
 
-    .date-wrapper input {
-      width: 45%;
-    }
+.search-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: flex-start;
+}
 
-    .search-buttons {
-      display: flex;
-      justify-content: flex-start;
-      gap: 10px;
-      align-items: center;
-      margin-top: 4px;
-    }
+.search-item label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  display: inline-block;
+}
 
-    .search-button {
-      background-color: #E17100;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      font-weight: bold;
-      font-size: 14px;
-      cursor: pointer;
-      height: 38px;
-    }
+/* ✅ select/input 공통 정렬 + 너비 */
+.form-control {
+  width: 100%;
+  height: 38px;
+  font-size: 14px;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  box-sizing: border-box;
+  text-align: center;
+  -webkit-appearance: none;
+  appearance: none;
+  text-align-last: center;
+}
+
+/* ✅ 날짜 범위 */
+.input-range {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.date-separator {
+  padding: 0 6px;
+  font-weight: bold;
+  color: #666;
+  margin-top: 6px;
+}
+.search-item.checkbox-inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-start;
+  padding-top: 22px; /* ✅ 버튼과 높이 맞춤 */
+}
+/* ✅ 체크박스 정렬 */
+.search-item input[type="checkbox"] {
+  transform: scale(1.2);
+  margin-top: 4px;
+  align-self: flex-start;
+}
+.search-item label[for="searchWord"] + label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ✅ 버튼 */
+.btn-search, .btn-reset {
+  height: 42px;
+  padding: 0 20px;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.btn-search {
+  background-color: #E17100;
+  color: #fff;
+}
+.btn-search:hover {
+  background-color: #973C00;
+}
+
+.btn-reset {
+  background-color: #ccc;
+  color: #333;
+}
+.btn-reset:hover {
+  background-color: #999;
+}
+
+.notice-title {
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+}
+.notice-title:hover {
+  text-decoration: underline;
+  color: #E17100;
+}
     .badge {
   display: inline-block;
   padding: 4px 10px;
@@ -108,180 +185,152 @@
   background-color: #d5f5dc;
   color: #2a8a43;
 }
-    
-    
-
-    .search-button:hover {
-      background-color: #973C00;
-    }
-
-    .btn-reset {
-      background-color: #f0f0f0;
-      color: #333;
-      padding: 10px 20px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-weight: bold;
-      font-size: 14px;
-      height: 38px;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .btn-reset:hover {
-      background-color: #ddd;
-      color: #000;
-    }
-.radio-group {
+.bldgSelect {
+  height: 38px;
+  padding: 0 10px;
+  font-size: 14px;
+  line-height: 38px;     /* ✅ 줄 높이를 height와 동일하게 */
+  box-sizing: border-box;
+  min-width: 597px;
+  max-width: 597px;
+}
+.search-item.my-posts {
   display: flex;
-  flex-direction: row;       /* 🔄 가로 정렬로 변경 */
-  gap: 16px;                 /* 라디오 사이 간격 */
-  align-items: center;
-  flex-wrap: wrap;           /* 필요 시 다음 줄 허용 */
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
-.radio-group label {
-  display: flex;
-  flex-direction: row;     /* 가로 정렬 */
-  align-items: center;
-  gap: 6px;                /* 라디오와 텍스트 간격 */
-  white-space: nowrap;     /* 줄바꿈 방지 */
-}
-.notice-title {
-  color: #333;
-  text-decoration: none;
+.search-item.my-posts input[type="checkbox"] {
+  transform: scale(1.4);            /* 크기 확대 */
+  accent-color: #E17100;           /* 체크 시 색상 (지원 브라우저 한정) */
+  width: 18px;
+  height: 18px;
   cursor: pointer;
+  margin-top: 6px;                 /* 수직 정렬 보정 */
 }
 
-.notice-title:hover {
-  text-decoration: underline;
-  color: #E17100;
+/* ✅ 반응형 대응 */
+@media (max-width: 992px) {
+  .search-grid-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-    @media (max-width: 768px) {
-      .search-form {
-        grid-template-columns: repeat(2, 1fr);
-      }
+@media (max-width: 576px) {
+  .search-grid-container {
+    grid-template-columns: 1fr;
+  }
 
-      .search-buttons {
-        flex-direction: column;
-        align-items: stretch;
-      }
+  .search-grid-row {
+    grid-template-columns: 1fr;
+  }
 
-      .search-button,
-      .btn-reset {
-        width: 100%;
-      }
+  .search-grid-right {
+    justify-content: flex-start;
+  }
+}
 
-      .date-wrapper {
-        flex-direction: column;
-      }
-
-      .date-wrapper input {
-        width: 100%;
-      }
-    }
   </style>
 </head>
 <body>
 
+<!-- 상단 선언부 생략 -->
 <h2 class="board-title">📮 민원 목록</h2>
 <div class="container-wrapper">
   <main class="container">
 
-    <!-- 검색 영역 -->
-    <div class="search-area">
-    	<form id="searchForm" method="get" class="search-form">
-        <input type="hidden" name="brdCode" value="M0001" />
-
-        <!-- 건물 선택 -->
-        <div class="search-item">
-          <label for="bldgIdParam">건물</label>
-          <select name="bldgIdParam" id="bldgSelect" class="select-field">
-            <c:forEach var="unit" items="${unitList}">
-              <option value="${unit.bldgId}" <c:if test="${selectedBldgId eq unit.bldgId}">selected</c:if>>
-                ${unit.building.bldgNm}
-              </option>
-            </c:forEach>
-          </select>
-        </div>
-
-        <!-- 공개 여부 -->
-        <div class="search-item">
-          <label>공개여부</label>
-          <div class="radio-group">
-            <label><input type="radio" name="openYn" value="" ${empty search.openYn ? 'checked' : ''}/> 전체</label>
-            <c:forEach var="code" items="${openYnList}">
-              <label>
-                <input type="radio" name="openYn" value="${code.codeValue}" ${code.codeValue == search.openYn ? 'checked' : ''}/>
-                ${code.codeName}
-              </label>
-            </c:forEach>
-          </div>
-        </div>
-
-        <!-- 날짜 -->
-        <div class="search-item">
-          <label for="searchStartDate">일자</label>
-          <div class="date-wrapper">
-            <input type="date" name="searchStartDate" class="input-field" value="${search.searchStartDate}">
-            ~
-            <input type="date" name="searchEndDate" class="input-field" value="${search.searchEndDate}">
-          </div>
-        </div>
-
-        <!-- 처리상태 -->
-        <div class="search-item">
-          <label>처리상태</label>
-          <div class="radio-group">
-            <label><input type="radio" name="reqStatus" value="" ${empty search.reqStatus ? 'checked' : ''}/> 전체</label>
-            <c:forEach var="code" items="${reqStatusList}">
-              <label>
-                <input type="radio" name="reqStatus" value="${code.codeValue}" ${code.codeValue == search.reqStatus ? 'checked' : ''}/>
-                ${code.codeName}
-              </label>
-            </c:forEach>
-          </div>
-        </div>
-<div class="search-item search-combined-group" style="grid-column: span 2;">
-  <label for="searchType">검색</label>
-  <div class="combined-search-row">
+<!-- ✅ 새 검색영역 -->
+<div class="search-area">
+  <form id="searchForm" method="get">
+    <input type="hidden" name="brdCode" value="M0001" />
     
-    <!-- 검색조건 -->
-    <div class="search-type-group">
-      <select name="searchType" class="select-field short">
-        <option value="title" ${search.searchType == 'title' ? 'selected' : ''}>제목</option>
-        <option value="content" ${search.searchType == 'content' ? 'selected' : ''}>내용</option>
-      </select>
-    </div>
+    <div class="search-grid-container">
+      <div class="search-grid-left">
 
-    <!-- 검색어 -->
-    <div class="search-word-group">
-      <input type="text" name="searchWord" value="${search.searchWord}" class="input-field" placeholder="검색어를 입력하세요" />
-    </div>
+        <!-- 🔶 1단: 건물 (전폭) -->
+        <div class="search-grid-row">
+          <div class="search-item" style="grid-column: span 6;">
+            <label for="bldgIdParam">건물명</label>
+            <select name="bldgIdParam" class="form-control" id="bldgSelect">
+              <c:forEach var="unit" items="${unitList}">
+                <option value="${unit.bldgId}" <c:if test="${selectedBldgId eq unit.bldgId}">selected</c:if>>
+                  ${unit.building.bldgNm}
+                </option>
+              </c:forEach>
+            </select>
+          </div>
+        </div>
 
-    <!-- 내 글만 보기 -->
-    <div class="my-posts-group">
-      <label>
-        <input type="checkbox" id="myPostsOnly" name="myPostsOnly" value="Y"
-               ${param.myPostsOnly == 'Y' ? 'checked' : ''} />
-        내 글만 보기
-      </label>
-    </div>
+        <!-- 🔶 2단: 6칸 정렬 -->
+        <div class="search-grid-row">
+          <div class="search-item">
+            <label>처리상태</label>
+            <select name="reqStatus" class="form-control">
+              <option value="">-- 전체 --</option>
+              <c:forEach var="code" items="${reqStatusList}">
+                <option value="${code.codeValue}" <c:if test="${search.reqStatus eq code.codeValue}">selected</c:if>>
+                  ${code.codeName}
+                </option>
+              </c:forEach>
+            </select>
+          </div>
 
-  </div>
+          <div class="search-item">
+            <label>공개여부</label>
+            <select name="openYn" class="form-control">
+              <option value="">-- 전체 --</option>
+              <c:forEach var="code" items="${openYnList}">
+                <option value="${code.codeValue}" <c:if test="${search.openYn eq code.codeValue}">selected</c:if>>
+                  ${code.codeName}
+                </option>
+              </c:forEach>
+            </select>
+          </div>
+
+          <div class="search-item">
+            <label>일자</label>
+            <div class="input-range">
+              <input type="date" name="searchStartDate" value="${search.searchStartDate}" class="form-control" />
+              <span class="date-separator">~</span>
+              <input type="date" name="searchEndDate" value="${search.searchEndDate}" class="form-control" />
+            </div>
+          </div>
+
+         <div class="search-item my-posts">
+		  <label for="myPostsOnly">내 게시글 보기</label>
+		  <input type="checkbox" id="myPostsOnly" name="myPostsOnly" value="Y"
+		    <c:if test="${param.myPostsOnly eq 'Y'}">checked</c:if> />
+		</div>
+		          
+          <div class="search-item">
+            <label for="searchType">조건</label>
+            <select name="searchType" class="form-control">
+              <option value="">-- 전체 --</option>
+              <option value="title" <c:if test="${search.searchType eq 'title'}">selected</c:if>>제목</option>
+              <option value="content" <c:if test="${search.searchType eq 'content'}">selected</c:if>>내용</option>
+              <option value="title+content" <c:if test="${search.searchType eq 'title+content'}">selected</c:if>>제목+내용</option>
+            </select>
+          </div>
+
+          <div class="search-item">
+            <label for="searchWord">검색어</label>
+            <input type="text" name="searchWord" value="${search.searchWord}" class="form-control" placeholder="검색어 입력" />
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 🔶 버튼 -->
+      <div class="search-grid-right">
+        <div class="button-area">
+          <button type="submit" class="btn-search">검색</button>
+          <button type="button" class="btn-reset" onclick="clearForm(event)">초기화</button>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>
 
-
-        <!-- 버튼 -->
-		<div class="search-item search-buttons" style="grid-column: span 2; display: flex; justify-content: flex-end; align-items: end;">
-		  <button type="submit" class="search-button">검색</button>
-		  <a href="#" class="btn-reset" onclick="clearForm(event)">초기화</a>
-		</div>
-      </form>
-    </div>
 
     <!-- 민원 목록 테이블 -->
     <table class="table">

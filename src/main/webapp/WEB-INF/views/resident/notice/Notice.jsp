@@ -80,12 +80,23 @@
   min-width: 260px;
   
 }
+.search-item select {
+  min-width: 110px;
+  max-width: 110px;
+  text-align: center;
+  text-align-last: center;
+  padding-left: 0;  
+  padding-right: 0;  
+}
+
 .form-control {
   padding: 8px 10px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: white;
+  text-align: center;     
+  text-align-last: center;  
 }
 
 .search-item.full-width {
@@ -107,19 +118,28 @@
 
 /* ✅ 버튼 */
 .btn-search {
-  background-color: #333;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
+      background-color: #E17100;
+      color: white;
 }
-
-.btn-reset {
-  background-color: #ffc107;
-  color: #000;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
+.btn-search:hover{
+	 background-color: #973C00;
+}
+.btn-reset,.btn-search {
+      height: 38px;
+      padding: 0 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+}
+    .btn-reset {
+      background-color: #ccc;
+      color: #333;
+    }
+.btn-reset:hover {
+      background-color: #999;
 }
 
 /* 제목에 마우스를 올렸을 때 밑줄 효과 */
@@ -133,7 +153,29 @@
   text-decoration: underline;
   color: #E17100;
 }
+input {
+  height: 38px;
+  padding: 6px 10px;
+  font-size: 14px;
+  line-height: 1.2;
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 200px;
+}
 
+#bldgselect {
+  height: 38px;
+  padding: 0 10px;
+  font-size: 14px;
+  line-height: 38px;     /* ✅ 줄 높이를 height와 동일하게 */
+  box-sizing: border-box;
+  min-width: 597px;
+  max-width: 597px;
+}
+
+#bldgselect option {
+  text-align: center;     
+}
 
 </style>
 
@@ -155,8 +197,7 @@
             <!-- 1단: 건물 -->
             <div class="search-grid-row">
               <div class="search-item" style="grid-column: span 4;">
-                <label for="bldgIdParam">건물</label>
-                <select name="bldgIdParam" class="form-control">
+                <select name="bldgIdParam" class="form-control" id="bldgselect">
                   <c:forEach var="unit" items="${unitList}">
                     <option value="${unit.bldgId}" <c:if test="${selectedBldgId eq unit.bldgId}">selected</c:if>>
                       ${unit.building.bldgNm}
@@ -170,7 +211,7 @@
             <div class="search-grid-row">
               <div class="search-item">
                 <label for="noticeType">유형</label>
-                <select name="noticeType" class="form-control">
+                <select name="noticeType" class="form-control" id="noticeType">
                   <option value="">-- 전체 --</option>
                   <c:forEach var="code" items="${noticeTypeList}">
                     <option value="${code.codeValue}" <c:if test="${simpleSearch.noticeType eq code.codeValue}">selected</c:if>>
@@ -209,8 +250,8 @@
           <!-- 오른쪽 버튼 -->
           <div class="search-grid-right">
             <div class="button-area">
-              <button type="button" class="btn-reset" onclick="location.href='${pageContext.request.contextPath}/resident/notice?page=1'">초기화</button>
               <button type="submit" class="btn-search">검색</button>
+              <button type="button" class="btn-reset" onclick="location.href='${pageContext.request.contextPath}/resident/notice?page=1'">초기화</button>
             </div>
           </div>
         </div>

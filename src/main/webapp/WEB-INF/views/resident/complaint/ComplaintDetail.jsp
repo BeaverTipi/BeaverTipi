@@ -9,70 +9,70 @@
   <link rel="stylesheet" href="<c:url value='/css/style.css'/>" />
   <link rel="stylesheet" href="<c:url value='/css/theme.css'/>" />
   <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/resident/common_residentDetail.css" />
-  <style type="text/css">
-	
-		.label {
-	  display: inline-block;
-	  width: 50px;
-	  font-weight: bold;
-	  color: var(--color-text);
-	}
-	.label-sm {
-	  width: 60px;  /* ✅ 일반 label보다 좁게 설정 */
-	}
-	.label-dt{
-	 width: 60px;
-	}
-	.reply-box {
-	  border-left: 5px solid #2a8a43;
-	  background-color: #f4fdf6;
-	  padding: 16px;
-	  margin-top: 20px;
-	  border-radius: 6px;
-	}
-	.reply-toggle-btn {
-  background-color: #E17100;
-  color: #fff;
-  padding: 8px 18px;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s;
+<style type="text/css">
+.label {
+	display: inline-block;
+	width: 60px;
+	font-weight: bold;
+	color: var(--color-text);
+}
+
+.label-sm {
+	width: 60px; /* ✅ 일반 label보다 좁게 설정 */
+}
+
+.label-dt {
+	width: 60px;
+}
+
+.reply-box {
+	border-left: 5px solid #2a8a43;
+	background-color: #f4fdf6;
+	padding: 16px;
+	margin-top: 20px;
+	border-radius: 6px;
+}
+
+.reply-toggle-btn {
+	background-color: #E17100;
+	color: #fff;
+	padding: 8px 18px;
+	font-weight: bold;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background-color 0.2s;
 }
 
 .reply-toggle-btn:hover {
-  background-color: #973C00;
+	background-color: #973C00;
 }
-	.reply-save-btn {
-  background-color: #E17100;
-  color: #fff;
-  padding: 8px 18px;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  margin-top: 12px;
-  cursor: pointer;
-  transition: background-color 0.2s;
+
+.reply-save-btn {
+	background-color: #E17100;
+	color: #fff;
+	padding: 8px 18px;
+	font-weight: bold;
+	border: none;
+	border-radius: 6px;
+	margin-top: 12px;
+	cursor: pointer;
+	transition: background-color 0.2s;
 }
 
 .reply-save-btn:hover {
-  background-color: #973C00;
+	background-color: #973C00;
 }
-	
-	</style>
+</style>
 </head>
 <body>
   <div class="detail-container">
     <h2>${complaint.rsdBrdTitl}</h2>
-
     <div class="detail-info">
       <p><span class="label">작성자:</span> ${complaint.mbrNnm}</p>
+<%--       <p><span class="label">건물명:</span>${board.bldgNm}</p> --%>
       <p><span class="label">게시일:</span>
         <fmt:formatDate value="${complaint.rsdBrdPblsDate}" pattern="yyyy-MM-dd HH:mm"/>
-      </p>
-      <p><span class="label">수정일:</span>
-        <fmt:formatDate value="${complaint.rsdBrdModDate}" pattern="yyyy-MM-dd HH:mm"/>
       </p>
       <p><span class="label">공개여부:</span>
         <c:forEach var="code" items="${openYnList}">

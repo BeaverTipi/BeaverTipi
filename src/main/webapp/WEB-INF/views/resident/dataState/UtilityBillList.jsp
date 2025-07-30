@@ -140,6 +140,21 @@
     ul {
       padding-left: 1.2rem;
     }
+    .search-button {
+      height: 40px;
+      padding: 0 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+      background-color: #E17100;
+      color: white;
+}
+.search-button:hover {
+	background-color: #973C00;
+}
   </style>
 </head>
 <body>

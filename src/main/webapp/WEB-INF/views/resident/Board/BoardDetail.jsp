@@ -15,9 +15,7 @@
 	  font-weight: bold;
 	  color: var(--color-text);
 	}
-	.label-sm {
-	  width: 37px;  /* ✅ 일반 label보다 좁게 설정 */
-	}
+
 	.label-dt{
 	 width: 48px;
 	}
@@ -32,7 +30,7 @@
 
     <!-- 🔸 작성 정보 -->
     <div class="detail-info">
-      <p><span class="label label-sm">건물:</span>${board.bldgNm}</p>
+      <p><span class="label label-sm">건물명:</span>${board.bldgNm}</p>
       <p><span class="label">조회수:</span>${board.rsdBrdCnt}</p>
       <p><span class="label">작성자:</span>${board.mbrNnm}</p>
       <p><span class="label label-dt">작성일:</span>

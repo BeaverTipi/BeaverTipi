@@ -62,6 +62,8 @@ document.addEventListener("DOMContentLoaded", function () {
     themeSystem: "bootstrap5",
     initialView: "dayGridMonth",
     locale: "ko",
+    height: '100%',
+    contentHeight: 'auto',
     events: `/resident/calendar/events?bldgId=${selectedBldgId}`,
     editable: true,
     selectable: true,
