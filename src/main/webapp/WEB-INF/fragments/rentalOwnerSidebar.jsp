@@ -76,7 +76,7 @@
           id="submenu-management" aria-expanded="false">
           <ul class="flex-column nav">
             <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/building/product/managedList">
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/product/tabList">
                 <span class="sidebar-management">건물 / 매물 관리</span>
               </a>
             </li>

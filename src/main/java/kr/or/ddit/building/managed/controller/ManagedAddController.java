@@ -1,89 +1,77 @@
-
 package kr.or.ddit.building.managed.controller;
-
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import kr.or.ddit.admin.code.service.CommonCodeService;
+import org.springframework.web.bind.annotation.*;
 import kr.or.ddit.building.managed.service.BuildingManagedService;
+import kr.or.ddit.admin.code.service.CommonCodeService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
-import kr.or.ddit.vo.BuildingVO;
-import kr.or.ddit.vo.CommonCodeVO;
-import kr.or.ddit.vo.ListingVO;
-import kr.or.ddit.vo.MemberVO;
-import kr.or.ddit.vo.TenancyAccountVO;
+import kr.or.ddit.vo.*;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 @Slf4j
 @Controller
-@RequestMapping("/building/product")
+@RequestMapping("/building/managed")
 public class ManagedAddController {
-	
-	@Autowired
-	private BuildingManagedService managedService; 
-	
-	@Autowired
-	private CommonCodeService commonCodeService;
-    // 1. 등록 폼 진입
-	  @GetMapping("/managedAdd")
-	    public String addForm(Model model, @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
-	        MemberVO memberVO = principal.getRealUser();
 
-	        BuildingVO buildingVO = new BuildingVO();
-	        
-	        String rentalPtyId = memberVO.getTenancy().getRentalPtyId();
-	        List<TenancyAccountVO> accList = managedService.selectAccountsByRentalPtyId(rentalPtyId);
-	        buildingVO.setAccList(accList);
-	        if (!accList.isEmpty()) {
-	            buildingVO.setAccNum(accList.get(0).getAccNum());
-	        }
+    @Autowired
+    private BuildingManagedService buildingService;
 
-	        // Tenancy 정보에서 rentalPtyId 꺼내서 셋팅
-	        if (memberVO != null && memberVO.getTenancy() != null) {
-	            buildingVO.setRentalPtyId(memberVO.getTenancy().getRentalPtyId());
-	        }
-	        
-	        List<ListingVO> listingList = managedService.selectListingsByRentalPtyId(rentalPtyId);
-			
-	        List<CommonCodeVO> bldgTypeList = commonCodeService.readCommonCodeList("BLDG");
-	        model.addAttribute("bldgTypeList", bldgTypeList);
-	        
-	        model.addAttribute("listingList", listingList);
-	        model.addAttribute("buildingVO", buildingVO);
-	        
-	        
-	        
-	        return "building/managed/managedAdd";
-	  }
+    @Autowired
+    private CommonCodeService commonCodeService;
 
-    // 2. 등록 처리
-    @PostMapping("/managedAdd")
-    public String addUnit(@ModelAttribute("buildingVO") BuildingVO buildingVO) {
-    	
-        //근데 이걸 넣으면서 든 생각이.. 그냥 층수를 Nullable 하면 되지 않을까? 히히
-    	if (buildingVO.getBldgFlrCnt() == null) {
-            buildingVO.setBldgFlrCnt(1);
+    // 건물 등록 폼 (GET)
+    @GetMapping("/add")
+    public String addBuildingForm(Model model, @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
+        MemberVO memberVO = principal.getRealUser();
+        String rentalPtyId = memberVO.getTenancy().getRentalPtyId();
+
+        BuildingVO buildingVO = new BuildingVO();
+        log.info("삘딩쁘이오!! : {}", buildingVO);
+        buildingVO.setRentalPtyId(rentalPtyId);
+        buildingVO.setDelYn("N");
+
+        // 계좌 리스트
+        List<TenancyAccountVO> accList = buildingService.selectAccountsByRentalPtyId(rentalPtyId);
+        buildingVO.setAccList(accList);
+        if (!accList.isEmpty()) {
+            buildingVO.setAccNum(accList.get(0).getAccNum());
         }
-        if (buildingVO.getBldgUnitCnt() == null) {
-            buildingVO.setBldgUnitCnt(1);
-        }
-    	
-        managedService.insertBuilding(buildingVO);
-        System.out.println("여기를봐라 멍청이들아" + buildingVO);
-        return "redirect:/building/unitManaged/add?bldgId=" + buildingVO.getBldgId()
-        + "&rentalPtyId=" + buildingVO.getRentalPtyId();
+
+        // 내 매물 리스트
+        List<ListingVO> listingList = buildingService.selectListingsByRentalPtyId(rentalPtyId);
+
+        // 건물 유형 코드
+        List<CommonCodeVO> bldgTypeList = commonCodeService.readCommonCodeList("BLDG");
+
+        model.addAttribute("buildingVO", buildingVO);
+        model.addAttribute("listingList", listingList);
+        model.addAttribute("bldgTypeList", bldgTypeList);
+
+        return "building/managed/managedAdd";
     }
-	
+
+    // 건물 등록 처리 (POST)
+    @PostMapping("/add")
+    public String addBuilding(@ModelAttribute("buildingVO") BuildingVO buildingVO) {
+        if (buildingVO.getBldgFlrCnt() == null) buildingVO.setBldgFlrCnt(1);
+        if (buildingVO.getBldgUnitCnt() == null) buildingVO.setBldgUnitCnt(1);
+
+        buildingVO.setDelYn("N");
+        buildingService.insertBuilding(buildingVO);
+
+        // 등록 후 상세/유닛 입력화면으로 이동
+        return "redirect:/building/unitManaged/add?bldgId=" + buildingVO.getBldgId()
+                + "&rentalPtyId=" + buildingVO.getRentalPtyId();
+    }
+    
+    @GetMapping("/listing/detail")
+    @ResponseBody
+    public ListingVO getListingDetail(@RequestParam String lstgId) {
+        
+        return buildingService.selectListingById(lstgId);
+    }
 }
-
-
-
-//
-//

@@ -8,7 +8,7 @@
   <!-- UNIT 등록 -->
   <insert id="insertUnit" parameterType="kr.or.ddit.vo.UnitVO">
     INSERT INTO UNIT (
-      UNIT_ID,
+      
       BLDG_ID,
       RENTAL_PTY_ID,
       UNIT_FLR_NO,
@@ -21,7 +21,7 @@
       UNIT_STAT_CD,
       UNIT_ROOM
     ) VALUES (
-      SEQ_UNIT_ID.NEXTVAL,
+      
       #{bldgId},
       #{rentalPtyId},
       #{unitFlrNo},

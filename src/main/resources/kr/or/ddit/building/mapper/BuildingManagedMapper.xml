@@ -157,5 +157,33 @@
 	  AND ACC_DEL_YN = 'N'
 	</select>
 
+	<!-- 내 매물에서 불러오기용: 매물(리스팅) 리스트 조회 -->
+	<select id="selectListingsByRentalPtyId" parameterType="string" resultType="kr.or.ddit.vo.ListingVO">
+	  SELECT 
+	    LSTG_ID,
+	    LSTG_NM,
+	    LSTG_ADD,
+	    LSTG_ADD2
+	  FROM LISTING
+	  WHERE RENTAL_PTY_ID = #{rentalPtyId}
+	    AND LSTG_DEL = 'N'
+	</select>
+	<select id="selectListingById" parameterType="string" resultType="kr.or.ddit.vo.ListingVO">
+    SELECT 
+        LSTG_ID,
+        LSTG_NM,
+        LSTG_ADD,
+        LSTG_ADD2,
+        LSTG_GR_AREA,
+        LSTG_TYPE_CODE1,
+        LSTG_LEASE,
+        LSTG_LEASE_M,
+        LSTG_LEASE_AMT,
+        LSTG_POSTAL
+    FROM LISTING
+    WHERE LSTG_ID = #{lstgId}
+      AND LSTG_DEL = 'N'
+</select>
+	
 
 </mapper>

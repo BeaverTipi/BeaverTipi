@@ -123,24 +123,10 @@
       <form:input path="bldgCmpltnDt" type="date" id="bldgCmpltnDt" />
     </div>
 
-    <div class="form-row">
-      <label for="lstgLease">전세</label>
-      <input type="text" name="lstgLease" id="lstgLease" />
-    </div>
-
-    <div class="form-row">
-      <label for="lstgLeaseM">월세</label>
-      <input type="text" name="lstgLeaseM" id="lstgLeaseM" />
-    </div>
-
-    <div class="form-row">
-      <label for="lstgLeaseAmt">보증금</label>
-      <input type="text" name="lstgLeaseAmt" id="lstgLeaseAmt" />
-    </div>
-
+   
     <div class="form-row">
       <label for="bldgGrossArea">공급면적</label>
-      <input type="text" name="bldgGrossArea" id="bldgGrossArea" />
+      <form:input path="bldgGrossArea" id="bldgGrossArea" />
     </div>
 
     <!-- 이미지 -->

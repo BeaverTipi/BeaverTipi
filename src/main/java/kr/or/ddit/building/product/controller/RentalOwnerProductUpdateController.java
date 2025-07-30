@@ -1,64 +1,64 @@
-package kr.or.ddit.building.product.controller;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import kr.or.ddit.building.product.service.RentalOwnerProductService;
-import kr.or.ddit.util.security.auth.RealUserWrapper;
-import kr.or.ddit.vo.ListingVO;
-import kr.or.ddit.vo.MemberVO;
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
-@Controller
-@RequestMapping("/building/product")
-public class RentalOwnerProductUpdateController {
-
-    @Autowired
-    private RentalOwnerProductService service;
-
-    /**
-     * 매물 수정 폼 진입
-     */
-    @GetMapping("/update")
-    public String updateForm(@RequestParam("lstgId") String lstgId,
-                             Model model,
-                             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
-
-        MemberVO member = principal.getRealUser();
-        if (member == null || member.getMbrCd() == null) {
-            return "redirect:/member/register";
-        }
-
-        ListingVO listing = service.selectProductById(lstgId);
-        if (listing == null || !member.getMbrCd().equals(listing.getMbrCd())) {
-            return "redirect:/building/product/list"; // 권한 없으면 리스트로
-        }
-
-        model.addAttribute("listingVO", listing);
-
-        return "building/product/rentalOwnerProductAdd"; // 등록 JSP 재활용
-    }
-
-    /**
-     * 매물 수정 처리
-     */
-    @PostMapping("/update")
-    public String processUpdate(@ModelAttribute("listingVO") ListingVO listingVO,
-                                @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
-
-        MemberVO member = principal.getRealUser();
-        if (member == null || member.getMbrCd() == null) {
-            return "redirect:/member/register";
-        }
-
-        listingVO.setMbrCd(member.getMbrCd());
-
-        service.updateProduct(listingVO);
-
-        return "redirect:/building/product/list";
-    }
-}
+//package kr.or.ddit.building.product.controller;
+//
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.security.core.annotation.AuthenticationPrincipal;
+//import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+//import org.springframework.web.bind.annotation.*;
+//
+//import kr.or.ddit.building.product.service.RentalOwnerProductService;
+//import kr.or.ddit.util.security.auth.RealUserWrapper;
+//import kr.or.ddit.vo.ListingVO;
+//import kr.or.ddit.vo.MemberVO;
+//import lombok.extern.slf4j.Slf4j;
+//
+//@Slf4j
+//@Controller
+//@RequestMapping("/building/product")
+//public class RentalOwnerProductUpdateController {
+//
+//    @Autowired
+//    private RentalOwnerProductService service;
+//
+//    /**
+//     * 매물 수정 폼 진입
+//     */
+//    @GetMapping("/update")
+//    public String updateForm(@RequestParam("lstgId") String lstgId,
+//                             Model model,
+//                             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
+//
+//        MemberVO member = principal.getRealUser();
+//        if (member == null || member.getMbrCd() == null) {
+//            return "redirect:/member/register";
+//        }
+//
+//        ListingVO listing = service.selectProductById(lstgId);
+//        if (listing == null || !member.getMbrCd().equals(listing.getMbrCd())) {
+//            return "redirect:/building/product/list"; // 권한 없으면 리스트로
+//        }
+//
+//        model.addAttribute("listingVO", listing);
+//
+//        return "building/product/rentalOwnerProductAdd"; // 등록 JSP 재활용
+//    }
+//
+//    /**
+//     * 매물 수정 처리
+//     */
+//    @PostMapping("/update")
+//    public String processUpdate(@ModelAttribute("listingVO") ListingVO listingVO,
+//                                @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
+//
+//        MemberVO member = principal.getRealUser();
+//        if (member == null || member.getMbrCd() == null) {
+//            return "redirect:/member/register";
+//        }
+//
+//        listingVO.setMbrCd(member.getMbrCd());
+//
+//        service.updateProduct(listingVO);
+//
+//        return "redirect:/building/product/list";
+//    }
+//}
