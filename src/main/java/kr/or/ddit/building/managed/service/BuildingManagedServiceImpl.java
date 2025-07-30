@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.building.mapper.BuildingManagedMapper;
+import kr.or.ddit.vo.BuildingSearchFormVO;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.TenancyAccountVO;
@@ -55,5 +56,15 @@ public class BuildingManagedServiceImpl implements BuildingManagedService {
 	public ListingVO selectListingById(String lstgId) {
 	    return buildingManagedMapper.selectListingById(lstgId);
 	}
+	
+	@Override
+	public List<BuildingVO> searchBuildingList(String rentalPtyId, BuildingSearchFormVO searchForm) {
+	       searchForm.setRentalPtyId(rentalPtyId);
+	    return buildingManagedMapper.searchBuildingList(searchForm);
+	}
+    @Override
+    public List<TenancyAccountVO> searchAccountsByRentalPtyId(String rentalPtyId) {
+        return buildingManagedMapper.selectAccountsByRentalPtyId(rentalPtyId);
+    }
 
 }

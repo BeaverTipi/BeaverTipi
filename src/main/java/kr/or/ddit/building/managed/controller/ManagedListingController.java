@@ -21,7 +21,7 @@ import kr.or.ddit.vo.TenancyAccountVO;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
-@RequestMapping("/building/managed")
+@RequestMapping("/building/product")
 public class ManagedListingController {
 
     @Autowired

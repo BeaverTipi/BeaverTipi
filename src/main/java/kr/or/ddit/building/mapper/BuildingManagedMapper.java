@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import kr.or.ddit.vo.BuildingSearchFormVO;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.TenancyAccountVO;
@@ -16,13 +17,13 @@ public interface BuildingManagedMapper {
 	 // 건물 등록
     int insertBuilding(BuildingVO building);
 
-    // 건물 기준 목록 조회 (세대 포함)
+    // 목록조회
     List<BuildingVO> selectBuildingListByRentalPtyId(String rentalPtyId);
 
-    // 건물 단건 조회 (세대 포함)
+    // 단건만
     BuildingVO selectBuildingById(String bldgId);
 
-    // 건물 세대 정보 수정 (UNIT 기준이지만 BUILDING 관리화면에서 처리)
+    // 흠... 이게 맞나?
     int updateBuilding(BuildingVO building);
 
     // 건물 세대 삭제
@@ -36,5 +37,11 @@ public interface BuildingManagedMapper {
     public List<ListingVO> selectListingsByRentalPtyId(String rentalPtyId);
     
     public ListingVO selectListingById(String lstgId);
+    
+    List<BuildingVO> searchBuildingList(BuildingSearchFormVO searchForm);
+
+
+    List<TenancyAccountVO> searchAccountsByRentalPtyId(@Param("rentalPtyId") String rentalPtyId);
+    
 }
 

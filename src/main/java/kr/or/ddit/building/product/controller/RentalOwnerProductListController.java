@@ -45,7 +45,7 @@ public class RentalOwnerProductListController {
 
         searchForm.setMbrCd(loginUser.getMbrCd());
 
-        // 🔥 핵심: 서비스에서 전체 페이징 + 리스트 다 만든 PaginationInfo 자체를 가져온다.
+        //  핵심: 서비스에서 전체 페이징 + 리스트 다 만든 PaginationInfo 자체를 가져온다.
         Map<String, Object> resultMap = service.readPagingAndListing(searchForm, currentPage);
 
         model.addAttribute("listingProductList", resultMap.get("dataList"));

@@ -23,7 +23,7 @@ import kr.or.ddit.vo.TenancyAccountVO;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
-@RequestMapping("/building/managed")
+@RequestMapping("/building/product")
 public class ManagedAddController {
 	
 	@Autowired
@@ -32,7 +32,7 @@ public class ManagedAddController {
 	@Autowired
 	private CommonCodeService commonCodeService;
     // 1. 등록 폼 진입
-	  @GetMapping("/add")
+	  @GetMapping("/managedAdd")
 	    public String addForm(Model model, @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
 	        MemberVO memberVO = principal.getRealUser();
 
@@ -64,7 +64,7 @@ public class ManagedAddController {
 	  }
 
     // 2. 등록 처리
-    @PostMapping("/add")
+    @PostMapping("/managedAdd")
     public String addUnit(@ModelAttribute("buildingVO") BuildingVO buildingVO) {
     	
         //근데 이걸 넣으면서 든 생각이.. 그냥 층수를 Nullable 하면 되지 않을까? 히히

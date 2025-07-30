@@ -8,37 +8,43 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import kr.or.ddit.building.managed.service.BuildingManagedService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.vo.BuildingSearchFormVO;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.TenancyAccountVO;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
-@RequestMapping("/building/managed")
+@RequestMapping("/building/product")
 public class ManagedListController {
 
     @Autowired
     private BuildingManagedService managedService;
+    
+    
 
     // 목록 조회
-    @GetMapping("/list")
+    @GetMapping("/managedList")
     public String buildingList(@AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
+    						   @ModelAttribute("searchForm") BuildingSearchFormVO searchForm,
                                 Model model) {
         MemberVO memberVO = principal.getRealUser();
         String rentalPtyId = memberVO.getTenancy().getRentalPtyId();
+        log.info("빌딩목록용 rentalPtyId= {}" + rentalPtyId); // null 나오면 mapping 문제야
 
-        List<BuildingVO> buildingList = managedService.selectBuildingListByRentalPtyId(rentalPtyId);
+        List<BuildingVO> buildingList = managedService.searchBuildingList(rentalPtyId, searchForm);
         
-        log.info("반복문으로 로그 뽑아버리기!! size={}", buildingList.size());
-        for (BuildingVO building : buildingList) {
-            List<TenancyAccountVO> accList = managedService.selectAccountsByRentalPtyId(building.getRentalPtyId());
-            building.setAccList(accList);
-            log.info("빌딩명={}, 계좌개수={}", building.getBldgNm(), accList.size());
-        }
+//        log.info("반복문으로 로그 뽑아버리기!! size={}", buildingList.size());
+//        for (BuildingVO building : buildingList) {
+//            List<TenancyAccountVO> accList = managedService.selectAccountsByRentalPtyId(building.getRentalPtyId());
+//            building.setAccList(accList);
+//            log.info("빌딩명={}, 계좌개수={}", building.getBldgNm(), accList.size());
+//        }
         
         for (BuildingVO building : buildingList) {
             List<TenancyAccountVO> accList = managedService.selectAccountsByRentalPtyId(building.getRentalPtyId());
@@ -46,7 +52,8 @@ public class ManagedListController {
         }
         
         model.addAttribute("buildingList", buildingList);
-        return "building/managed/managedList";
+        return "building/product/rentalOwnerProductList";
+        
     }
 }
 

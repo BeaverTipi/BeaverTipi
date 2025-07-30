@@ -3,6 +3,7 @@ package kr.or.ddit.building.managed.service;
 
 import java.util.List;
 
+import kr.or.ddit.vo.BuildingSearchFormVO;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.TenancyAccountVO;
@@ -35,5 +36,11 @@ public interface BuildingManagedService {
     public List<ListingVO> selectListingsByRentalPtyId(String rentalPtyId);
     
     public ListingVO selectListingById(String lstgId);
+    
+    //검색기능
+    
+    List<BuildingVO> searchBuildingList(String rentalPtyId, BuildingSearchFormVO searchForm);
+    List<TenancyAccountVO> searchAccountsByRentalPtyId(String rentalPtyId);
+    
 }
 

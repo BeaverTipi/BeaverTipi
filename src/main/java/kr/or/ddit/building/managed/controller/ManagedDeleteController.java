@@ -13,13 +13,13 @@ import kr.or.ddit.vo.MemberVO;
 
 
 @Controller
-@RequestMapping("/building/managed")
+@RequestMapping("/building/product")
 public class ManagedDeleteController {
 
     @Autowired
     private BuildingManagedService managedService;
 
-    @PostMapping("/delete")
+    @PostMapping("/managedDelete")
     public String delete(@RequestParam("bldgId") String bldgId,
                          @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
         String rentalPtyId = principal.getRealUser().getTenancy().getRentalPtyId();

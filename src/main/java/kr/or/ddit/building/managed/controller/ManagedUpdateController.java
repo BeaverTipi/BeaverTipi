@@ -19,14 +19,14 @@ import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.TenancyAccountVO;
 
 @Controller
-@RequestMapping("/building/managed")
+@RequestMapping("/building/product")
 public class ManagedUpdateController {
 
     @Autowired
     private BuildingManagedService managedService;
 
     // 수정 폼 진입
-    @GetMapping("/edit")
+    @GetMapping("/managedEdit")
     public String editForm(@RequestParam("bldgId") String bldgId,
                            Model model,
                            @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
@@ -51,7 +51,7 @@ public class ManagedUpdateController {
     }
 
     // 수정 처리
-    @PostMapping("/edit")
+    @PostMapping("/managedEdit")
     public String editUnit(@ModelAttribute("buildingVO") BuildingVO buildingVO) {
         
     	if (buildingVO.getBldgTypeCode() == null || buildingVO.getBldgTypeCode().isBlank()) {
