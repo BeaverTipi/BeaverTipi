@@ -142,6 +142,13 @@
 </div>
 <security:authorize access="!isAuthenticated()">
   <script>
-    location.href = '${pageContext.request.contextPath}/';
+    Swal.fire({
+      icon: 'warning',
+      title: '로그인이 필요합니다',
+      text: '이 서비스는 로그인 후 이용 가능합니다.',
+      confirmButtonText: '확인',
+    }).then(() => {
+    	location.href = '\${pageContext.request.contextPath}/';
+    });
   </script>
 </security:authorize>

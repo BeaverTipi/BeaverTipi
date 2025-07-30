@@ -4,7 +4,7 @@
 :root {
   --color-bg-light: #f9f9f9;
   --color-border: #ccc;
-  --color-btn-dark: #333;
+  --color-btn-dark: #3D3D3D;
   --color-btn-warning: #ffc107;
   --color-muted: #999;
   --color-table-header-bg: #f1f1f1;
@@ -12,7 +12,67 @@
   --color-bg-lighter: #f5f5f5;
   --color-bg-hover: #eaeaea;
 }
-
+ body {
+      font-family: Arial, sans-serif;
+      background-color: #f8fbfe;
+      margin: 0;
+      padding: 30px;
+    }
+    .tab-wrap {
+      margin: 0 auto 20px auto;
+      max-width: 1200px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 0 0 30px 0;
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid #e0e0e0;
+      margin-bottom: 24px;
+    }
+    .tab {
+      flex: 1;
+      padding: 18px 0 12px 0;
+      text-align: center;
+      font-size: 17px;
+      font-weight: 600;
+      color: #bbb;
+      background: transparent;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      transition: color 0.18s;
+      border-bottom: 2px solid transparent;
+    }
+    .tab.active {
+      color: #00aaff;
+      border-bottom: 2.5px solid #00aaff;
+      background: #f8fbfe;
+    }
+    h2 { margin-bottom: 20px; font-size: 24px; color: #333;}
+    .building-link {
+      color: #007bff;
+      text-decoration: underline;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .building-link:hover {
+      color: #0056b3;
+      text-decoration: underline;
+    }
+    .btn-success {
+      background-color: #00aaff; color: #fff; border: none; padding: 8px 18px; border-radius: 5px; font-weight: 600; cursor: pointer;
+    }
+    .btn-success:hover { background-color: #008fcc;}
+    .empty-message {
+      text-align: center;
+      padding: 30px;
+      color: #888;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
 /* 📌 검색 영역 전체 wrapper */
 .search-section {
   background-color: var(--color-bg-light);
@@ -113,15 +173,15 @@
 }
 
 .search-item {
-  flex: 0 0 130px; /* 고정된 너비 */
-  max-width: 130px;
+  flex: 0 0 140px; /* 고정된 너비 */
+  max-width: 140px;
   margin-right: 8px; /* 여유 여백 */
 }
 
 .search-item .form-control {
   width: 100%;
-  min-width: 130px;
-  max-width: 130px;
+  min-width: 140px;
+  max-width: 140px;
   box-sizing: border-box;
 }
 
@@ -137,9 +197,9 @@
 }
 
 .date-range-group .form-control {
-  min-width: 130px;
-  max-width: 130px;
-  width: 130px;
+  min-width: 140px;
+  max-width: 140px;
+  width: 140px;
 }
 
 .date-separator {
@@ -241,4 +301,32 @@
   padding: 20px 0;
 }
 
+/* ===== ⏩ 페이지네이션 ===== */
+.pagination-wrapper {
+  text-align: center;
+  margin-top: var(--spacing-md);
+}
 
+.pagination-wrapper a,
+.pagination-wrapper span.bg-primary {
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 0 6px;
+  border-radius: 6px;
+  font-size: var(--font-base);
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: all 0.2s;
+}
+
+.pagination-wrapper span.bg-primary {
+  background-color: var(--color-btn-dark) !important;
+  color: #fff;
+  font-weight: bold;
+}
+
+.pagination-wrapper a:hover {
+  background-color: #f0f0f0;
+  color: #000;
+}

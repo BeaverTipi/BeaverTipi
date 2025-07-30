@@ -11,13 +11,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kr.or.ddit.building.product.service.RentalOwnerProductService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
+import kr.or.ddit.util.validate.InsertGroup;
+import kr.or.ddit.util.validate.exception.ListingException;
 import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingVO;
@@ -28,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/building/product")
 public class RentalOwnerProductAddController {
-
+	private static final String MODELNAME = "listingVO";
     @Autowired
     private RentalOwnerProductService service;
 
@@ -69,29 +75,43 @@ public class RentalOwnerProductAddController {
 
    
     @PostMapping("/add")
-    public String processAdd(@ModelAttribute("listingVO") ListingVO listingVO,
-                             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
+    public String processAdd(@Validated(InsertGroup.class) @ModelAttribute("listingVO") ListingVO listingVO,
+    						 BindingResult errors,
+                             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
+                             @RequestParam(name = "brokerIds") List<String> brokerIds,
+                             RedirectAttributes redirectAttributes
+                             
+    ) {
+    	String lvn = "redirect:/building/product/list";
+    	if(errors.hasErrors()) {
+    		String errorName = BindingResult.MODEL_KEY_PREFIX+MODELNAME;
+			redirectAttributes.addFlashAttribute(MODELNAME, listingVO);
+			redirectAttributes.addFlashAttribute(errorName, errors);
+			lvn = "redirect:/building/product/add";
 
-        MemberVO member = principal.getRealUser();
-
-        if (member == null || member.getMbrCd() == null) {
-            return "redirect:/member/register";
-        }
-
-
-        listingVO.setMbrCd(member.getMbrCd());
-
-        if (member.getTenancy() != null) {
-            listingVO.setRentalPtyId(member.getTenancy().getRentalPtyId());
-        }
-
-        log.info("등록 요청 데이터: {}", listingVO);
-
-
-        service.insertProduct(listingVO);
-
-
-        return "redirect:/building/product/list";
+    	}else {
+	        MemberVO member = principal.getRealUser();
+	
+	        if (member == null || member.getMbrCd() == null) {
+	            return "redirect:/member/register";
+	        }
+	
+	        listingVO.setMbrCd(member.getMbrCd());
+	
+	        if (member.getTenancy() != null) {
+	            listingVO.setRentalPtyId(member.getTenancy().getRentalPtyId());
+	        }
+	        
+	        log.info("등록 요청 데이터: {}", listingVO);
+	
+	        try {
+	         service.insertProduct(listingVO, brokerIds);
+	        }catch(ListingException e) {
+	        	log.info(e.getMessage());
+	        	lvn = "redirect:/building/product/add";
+	        }
+    	}
+        return lvn;
     }
     
     // 매물등록 시, 매물유형 목록 가져오기

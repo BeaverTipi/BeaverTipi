@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <security:authorize access="isAuthenticated()">
+				<security:authentication property="principal" var="principal"/>
   <nav class="navbar navbar-dark navbar-theme-primary px-4 col-12 d-lg-none">
     <a class="navbar-brand me-lg-5" href="${pageContext.request.contextPath}/">
         <img class="navbar-brand-dark" src="${pageContext.request.contextPath}/volt/assets/img/brand/light.png" alt="Volt logo" /> <img class="navbar-brand-light" src="${pageContext.request.contextPath}/volt/assets/img/brand/dark.png" alt="Volt logo" />
@@ -16,11 +18,21 @@
     <div class="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
       <div class="d-flex align-items-center">
         <div class="avatar-lg me-4">
-          <img src="${pageContext.request.contextPath}/volt/assets/img/team/profile-picture-3.jpg" class="card-img-top rounded-circle border-white"
-            alt="Bonnie Green">
+          <c:choose>
+								<c:when test="${not empty principal.realUser.memberFile}">
+									<img class="avatar rounded-circle" alt="Profile"
+										src="${principal.realUser.memberFile.filePathUrl}"
+										height="32" width="32">
+								</c:when>
+								<c:otherwise>
+									<img class="avatar rounded-circle" alt="Default Profile"
+										src="${pageContext.request.contextPath}/volt/assets/img/team/beaver.png"
+										height="32" width="32">
+								</c:otherwise>
+							</c:choose>
         </div>
         <div class="d-block">
-          <h2 class="h5 mb-3">Hi, Jane</h2>
+          <h2 class="h5 mb-3">Hi, ${principal.realUser.mbrNm}</h2>
           <a href="${pageContext.request.contextPath}/volt/pages/examples/sign-in.html" class="btn btn-secondary btn-sm d-inline-flex align-items-center">
             <svg class="icon icon-xxs me-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>            
             Sign Out
@@ -43,40 +55,6 @@
       </li>
       
       </li>
-      <li class="nav-item">
-        <span
-          class="nav-link  collapsed  d-flex justify-content-between align-items-center"
-          data-bs-toggle="collapse" data-bs-target="#submenu-dashboard">
-          <span>
-            <span class="sidebar-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-building-fill-add me-2" viewBox="0 0 16 16">
-  <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0"/>
-  <path d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7.256A4.5 4.5 0 0 0 12.5 8a4.5 4.5 0 0 0-3.59 1.787A.5.5 0 0 0 9 9.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .39-.187A4.5 4.5 0 0 0 8.027 12H6.5a.5.5 0 0 0-.5.5V16H3a1 1 0 0 1-1-1zm2 1.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m3 0v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M7.5 5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M4.5 8a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z"/>
-</svg>
-            </span> 
-            <span class="sidebar-text">매물 관리</span>
-          </span>
-          <span class="link-arrow">
-            <svg class="icon icon-sm" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-          </span>
-        </span>
-        <div class="multi-level collapse "
-          role="list" id="submenu-dashboard" aria-expanded="false">
-          <ul class="flex-column nav">
-            <li class="nav-item ">
-
-              <a class="nav-link" href="${pageContext.request.contextPath}/building/product/list">
-               <span class="sidebar-text">내 매물 정보</span>
-              </a>
-            </li>
-            <li class="nav-item ">
-              <a class="nav-link" href="${pageContext.request.contextPath}/building/product/add">
-                <span class="sidebar-text">신규 매물 등록</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </li>
  <li class="nav-item">
         <span
           class="nav-link  collapsed  d-flex justify-content-between align-items-center"
@@ -98,13 +76,8 @@
           id="submenu-management" aria-expanded="false">
           <ul class="flex-column nav">
             <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/building/managed/list">
-                <span class="sidebar-management">내 건물 정보</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="${pageContext.request.contextPath}/building/managed/add">
-                <span class="sidebar-management">신규 건물 등록</span>
+              <a class="nav-link" href="${pageContext.request.contextPath}/building/product/list">
+                <span class="sidebar-management">건물 / 매물 관리</span>
               </a>
             </li>
             <li class="nav-item">
@@ -162,36 +135,18 @@
           </ul>
         </div>
       </li>
-      <li class="nav-item">
-        <span
-          class="nav-link  collapsed  d-flex justify-content-between align-items-center"
-          data-bs-toggle="collapse" data-bs-target="#submenu-app">
-          <span>
-            <span class="sidebar-icon">
-				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person me-2" viewBox="0 0 16 16">
-  <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
-</svg>
-            </span> 
-            <span class="sidebar-text">입주 관리</span>
-          </span>
-          <span class="link-arrow">
-            <svg class="icon icon-sm" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-          </span>
-        </span>
-        <div class="multi-level collapse "
-          role="list" id="submenu-app" aria-expanded="false">
-          <ul class="flex-column nav">
-            <li class="nav-item ">
-              <a class="nav-link" href="${pageContext.request.contextPath}/building/move-in/detail">
-                <span class="sidebar-text">입주 정보</span>
-              </a>
-            </li>
-            
-          </ul>
-        </div>
-      </li>
-      
-     
+
+         <li class="nav-item">
+		  <a href="${pageContext.request.contextPath}/building/move-in/detail" class="nav-link">
+		    <span class="sidebar-icon">
+		      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-receipt-cutoff me-2" viewBox="0 0 16 16">
+		        <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5M11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z"/>
+		        <path d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118z"/>
+		      </svg>
+		    </span>
+		    <span class="sidebar-text">입주 관리</span>
+		  </a>
+		</li>  
       
       
       <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
@@ -199,11 +154,15 @@
         <a href="https://themesberg.com/docs/volt-bootstrap-5-dashboard/getting-started/quick-start/" target="_blank"
           class="nav-link d-flex align-items-center">
           <span class="sidebar-icon">
-            <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>
+           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person me-2" viewBox="0 0 16 16">
+  <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+</svg>
           </span>
           <span class="sidebar-text">Documentation <span class="badge badge-sm bg-secondary ms-1 text-gray-800">v1.4</span></span>
         </a>
       </li>
+      
+      
       <li class="nav-item">
         <a href="https://themesberg.com" target="_blank" class="nav-link d-flex align-items-center">
           <span class="sidebar-icon">
@@ -215,3 +174,18 @@
     </ul>
   </div>
 </nav>
+</security:authorize>
+
+
+<security:authorize access="isAnonymous()">
+  <script>
+    Swal.fire({
+      icon: 'warning',
+      title: '로그인이 필요합니다',
+      text: '이 서비스는 로그인 후 이용 가능합니다.',
+      confirmButtonText: '확인',
+    }).then(() => {
+      location.href = '\${pageContext.request.contextPath}/';
+    });
+  </script>
+</security:authorize>

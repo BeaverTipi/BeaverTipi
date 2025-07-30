@@ -1,47 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-	const tradeSelect = document.querySelector('#searchTypeSelect');
-	const conditionalFields = document.querySelector('#conditionalFields');
 	const resetBtn = document.querySelector('#resetBtn');
-	const depositLabel = document.querySelector('#depositLabel');
-	const depositRow = conditionalFields.querySelector('.row-deposit');
-	const monthlyRow = conditionalFields.querySelector('.row-monthly');
-	const saleRow = conditionalFields.querySelector('.row-sale');
-
-	function updateVisibility() {
-		const value = tradeSelect.value;
-
-		// 전체 선택 시 금액 영역 감춤
-		if (!value) {
-			conditionalFields.style.display = 'none';
-			return;
-		}
-
-		// 그 외에는 조건부 영역 표시
-		conditionalFields.style.display = 'block';
-
-		// 기본 다 감추고
-		depositRow.style.display = 'none';
-		monthlyRow.style.display = 'none';
-		saleRow.style.display = 'none';
-
-		if (value === '001') {
-			depositRow.style.display = 'block';
-			depositLabel.textContent = '전세금';
-		} else if (value === '002') {
-			depositRow.style.display = 'block';
-			monthlyRow.style.display = 'flex'; // ✅ flex로!
-			depositLabel.textContent = '보증금';
-		} else if (value === '003') {
-			saleRow.style.display = 'block';
-		}
-	}
-
-	// 초기 상태 설정
-	updateVisibility();
-
-	// 거래유형 변경 시 처리
-	tradeSelect.addEventListener('change', updateVisibility);
-
+	const tableBody = document.querySelector('#listingTableBody')
 	// 초기화 버튼
 	resetBtn.addEventListener('click', () => {
 		const form = resetBtn.closest('form');
@@ -51,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		form.querySelector('input[name="page"]').value = "1";
 		form.submit();
 	});
-
 
 	// 호수 리스트 토글
 	tableBody.addEventListener('click', async (e) => {

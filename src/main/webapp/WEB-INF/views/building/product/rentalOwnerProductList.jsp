@@ -12,67 +12,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="/app/css/building/product/listing-manage.css" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f8fbfe;
-      margin: 0;
-      padding: 30px;
-    }
-    .tab-wrap {
-      margin: 0 auto 20px auto;
-      max-width: 900px;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      padding: 0 0 30px 0;
-    }
-    .tabs {
-      display: flex;
-      border-bottom: 2px solid #e0e0e0;
-      margin-bottom: 24px;
-    }
-    .tab {
-      flex: 1;
-      padding: 18px 0 12px 0;
-      text-align: center;
-      font-size: 17px;
-      font-weight: 600;
-      color: #bbb;
-      background: transparent;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      transition: color 0.18s;
-      border-bottom: 2px solid transparent;
-    }
-    .tab.active {
-      color: #00aaff;
-      border-bottom: 2.5px solid #00aaff;
-      background: #f8fbfe;
-    }
-    h2 { margin-bottom: 20px; font-size: 24px; color: #333;}
-    .building-link {
-      color: #007bff;
-      text-decoration: underline;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .building-link:hover {
-      color: #0056b3;
-      text-decoration: underline;
-    }
-    .btn-success {
-      background-color: #00aaff; color: #fff; border: none; padding: 8px 18px; border-radius: 5px; font-weight: 600; cursor: pointer;
-    }
-    .btn-success:hover { background-color: #008fcc;}
-    .empty-message {
-      text-align: center;
-      padding: 30px;
-      color: #888;
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-    }
+
   </style>
 </head>
 <body>
@@ -104,10 +44,7 @@
                     <label>건물명</label>
                     <form:input path="searchBuildingName" cssClass="form-control" placeholder="건물명 입력" />
                   </div>
-                  <div class="search-item">
-                    <label>호수</label>
-                    <form:input path="searchRoomNum" cssClass="form-control" placeholder="예: 101호" />
-                  </div>
+
                   <div class="search-item">
                     <label>상태</label>
                     <form:select path="searchStatus" cssClass="form-control">
@@ -115,10 +52,7 @@
                         <form:option value="${code.codeValue}">${code.codeName}</form:option>
                       </c:forEach>
                     </form:select>
-                  </div>
-                 
-                </div>
-                <div class="search-grid-row">
+                    </div>
                   <div class="search-item ">
                     <label>유형</label>
                     <form:select path="searchType" id="searchTypeSelect" cssClass="form-control">
@@ -128,22 +62,23 @@
                     </form:select>
                   </div>
                   <div class="search-item  full-width">
-                    <label>등록일</label>
+                    <label>등록 기간</label>
                     <div class="d-flex">
                       <form:input type="date" path="searchRegDateFrom" cssClass="form-control mr-1" />
                       <span class="date-separator">~</span>
                       <form:input type="date" path="searchRegDateTo" cssClass="form-control" />
                     </div>
                   </div>
+                 
                 </div>
                  
               </div>
-            </div>
             <div class="search-grid-right">
               <div class="button-area">
                 <button type="submit" class="btn-search">검색</button>
                 <button type="reset" class="btn-reset" id="resetBtn">초기화</button>
               </div>
+            </div>
             </div>
           </form:form>
 
@@ -201,7 +136,6 @@
           <form:form modelAttribute="searchForm"
             action="${pageContext.request.contextPath}/building/product/list"
             method="get" class="search-section">
-            <input type="hidden" name="page" value="${pagingVO.currentPageNo}" id="currentPageNoInput" />
             <div class="search-grid-container">
               <div class="search-grid-left">
                 <div class="search-grid-row">
@@ -209,10 +143,7 @@
                     <label>건물명</label>
                     <form:input path="searchBuildingName" cssClass="form-control" placeholder="건물명 입력" />
                   </div>
-                  <div class="search-item">
-                    <label>호수</label>
-                    <form:input path="searchRoomNum" cssClass="form-control" placeholder="예: 101호" />
-                  </div>
+
                   <div class="search-item">
                     <label>상태</label>
                     <form:select path="searchStatus" cssClass="form-control">
@@ -220,10 +151,7 @@
                         <form:option value="${code.codeValue}">${code.codeName}</form:option>
                       </c:forEach>
                     </form:select>
-                  </div>
-
-                </div>
-                <div class="search-grid-row">
+                    </div>
                   <div class="search-item ">
                     <label>유형</label>
                     <form:select path="searchType" id="searchTypeSelect" cssClass="form-control">
@@ -232,22 +160,24 @@
                       </c:forEach>
                     </form:select>
                   </div>
-					<div class="search-item  full-width">
-                    <label>등록일</label>
+                  <div class="search-item  full-width">
+                    <label>등록 기간</label>
                     <div class="d-flex">
                       <form:input type="date" path="searchRegDateFrom" cssClass="form-control mr-1" />
                       <span class="date-separator">~</span>
                       <form:input type="date" path="searchRegDateTo" cssClass="form-control" />
                     </div>
                   </div>
+                 
                 </div>
+                 
               </div>
-            </div>
             <div class="search-grid-right">
               <div class="button-area">
                 <button type="submit" class="btn-search">검색</button>
                 <button type="reset" class="btn-reset" id="resetBtn">초기화</button>
               </div>
+            </div>
             </div>
           </form:form>
           <div class="table-responsive">
@@ -258,7 +188,6 @@
                   <th>건물명</th>
                   <th>상태</th>
                   <th>거래유형</th>
-                  
                   <th>등록일자</th>
                 </tr>
               </thead>
@@ -306,6 +235,9 @@
             <nav aria-label="Page navigation">
               <ul class="pagination justify-content-center">${pagingHTML}</ul>
             </nav>
+          </div>
+                    <div style="text-align:right; margin-top:20px;">
+            <a href="/building/product/add" class="btn btn-success">매물 등록</a>
           </div>
         </div>
       </div>

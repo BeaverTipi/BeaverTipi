@@ -12,7 +12,7 @@ import kr.or.ddit.vo.ListingVO;
 public interface RentalOwnerProductService {
 
 	// 등록
-	public Integer insertProduct(ListingVO listing);
+	public void insertProduct(ListingVO listing, List<String> brokerIds);
 
 
     // 상세 조회

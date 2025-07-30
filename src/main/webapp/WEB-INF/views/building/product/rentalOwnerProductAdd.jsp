@@ -296,6 +296,16 @@
         </div>
       </div>
     </div>
+<!-- 중개인 연결 영역 -->
+<div class="form-group mt-4">
+  <label class="form-label d-block">연결할 중개인</label>
+  <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#brokerModal">
+    중개인 선택
+  </button>
+  <div id="selectedBrokers" class="mt-2 text-muted small">
+    선택된 중개인 없음
+  </div>
+</div>
 
     <!-- 상세설명 -->
     <fieldset class="mb-4">
@@ -330,5 +340,40 @@
 
 </div>
 </div> 
+<!-- 중개인 선택 모달 -->
+<div class="modal fade" id="brokerModal" tabindex="-1" aria-labelledby="brokerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="brokerModalLabel">근처 중개인 선택</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-check mb-2">
+          <input type="checkbox" class="form-check-input" id="selectAllBrokers">
+          <label class="form-check-label" for="selectAllBrokers">전체 선택</label>
+        </div>
+
+        <div id="brokerListArea" class="row">
+          <!-- 여기에 중개인 리스트가 반복됨 -->
+          <c:forEach var="broker" items="${nearbyBrokers}">
+            <div class="col-md-6">
+              <div class="form-check">
+                <input class="form-check-input broker-check" type="checkbox" value="${broker.brokerId}" id="broker-${broker.brokerId}">
+                <label class="form-check-label" for="broker-${broker.brokerId}">
+                  ${broker.name} (${broker.officeName})
+                </label>
+              </div>
+            </div>
+          </c:forEach>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        <button type="button" class="btn btn-primary" id="confirmBrokerSelection">선택 완료</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="/app/js/building/product/rentalOwnerProductAdd.js"></script>

@@ -143,4 +143,44 @@ window.addEventListener("DOMContentLoaded", () => {
   bindSelectAll("life-section");
   bindSelectAll("security-section");
   bindSelectAll("etc-section");
+  
+    const selectAllCheckbox = document.getElementById("selectAllBrokers");
+  const brokerCheckboxes = document.querySelectorAll(".broker-check");
+  const confirmBtn = document.getElementById("confirmBrokerSelection");
+  const selectedBrokersDiv = document.getElementById("selectedBrokers");
+  const selectedBrokerInputs = document.getElementById("selectedBrokerInputs");
+
+  // 전체 선택 제어
+  selectAllCheckbox.addEventListener("change", function () {
+    brokerCheckboxes.forEach(cb => cb.checked = this.checked);
+  });
+
+  // 선택 완료 버튼
+  confirmBtn.addEventListener("click", function () {
+    const selected = Array.from(brokerCheckboxes)
+      .filter(cb => cb.checked)
+      .map(cb => ({
+        id: cb.value,
+        label: document.querySelector(`label[for=${cb.id}]`).textContent.trim()
+      }));
+
+    // 선택 내용 표시
+    selectedBrokersDiv.innerHTML = selected.length === 0
+      ? "선택된 중개인 없음"
+      : selected.map(s => `✅ ${s.label}`).join("<br>");
+
+    // hidden input 정리 후 새로 추가
+    selectedBrokerInputs.innerHTML = "";
+    selected.forEach(s => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "brokerIds";
+      input.value = s.id;
+      selectedBrokerInputs.appendChild(input);
+    });
+
+    // 모달 닫기
+    const modalEl = bootstrap.Modal.getInstance(document.getElementById("brokerModal"));
+    modalEl.hide();
+  });
 });

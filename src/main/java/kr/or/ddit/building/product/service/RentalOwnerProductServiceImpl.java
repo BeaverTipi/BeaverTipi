@@ -12,6 +12,7 @@ import kr.or.ddit.admin.code.service.CommonCodeServiceImpl;
 import kr.or.ddit.building.mapper.RentalOwnerProductMapper;
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.util.renderer.DefaultPaginationRenderer;
+import kr.or.ddit.util.validate.exception.ListingException;
 import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingSearchFormVO;
@@ -25,8 +26,15 @@ public class RentalOwnerProductServiceImpl implements RentalOwnerProductService 
     @Autowired
     private CommonCodeService codeService;
     @Override
-    public Integer insertProduct(ListingVO listing) {
-        return productMapper.insertProduct(listing);
+    public void insertProduct(ListingVO listing, List<String> brokerIds) {
+        for(String broker : brokerIds) {
+        	listing.setMbrCd(broker);
+        	if(productMapper.insertProduct(listing)<1) {
+        		throw new ListingException(String.format("중개인 %s 정보를 매물에 넣는 도중 오류 발생 ", broker));
+        	}
+        }
+         
+         
     }
     @Override
     public ListingVO selectProductById(String lstgId) {
