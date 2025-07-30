@@ -401,7 +401,7 @@
     WHERE CONT_ID = #{contId}
       AND ROLE = #{role}
 </select>
-<select id="selectSigner" parameterType="map" resultMap="SignerResultMap">
+<!-- <select id="selectSigner" parameterType="map" resultMap="SignerResultMap">
     SELECT
         CONT_ID,
         ROLE,
@@ -421,7 +421,7 @@
     FROM SIGNER
     WHERE CONT_ID = #{contId}
       AND ROLE = #{role}
-</select><!-- 
+</select>
 <insert id="insertSigner" parameterType="SignerVO">
     INSERT INTO SIGNER (
         CONT_ID,
