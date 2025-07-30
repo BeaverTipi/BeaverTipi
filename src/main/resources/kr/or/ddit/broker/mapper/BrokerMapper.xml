@@ -8,12 +8,12 @@
 	- 2025-07-09 최초작성
 	- 2025-07-10 매일수정중
  -->
-<!-- <resultMap id="SignerResultMap" type="SignerVO">
+<resultMap id="SignerResultMap" type="SignerVO">
     <result property="isJoined" column="IS_JOINED" typeHandler="kr.or.ddit.util.parse.BooleanYNTypeHandler"/>
     <result property="signedAt" column="SIGNED_AT" typeHandler="kr.or.ddit.util.parse.LocalDateTimeStringTypeHandler"/>
     <result property="isSigned" column="IS_SIGNED" typeHandler="kr.or.ddit.util.parse.BooleanYNTypeHandler"/>
     <result property="isValid" column="IS_VALID" typeHandler="kr.or.ddit.util.parse.BooleanYNTypeHandler"/>
-</resultMap> -->
+</resultMap>
 
 <!-- Facility Option 정보 매핑 -->
 <resultMap id="ListingOptionMap" type="ListingOptionVO">
@@ -401,7 +401,7 @@
     WHERE CONT_ID = #{contId}
       AND ROLE = #{role}
 </select>
-<!-- <select id="selectSigner" parameterType="map" resultMap="SignerResultMap">
+<select id="selectSigner" parameterType="map" resultMap="SignerResultMap">
     SELECT
         CONT_ID,
         ROLE,
@@ -448,11 +448,11 @@
         #{telno},
         #{signerStatus},
         #{ipAddr},
-        #{isJoined, typeHandler=BooleanTypeHandler},
+        #{isJoined, typeHandler=kr.or.ddit.util.parse.BooleanYNTypeHandler},
         #{signedAt},
-        #{isSigned, typeHandler=BooleanTypeHandler},
+        #{isSigned, typeHandler=kr.or.ddit.util.parse.BooleanYNTypeHandler},
         #{hashVal},
-        #{isValid, typeHandler=BooleanTypeHandler},
+        #{isValid, typeHandler=kr.or.ddit.util.parse.BooleanYNTypeHandler},
         #{base64},
         #{tempPdfUrl}
     )
@@ -466,14 +466,14 @@
         TELNO         = #{telno},
         SIGNER_STATUS = #{signerStatus},
         IP_ADDR       = #{ipAddr},
-        IS_JOINED     = #{isJoined, typeHandler=BooleanTypeHandler},
+        IS_JOINED     = #{isJoined, typeHandler=kr.or.ddit.util.parse.BooleanYNTypeHandler},
         SIGNED_AT     = #{signedAt},
-        IS_SIGNED     = #{isSigned, typeHandler=BooleanTypeHandler},
+        IS_SIGNED     = #{isSigned, typeHandler=kr.or.ddit.util.parse.BooleanYNTypeHandler},
         HASH_VAL      = #{hashVal},
-        IS_VALID      = #{isValid, typeHandler=BooleanTypeHandler},
+        IS_VALID      = #{isValid, typeHandler=kr.or.ddit.util.parse.BooleanYNTypeHandler},
         BASE64        = #{base64},
         TEMP_PDF_URL  = #{tempPdfUrl}
     WHERE CONT_ID = #{contId}
       AND ROLE = #{role}
-</update> -->
+</update>
 </mapper>
