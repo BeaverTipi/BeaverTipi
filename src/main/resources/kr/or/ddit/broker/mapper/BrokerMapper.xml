@@ -8,12 +8,12 @@
 	- 2025-07-09 최초작성
 	- 2025-07-10 매일수정중
  -->
-<resultMap id="SignerResultMap" type="SignerVO">
-    <result property="isJoined" column="IS_JOINED" typeHandler="kr.or.ddit.broker.mybatis.BooleanYNTypeHandler"/>
-    <result property="signedAt" column="SIGNED_AT" typeHandler="kr.or.ddit.broker.mybatis.LocalDateTimeStringTypeHandler"/>
-    <result property="isSigned" column="IS_SIGNED" typeHandler="kr.or.ddit.broker.mybatis.BooleanYNTypeHandler"/>
-    <result property="isValid" column="IS_VALID" typeHandler="kr.or.ddit.broker.mybatis.BooleanYNTypeHandler"/>
-</resultMap>
+<!-- <resultMap id="SignerResultMap" type="SignerVO">
+    <result property="isJoined" column="IS_JOINED" typeHandler="kr.or.ddit.util.parse.BooleanYNTypeHandler"/>
+    <result property="signedAt" column="SIGNED_AT" typeHandler="kr.or.ddit.util.parse.LocalDateTimeStringTypeHandler"/>
+    <result property="isSigned" column="IS_SIGNED" typeHandler="kr.or.ddit.util.parse.BooleanYNTypeHandler"/>
+    <result property="isValid" column="IS_VALID" typeHandler="kr.or.ddit.util.parse.BooleanYNTypeHandler"/>
+</resultMap> -->
 
 <!-- Facility Option 정보 매핑 -->
 <resultMap id="ListingOptionMap" type="ListingOptionVO">
@@ -421,7 +421,7 @@
     FROM SIGNER
     WHERE CONT_ID = #{contId}
       AND ROLE = #{role}
-</select>
+</select><!-- 
 <insert id="insertSigner" parameterType="SignerVO">
     INSERT INTO SIGNER (
         CONT_ID,
@@ -456,7 +456,7 @@
         #{base64},
         #{tempPdfUrl}
     )
-</insert>
+</insert> 
 <update id="updateSigner" parameterType="SignerVO">
     UPDATE SIGNER
     SET
@@ -475,5 +475,5 @@
         TEMP_PDF_URL  = #{tempPdfUrl}
     WHERE CONT_ID = #{contId}
       AND ROLE = #{role}
-</update>
+</update> -->
 </mapper>
