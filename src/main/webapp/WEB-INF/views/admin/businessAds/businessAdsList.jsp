@@ -134,14 +134,25 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="adsDetailModalLabel">광고 상세 정보</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" id="closeAdsDetailModalBtnX" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p><strong>광고 번호:</strong> <span id="modalBrdNo"></span></p>
-                <div class="form-group d-flex align-items-center">
-                    <label for="modalAdsStatusCodeSelect" class="mr-2 mb-0"><strong>광고 상태:</strong></label>
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width">광고 번호:</strong> <span id="modalBrdNo"></span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width">광고 제목:</strong> <span id="modalBrdTitlNm"></span>
+                </div>
+                
+                <div class="d-flex align-items-center mb-2">
+                	<strong class="label-width">광고 내용:</strong>
+                	<span id="modalBrdCont"></span>
+                </div>
+                
+                <div class="form-group d-flex align-items-center mb-2">
+                    <label for="modalAdsStatusCodeSelect" class="mr-2 mb-0 label-width"><strong>광고 상태:</strong></label>
                     <select class="form-control" id="modalAdsStatusCodeSelect">
                         <option value="대기">대기</option>
                         <option value="반려">반려</option>
@@ -150,25 +161,33 @@
                 </div>
 
                 <div class="form-group" id="rejectMessageGroup" style="display: none;">
-                    <label for="modalAdsRejectMessage"><strong>반려 내용:</strong></label>
+                    <label for="modalAdsRejectMessage"><strong>반려 사유</strong></label>
                     <textarea class="form-control" id="modalAdsRejectMessage" rows="3" placeholder="반려 사유를 입력하세요."></textarea>
                 </div>
-                <p><strong>사업장명:</strong> <span id="modalAdsBp"></span></p>
-                <p><strong>광고 제목:</strong> <span id="modalBrdTitlNm"></span></p>
-                
-                <hr>
-
-                <p><strong>광고 내용:</strong></p>
-                <div id="modalBrdCont" class="alert alert-secondary full-content"></div>
 
                 <hr>
                 
-                <p><strong>담당자명:</strong> <span id="modalAdsPic"></span></p>
-                <p><strong>담당자 연락처:</strong> <span id="modalAdsPicTelno"></span></p>
-                <p><strong>희망 게재 시작일:</strong> <span id="modalAdsReqPblsStartDt"></span></p>
-                <p><strong>희망 게재 종료일:</strong> <span id="modalAdsReqPblsEndDt"></span></p>
-                <p><strong>작성자 ID:</strong> <span id="modalMbrId"></span></p>
-                <p><strong>작성일시:</strong> <span id="modalBrdPblsDtm"></span></p>
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width">사업장명:</strong> <span id="modalAdsBp"></span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width">담당자명:</strong> <span id="modalAdsPic"></span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width">담당자 연락처:</strong> <span id="modalAdsPicTelno"></span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width">희망 게재 시작일:</strong> <span id="modalAdsReqPblsStartDt"></span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width">희망 게재 종료일:</strong> <span id="modalAdsReqPblsEndDt"></span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width">작성자 ID:</strong> <span id="modalMbrId"></span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width">작성일시:</strong> <span id="modalBrdPblsDtm"></span>
+                </div>
 
 				<hr>
                 <h5>첨부파일</h5>

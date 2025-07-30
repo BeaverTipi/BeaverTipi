@@ -14,7 +14,8 @@
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-	<script src="/app/js/admin/memberManagement/memberList.js"></script> 
+	<script src="/app/js/admin/memberManagement/memberList.js"></script>
+	
 
 <h2 class="board-title">회원 상태 관리</h2>
 
@@ -160,17 +161,30 @@
             </div>
             <div class="modal-body">
                 <input type="hidden" id="modalMbrCd"> <%-- 회원 코드 저장을 위한 hidden input --%>
-                <p><strong>이름:</strong> <span id="modalMbrNm"></span></p>
-                <p><strong>회원 아이디:</strong> <span id="modalMbrId"></span></p>
-                <p><strong>닉네임:</strong> <span id="modalMbrNnm"></span></p>
-                <p><strong>회원 구분:</strong> <span id="modalUserRoleIds"></span></p>
-                <p><strong>가입일:</strong> <span id="modalMbrFrstRegDt"></span></p>
-                <p><strong>이메일:</strong> <span id="modalMbrEmlAddr"></span></p>
                 
-                <hr> <%-- 구분선 --%>
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width">이름:</strong> <span id="modalMbrNm"></span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width">회원 아이디:</strong> <span id="modalMbrId"></span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width">닉네임:</strong> <span id="modalMbrNnm"></span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width">회원 구분:</strong> <span id="modalUserRoleIds"></span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width">가입일:</strong> <span id="modalMbrFrstRegDt"></span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width">이메일:</strong> <span id="modalMbrEmlAddr"></span>
+                </div>
+                
+                <hr>
 
-                <div class="form-group">
-                    <label for="modalMbrStatusCode"><strong>회원 상태:</strong></label>
+                <div class="form-group d-flex align-items-center mb-2">
+                    <label for="modalMbrStatusCode" class="mr-2 mb-0 label-width"><strong>회원 상태:</strong></label>
                     <select class="form-control" id="modalMbrStatusCode">
                         <option value="ACTIVE">정상</option>
                         <option value="INACTIVE">비활성</option>

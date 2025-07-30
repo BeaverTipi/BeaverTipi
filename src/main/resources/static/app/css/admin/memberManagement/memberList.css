@@ -21,3 +21,18 @@
 .table tbody tr.member-row-clickable:hover td {
     color: #f3c78e;
 }
+.label-width {
+    width: 120px; /* '회원 아이디', '회원 구분' 등 가장 긴 레이블에 맞춰 너비 조절 */
+    display: inline-block;
+    margin-right: 10px; /* 레이블과 값 사이의 간격 */
+    flex-shrink: 0; /* 레이블이 줄어들지 않도록 함 */
+}
+
+/* 추가적으로 모달 내부 텍스트 및 레이아웃을 좀 더 다듬을 수 있습니다 */
+.modal-body strong {
+    font-weight: bold;
+}
+.modal-content {
+    min-height: 55vh;
+
+}

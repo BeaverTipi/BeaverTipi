@@ -64,12 +64,12 @@ $(document).ready(function() {
         const dateVal = $(this).data('date');
         $(this).text(formatDateString(dateVal));
     });
-    
+
     $('.ads-pic-telno').each(function() {
         const telNoVal = $(this).data('telno');
         $(this).text(formatPhoneNumber(telNoVal));
     });
-    
+
      $('#resetBtn').on('click', function() {
         // 모든 텍스트/셀렉트 입력 필드 초기화
         $('#searchForm').find('input[type="text"], select').val('');
@@ -122,7 +122,7 @@ function fetchPdfOrImage(file) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         canvas.width = 1; // 캔버스 크기를 최소화
         canvas.height = 1;
-        // alert("유효하지 않은 파일 정보입니다."); // 연속적인 경고 방지를 위해 주석 처리
+        // SweetAlert2로 변경된 부분: 기존 alert("유효하지 않은 파일 정보입니다.") 주석 처리
         isRendering = false;
         return;
     }
@@ -137,7 +137,12 @@ function fetchPdfOrImage(file) {
         ctx.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 초기화
         canvas.width = 1;
         canvas.height = 1;
-        alert("미리보기 지원하지 않는 파일 형식입니다.");
+        Swal.fire({ // alert -> Swal.fire
+            icon: 'info',
+            title: '알림',
+            text: '미리보기 지원하지 않는 파일 형식입니다.',
+            confirmButtonText: '확인'
+        });
         isRendering = false;
     }
 }
@@ -172,7 +177,12 @@ function fetchPdf(fileId) {
     })
     .catch(err => {
         console.error("PDF 로딩 오류:", err);
-        alert("PDF 미리보기 중 오류가 발생했습니다.");
+        Swal.fire({ // alert -> Swal.fire
+            icon: 'error',
+            title: '오류',
+            text: 'PDF 미리보기 중 오류가 발생했습니다.',
+            confirmButtonText: '확인'
+        });
         ctx.clearRect(0, 0, canvas.width, canvas.height); // 오류 시 캔버스 초기화
         canvas.width = 1;
         canvas.height = 1;
@@ -205,7 +215,7 @@ function renderImage(fileId) {
             width = width * (maxHeight / height);
             height = maxHeight;
         }
-        
+
         canvas.width = width;
         canvas.height = height;
         ctx.drawImage(img, 0, 0, width, height);
@@ -214,7 +224,12 @@ function renderImage(fileId) {
         isRendering = false;
     };
     img.onerror = () => {
-        alert("이미지 로드 실패");
+        Swal.fire({ // alert -> Swal.fire
+            icon: 'error',
+            title: '오류',
+            text: '이미지 로드 실패',
+            confirmButtonText: '확인'
+        });
         ctx.clearRect(0, 0, canvas.width, canvas.height); // 오류 시 캔버스 초기화
         canvas.width = 1;
         canvas.height = 1;
@@ -261,11 +276,11 @@ $(document).ready(function() {
             success: function(data) {
                 console.log("AJAX 성공, 데이터:", data);
                 $('#modalBrdNo').text(data.brdNo);
-                
+
                 // 광고 상태 설정
                 const currentStatusCode = data.adsClientVO ? data.adsClientVO.adsStatusCode : '';
-                $('#modalAdsStatusCodeSelect').val(currentStatusCode); 
-                
+                $('#modalAdsStatusCodeSelect').val(currentStatusCode);
+
                 // 반려 내용 설정 및 표시/숨김 로직
                 const rejectMessageGroup = $('#rejectMessageGroup');
                 const modalAdsRejectMessage = $('#modalAdsRejectMessage');
@@ -290,9 +305,9 @@ $(document).ready(function() {
                 $('#modalAdsReqPblsEndDt').text(formatDateString(data.adsClientVO ? data.adsClientVO.adsReqPblsEndDt : null));
                 $('#modalBrdPblsDtm').text(data.formattedBrdPblsDtm || formatDateTimeString(data.brdPblsDtm));
                 $('#modalMbrId').text(data.mbrId);
-                
-				$('#adsDetailModal').data('brdNo', data.brdNo); 
-				
+
+                $('#adsDetailModal').data('brdNo', data.brdNo);
+
 				 // 파일 미리보기 초기화 로직 추가
                 const fileDataHolder = document.querySelector("#adsDetailModal #fileDataHolder");
                 const fileListJson = JSON.stringify(data.attachFiles || []); // attachFiles가 null일 경우 빈 배열
@@ -324,7 +339,7 @@ $(document).ready(function() {
                 // 기존에 이미 등록되어 있을 수 있으므로, .off()로 제거 후 .on()으로 다시 등록
                 $('#adsDetailModal #prevBtn').off('click').on('click', prevFile);
                 $('#adsDetailModal #nextBtn').off('click').on('click', nextFile);
-                
+
                 const toggleBtn = document.querySelector("#adsDetailModal #toggleFileListBtn");
                 const fileTable = document.querySelector("#adsDetailModal #fileTable");
                 // 초기 상태는 숨김
@@ -341,14 +356,20 @@ $(document).ready(function() {
                     }
                 });
 
+                $('#adsDetailModal').modal('show'); // 모달 표시
             },
             error: function(xhr, status, error) {
                 console.error("AJAX 실패:", status, error, xhr.responseText);
-                alert("상세 정보를 가져오는 데 실패했습니다.");
+                Swal.fire({ // alert -> Swal.fire
+                    icon: 'error',
+                    title: '오류',
+                    text: '상세 정보를 가져오는 데 실패했습니다.',
+                    confirmButtonText: '확인'
+                });
             }
         });
     });
-    
+
     // 광고 상태 드롭다운 변경 이벤트
     $('#modalAdsStatusCodeSelect').on('change', function() {
         const selectedStatus = $(this).val();
@@ -370,46 +391,82 @@ $(document).ready(function() {
         const adsRejectMessage = $('#modalAdsRejectMessage').val(); // 반려 내용 가져오기
 
         if (!brdNo) {
-            alert("광고 번호를 찾을 수 없습니다.");
+            Swal.fire({ // alert -> Swal.fire
+                icon: 'error',
+                title: '오류',
+                text: '광고 번호를 찾을 수 없습니다.',
+                confirmButtonText: '확인'
+            });
             return;
         }
 
         // '반려' 상태일 때 반려 내용 필수 유효성 검사
         if (newStatusCode === '반려' && (adsRejectMessage === null || adsRejectMessage.trim() === '')) {
-            alert("반려 상태인 경우 반려 내용을 입력해야 합니다.");
+            Swal.fire({ // alert -> Swal.fire
+                icon: 'warning',
+                title: '경고',
+                text: '반려 상태인 경우 반려 내용을 입력해야 합니다.',
+                confirmButtonText: '확인'
+            });
             $('#modalAdsRejectMessage').focus();
             return;
         }
 
-        if (confirm("정말 광고 상태를 바꾸시겠습니까?")) {
-            $.ajax({
-                url: contextPath + '/admin/businessAds/updateAdsStatus.do',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    brdNo: brdNo,
-                    adsStatusCode: newStatusCode,
-                    adsRejectMessage: adsRejectMessage // 반려 내용 포함하여 전송
-                }),
-                dataType: 'json',
-                success: function(response) {
-                    console.log("서버 응답:", response);
-                    if (response.success) {
-                        alert(response.message);
-                        $('#adsDetailModal').modal('hide');
-                        $('#searchForm').submit(); // 리스트 새로고침
-                    } else {
-                        alert("광고 상태 업데이트에 실패했습니다: " + response.message);
+        Swal.fire({ // confirm -> Swal.fire
+            title: '정말 광고 상태를 바꾸시겠습니까?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: contextPath + '/admin/businessAds/updateAdsStatus.do',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        brdNo: brdNo,
+                        adsStatusCode: newStatusCode,
+                        adsRejectMessage: adsRejectMessage // 반려 내용 포함하여 전송
+                    }),
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log("서버 응답:", response);
+                        if (response.success) {
+                            Swal.fire({ // alert -> Swal.fire
+                                icon: 'success',
+                                title: '성공',
+                                text: response.message,
+                                confirmButtonText: '확인'
+                            }).then(() => {
+                                $('#adsDetailModal').modal('hide');
+                                $('#searchForm').submit(); // 리스트 새로고침
+                            });
+                        } else {
+                            Swal.fire({ // alert -> Swal.fire
+                                icon: 'error',
+                                title: '실패',
+                                text: "광고 상태 업데이트에 실패했습니다: " + response.message,
+                                confirmButtonText: '확인'
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("광고 상태 업데이트 AJAX 실패:", status, error, xhr.responseText);
+                        Swal.fire({ // alert -> Swal.fire
+                            icon: 'error',
+                            title: '오류',
+                            text: '광고 상태 업데이트 중 통신 오류가 발생했습니다.',
+                            confirmButtonText: '확인'
+                        });
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error("광고 상태 업데이트 AJAX 실패:", status, error, xhr.responseText);
-                    alert("광고 상태 업데이트 중 통신 오류가 발생했습니다.");
-                }
-            });
-        }
+                });
+            }
+        });
     });
-    
+
     // 모달이 닫힐 때 파일 미리보기 상태 초기화
     $('#adsDetailModal').on('hidden.bs.modal', function () {
         currentFileList = [];
@@ -428,5 +485,11 @@ $(document).ready(function() {
         // 모달 닫힐 때 반려 내용 필드 숨기고 초기화
         $('#rejectMessageGroup').hide();
         $('#modalAdsRejectMessage').val('');
+    });
+    $('#closeAdsDetailModalBtnX').on('click', function() {
+        $('#adsDetailModal').modal('hide');
+    });
+    $('#closeReportDetailModalBtn').on('click', function() {
+        $('#adsDetailModal').modal('hide');
     });
 });

@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/common_admin.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/board/userList.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/business/filePopup.css">
-    <link rel="styleSheet" href="${pageContext.request.contextPath }/app/css/main/mainMap/kakaoMap.css">
+<%--     <link rel="styleSheet" href="${pageContext.request.contextPath }/app/css/main/mainMap/kakaoMap.css"> --%>
 </head>
 <body>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -146,22 +146,28 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="reportDetailModalLabel">신고 상세 내용</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" id="closeReportDetailModalBtnX" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p><strong>신고 ID :</strong> <span id="modalReportId"></span></p>
-                <p><strong>게시글 제목 :</strong> <span id="modalBrdTitlNm"></span></p>
-                <p><strong id="modalTargetIdLabel"></strong><span id="modalRptTargetId"></span></p>
-                <p><strong>신고 내용 :</strong></p>
-                <div id="modalBrdCont" class="alert alert-secondary"></div>
-
-
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width">신고 ID :</strong> <span id="modalReportId"></span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width">게시글 제목 :</strong> <span id="modalBrdTitlNm"></span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <strong class="label-width" id="modalTargetIdLabel"></strong><span id="modalRptTargetId"></span>
+                </div>
+				<div class="d-flex align-items-center mb-2">
+                	<strong class="label-width align-self-start">신고 내용 :</strong>
+                	<div id="modalBrdCont" class="alert alert-secondary"></div>
+				</div>
                 <div id="memberSpecificInfo" style="display: none;">
                     <hr>
                     <div class="form-group d-flex align-items-center">
-                        <label for="modalNewMbrStatus" class="mr-2 mb-0"><strong>피신고자 상태 :</strong></label>
+                        <label for="modalNewMbrStatus" class="mr-2 mb-0 label-width"><strong>피신고자 상태 :</strong></label>
                         <select class="form-control" id="modalNewMbrStatus">
                             <option value="ACTIVE">정상</option>
                             <option value="INACTIVE">비활성</option>
@@ -172,7 +178,7 @@
                 </div>
                 <div id="listingSpecificInfo" style="display: none;">
                     <div class="form-group d-flex align-items-center">
-                        <label for="modalNewLtsgDel" class="mr-2 mb-0"><strong>피신고매물 삭제 상태 : </strong></label>
+                        <label for="modalNewLtsgDel" class="mr-2 mb-0 label-width"><strong>피신고매물 삭제 상태 : </strong></label>
                         <select class="form-control" id="modalNewLtsgDel">
                             <option value="N">미삭제 (활성)</option>
                             <option value="Y">삭제 (비활성)</option>
@@ -180,7 +186,7 @@
                     </div>
                 </div>
                 <div class="form-group d-flex align-items-center">
-                    <label for="modalRptStatusCode" class="mr-2 mb-0"><strong>신고 처리 상태 :</strong></label>
+                    <label for="modalRptStatusCode" class="mr-2 mb-0 label-width"><strong>신고 처리 상태 :</strong></label>
                     <select class="form-control" id="modalRptStatusCode">
                         <option value="REG">등록</option>
                         <option value="PROC">접수처리중</option>
@@ -224,8 +230,8 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="listingDetailModalLabel">매물 상세 정보 (확인용)</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title" id="listingDetailModalLabel">매물 상세 정보</h5>
+                <button type="button" class="close" data-dismiss="modal" id="closeListingDetailModalBtnX" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -240,16 +246,37 @@
 
                 <div id="listingBasicInfo" class="mb-4">
                     <h3 class="mb-3"><span id="detailListingTitle"></span></h3>
-                    <p><strong>가격:</strong> <span id="detailListingPrice"></span></p>
-                    <p><strong>주소:</strong> <span id="detailListingAddress"></span></p>
-                    <p><strong>평수:</strong> <span id="detailListingArea"></span></p>
-                    <p><strong>관리비:</strong> <span id="detailListingMaintFee"></span></p>
-                    <p><strong>층수:</strong> <span id="detailListingFloor"></span></p>
-                    <p><strong>옵션:</strong> <span id="detailListingOption"></span></p>
+                    <p><span id="detailListingAddress"></span></p>
+
+                    <h2>가격 정보</h2>
+                    <div class="d-flex align-items-center mb-2">
+                        <strong class="label-width">거래유형:</strong> <span id="detailListingTypeSale"></span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <strong class="label-width">가격:</strong> <span id="detailListingPrice"></span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <strong class="label-width">관리비:</strong> <span id="detailListingMaintFee"></span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <strong class="label-width">면적:</strong> <span id="detailListingArea"></span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <strong class="label-width">방 개수:</strong> <span id="detailListingRoomCnt"></span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <strong class="label-width">층수:</strong> <span id="detailListingFloor"></span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <strong class="label-width">주차:</strong> <span id="detailListingParkYn"></span>
+                    </div>
+
+                    <h2 class="mt-4">시설 옵션</h2>
+                    <div id="detailListingOption" class="d-flex flex-wrap"></div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                <button type="button" class="btn btn-secondary" id="closeListingDetailModalBtn">닫기</button>
             </div>
         </div>
     </div>
@@ -260,7 +287,7 @@
         <div class="modal-content bg-transparent border-0">
             <div class="modal-body text-center p-0">
                 <img id="galleryFullImage" class="img-fluid" style="max-height: 90vh; object-fit: contain;">
-                <button type="button" class="close text-white position-absolute" style="top: 15px; right: 15px; font-size: 2rem;" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close text-white position-absolute" id="CloseImageGalleryModalBtnX" style="top: 15px; right: 15px; font-size: 2rem;" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <a class="carousel-control-prev" href="#" role="button" data-slide="prev" id="galleryPrevBtn">

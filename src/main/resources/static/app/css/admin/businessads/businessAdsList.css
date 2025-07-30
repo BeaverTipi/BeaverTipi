@@ -59,6 +59,9 @@
 .alert-secondary { /* 해당 클래스가 없으면 영향 없음 */
     white-space: pre-wrap;
     word-break: break-all;
+    background-color: transparent !important;
+    border-color: transparent !important;
+    padding: 0 !important;
 }
 
 /* 탭 스타일 추가 (현재 페이지에는 탭 구조가 없으므로 영향 없음) */
@@ -78,4 +81,22 @@
 .nav-tabs {
     border-bottom: 1px solid #dee2e6;
     margin-bottom: 20px;
+}
+.label-width {
+    width: 110px; /* '희망 게재 시작일' 등의 긴 레이블을 고려하여 충분한 너비로 조절 */
+    display: inline-block;
+    margin-right: 10px; /* 레이블과 값 사이의 간격 */
+    flex-shrink: 0; /* 레이블이 줄어들지 않도록 함 */
+}
+
+/* 모달 내부 텍스트 및 레이아웃을 다듬는 추가 스타일 (선택 사항) */
+.modal-body strong {
+    font-weight: bold;
+}
+
+/* 반려 내용 textarea의 레이블도 일반 레이블과 통일감 있게 보려면 */
+#rejectMessageGroup label {
+    font-weight: bold;
+    /* label-width와 같이 정렬하고 싶다면 해당 div에 d-flex를 적용해야 합니다.
+       현재는 textarea는 별도 줄로 내려가는 것이 자연스러워서 p 태그처럼 그대로 두었습니다. */
 }

@@ -1,34 +1,34 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const resetButton = document.getElementById('resetBtn'); 
+    const resetButton = document.getElementById('resetBtn');
     const searchBtn = document.getElementById('searchBtn');
     const searchForm = document.getElementById('searchForm');
-    
+
     // 검색 필드 요소 참조
-    const userRoleIdSelect = document.querySelector('[name="userRoleId"]'); 
-    const mbrIdInput = document.querySelector('[name="mbrId"]'); 
+    const userRoleIdSelect = document.querySelector('[name="userRoleId"]');
+    const mbrIdInput = document.querySelector('[name="mbrId"]');
     const mbrFrstRegDtFrom = document.querySelector('[name="mbrFrstRegDtFrom"]');
     const mbrFrstRegDtTo = document.querySelector('[name="mbrFrstRegDtTo"]');
-    const mbrStatusCodeSelect = document.querySelector('[name="mbrStatusCode"]'); 
-    const mbrEmlAddrInput = document.querySelector('[name="mbrEmlAddr"]'); 
+    const mbrStatusCodeSelect = document.querySelector('[name="mbrStatusCode"]');
+    const mbrEmlAddrInput = document.querySelector('[name="mbrEmlAddr"]');
     const memberNameSearchInput = document.getElementById('memberNameSearchInput');
     const memberNicknameSearchInput = document.getElementById('memberNicknameSearchInput');
 
-    const currentPageNoInput = document.getElementById('currentPageNoInput'); 
+    const currentPageNoInput = document.getElementById('currentPageNoInput');
 
-	const closeButtons = document.querySelectorAll('[data-dismiss="modal"]');
-	    closeButtons.forEach(button => {
-	        button.addEventListener('click', function(event) {
-	            console.log('닫기 버튼 클릭됨!', this);
-	            console.log('클릭된 버튼의 data-dismiss 값:', this.getAttribute('data-dismiss'));
+    const closeButtons = document.querySelectorAll('[data-dismiss="modal"]');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            console.log('닫기 버튼 클릭됨!', this);
+            console.log('클릭된 버튼의 data-dismiss 값:', this.getAttribute('data-dismiss'));
         });
     });
 
     // 페이징 처리 함수
     window.fnPaging = function(pageNo) {
         if (currentPageNoInput) {
-            currentPageNoInput.value = pageNo; 
+            currentPageNoInput.value = pageNo;
         }
-        searchForm.submit(); 
+        searchForm.submit();
     };
 
     // 초기화 버튼 클릭 이벤트
@@ -43,19 +43,19 @@ document.addEventListener('DOMContentLoaded', function() {
             if (memberNicknameSearchInput) memberNicknameSearchInput.value = '';
 
             // 드롭다운 초기화
-            if (userRoleIdSelect) userRoleIdSelect.value = ''; 
-            if (mbrStatusCodeSelect) mbrStatusCodeSelect.value = ''; 
+            if (userRoleIdSelect) userRoleIdSelect.value = '';
+            if (mbrStatusCodeSelect) mbrStatusCodeSelect.value = '';
 
-            // 페이지 번호도 1로 초기화 
+            // 페이지 번호도 1로 초기화
             if (currentPageNoInput) {
                 currentPageNoInput.value = 1;
             }
 
-            searchForm.submit(); 
+            searchForm.submit();
         });
     }
 
-	// --- 검색 폼 제출 이벤트 ---
+    // --- 검색 폼 제출 이벤트 ---
     if (searchForm) {
         searchForm.addEventListener('submit', function(event) {
             // "검색" 버튼 클릭 시 페이지를 1로 초기화 (일반적인 검색 동작)
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 $('#modalMbrNm').text(member.mbrNm || 'null');
                 $('#modalMbrId').text(member.mbrId || 'null');
                 $('#modalMbrNnm').text(member.mbrNnm || 'null');
-                
+
                 // 회원 구분 (여러 개일 수 있으므로 쉼표로 연결)
                 let userRoleDisplay = 'null';
                 if (member.memRoleList && member.memRoleList.length > 0) {
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 $('#modalMbrFrstRegDt').text(member.mbrFrstRegDt || 'null');
                 $('#modalMbrEmlAddr').text(member.mbrEmlAddr || 'null');
-                
+
                 // 회원 상태 드롭다운 선택
                 $('#modalMbrStatusCode').val(member.mbrStatusCode);
 
@@ -109,7 +109,12 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('회원 상세 정보 로드 실패:', error);
-                alert('회원 상세 정보를 불러오는 데 실패했습니다.');
+                Swal.fire({
+                    title: "오류",
+                    text: "회원 상세 정보를 불러오는 데 실패했습니다.",
+                    icon: "error",
+                    confirmButtonText: "확인"
+                });
             });
     });
 
@@ -119,43 +124,70 @@ document.addEventListener('DOMContentLoaded', function() {
         const newMbrStatusCode = $('#modalMbrStatusCode').val();
 
         if (!mbrCd || !newMbrStatusCode) {
-            alert('회원 정보가 불완전합니다.');
+            Swal.fire({
+                title: "경고",
+                text: "회원 정보가 불완전합니다.",
+                icon: "warning",
+                confirmButtonText: "확인"
+            });
             return;
         }
-        
+
         const statusDisplayNames = {
             'ACTIVE': '정상',
             'INACTIVE': '비활성',
             'SUSPENDED': '정지',
             'WITHDRAWN': '탈퇴'
         };
-        
-    	const displayStatus = statusDisplayNames[newMbrStatusCode] || newMbrStatusCode; // 매핑된 이름이 없으면 원본 코드 사용
 
+        const displayStatus = statusDisplayNames[newMbrStatusCode] || newMbrStatusCode; // 매핑된 이름이 없으면 원본 코드 사용
 
-        if (confirm(`회원 ${mbrCd}의 상태를 '${displayStatus}'(으)로 변경하시겠습니까?`)) {	// 한글로 바꿔줄려고 newMbrStatusCode말고 displayStatus 사용
-            axios.post('/admin/member/updateStatusFromDetail', null, {
-                params: {
-                    mbrCd: mbrCd,
-                    mbrStatusCode: newMbrStatusCode
-                }
-            })
-            .then(response => {
-                if (response.data === 'SUCCESS') {
-                    alert('회원 상태가 성공적으로 변경되었습니다.');
-                    $('#memberDetailModal').modal('hide'); // 모달 닫기 -> 이거 왜 작동 안됨?
-                    window.location.reload(); // 페이지 새로고침하여 변경된 상태 반영
-                } else {
-                    alert('회원 상태 변경에 실패했습니다.');
-                }
-            })
-            .catch(error => {
-                console.error('회원 상태 변경 AJAX 오류:', error);
-                alert('회원 상태 변경 중 오류가 발생했습니다.');
-            });
-        }
+        Swal.fire({
+            title: `회원 ${mbrCd}의 상태를 '${displayStatus}'(으)로 변경하시겠습니까?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.post('/admin/member/updateStatusFromDetail', null, {
+                    params: {
+                        mbrCd: mbrCd,
+                        mbrStatusCode: newMbrStatusCode
+                    }
+                })
+                .then(response => {
+                    if (response.data === 'SUCCESS') {
+                        Swal.fire({
+                            title: "성공",
+                            text: "회원 상태가 성공적으로 변경되었습니다.",
+                            icon: "success",
+                            confirmButtonText: "확인"
+                        }).then(() => {
+                            $('#memberDetailModal').modal('hide'); // 모달 닫기
+                            window.location.reload(); // 페이지 새로고침하여 변경된 상태 반영
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "실패",
+                            text: "회원 상태 변경에 실패했습니다.",
+                            icon: "error",
+                            confirmButtonText: "확인"
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('회원 상태 변경 AJAX 오류:', error);
+                    Swal.fire({
+                        title: "오류",
+                        text: "회원 상태 변경 중 오류가 발생했습니다.",
+                        icon: "error",
+                        confirmButtonText: "확인"
+                    });
+                });
+            }
+        });
     });
-
-    // 기존의 일괄 저장 관련 코드는 제거 (더 이상 필요 없으므로)
-    // if (saveButton) { ... }
 });
