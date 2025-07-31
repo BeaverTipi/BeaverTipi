@@ -19,5 +19,8 @@ public interface NoticePostMapper {
     public int insertQna(BoardVO board);
     public int updateQna(BoardVO board);
     public int deleteBoard(String brdNo);
+    public int updateNotice(BoardVO board);
+    public int deleteBoardList(List<String> brdNoList);
+    public int insertNotice(BoardVO board);
     public int selectTotalBoardRecord(PaginationInfo<BoardVO> paging);
 }

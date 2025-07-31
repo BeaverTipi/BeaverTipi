@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import kr.or.ddit.util.validate.DeleteGroup;
 import kr.or.ddit.util.validate.InsertGroup;
@@ -27,9 +28,9 @@ public class BoardVO implements Serializable {
 	@NotBlank(groups = InsertGroup.class)
 	private String mbrCd;
 	private String mbrId; // 작성자 ID
-	@NotBlank
+	@NotBlank(message = "제목을 입력하세요.", groups = {InsertGroup.class, UpdateGroup.class})
 	private String brdTitlNm;
-	@NotBlank
+	@NotBlank(message = "내용을 입력하세요.", groups = {InsertGroup.class, UpdateGroup.class})
 	private String brdCont;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDateTime brdPblsDtm;
@@ -40,7 +41,6 @@ public class BoardVO implements Serializable {
 	private String brdDelYn;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate brdEndDtm;
-
 	private String noticeType;
 	private String faqCtgry;
 	private String qnaCtgry;
@@ -55,14 +55,10 @@ public class BoardVO implements Serializable {
 	// ======================== 시스템 관리자 관련 ========================
 	private String brdCtgryValue;
 	private String brdCtgryCode; 
-	private String brdCtgryName; 
-
+	private String brdCtgryName;
+	private String mbrNm;
 	private String brdCodeName;  
-
-	// FAQ 전용
 	private String faqCtgryName;  
-
-	// QNA 전용
 	private String qnaStatus;  
 	private String qnaStatusName; 
 	private String qnaCtgryName;  
@@ -94,6 +90,21 @@ public class BoardVO implements Serializable {
 		
 	}
 	
+	@AssertTrue(message = "공지 유형은 필수입니다", groups = InsertGroup.class)
+	public boolean isNoticeTypeRequired() {
+	    if ("S0001".equals(this.brdCode)) {
+	        return noticeType != null && !noticeType.trim().isEmpty();
+	    }
+	    return true;
+	}
+	
+	private String qnaId;
+	private String faqId;
+	private String answerCont;
+	private String answerAdminId;
+	private String faqVO;
+	private String faqCtgryNm;
+	private String qnaCtgryNm;
 	// ======================== 시스템 관리자 끝 ========================
 
 	private MemberVO member;

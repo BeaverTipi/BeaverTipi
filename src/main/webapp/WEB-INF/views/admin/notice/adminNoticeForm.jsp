@@ -5,7 +5,7 @@
 
 <head>
 <meta charset="UTF-8">
-<title>새 게시글 등록</title>
+<title>게시글 변경</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/common_admin.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/app/css/admin/board/adminNotice.css">
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
@@ -15,14 +15,19 @@
 <script src="${pageContext.request.contextPath}/app/js/admin/board/boardToggle.js"></script>
 </head>
 <body>
-	<h1>게시글 등록</h1>
+	<h1>게시글 추가 및 변경</h1>
 	<div class="card">
 		<div class="card-body">
-			<form:form modelAttribute="board" method="post">
+			<form:form modelAttribute="board" method="post" id="writeForm"
+			action="${pageContext.request.contextPath}/admin/notice/form${empty board.brdNo ? '/insert' : '/update'}">
     			<form:hidden path="brdDelYn" value="N" />
     			<form:hidden path="brdCtgryGrpCd" value="BRDCT" />
     			<form:hidden path="brdCode" id="brdCodeHidden" />
-
+    			<c:if test="${not empty board.brdNo}">
+				  <form:hidden path="brdNo" />
+				</c:if>
+				<input type="hidden" name="brdCont" id="finalBrdCont" />
+				
 				<div class="form-control">
 					<label class="label" for="brdTitlNm">제목</label>
 					<form:input path="brdTitlNm" placeholder="제목을 입력하세요" />
@@ -67,7 +72,9 @@
 				  </div>
 				  <div class="form-control">
 				  	<label class="label">내용</label>
-				  	<form:textarea path="brdCont" id="summernote-notice" />
+				  	<textarea id="summernote-notice" name="tempContent" class="summernote-box">
+				  		 <c:out value="${board.brdCont}" escapeXml="false"/>
+				  	</textarea>
 				  	<form:errors path="brdCont" cssClass="text-danger" />
 				  </div>
 				</div>
@@ -84,7 +91,9 @@
 				  </div>
 				  <div class="form-control">
 				  	<label class="label">내용</label>
-				  	<form:textarea path="brdCont" id="summernote-faq" />
+				  	<textarea id="summernote-faq" name="tempContent" class="summernote-box">
+				  		 <c:out value="${board.brdCont}" escapeXml="false"/>
+				  	</textarea>
 				  	<form:errors path="brdCont" cssClass="text-danger" />
 				  </div>
 				</div>
@@ -101,16 +110,20 @@
 				  </div>
 				  <div class="form-control">
 				  	<label class="label">내용</label>
-				  	<form:textarea path="brdCont" id="summernote-qna" />
+				  	<textarea id="summernote-qna" name="tempContent" class="summernote-box">
+				  		 <c:out value="${board.brdCont}" escapeXml="false"/>
+				  	</textarea>
 				  	<form:errors path="brdCont" cssClass="text-danger" />
 				  </div>
 				</div>
 
 				<div class="card-footer">
-					<div class="button-group">
-						<button type="submit" class="btn btn-outline-success">등록</button>
-						<a class="btn btn-outline-danger" href="${pageContext.request.contextPath}/admin/notice/list">취소</a>
-					</div>
+				  <div class="button-group">
+				    <button type="submit" class="btn btn-outline-success">
+				      ${empty board.brdNo ? '등록' : '수정'}
+				    </button>
+				    <a class="btn btn-outline-danger" href="${pageContext.request.contextPath}/admin/notice/list">취소</a>
+				  </div>
 				</div>
 			</form:form>
 		</div>

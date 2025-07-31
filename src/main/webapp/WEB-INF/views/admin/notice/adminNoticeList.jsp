@@ -9,16 +9,15 @@
 <script src="${pageContext.request.contextPath}/app/js/admin/board/boardToggle.js"></script>
 </head>
 <body>
-
 	<h1 class="board-title">게시판</h1>
 
 	<ul class="nav nav-tabs customtab" role="tablist">
 		<li class="nav-item ${activeTab eq 'notice' ? 'active' : ''}"><a
 			class="nav-link" href="?tab=notice">공지사항</a></li>
-		<li class="nav-item ${activeTab eq 'faq' ? 'active' : ''}"><a
-			class="nav-link" href="?tab=faq">FAQ</a></li>
 		<li class="nav-item ${activeTab eq 'qna' ? 'active' : ''}"><a
 			class="nav-link" href="?tab=qna">QNA</a></li>
+		<li class="nav-item ${activeTab eq 'faq' ? 'active' : ''}"><a
+			class="nav-link" href="?tab=faq">FAQ</a></li>
 	</ul>
 
 	<c:choose>
@@ -60,12 +59,11 @@
 	</c:if>
 
 	<div class="write-buttons">
-		<button class="btn-success"
-			onclick="location.href='${pageContext.request.contextPath}/admin/notice/write?tab=${activeTab}'">추가</button>
-		<button class="btn-danger"
-			onclick="location.href='${pageContext.request.contextPath}/admin/notice/delete?tab=${activeTab}'">삭제</button>
-		<button class="btn-warning"
-			onclick="location.href='${pageContext.request.contextPath}/admin/notice/update?tab=${activeTab}'">수정</button>
+	  <button type="button" class="btn-success"
+	    onclick="location.href='/admin/notice/form?tab=${activeTab}'">추가</button>
+	  <button type="button" id="toggleDeleteModeBtn" class="btn btn-danger">삭제</button>
+	  <button type="submit" form="deleteForm" id="deleteSelectedBtn" class="btn btn-dark" style="display: none;">선택 삭제</button>
 	</div>
+
 
 </body>

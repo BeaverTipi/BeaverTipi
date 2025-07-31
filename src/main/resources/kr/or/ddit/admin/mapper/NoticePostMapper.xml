@@ -1,109 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.admin.mapper.NoticePostMapper">
-	<resultMap id="boardResultMap" type="kr.or.ddit.vo.BoardVO">
-		<result property="brdNo" column="BRD_NO" />
-		<result property="brdCode" column="BRD_CODE" />
-		<result property="brdTitlNm" column="BRD_TITL_NM" />
-		<result property="brdCont" column="BRD_CONT" />
-		<result property="brdPblsDtm" column="BRD_PBLS_DTM" />
-		<result property="brdVwCnt" column="BRD_VW_CNT" />
-		<result property="brdEndDtm" column="BRD_END_DTM" />
-		<result property="brdDelYn" column="BRD_DEL_YN" />
-		<result property="brdCtgryGrpCd" column="BRD_CTGRY_GRP_CD" />
-		<result property="noticeTypeName" column="BRD_CODE_NAME" />
-		<result property="faqCtgry" column="FAQ_CTGRY" />
-		<result property="qnaCtgry" column="QNA_CTGRY" />
-		<result property="qnaStatus" column="QNA_STATUS" />
-		<result property="qnaAnsweredAt" column="QNA_ANSWERED_AT" />
-	</resultMap>
-	
 
-	<select id="selectBoardList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultMap="boardResultMap">
-	  SELECT *
-	  FROM (
-	    SELECT ROWNUM rn, inner.*
-	    FROM (
-	      SELECT
-	        BD.BRD_NO,
-	        BD.BRD_CODE,
-	        BD.BRD_TITL_NM,
-	        BD.BRD_CONT,
-	        BD.BRD_PBLS_DTM,
-	        BD.BRD_VW_CNT,
-	        BD.BRD_END_DTM,
-	        BD.BRD_DEL_YN,
-	        BD.BRD_CTGRY_GRP_CD,
-	        MEM.MBR_ID,
-	        MEM.MBR_CD,
-	        CODE.CODE_NAME AS BRD_CODE_NAME,
-	        (SELECT Q.QNA_STATUS FROM QNA Q WHERE Q.BRD_NO = BD.BRD_NO) AS qnaStatus,
-	        (SELECT Q.QNA_CTGRY FROM QNA Q WHERE Q.BRD_NO = BD.BRD_NO) AS qnaCtgry,
-	        (SELECT Q.QNA_ANSWERED_AT FROM QNA Q WHERE Q.BRD_NO = BD.BRD_NO) AS qnaAnsweredAt,
-	        (SELECT F.FAQ_CTGRY FROM FAQ F WHERE F.BRD_NO = BD.BRD_NO) AS faqCtgry
-	      FROM 
-	        BOARD BD
-	        LEFT JOIN MEMBER MEM ON BD.MBR_CD = MEM.MBR_CD
-	        INNER JOIN COMMON_CODE CODE 
-	          ON CODE.CODE_GROUP = 'BRDCT' AND CODE.CODE_VALUE = BD.BRD_CODE
-	      WHERE 
-	        BD.BRD_DEL_YN = 'N'
-	
-	        <if test="detailSearch.brdCode != null and detailSearch.brdCode != ''">
-			  AND BD.BRD_CODE = #{detailSearch.brdCode}
-			</if>
-			<if test="detailSearch.brdCode == 'S0001'">
-			  AND (BD.BRD_END_DTM IS NULL OR BD.BRD_END_DTM >= TRUNC(SYSDATE))
-			</if>
-	        
-	        <if test="(detailSearch.brdTitlNm != null and detailSearch.brdTitlNm != '') or 
-			          (detailSearch.brdCont != null and detailSearch.brdCont != '')">
-			  AND (
-			    <if test="detailSearch.brdTitlNm != null and detailSearch.brdTitlNm != ''">
-			      BD.BRD_TITL_NM LIKE '%' || #{detailSearch.brdTitlNm} || '%'
-			    </if>
-			    <if test="detailSearch.brdCont != null and detailSearch.brdCont != ''">
-			      OR BD.BRD_CONT LIKE '%' || #{detailSearch.brdCont} || '%'
-			    </if>
-			  )
-			</if>
+	<select id="selectBoardList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultType="kr.or.ddit.vo.BoardVO">
+	 SELECT *
+		FROM (
+		  SELECT inner.*, ROWNUM rn
+		  FROM (
+		    SELECT
+		      BD.BRD_NO,
+		      BD.BRD_CODE,
+		      BD.BRD_TITL_NM,
+		      BD.BRD_CONT,
+		      BD.BRD_PBLS_DTM,
+		      BD.BRD_VW_CNT,
+		      BD.BRD_END_DTM,
+		      BD.BRD_DEL_YN,
+		      BD.BRD_CTGRY_GRP_CD,
+		      MEM.MBR_ID,
+		      MEM.MBR_CD,
+		      MEM.MBR_NM,
+		      (SELECT C.CODE_NAME FROM BOARD_CARTEGORY BDC 
+		      JOIN COMMON_CODE C ON BDC.BRD_CTGRY = C.CODE_VALUE
+ 			  WHERE BDC.BRD_CODE = BD.BRD_CODE AND C.CODE_GROUP = 'BRDCT') AS brdCodeName,
+ 			  (SELECT C.CODE_NAME FROM NOTICE N 
+ 			  JOIN COMMON_CODE C ON N.NOTICE_TYPE = C.CODE_VALUE WHERE N.NOTICE_NO = BD.BRD_NO 
+			  AND C.CODE_GROUP = 'NOTPE') AS noticeTypeName,
+		      (SELECT Q.QNA_STATUS FROM QNA Q WHERE Q.BRD_NO = BD.BRD_NO) AS qnaStatus,
+		      (SELECT Q.QNA_CTGRY FROM QNA Q WHERE Q.BRD_NO = BD.BRD_NO) AS qnaCtgry,
+		      <choose>
+				  <when test="detailSearch.brdCode == 'S0002'">
+				    (SELECT CODE_NAME 
+				     FROM COMMON_CODE 
+				     WHERE CODE_GROUP = 'QNACT' 
+				       AND CODE_VALUE = (SELECT QNA_CTGRY FROM QNA WHERE BRD_NO = BD.BRD_NO)
+				    ) AS qnaCtgryNm,
+				  </when>
+				  <otherwise>
+				    NULL AS qnaCtgryNm,
+				  </otherwise>
+				</choose>
+		      (SELECT Q.QNA_ANSWERED_AT FROM QNA Q WHERE Q.BRD_NO = BD.BRD_NO) AS qnaAnsweredAt,
+		      (SELECT F.FAQ_CTGRY FROM FAQ F WHERE F.BRD_NO = BD.BRD_NO) AS faqCtgry,
+		      <choose>
+ 				 <when test="detailSearch.brdCode == 'S0003'">
+				      (SELECT C.CODE_NAME FROM COMMON_CODE C WHERE C.CODE_GROUP = 'FAQCT' 
+		   			  AND C.CODE_VALUE = (SELECT F.FAQ_CTGRY FROM FAQ F WHERE F.BRD_NO = BD.BRD_NO)
+					  ) AS faqCtgryNm
+				  </when>
+			  <otherwise>
+			    NULL AS faqCtgryNm
+			  </otherwise>
+			</choose>
+		    FROM 
+		      BOARD BD
+		      LEFT JOIN MEMBER MEM ON BD.MBR_CD = MEM.MBR_CD
+		    WHERE 
+		      BD.BRD_DEL_YN = 'N'
+		
+		      <if test="detailSearch.brdCode != null and detailSearch.brdCode != ''">
+		        AND BD.BRD_CODE = #{detailSearch.brdCode}
+		      </if>
+		      <if test="detailSearch.brdCode == 'S0001'">
+		        AND (BD.BRD_END_DTM IS NULL OR BD.BRD_END_DTM &gt;= TRUNC(SYSDATE))
+		      </if>
+		
+		      <if test="(detailSearch.brdTitlNm != null and detailSearch.brdTitlNm.trim() != '') or 
+		                (detailSearch.brdCont != null and detailSearch.brdCont.trim() != '')">
+		        AND (
+		          <if test="detailSearch.brdTitlNm != null and detailSearch.brdTitlNm.trim() != ''">
+		            BD.BRD_TITL_NM LIKE '%' || #{detailSearch.brdTitlNm} || '%'
+		          </if>
+		          <if test="detailSearch.brdCont != null and detailSearch.brdCont.trim() != ''">
+		            OR BD.BRD_CONT LIKE '%' || #{detailSearch.brdCont} || '%'
+		          </if>
+		        )
+		      </if>
+		
+		      <if test="detailSearch.brdPblsDtmStart != null and detailSearch.brdPblsDtmStart != ''">
+		        AND BD.BRD_PBLS_DTM &gt;= TO_DATE(#{detailSearch.brdPblsDtmStart}, 'YYYY-MM-DD')
+		      </if>
+		      <if test="detailSearch.brdPblsDtmEnd != null and detailSearch.brdPblsDtmEnd != ''">
+		        AND BD.BRD_PBLS_DTM &lt;= TO_DATE(#{detailSearch.brdPblsDtmEnd}, 'YYYY-MM-DD') + 1
+		      </if>
+		
+		      <if test="detailSearch.faqCtgry != null and detailSearch.faqCtgry != ''">
+		        AND EXISTS (
+		          SELECT 1 FROM FAQ F 
+		          WHERE F.BRD_NO = BD.BRD_NO AND F.FAQ_CTGRY = #{detailSearch.faqCtgry}
+		        )
+		      </if>
+		
+		      <if test="detailSearch.qnaCtgry != null and detailSearch.qnaCtgry != ''">
+		        AND EXISTS (
+		          SELECT 1 FROM QNA Q 
+		          WHERE Q.BRD_NO = BD.BRD_NO AND Q.QNA_CTGRY = #{detailSearch.qnaCtgry}
+		        )
+		      </if>
+		
+		      <if test="detailSearch.qnaStatus != null and detailSearch.qnaStatus != ''">
+		        AND EXISTS (
+		          SELECT 1 FROM QNA Q 
+		          WHERE Q.BRD_NO = BD.BRD_NO AND Q.QNA_STATUS = #{detailSearch.qnaStatus}
+		        )
+		      </if>
+		
+		    ORDER BY
+			  CASE 
+			    WHEN (SELECT N.NOTICE_TYPE FROM NOTICE N WHERE N.NOTICE_NO = BD.BRD_NO) = '002' THEN 1
+			    WHEN (SELECT N.NOTICE_TYPE FROM NOTICE N WHERE N.NOTICE_NO = BD.BRD_NO) = '003' THEN 2
+			    WHEN (SELECT N.NOTICE_TYPE FROM NOTICE N WHERE N.NOTICE_NO = BD.BRD_NO) = '001' THEN 3
+			    ELSE 4
+			  END ASC,
+			  BD.BRD_PBLS_DTM DESC
 
-	        <if test="detailSearch.brdPblsDtmStart != null and detailSearch.brdPblsDtmStart != ''">
-	          AND BD.BRD_PBLS_DTM &gt;= TO_DATE(#{detailSearch.brdPblsDtmStart}, 'YYYY-MM-DD')
-	        </if>
-	        <if test="detailSearch.brdPblsDtmEnd != null and detailSearch.brdPblsDtmEnd != ''">
-	          AND BD.BRD_PBLS_DTM &lt;= TO_DATE(#{detailSearch.brdPblsDtmEnd}, 'YYYY-MM-DD') + 1
-	        </if>
-	
-	        <if test="detailSearch.faqCtgry != null and detailSearch.faqCtgry != ''">
-	          AND EXISTS (
-	            SELECT 1 FROM FAQ F 
-	            WHERE F.BRD_NO = BD.BRD_NO AND F.FAQ_CTGRY = #{detailSearch.faqCtgry}
-	          )
-	        </if>
-	
-	        <if test="detailSearch.qnaCtgry != null and detailSearch.qnaCtgry != ''">
-	          AND EXISTS (
-	            SELECT 1 FROM QNA Q 
-	            WHERE Q.BRD_NO = BD.BRD_NO AND Q.QNA_CTGRY = #{detailSearch.qnaCtgry}
-	          )
-	        </if>
-	
-	        <if test="detailSearch.qnaStatus != null &amp;&amp; detailSearch.qnaStatus != ''">
-			  AND EXISTS (
-			    SELECT 1 FROM QNA Q 
-			    WHERE Q.BRD_NO = BD.BRD_NO AND Q.QNA_STATUS = #{detailSearch.qnaStatus}
-			  )
-			</if>
-	
-	      ORDER BY BD.BRD_PBLS_DTM DESC
-	    ) inner
-	    WHERE ROWNUM &lt;= #{lastRecordIndex}
-	  )
-	  WHERE rn &gt;= #{firstRecordIndex}
+		  ) inner
+		  WHERE ROWNUM &lt;= #{lastRecordIndex}
+		)
+		WHERE rn &gt;= #{firstRecordIndex}
 	</select>
 
-	<select id="selectBoardById" parameterType="String" resultMap="boardResultMap">
+	<select id="selectBoardById" parameterType="String" resultType="kr.or.ddit.vo.BoardVO">
 		SELECT
 			BD.BRD_NO,
 			BD.BRD_CODE,
@@ -125,6 +142,10 @@
 			(SELECT Q.QNA_CONT FROM QNA Q WHERE Q.BRD_NO = BD.BRD_NO) AS QNA_CONT,
 			(SELECT Q.ANSWER_CONT FROM QNA Q WHERE Q.BRD_NO = BD.BRD_NO) AS ANSWER_CONT,
 			(SELECT Q.QNA_ANSWERED_AT FROM QNA Q WHERE Q.BRD_NO = BD.BRD_NO) AS QNA_ANSWERED_AT,
+			(SELECT N.NOTICE_TYPE FROM NOTICE N WHERE N.NOTICE_NO = BD.BRD_NO) AS noticeType,
+			(SELECT C.CODE_NAME FROM NOTICE N 
+ 			  JOIN COMMON_CODE C ON N.NOTICE_TYPE = C.CODE_VALUE WHERE N.NOTICE_NO = BD.BRD_NO 
+			  AND C.CODE_GROUP = 'NOTPE') AS noticeTypeName,
 			(SELECT CODE_NAME 
 			 FROM COMMON_CODE 
 			 WHERE CODE_GROUP = 'QNA_STATUS' 
@@ -176,36 +197,20 @@
 	    )
 	</insert>
 	
-	<insert id="insertFAQ" parameterType="kr.or.ddit.vo.FAQVO">
+	<insert id="insertFAQ" parameterType="kr.or.ddit.vo.BoardVO">
 	    <selectKey keyProperty="faqId" order="BEFORE" resultType="String">
 	        SELECT TO_CHAR(SEQ_FAQ_ID.NEXTVAL) FROM DUAL
 	    </selectKey>
 	    INSERT INTO FAQ (
 	        FAQ_ID,
-	        BRD_NO,
-	        FAQ_CTGRY,
-	        FAQ_TITL,
-	        FAQ_CONT,
-	        FAQ_CNT,
-	        FAQ_YN,
-	        FAQ_MBR_ID,
-	        FAQ_CRE_DTM,
-	        FAQ_MOD_DTM,
-	        FAQ_CTGRY_GRP_CD,
-	        FAQ_YN_GRP_CD
+		    BRD_NO,
+		    FAQ_CTGRY,
+		    FAQ_CTGRY_GRP_CD
 	    ) VALUES (
 	        #{faqId},
-	        #{brdNo},
-	        #{faqCtgry},
-	        #{faqTitl},
-	        #{faqCont},
-	        #{faqCnt},
-	        #{faqYn},
-	        #{faqMbrId},
-	        SYSDATE,
-	        SYSDATE,
-	        #{faqCtgryGrpCd},
-	        #{faqYnGrpCd}
+		    #{brdNo},
+		    #{faqCtgry},
+		    'FAQCT'
 	    )
 	</insert>
 
@@ -213,44 +218,45 @@
 	    <selectKey keyProperty="qnaId" order="BEFORE" resultType="String">
 	        SELECT TO_CHAR(SEQ_QNA_ID.NEXTVAL) FROM DUAL
 	    </selectKey>
-	
 	    INSERT INTO QNA (
 	        QNA_ID,
-	        BRD_NO,
-	        QNA_CTGRY,
-	        QNA_TITL,
-	        QNA_CONT,
-	        ANSWER_CONT,
-	        QNA_STATUS,
-	        QNA_YN,
-	        QNA_CRE_DTM,
-	        QNA_MOD_DTM,
-	        QNA_ANSWERED_AT,
-	        MBR_CD,
-	        ANSWER_ADMIN_ID,
-	        QNA_CTGRY_GRP_CD,
-	        QNA_STATUS_GRP_CD,
-	        QNA_YN_GRP_CD
+		    BRD_NO,
+		    QNA_CTGRY,
+		    ANSWER_CONT,
+		    QNA_STATUS,
+		    QNA_ANSWERED_AT,
+		    MBR_CD,
+		    ANSWER_ADMIN_ID,
+		    QNA_CTGRY_GRP_CD,
+		    QNA_STATUS_GRP_CD,
+		    QNA_YN_GRP_CD
 	    ) VALUES (
 	        #{qnaId},
-	        #{brdNo},
-	        #{qnaCtgry},
-	        #{qnaTitl},
-	        #{qnaCont},
-	        #{answerCont},
-	        #{qnaStatus},
-	        #{qnaYn},
-	        SYSDATE,
-	        NULL,
-	        #{qnaAnsweredAt},
-	        #{mbrCd},
-	        #{answerAdminId},
-	        #{qnaCtgryGrpCd},
-	        #{qnaStatusGrpCd},
-	        #{qnaYnGrpCd}
+		    #{brdNo},
+		    #{qnaCtgry},
+		    #{answerCont},
+		    #{qnaStatus},
+		    #{qnaAnsweredAt},
+		    #{mbrCd}, 
+		    #{answerAdminId},
+		    'QNACT',
+		    'QNAST',
+		    'YNFG'
 	    )
 	</insert>
 	
+	<insert id="insertNotice" parameterType="kr.or.ddit.vo.BoardVO">
+	    INSERT INTO NOTICE (
+	        NOTICE_NO,
+	        NOTICE_TYPE,
+	        NOTICE_TYPE_GRP_CD
+	    ) VALUES (
+	        #{brdNo},
+	        #{noticeType},
+	        'NOTPE'
+	    )
+	</insert>
+
 	<update id="updateBoard" parameterType="kr.or.ddit.vo.BoardVO">
 	    UPDATE BOARD
 	    SET
@@ -266,17 +272,10 @@
 	        AND BRD_DEL_YN = 'N'
 	</update>
 
-	<update id="updateFAQ" parameterType="kr.or.ddit.vo.FAQVO">
+	<update id="updateFAQ" parameterType="kr.or.ddit.vo.BoardVO">
 	    UPDATE FAQ
 	    SET
-	        FAQ_CTGRY = #{faqCtgry},
-	        FAQ_TITL = #{faqTitl},
-	        FAQ_CONT = #{faqCont},
-	        FAQ_CNT = #{faqCnt},
-	        FAQ_YN = #{faqYn},
-	        FAQ_MOD_DTM = SYSDATE,
-	        FAQ_CTGRY_GRP_CD = #{faqCtgryGrpCd},
-	        FAQ_YN_GRP_CD = #{faqYnGrpCd}
+	        FAQ_CTGRY = #{faqCtgry}
 	    WHERE
 	        FAQ_ID = #{faqId}
 	</update>
@@ -284,21 +283,23 @@
 	<update id="updateQna" parameterType="kr.or.ddit.vo.BoardVO">
 	    UPDATE QNA
 	    SET
-	        QNA_CTGRY = #{qnaCtgry},
-	        QNA_TITL = #{qnaTitl},
-	        QNA_CONT = #{qnaCont},
 	        ANSWER_CONT = #{answerCont},
 	        QNA_STATUS = #{qnaStatus},
-	        QNA_YN = #{qnaYn},
-	        QNA_MOD_DTM = SYSDATE,
-	        QNA_ANSWERED_AT = #{qnaAnsweredAt},
-	        ANSWER_ADMIN_ID = #{answerAdminId},
-	        QNA_CTGRY_GRP_CD = #{qnaCtgryGrpCd},
-	        QNA_STATUS_GRP_CD = #{qnaStatusGrpCd},
-	        QNA_YN_GRP_CD = #{qnaYnGrpCd}
+	        QNA_ANSWERED_AT = SYSDATE,
+	        ANSWER_ADMIN_ID = #{answerAdminId}
 	    WHERE
-	        QNA_ID = #{qnaId}
+	        BRD_NO = #{brdNo}
 	</update>
+
+	
+	<update id="updateNotice" parameterType="kr.or.ddit.vo.BoardVO">
+	    UPDATE NOTICE
+	    SET
+	        NOTICE_TYPE = #{noticeType}
+	    WHERE
+	        NOTICE_NO = #{brdNo}
+	</update>
+	
 	
 	<update id="deleteBoard" parameterType="String">
 		UPDATE BOARD
@@ -308,8 +309,19 @@
 			BRD_NO = #{brdNo}
 			AND BRD_DEL_YN = 'N'
 	</update>
-
-
+	
+	<update id="deleteBoardList" parameterType="list">
+	    UPDATE BOARD
+	    SET
+	        BRD_DEL_YN = 'Y',
+	        BRD_MOD_DTM = SYSDATE
+	    WHERE BRD_NO IN
+	    <foreach collection="list" item="brdNo" open="(" separator="," close=")">
+	        #{brdNo}
+	    </foreach>
+	    AND BRD_DEL_YN = 'N'
+	</update>
+	
 	<select id="selectTotalBoardRecord" resultType="int" parameterType="kr.or.ddit.util.page.PaginationInfo">
 		SELECT COUNT(*)
 		FROM BOARD

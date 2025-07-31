@@ -10,9 +10,16 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 
+<form id="deleteForm" method="post" action="${pageContext.request.contextPath}/admin/notice/delete">
+  <input type="hidden" name="tab" value="${activeTab}" />
+  <input type="hidden" id="deleteMode" value="false" />
+
 <table class="table">
 	<thead>
 		<tr>
+			<th class="delete-column" style="display: none;">
+			  <input type="checkbox" id="selectAll" />
+			</th>
 			<th>No</th>
 			<th>제목</th>
 			<th>회원명</th>
@@ -25,16 +32,26 @@
 			<c:when test="${not empty boardList}">
 				<c:forEach items="${boardList}" var="board" varStatus="status">
 					<tr>
+						<td class="delete-column" style="display: none;">
+						  <input type="checkbox" name="brdNoList" value="${board.brdNo}" class="delete-checkbox" />
+						</td>
 						<td>
 							<c:out value="${(paging.currentPageNo - 1) * paging.pageSize + status.index + 1}" />
 						</td>
 						<td>
-							<a href="${pageContext.request.contextPath}/admin/notice/detail?brdNo=${board.brdNo}">
+							<a href="${pageContext.request.contextPath}/admin/detail/qna?brdNo=${board.brdNo}">
 								${board.brdTitlNm}
 							</a>
 						</td>
-						<td><c:out value="${board.memberVO.mbrNm}" /></td> 
-						<td><c:out value="${board.qnaCtgryName}" /></td>
+						<td><c:out value="${board.mbrNm}" /></td> 
+						<td>
+						  <c:choose>
+						    <c:when test="${not empty board.qnaCtgryNm}">
+						      <c:out value="${board.qnaCtgryNm}" />
+						    </c:when>
+						    <c:otherwise>-</c:otherwise>
+						  </c:choose>
+						</td>
 						<td>
 							<c:choose>
 								<c:when test="${board.qnaStatusName == '대기'}">

@@ -107,3 +107,45 @@
   background-color: #6c757d;
   color: #fff;
 }
+
+/* 상세 정보 CSS */
+.detail-container {
+  max-width: 1500px;
+  margin: 40px auto;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  padding: 30px;
+  border: 1px solid var(--color-border);
+  transition: transform 0.3s ease;
+}
+
+.detail-container h2.board-title {
+  margin-top: 0;
+  margin-bottom: 30px;
+  font-size: var(--font-title);
+  color: var(--color-text);
+  text-align: center;
+}
+
+.detail-container .table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+}
+
+.detail-container .table th {
+  background-color: #343a40;
+  text-align: left;
+  width: 150px;
+}
+
+.detail-container .table td {
+  text-align: left;
+}
+
+.detail-container .write-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
