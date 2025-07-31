@@ -137,6 +137,7 @@
       SELECT MBR_CD
       FROM CHAT_ROOM_IN
       WHERE RESIDENT_CHAT_ROOM_ID = #{residentChatRoomId}
+      AND RESIDENT_CHAT_ROOM_STATUS_CODE ='JOIN'
       )
    </select>
    
@@ -152,14 +153,17 @@
     </select>
    
    <select id="selectChatParticipantList" resultType ="kr.or.ddit.resident.chating.dto.ParticipantDTO">
-   SELECT DISTINCT A.MBR_CD, COALESCE(B.MBR_NNM,B.MBR_NM) AS MBR_NNM , E.UNIT_ROOM
+
+   SELECT DISTINCT A.MBR_CD, COALESCE(B.MBR_NNM,B.MBR_NM) AS MBR_NNM , E.UNIT_ROOM , F.FILE_PATH_URL
    FROM CHAT_ROOM_IN A
    INNER JOIN MEMBER B ON (A.MBR_CD = B.MBR_CD)
    INNER JOIN RESIDENT_CHAT_ROOM C ON (A.RESIDENT_CHAT_ROOM_ID = C.RESIDENT_CHAT_ROOM_ID)
    INNER JOIN UNIT_RESIDENT D ON (A.MBR_CD = D.MBR_CD)
    INNER JOIN UNIT E ON (C.BLDG_ID = E.BLDG_ID AND D.UNIT_ID = E.UNIT_ID )
-   WHERE A.RESIDENT_CHAT_ROOM_ID = #{residentChatRoomId}
-   AND RESIDENT_CHAT_ROOM_STATUS_CODE = 'JOIN'
+   LEFT JOIN FILES F ON (A.MBR_CD = F.FILE_SOURCE_ID AND F.FILE_SOURCE_REF = 'MEMBER' AND B.MBR_PROFIL_IMAGE = F.FILE_ID)
+   WHERE A.RESIDENT_CHAT_ROOM_ID = '0000000055'
+   AND A.RESIDENT_CHAT_ROOM_STATUS_CODE = 'JOIN'
+   
    ORDER BY TO_NUMBER(E.UNIT_ROOM) , COALESCE(B.MBR_NNM,B.MBR_NM)
    </select>
    
@@ -197,5 +201,20 @@
    INNER JOIN UNIT D ON (C.UNIT_ID = D.UNIT_ID AND A.BLDG_ID = D.BLDG_ID)   
    </select>
    
+   <select id="checkChatRoom" resultType="Integer">
+   select count(*)
+	from chat_room_in
+	where resident_chat_room_id =#{residentChatRoomId}
+	and mbr_cd= #{mbrCd}
+   </select>
+   
+   <update id="chatRoomRejoin">
+   update chat_room_in
+	set resident_chat_room_status_code = 'JOIN',
+    chat_leave_date = NULL
+	where resident_chat_room_id = #{residentChatRoomId}
+    and mbr_cd=#{mbrCd}
+    and resident_chat_room_status_code ='LEAVED'
+   </update>
 
 </mapper>

@@ -7,6 +7,9 @@
 <script src="/app/js/building/chargeBill/giro.js"></script>
 </head>
 <body>
+<%
+  java.time.LocalDate now = java.time.LocalDate.now();
+%>
   <div class="charge-wrap">
     <h2>관리비 청구 등록</h2>
 
@@ -37,7 +40,7 @@
         </c:forEach>
       </select>
       <label>납기일</label>
-      <input type="date" name="dueDate">
+      <input type="date" name="dueDate" min ="<%=now.toString()%>">
     </div>
   </div>
 
@@ -77,7 +80,7 @@
   <div class="charge-section" id="residentContainer"></div>
 
   <div class="charge-buttons">
-    <button type="button" class="btn-submit" onclick="saveChargeData()">청구</button>
+    <button type="button" class="btn-submit" onclick="if (validateForm()) saveChargeData()">청구</button>
     <button type="reset" class="btn-reset">초기화</button>
   </div>
 </form>

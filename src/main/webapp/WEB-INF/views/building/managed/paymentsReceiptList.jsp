@@ -91,10 +91,11 @@
 
 
 
-<div id="billDetailModalWrapper" class="modal-overlay" style="display: none;"></div>
 	<script>
 		window.rentalPtyId = "${rentalPtyId}";
 	</script>
 	<script src="/app/js/building/chargeBill/paymentsReceiptList.js"></script>
+<div id="billDetailModalWrapper" class="modal-overlay" style="display: none;">
+</div>
 </body>
 </html>

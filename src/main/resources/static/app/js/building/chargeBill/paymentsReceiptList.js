@@ -265,16 +265,29 @@ function openDetailModal(item) {
 
   fetch(`/building/payments/receipt/list/history/details?${params.toString()}`)
     .then(res => res.text())
-    .then(html => {
-      const wrapper = document.getElementById("billDetailModalWrapper");
-      wrapper.innerHTML = html;
-      wrapper.style.display = "block";
-    })
-    .catch(err => console.error("상세 모달 로딩 실패", err));
+    .then(html => renderModalContent(html))
+    .catch(err => {
+      console.error("상세 모달 로딩 실패", err);
+      alert("상세 정보를 불러오는 데 실패했습니다. 잠시 후 다시 시도해주세요.");
+    });
+}
+
+function renderModalContent(html) {
+  const wrapper = document.getElementById("billDetailModalWrapper");
+  wrapper.innerHTML = ''; // 기존 내용 제거
+
+  const tempContainer = document.createElement("div");
+  tempContainer.innerHTML = html;
+
+  while (tempContainer.firstChild) {
+    wrapper.appendChild(tempContainer.firstChild);
+  }
+
+  wrapper.style.display = "block";
 }
 
 function closeModal() {
-  document.getElementById('billDetailModalWrapper').style.display = 'none';
+  const wrapper = document.getElementById("billDetailModalWrapper");
+  wrapper.style.display = "none";
 }
-
 

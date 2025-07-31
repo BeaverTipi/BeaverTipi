@@ -1,0 +1,266 @@
+
+
+@charset "UTF-8";
+
+body {
+  font-family: 'Pretendard', sans-serif;
+  font-size: 14px;
+  background-color: #f2f4f6;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.chargebill-modal .charge-wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.chargebill-modal .charge-section {
+  margin-bottom: 1.2rem;
+}
+
+.chargebill-modal .charge-section h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.0rem;
+  border-left: 4px solid #007bff;
+  padding-left: 0.5rem;
+}
+
+.chargebill-modal .control-row {
+  display: flex;
+  align-items: center;
+  gap: 2.0rem;
+  margin: 0.4rem 0;
+  flex-wrap: wrap;
+}
+
+.chargebill-modal .control-row label {
+  width: auto;
+  font-weight: 500;
+  margin-right: 0.4rem;
+}
+
+.chargebill-modal .control-row select,
+.chargebill-modal .control-row input[type="date"],
+.chargebill-modal .control-row button {
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.chargebill-modal .control-row select {
+  width: 250px;
+  height: 34px;
+  padding: 0 0.4rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+.chargebill-modal .control-row button {
+  min-width: 130px;
+  height: 34px;
+  padding: 0 0.8rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #00aaff;
+  color: white;
+  cursor: pointer;
+}
+
+.chargebill-modal .control-row input[type="date"] {
+  width: 180px;
+  height: 34px;
+  padding: 0 0.4rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+.chargebill-modal .charge-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 2rem;
+  margin-bottom: 0.8rem;
+}
+
+.chargebill-modal .charge-item {
+  display: flex;
+  align-items: center;
+}
+
+.chargebill-modal .charge-item label,
+.chargebill-modal .charge-row label {
+  width: 140px;
+  font-weight: 600;
+  font-size: 1rem;
+  font-family: 'Pretendard', sans-serif;
+  color: #333;
+  margin-right: 0.6rem;
+}
+
+.chargebill-modal .charge-item input {
+  flex: 1;
+  height: 32px;
+  padding: 0 0.6rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+.chargebill-modal .charge-item span {
+  margin-left: 0.4rem;
+  font-size: 1rem;
+  color: #555;
+}
+
+.chargebill-modal .resident-block {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #f7f9fc;
+  border-radius: 8px;
+  border: 1px solid #e0e4ea;
+}
+
+.chargebill-modal .resident-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.chargebill-modal .resident-header h4 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.chargebill-modal .resident-header button {
+  margin-left: 0.3rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.85rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.chargebill-modal .btn-fetch {
+  background-color: #28a745;
+  color: white;
+}
+
+.chargebill-modal .btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.chargebill-modal .charge-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 1.6rem;
+  flex-wrap: wrap;
+}
+
+.chargebill-modal .charge-buttons button {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #00aaff;
+  color: white;
+  cursor: pointer;
+  min-width: 100px;
+  text-align: center;
+}
+
+.chargebill-modal .btn-submit {
+  background-color: #00aaff;
+  color: white;
+}
+
+.chargebill-modal .btn-reset {
+  background-color: #6c757d;
+  color: white;
+}
+
+.chargebill-modal textarea[name^="desc_"],
+.chargebill-modal textarea[name="globalDesc"] {
+  width: 100%;
+  min-height: 80px;
+  padding: 0.8rem;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 0.9rem;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+  background-color: #fff;
+  box-sizing: border-box;
+  line-height: 1.5;
+  grid-column: 1 / -1;
+}
+
+.chargebill-modal {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  color: #222;
+}
+
+.chargebill-modal .charge-wrap {
+  line-height: 1.6;
+}
+
+.chargebill-modal .desc-box {
+  background-color: #f7f9fc;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  white-space: pre-line;
+}
+
+.chargebill-modal .charge-item label,
+.chargebill-modal .charge-item span,
+.chargebill-modal .resident-title,
+.chargebill-modal .btn-close-modal {
+  font-weight: 500;
+  font-size: 14px;
+  color: #222;
+}
+
+.chargebill-modal .resident-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1.2rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.4rem;
+}
+
+.chargebill-modal .resident-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.chargebill-modal .btn-close-modal {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}

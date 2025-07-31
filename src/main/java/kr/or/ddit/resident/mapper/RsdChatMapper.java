@@ -56,5 +56,13 @@ public interface RsdChatMapper {
 			);
 	public LastMessageDTO selectLastMessage(String residentChatRoomId);
 	
+	public int checkChatRoom( 
+			@Param("residentChatRoomId") String residentChatRoomId,
+			@Param("mbrCd") String mbrCd 
+			);
 	
+	public int chatRoomRejoin(			 
+			  @Param("residentChatRoomId") String residentChatRoomId,
+			  @Param("mbrCd") String mbrCd 
+			  );
 }

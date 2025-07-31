@@ -51,6 +51,8 @@
     let residentChatRoomId = null;
     let residentData = [];
 
+    const selectedMembers = new Map(); // ✅ 전역에서 체크 상태 기억
+
     window.addEventListener("load", () => {
       const urlParams = new URLSearchParams(window.location.search);
       mode = urlParams.get("mode") ?? "create";
@@ -100,25 +102,18 @@
         return;
       }
 
-      if (!keyword) {
-        renderResidents(residentData);
-        return;
-      }
+      const filtered = !keyword
+        ? residentData
+        : residentData.filter(r => {
+            const unitRoom = String(r.unit?.unitRoom ?? "").toLowerCase();
+            const mbrNnm = String(r.member?.mbrNnm ?? "").toLowerCase();
 
-      const filtered = residentData.filter(r => {
-        const unitRoom = String(r.unit?.unitRoom ?? "").toLowerCase();
-        const mbrNnm = String(r.member?.mbrNnm ?? "").toLowerCase();
+            if (searchType === "unitRoom") return unitRoom === keyword;
+            if (searchType === "mbrNnm") return mbrNnm.includes(keyword);
+            return false;
+          });
 
-        if (searchType === "unitRoom") {
-          return unitRoom === keyword;
-        }
-        if (searchType === "mbrNnm") {
-          return mbrNnm.includes(keyword);
-        }
-        return false;
-      });
-
-      renderResidents(filtered);
+      renderResidents(filtered); 
     }
 
     function renderResidents(data) {
@@ -156,8 +151,26 @@
           checkbox.value = mbrCd;
           checkbox.dataset.name = mbrNnm;
           checkbox.dataset.unitRoom = unitRoom;
-          tdCheck.appendChild(checkbox);
 
+
+          if (selectedMembers.has(mbrCd)) {
+            checkbox.checked = true;
+          }
+
+
+          checkbox.addEventListener("change", () => {
+            if (checkbox.checked) {
+              selectedMembers.set(mbrCd, {
+                mbrCd,
+                name: mbrNnm,
+                unitRoom
+              });
+            } else {
+              selectedMembers.delete(mbrCd);
+            }
+          });
+
+          tdCheck.appendChild(checkbox);
           row.appendChild(tdRoom);
           row.appendChild(tdName);
           row.appendChild(tdCheck);
@@ -166,13 +179,7 @@
     }
 
     function confirmSelection() {
-      const checked = Array.from(document.querySelectorAll("input[type='checkbox']:checked"));
-      const members = checked.map(chk => ({
-        mbrCd: chk.value,
-        name: chk.dataset.name,
-        unitRoom: chk.dataset.unitRoom
-      }));
-
+      const members = Array.from(selectedMembers.values()); // ✅ 선택된 전체 목록 전달
       handleSelectionByMode(members);
       window.close();
     }

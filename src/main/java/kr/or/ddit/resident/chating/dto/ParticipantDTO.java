@@ -7,4 +7,5 @@ public class ParticipantDTO {
 	private String mbrCd;
 	private String unitRoom;
 	private String mbrNnm;
+	private String filePathUrl;
 }

@@ -113,6 +113,7 @@ public class RsdChatController {
 	    model.addAttribute("residentChatRoomId", residentChatRoomId);
 	    model.addAttribute("mbrCd", mbrCd);
 	    model.addAttribute("bldgId", bldgId);
+
 	    return "resident/chat/ChatRoom";
 	}
 	

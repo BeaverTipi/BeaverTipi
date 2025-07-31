@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.or.ddit.resident.chating.dto.ChatMessageDTO;
 import kr.or.ddit.resident.chating.dto.LastMessageDTO;
@@ -107,9 +108,14 @@ public class RsdChatServiceImpl implements RsdChatServcie {
     }
 
     @Override
+    @Transactional
     public void createInviteChatRoom(String residentChatRoomId, List<String> inviteMbrCdList) {
         for (String mbrCd : inviteMbrCdList) {
-            mapper.inviteChatRoom(residentChatRoomId, mbrCd);
+        	if(mapper.checkChatRoom(residentChatRoomId, mbrCd)>0) {
+        		mapper.chatRoomRejoin(residentChatRoomId, mbrCd);
+        	}else {        		
+        		mapper.inviteChatRoom(residentChatRoomId, mbrCd);
+        	}
         }
     }
 

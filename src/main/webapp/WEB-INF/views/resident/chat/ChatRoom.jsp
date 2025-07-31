@@ -56,7 +56,7 @@
   window.chatInfo = {
     residentChatRoomId: "${residentChatRoomId}",
     loginMbrCd: "${mbrCd}",
-    bldgId: "${bldgId}"
+    bldgId: "${bldgId}",
   };
 </script>
   <script src="${pageContext.request.contextPath}/app/js/chat/chatRoom.js"></script>
