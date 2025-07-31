@@ -17,6 +17,7 @@
   <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/lang/summernote-ko-KR.min.js"></script>
 
   <style>
     body {
@@ -107,7 +108,6 @@
   </style>
 </head>
 <body>
-<p>현재 선택된 건물: ${selectedBldgId}</p>
 <div class="form-wrapper">
   <h2>
     <c:choose>

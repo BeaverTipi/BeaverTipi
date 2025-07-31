@@ -30,7 +30,7 @@ public class NoticeFormController {
     @Autowired private UnitResidentService unitResidentService;
     @Autowired private NoticeService       noticeService;
 
-    @PreAuthorize("hasAnyRole('ADMIN','TENANCY')")
+    @PreAuthorize("hasAnyRole('TENANCY')")
     @GetMapping("/form")
     public String showForm(
             @RequestParam(value="noticeNo",    required=false) String noticeNo,
@@ -82,7 +82,7 @@ public class NoticeFormController {
         return "resident/notice/NoticeForm";
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','TENANCY')")
+    @PreAuthorize("hasAnyRole('TENANCY')")
     @PostMapping("/form")
     public String saveOrUpdate(
             @ModelAttribute NoticeVO notice,

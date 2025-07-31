@@ -178,7 +178,7 @@ input {
   </style>
 </head>
 <body>
-  <h2 class="board-title">입주민 게시판</h2>
+  <h2 class="board-title">🏠 입주민 게시판</h2>
   <div class="container-wrapper">
     <main class="container">
       <!-- 🔍 검색 영역 -->
@@ -281,7 +281,7 @@ input {
       <c:if test="${not empty unitList && not empty selectedBldgId}">
         <div class="write-buttons">
           <a href="${pageContext.request.contextPath}/resident/board/form?bldgId=${selectedBldgId}" class="btn-success">글쓰기</a>
-          <a href="${pageContext.request.contextPath}/resident/board/trash?bldgIdParam=${selectedBldgId}" class="btn-dark">휴지통</a>
+<%--           <a href="${pageContext.request.contextPath}/resident/board/trash?bldgIdParam=${selectedBldgId}" class="btn-dark">휴지통</a> --%>
         </div>
       </c:if>
     </main>

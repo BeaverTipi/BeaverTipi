@@ -70,7 +70,6 @@
     <h2>${complaint.rsdBrdTitl}</h2>
     <div class="detail-info">
       <p><span class="label">작성자:</span> ${complaint.mbrNnm}</p>
-<%--       <p><span class="label">건물명:</span>${board.bldgNm}</p> --%>
       <p><span class="label">게시일:</span>
         <fmt:formatDate value="${complaint.rsdBrdPblsDate}" pattern="yyyy-MM-dd HH:mm"/>
       </p>

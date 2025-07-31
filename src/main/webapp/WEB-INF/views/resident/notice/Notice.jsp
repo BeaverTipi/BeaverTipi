@@ -176,7 +176,11 @@ input {
 #bldgselect option {
   text-align: center;     
 }
-
+td .type-icon {
+  font-size: 18px;
+  display: inline-block;
+  text-align: center;
+}
 </style>
 
 </head>
@@ -282,7 +286,7 @@ input {
 
     <!-- ✏️ 등록 버튼 -->
     <div class="write-buttons">
-      <security:authorize access="hasRole('ADMIN') or hasRole('TENANCY')">
+      <security:authorize access="hasRole('TENANCY')">
         <a href="/resident/notice/form" class="btn-success">글쓰기</a>
       </security:authorize>
     </div>
