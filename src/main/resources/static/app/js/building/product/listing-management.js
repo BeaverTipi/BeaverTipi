@@ -90,7 +90,7 @@ document.getElementById('buildingTableBody')
 
     /* Ajax 호출 */
     try {
-      const html = await fetch(`/building/managed/detail/quick/${bldgId}`).then(r => r.text());
+      const html = await fetch(`${ctx}/building/managed/detail/quick/${bldgId}`).then(r => r.text());
       detailTd.innerHTML = html;
     } catch (err) {
       console.error(err);
