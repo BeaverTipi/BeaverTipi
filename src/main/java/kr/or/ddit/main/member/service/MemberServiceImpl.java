@@ -61,12 +61,14 @@ public class MemberServiceImpl implements MemberService {
 	private FileVO fileUpload(MultipartFile file, String mbrCd) {
 		return	fileService.uploadAndSave(file, "public/profile", "MEMBER", mbrCd, file.getContentType());
 	}
-	private void fileUpdateUpload(String fileId,MultipartFile file) {
+	
+	private FileVO fileUpdateUpload(String fileId,MultipartFile file) {
 		try {
-			fileService.updateFile(fileId, file);
+			return fileService.updateFile(fileId, file);
 		}catch(FileIOException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	@Override
@@ -86,7 +88,8 @@ public class MemberServiceImpl implements MemberService {
 		MultipartFile file = member.getMbrProfilImg();
 		if(beforeMember.getMbrProfilImage()!=null && !beforeMember.getMbrProfilImage().isBlank()) {
 			if(file!=null && !file.isEmpty() ) {
-				this.fileUpdateUpload(beforeMember.getMbrProfilImage(),file);
+				FileVO changeFile = this.fileUpdateUpload(beforeMember.getMbrProfilImage(),file);
+				member.setMbrProfilImage(changeFile.getFileId());
 			}
 		}else {
 			if(file!=null && !file.isEmpty() ) {

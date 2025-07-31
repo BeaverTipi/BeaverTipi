@@ -13,6 +13,51 @@
     <result property="lstgTypeSale" column="LSTG_TYPE_SALE"/>
     <result property="lstgProdStat" column="LSTG_PROD_STAT"/>
 </resultMap>
+<resultMap id="buildingMap" type="BuildingVO">
+	<id property="bldgId" column="BLDG_ID"/>
+	<id property="rentalPtyId" column="RENTAL_PTY_ID"/>
+	<result property="bldgNm" column="BLDG_NM"/>
+	<result property="bldgZipNo" column="BLDG_ZIP_NO"/>
+	<result property="bldgAddr" column="BLDG_ADDR"/>
+	<result property="bldgDtlAddr" column="BLDG_DTL_ADDR"/>
+	<result property="bldgTypeCode" column="BLDG_TYPE_CODE"/>
+	<result property="bldgFlrCnt" column="BLDG_FLR_CNT"/>
+	<result property="bldgUnitCnt" column="BLDG_UNIT_CNT"/>
+	<result property="bldgCmpltnDt" column="BLDG_CMPLTN_DT"/>
+	<result property="bldgGrossArea" column="BLDG_GROSS_AREA"/>
+	<result property="bldgImgPath" column="BLDG_IMG_PATH"/>
+	<result property="bldgTypeGroupCd" column="BLDG_TYPE_GROUP_CD"/>
+	<result property="delYn" column="DEL_YN"/>
+	<collection property="unitList" ofType="UnitVO" >
+		<id property="unitId" column="UNIT_ID"/>
+		<id property="bldgId" column="U_BLDG_ID"/>
+		<id property="rentalPtyId" column="U_RENTAL_PTY_ID"/>
+		<result property="unitFlrNo" column="UNIT_FLR_NO"/>
+		<result property="unitCmar" column="UNIT_CMAR"/>
+		<result property="unitXuar" column="UNIT_XUAR"/>
+		<result property="unitDsrMnthRentAmt" column="UNIT_DSR_MNTH_RENT_AMT"/>
+		<result property="unitDsrSaleAmt" column="UNIT_DSR_SALE_AMT"/>
+		<result property="unitDpstAmt" column="UNIT_DPST_AMT"/>
+		<result property="unitDtlDescCn" column="UNIT_DTL_DESC_CN"/>
+		<result property="unitStatCd" column="UNIT_STAT_CD"/>
+		<result property="unitRoom" column="UNIT_ROOM"/>
+		<result property="mbrCd" column="MBR_CD"/>
+</collection>
+</resultMap>
+	<insert id="insertOptionList">
+    INSERT INTO LISTING_OPTION (
+        LSTG_ID,
+        FAC_OPT_ID
+    )
+    VALUES
+    <foreach collection="list" item="opt" separator=",">
+        (
+            #{opt.lstgId},
+            #{opt.facOptId}
+        )
+    </foreach>
+</insert>
+
 
     <!-- 매물 등록 -->
     <insert id="insertProduct" parameterType="ListingVO">
@@ -72,6 +117,47 @@
             #{lstgFee}
         )
     </insert>
+    
+    <select id="selectBuildingUnitList" resultMap="buildingMap">
+    SELECT B.BLDG_ID
+          , B.RENTAL_PTY_ID
+          , B.BLDG_NM
+          , B.BLDG_ZIP_NO
+          , B.BLDG_ADDR
+          , B.BLDG_DTL_ADDR
+          , U.UNIT_ID
+          , U.BLDG_ID U_BLDG_ID
+          , U.RENTAL_PTY_ID U_RENTAL_PTY_ID
+          , U.UNIT_DSR_MNTH_RENT_AMT
+          , U.UNIT_DSR_SALE_AMT
+          , U.UNIT_DPST_AMT
+          , U.UNIT_FLR_NO
+          , U.UNIT_ROOM
+          , U.MBR_CD
+          , U.UNIT_CMAR
+          , U.UNIT_XUAR
+    FROM BUILDING B, UNIT U
+    WHERE B.BLDG_ID = U.BLDG_ID
+    AND B.RENTAL_PTY_ID = #{rentalPtyId}
+    AND B.BLDG_ID = #{bldgId}
+    </select>
+    
+    <select id="selectBuildingList">
+    SELECT B.BLDG_ID
+     , B.RENTAL_PTY_ID
+     , B.BLDG_NM
+     , B.BLDG_ZIP_NO
+     , B.BLDG_ADDR
+     , B.BLDG_DTL_ADDR
+FROM BUILDING B
+WHERE B.RENTAL_PTY_ID = #{rentalPtyId}
+AND EXISTS (
+    SELECT 1
+    FROM UNIT U
+    WHERE U.BLDG_ID = B.BLDG_ID
+)
+    </select>
+    
   <select id="selectNextLstgId" resultType="string">
   SELECT 'L' || TO_CHAR(SYSDATE, 'YYMM') || LPAD(seq_LSTG_ID.NEXTVAL, 6, '0') FROM DUAL
 </select>
@@ -144,6 +230,37 @@
     </if>
    ORDER BY L.LSTG_REG_DATE, L.LSTG_ID
 </select>
+<select id="selectNearbyBrokers">
+SELECT *
+FROM (
+  SELECT B.REPR_TEL_NO
+       , B.BROK_NM
+       , B.BROK_ADDR1
+       , B.BROK_ADDR2
+       , B.REPR_NM
+       , B.MBR_CD
+       , (
+           SELECT F.FILE_PATH_URL
+           FROM FILES F
+           WHERE F.FILE_SOURCE_ID = B.MBR_CD
+             AND F.FILE_SOURCE_REF = 'BROKER'
+             AND F.DOC_TYPE_CD = 'NAMECARD_MAIN'
+             AND ROWNUM = 1
+         ) AS businessCardUrl
+       , (
+           6371 * ACOS(
+             COS(#{lat} * (3.141592653589793 / 180)) * COS(B.BROK_LAT * (3.141592653589793 / 180)) *
+             COS((B.BROK_LNG - #{lng}) * (3.141592653589793 / 180)) +
+             SIN(#{lat} * (3.141592653589793 / 180)) * SIN(B.BROK_LAT * (3.141592653589793 / 180))
+           )
+         ) AS distance
+  FROM BROKER B
+  WHERE B.BROK_LAT IS NOT NULL AND B.BROK_LNG IS NOT NULL
+) A
+WHERE A.distance <![CDATA[<=]]> #{radiusKm}
+ORDER BY A.distance ASC
+</select>
+
 
 
 

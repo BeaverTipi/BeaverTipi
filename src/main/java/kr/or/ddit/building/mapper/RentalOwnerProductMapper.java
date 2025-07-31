@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import kr.or.ddit.util.page.PaginationInfo;
+import kr.or.ddit.vo.BrokerVO;
+import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingOptionVO;
@@ -46,4 +48,13 @@ public interface RentalOwnerProductMapper {
 
 
 	public List<ListingVO> selectRoomsList(ListingVO listing);
+
+
+	public List<BrokerVO> selectNearbyBrokers(@Param("lat")double lat, @Param("lng")double lng, @Param("radiusKm")double radiusKm);
+
+
+	public List<BuildingVO> selectBuildingList(String rentalPtyId);
+
+
+	public List<BuildingVO> selectBuildingUnitList(BuildingVO building);
 }

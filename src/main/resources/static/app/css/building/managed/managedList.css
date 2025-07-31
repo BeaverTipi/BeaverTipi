@@ -1,70 +1,250 @@
 @charset "UTF-8";
-  body {
-      font-family: Arial, sans-serif;
-      padding: 30px;
-    }
 
-    .building-section {
-      margin-bottom: 60px;
-    }
+body {
+  font-family: Arial, sans-serif;
+  padding: 30px;
+}
 
-    .building-title {
-      font-weight: bold;
-      font-size: 16px;
-      margin-bottom: 10px;
-    }
+.container-wrap {
+  min-width: 900px;
+  margin: 20px auto 40px auto; 
+  padding: 32px 24px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
 
-    .building-info {
-      display: flex;
-      gap: 30px;
-      align-items: flex-start;
-    }
+.building-section {
+  margin-bottom: 60px;
+}
 
-    .building-img {
-      width: 200px;
-      height: 150px;
-      object-fit: cover;
-      border: 1px solid #ccc;
-    }
+.building-title {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
 
-    .info-box {
-      flex-grow: 1;
-    }
+.building-info {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
 
-    .info-table {
-      font-size: 14px;
-      margin-bottom: 10px;
-    }
+.building-img {
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
+  border: 1px solid #ccc;
+}
 
-    .info-table td {
-      padding: 6px 10px;
-    }
+.info-box {
+  flex-grow: 1;
+}
 
-    .button-box {
-      display: flex;
-      justify-content: flex-end; /* 오른쪽 정렬 */
-      gap: 10px;
-      margin-top: 5px;
-    }
+.info-table {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
 
-    .btn {
-      padding: 6px 12px;
-      font-size: 13px;
-      border-radius: 4px;
-      border: none;
-      cursor: pointer;
-    }
+.info-table td {
+  padding: 6px 10px;
+}
 
-    .btn-edit {
-      background-color: #3498db;
-      color: white;
-    }
+.button-box {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 5px;
+}
 
-    .btn-delete {
-      background-color: #e74c3c;
-      color: white;
-    }
+hr {
+  margin-top: 40px;
+}
 
-    hr {
-      margin-top: 40px;
-    }
+/* 공통 버튼 스타일 */
+.btn {
+  padding: 10px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  min-width: 140px;
+}
+
+/* 매물 등록 버튼 */
+.btn-submit {
+  background-color: #3D3D3D;
+  color: white;
+}
+
+.btn-submit:hover {
+  background-color: #2f2f2f;
+}
+
+/* 취소 버튼 */
+.btn-cancel {
+  background-color: #dcdcdc;
+  color: #3D3D3D;
+}
+
+.btn-cancel:hover {
+  background-color: #c4c4c4;
+}
+
+/* 제출 버튼 영역 */
+.submit-button-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 40px;
+}
+
+/* (선택) 수정/삭제 버튼 스타일 */
+.btn-edit {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn-delete {
+  background-color: #e74c3c;
+  color: white;
+}
+.tooltip.show {
+  max-width: 700px !important; /* ✔ 더 넓게 */
+  white-space: pre-wrap !important; /* ✔ 줄바꿈 유지 */
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.5;
+}
+/* Bootstrap 5 툴팁 너비 조정 */
+.tooltip-inner {
+  max-width: 400px !important; /* ✅ 너비 확장 */
+  white-space: pre-wrap !important; /* ✅ 줄바꿈 반영 */
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.broker-select-btn {
+  border: 2px solid #3D3D3D;
+  color: #3D3D3D;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px;
+  background-color: white;
+  transition: all 0.2s ease-in-out;
+}
+
+.broker-select-btn:hover {
+  background-color: #3D3D3D;
+  color: white;
+}
+#brokerCountWrapper, #noBrokerSelectedText{
+	margin-left : 10px;
+}
+
+.unit-toggle-btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1;
+  height: 38px;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #f5aa3c;
+  font-weight: 600;
+  border: 1px solid #f5aa3c;
+  white-space: nowrap;
+}
+
+.unit-toggle-btn:hover {
+  background-color: #fff6eb;
+  color: #f5aa3c;
+}
+
+.unit-btn-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.building-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.building-grid .list-group-item {
+  flex: 0 1 calc(50% - 6px); /* 2개씩 */
+  box-sizing: border-box;
+}
+  #myBuildingListArea {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 정확히 2열 */
+    gap: 16px;
+    padding: 8px;
+  }
+
+  #myBuildingListArea .list-group-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 세로 가운데 정렬 */
+    padding: 16px 18px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    font-size: 14px;
+    min-height: 86px; /* 높이 균일화 */
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  #myBuildingListArea .list-group-item:hover {
+    background-color: #f4f6fb;
+    border-color: #aac4f6;
+  }
+
+  #myBuildingListArea .list-group-item strong {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #2c3e50;
+  }
+
+  #myBuildingListArea .list-group-item small {
+    font-size: 13px;
+    color: #7f8c8d;
+    line-height: 1.4;
+  }
+  .unit-input-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.unit-input-group .form-control {
+  flex: 1;
+  height: 42px;
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 15px;
+}
+
+.btn-unit-toggle {
+  padding: 8px 10px;
+  max-width : 70px;
+  min-width : 70px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #e89200;
+  border: 1px solid #f3c183;
+  background-color: #ffffff;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.btn-unit-toggle:hover {
+  background-color: #ffe6b3;
+  color: #d27900;
+}

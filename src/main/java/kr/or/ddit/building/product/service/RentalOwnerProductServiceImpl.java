@@ -1,20 +1,27 @@
 package kr.or.ddit.building.product.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.ddit.admin.code.service.CommonCodeService;
-import kr.or.ddit.admin.code.service.CommonCodeServiceImpl;
 import kr.or.ddit.building.mapper.RentalOwnerProductMapper;
+import kr.or.ddit.util.file.service.FileService;
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.util.renderer.DefaultPaginationRenderer;
 import kr.or.ddit.util.validate.exception.ListingException;
+import kr.or.ddit.util.validate.exception.ListingOptionException;
+import kr.or.ddit.vo.BrokerVO;
+import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.FacilityOptionVO;
+import kr.or.ddit.vo.ListingOptionVO;
 import kr.or.ddit.vo.ListingSearchFormVO;
 import kr.or.ddit.vo.ListingVO;
 
@@ -25,14 +32,37 @@ public class RentalOwnerProductServiceImpl implements RentalOwnerProductService 
     private RentalOwnerProductMapper productMapper;
     @Autowired
     private CommonCodeService codeService;
+    @Autowired
+    private FileService fileService;
     @Override
-    public void insertProduct(ListingVO listing, List<String> brokerIds) {
-        for(String broker : brokerIds) {
-        	listing.setMbrCd(broker);
-        	if(productMapper.insertProduct(listing)<1) {
-        		throw new ListingException(String.format("중개인 %s 정보를 매물에 넣는 도중 오류 발생 ", broker));
-        	}
-        }
+    @Transactional
+    public void insertProduct(ListingVO listing, List<String> brokerIds, List<MultipartFile> imageFiles ) {
+    	// TODO Auto-generated method stub productMapper.insertProduct(listing);
+    			for(String broker : brokerIds) {
+    				String lstgId = productMapper.selectNextLstgId();
+    				listing.setLstgId(lstgId);
+    				listing.setMbrCd(broker);
+    				if (productMapper.insertProduct(listing) < 1) {
+    					throw new ListingException(String.format("매물 등록중 %s 부터 오류 발생.", broker));
+    				}
+    				List<FacilityOptionVO> optionList = listing.getFacOptions();
+    				List<ListingOptionVO> listingOptionList = new ArrayList<>();
+    				if (optionList != null && !optionList.isEmpty()) {
+    					for (FacilityOptionVO option : optionList) {
+    						ListingOptionVO listingOption = new ListingOptionVO();
+    						listingOption.setLstgId(lstgId);
+    						listingOption.setFacOptId(option.getFacOptId());
+    						listingOptionList.add(listingOption);
+    					}
+    					if (productMapper.insertOptionList(listingOptionList) < 1) {
+    						throw new ListingOptionException();
+    					}
+    					;
+    				}
+    				if (imageFiles != null && imageFiles.size() > 0) {
+    					fileService.uploadMultipleFiles(imageFiles, "public/broker/listing", "LISTING", lstgId, "listingIMG");
+    				}
+    			}
          
          
     }
@@ -99,6 +129,23 @@ public class RentalOwnerProductServiceImpl implements RentalOwnerProductService 
 	public List<ListingVO> readRoomsList(ListingVO listing) {
 		// TODO Auto-generated method stub
 		return productMapper.selectRoomsList(listing);
+	}
+	@Override
+	public List<BrokerVO> findNearbyBrokers(double lat, double lng, double radiusKm) {
+		 return productMapper.selectNearbyBrokers(lat, lng, radiusKm);
+	}
+	@Override
+	public List<BuildingVO> readBuildingUnitList(String bldgId, String rentalPtyId) {
+		// TODO Auto-generated method stub
+		BuildingVO building =  new BuildingVO();
+		building.setBldgId(bldgId);
+		building.setRentalPtyId(rentalPtyId);
+		return productMapper.selectBuildingUnitList(building);
+	}
+	@Override
+	public List<BuildingVO> readBuildingList(String rentalPtyId) {
+		// TODO Auto-generated method stub
+		return productMapper.selectBuildingList(rentalPtyId);
 	}
 
 

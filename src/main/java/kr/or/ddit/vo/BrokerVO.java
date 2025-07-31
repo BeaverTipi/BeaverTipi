@@ -65,4 +65,9 @@ public class BrokerVO extends MemberVO implements Serializable {
     private String authApprDt;
 
     private MultipartFile brokFile;
+    private double broklng;
+    private double broklat;
+    
+    private String businessCardUrl; // 명함 이미지 대표 경로 (조회용)
+
 }

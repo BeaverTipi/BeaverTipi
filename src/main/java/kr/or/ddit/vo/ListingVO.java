@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+import kr.or.ddit.util.validate.UpdateGroup;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,10 +21,9 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(of = "lstgId")
 public class ListingVO implements Serializable {
-	@NotBlank
+	@NotBlank(groups=UpdateGroup.class)
     private String lstgId;
 
-    @NotBlank
     private String mbrCd;
 
     @Size(max = 13)
@@ -95,7 +95,6 @@ public class ListingVO implements Serializable {
     @Size(max = 10)
     private String lstgPostal;
     
-    @Size(max = 13)
     private Integer lstgFee;
 
     // 시설 옵션

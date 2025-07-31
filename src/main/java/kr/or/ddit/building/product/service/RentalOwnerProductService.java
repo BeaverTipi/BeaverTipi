@@ -3,7 +3,11 @@ package kr.or.ddit.building.product.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import kr.or.ddit.util.page.PaginationInfo;
+import kr.or.ddit.vo.BrokerVO;
+import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingSearchFormVO;
@@ -12,7 +16,7 @@ import kr.or.ddit.vo.ListingVO;
 public interface RentalOwnerProductService {
 
 	// 등록
-	public void insertProduct(ListingVO listing, List<String> brokerIds);
+	public void insertProduct(ListingVO listing, List<String> brokerIds, List<MultipartFile> imageFiles );
 
 
     // 상세 조회
@@ -36,4 +40,11 @@ public interface RentalOwnerProductService {
 
 
 	public List<ListingVO> readRoomsList(ListingVO listing);
+
+
+	public List<BrokerVO> findNearbyBrokers(double lat, double lng, double radiusKm);
+
+
+	public List<BuildingVO> readBuildingUnitList(String bldgId ,String rentalPtyId);
+	public List<BuildingVO> readBuildingList(String rentalPtyId);
 }

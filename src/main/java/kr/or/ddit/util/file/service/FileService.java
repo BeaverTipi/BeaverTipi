@@ -15,7 +15,7 @@ public interface FileService {
 	public List<FileVO> uploadMultipleFiles(List<MultipartFile> files, String dir, String sourceRef, String sourceId, String docTypeCd);
 	public void removeOldFiles();
 	public void deleteFile(String fileId);
-	public void updateFile(String fileId, MultipartFile newFile);
+	public FileVO updateFile(String fileId, MultipartFile newFile);
 	public ResponseEntity<Resource> downloadFile(String fileId);
 	
 	public String generatePresignedDownloadUrl(String fileId, int expireMinutes);

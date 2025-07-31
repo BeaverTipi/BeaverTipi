@@ -26,4 +26,6 @@ public class BuildingVO implements Serializable{
     private TenancyVO tenancyInfo;
     private List<TenancyAccountVO> accList;
     private String accNum; // 계좌번호만 따로주면 좀 더 편하지 않을깡?ㅎ
+    
+    private List<UnitVO> unitList;
 }

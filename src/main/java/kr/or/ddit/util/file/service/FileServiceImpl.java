@@ -132,7 +132,7 @@ public class FileServiceImpl implements FileService {
 	
 	
 	@Override
-	public void updateFile(String fileId, MultipartFile newFile) {
+	public FileVO updateFile(String fileId, MultipartFile newFile) {
 		FileVO oldFile = mapper.selectFile(fileId);
 	    if (oldFile == null) {
 	        throw new FileIOException("수정할 파일이 존재하지 않습니다.");
@@ -159,6 +159,8 @@ public class FileServiceImpl implements FileService {
 	    oldFile.setRegDtm(LocalDate.now()); // 업데이트 시점으로 덮어쓰기
 
 	    mapper.updateFile(oldFile);
+	    
+	    return oldFile;
 		
 	}
 	

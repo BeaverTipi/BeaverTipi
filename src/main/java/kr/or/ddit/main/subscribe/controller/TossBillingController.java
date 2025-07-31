@@ -182,6 +182,9 @@ public class TossBillingController {
             }
 
             Map<String, Object> result = response.getBody();
+            
+            log.info(result.toString());
+            
             String mbrCd = principal.getRealUser().getMbrCd();
 
             service.saveAutopayAndFirstPayment(result,mbrCd,customerKey,role,solId);
