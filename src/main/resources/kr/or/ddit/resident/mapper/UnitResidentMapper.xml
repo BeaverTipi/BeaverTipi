@@ -20,24 +20,24 @@
 </resultMap>
 
 
-<select id="selectByMember" parameterType="String" resultMap="unitResidentMap">
-	SELECT
-	  ur.unit_id,
-	  ur.bldg_id,
-	  ur.move_in_dt,
-	  ur.mbr_cd,
-	  b.bldg_id AS b_bldg_id,
-	  b.bldg_nm AS b_bldg_nm,
-	  b.bldg_img_path AS b_bldg_img_path,
-	  b.bldg_addr AS b_bldg_addr,
-	  b.bldg_dtl_addr AS b_bldg_dtl_addr,
-	  u.unit_id AS u_unit_id,
-	  u.unit_room AS u_unit_room
-	FROM unit_resident ur
-	JOIN building b ON ur.bldg_id = b.bldg_id
-	JOIN unit u ON ur.unit_id = u.unit_id
-	WHERE ur.mbr_cd = #{mbrCd}
-</select>
+	<select id="selectByMember" parameterType="String" resultMap="unitResidentMap">
+		SELECT
+		  ur.unit_id,
+		  ur.bldg_id,
+		  ur.move_in_dt,
+		  ur.mbr_cd,
+		  b.bldg_id AS b_bldg_id,
+		  b.bldg_nm AS b_bldg_nm,
+		  b.bldg_img_path AS b_bldg_img_path,
+		  b.bldg_addr AS b_bldg_addr,
+		  b.bldg_dtl_addr AS b_bldg_dtl_addr,
+		  u.unit_id AS u_unit_id,
+		  u.unit_room AS u_unit_room
+		FROM unit_resident ur
+		JOIN building b ON ur.bldg_id = b.bldg_id
+		JOIN unit u ON ur.unit_id = u.unit_id
+		WHERE ur.mbr_cd = #{mbrCd}
+	</select>
 
   <select id="selectMyUnitsInBuilding" parameterType="map" resultMap="unitResidentMap">
     SELECT
@@ -63,43 +63,54 @@
 
 
   <select id="selectInitialBuildingPosts" parameterType="String" resultType="map">
-SELECT
-    B.BLDG_ID,
-    B.BLDG_NM,
-    RB.RSD_BRD_ID,
-    BD.BRD_TITL_NM     AS RSD_BRD_TITL,
-    TO_CHAR(BD.BRD_CONT) AS RSD_BRD_CONT,
-    RB.RSD_BRD_PBLS_DTM,
-    RB.MBR_CD,
-    RB.OPEN_YN,
-    RB.REQ_STATUS
-FROM (
-    SELECT *
-    FROM (
-        SELECT BLDG_ID
-        FROM UNIT_RESIDENT
-        WHERE MBR_CD = #{mbrCd}
-          AND UNIT_DEL_YN = 'N'
-          AND MOVE_IN_DT IS NOT NULL
-        ORDER BY MOVE_IN_DT ASC
-    )
-    WHERE ROWNUM = 1
-) UR
-JOIN BUILDING B ON B.BLDG_ID = UR.BLDG_ID
-JOIN RESIDENT_BOARD RB ON RB.BLDG_ID = UR.BLDG_ID
-JOIN BOARD BD ON BD.BRD_NO = RB.RSD_BRD_ID
-WHERE RB.RSD_BRD_DEL_YN = 'N'
-  AND BD.BRD_CODE = 'M0001'
-ORDER BY RB.RSD_BRD_PBLS_DTM DESC
-		  </select>
-
-<select id="isMyUnit" resultType="int">
-    SELECT COUNT(*)
-    FROM UNIT_RESIDENT
-    WHERE MBR_CD = #{mbrCd}
-      AND UNIT_ID = #{unitId}
-      AND UNIT_DEL_YN = 'N'
-</select>
-
+		SELECT
+		    B.BLDG_ID,
+		    B.BLDG_NM,
+		    RB.RSD_BRD_ID,
+		    BD.BRD_TITL_NM     AS RSD_BRD_TITL,
+		    TO_CHAR(BD.BRD_CONT) AS RSD_BRD_CONT,
+		    RB.RSD_BRD_PBLS_DTM,
+		    RB.MBR_CD,
+		    RB.OPEN_YN,
+		    RB.REQ_STATUS
+		FROM (
+		    SELECT *
+		    FROM (
+		        SELECT BLDG_ID
+		        FROM UNIT_RESIDENT
+		        WHERE MBR_CD = #{mbrCd}
+		          AND UNIT_DEL_YN = 'N'
+		          AND MOVE_IN_DT IS NOT NULL
+		        ORDER BY MOVE_IN_DT ASC
+		    )
+		    WHERE ROWNUM = 1
+		) UR
+		JOIN BUILDING B ON B.BLDG_ID = UR.BLDG_ID
+		JOIN RESIDENT_BOARD RB ON RB.BLDG_ID = UR.BLDG_ID
+		JOIN BOARD BD ON BD.BRD_NO = RB.RSD_BRD_ID
+		WHERE RB.RSD_BRD_DEL_YN = 'N'
+		  AND BD.BRD_CODE = 'M0001'
+		ORDER BY RB.RSD_BRD_PBLS_DTM DESC
+				  </select>
+		
+	<select id="isMyUnit" resultType="int">
+	    SELECT COUNT(*)
+	    FROM UNIT_RESIDENT
+	    WHERE MBR_CD = #{mbrCd}
+	      AND UNIT_ID = #{unitId}
+	      AND UNIT_DEL_YN = 'N'
+	</select>
+	<select id="selectUnitResidentListByUnitId" parameterType="string" resultType="kr.or.ddit.vo.UnitResidentVO">
+	    SELECT
+	      ur.*,
+	      u.UNIT_CMAR,
+	      u.UNIT_DSR_MNTH_RENT_AMT,
+	      u.UNIT_DSR_SALE_AMT
+	    FROM UNIT_RESIDENT ur
+	    JOIN UNIT u ON ur.UNIT_ID = u.UNIT_ID
+	    WHERE ur.UNIT_ID = #{unitId}
+	      AND ur.UNIT_DEL_YN = 'N'
+	    ORDER BY ur.MBR_CD
+	</select>
 
 </mapper>

@@ -20,7 +20,7 @@ public class BuildingVO implements Serializable{
 	private Integer bldgFlrCnt;
 	private Integer bldgUnitCnt;
 	private String bldgCmpltnDt;
-	private Integer bldgGrossArea;
+	private Double bldgGrossArea;
 	private String bldgImgPath;// 기본 세대 정보
     private String delYn;
     private TenancyVO tenancyInfo;

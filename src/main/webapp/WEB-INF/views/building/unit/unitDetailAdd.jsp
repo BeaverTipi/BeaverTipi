@@ -20,7 +20,7 @@
             <label>공급면적: <input type="text" name="unitList[${i}].unitCmar" required></label><br>
             <label>전용면적: <input type="text" name="unitList[${i}].unitXuar"></label><br>
             <label>월세 예상금액: <input type="text" name="unitList[${i}].unitDsrMnthRentAmt"></label><br>
-            <label>매매 예상금액: <input type="text" name="unitList[${i}].unitDsrSaleAmt"></label><br>
+            <label>전세 예상금액: <input type="text" name="unitList[${i}].unitDsrSaleAmt"></label><br>
             <label>보증금 예상금액: <input type="text" name="unitList[${i}].unitDpstAmt"></label><br>
             <label>상세설명: <textarea name="unitList[${i}].unitDtlDescCn"></textarea></label><br>
             <label>호실 수: <input type="text" name="unitList[${i}].unitRoom"></label><br>

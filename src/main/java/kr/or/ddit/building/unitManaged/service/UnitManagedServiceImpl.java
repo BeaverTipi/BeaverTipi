@@ -24,4 +24,9 @@ public class UnitManagedServiceImpl implements UnitManagedService {
 	        }
 	        return count;
 	    }
+	    
+	    @Override
+	    public List<UnitVO> selectUnitListByBldgId(String bldgId) {
+	        return unitMapper.selectUnitListByBldgId(bldgId);
+}
 }

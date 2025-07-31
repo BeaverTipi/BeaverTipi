@@ -130,12 +130,16 @@
     </div>
 
     <!-- 이미지 -->
-    <div class="form-row">
-      <div class="image-box">
-        <img src="/images/sample-building.jpg" alt="건물 이미지 미리보기" />
-        <button type="button">이미지 등록</button>
-      </div>
-    </div>
+	<div class="form-row">
+	  <div class="image-box">
+	    <img id="previewImg" src="/images/sample-building.jpg" alt="건물 이미지 미리보기" style="max-width: 200px; max-height: 140px;" />
+	    <label for="bldgImgFile" style="display: block; margin-top: 8px;">
+	      <button type="button" onclick="document.getElementById('bldgImgFile').click(); return false;">이미지 등록</button>
+	    </label>
+	    <input type="file" id="bldgImgFile" name="bldgImgFile" accept="image/*" style="display:none;" />
+	  </div>
+	</div>
+
 
     <div class="form-row" style="text-align: right;">
       <button type="submit" class="submit-btn">상세정보 입력</button>

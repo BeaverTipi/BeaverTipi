@@ -67,4 +67,11 @@ public class BuildingManagedServiceImpl implements BuildingManagedService {
         return buildingManagedMapper.selectAccountsByRentalPtyId(rentalPtyId);
     }
 
+    //이미지 bldgid
+    @Override
+    public void updateBuildingImagePath(String bldgId, String imgUrl) {
+        buildingManagedMapper.updateBuildingImagePath(bldgId, imgUrl);
+    }
+
+    
 }

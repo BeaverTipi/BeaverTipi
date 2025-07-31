@@ -19,5 +19,7 @@ public interface UnitResidentMapper {
             @Param("bldgId") String bldgId);
 
 	public int isMyUnit(@Param("mbrCd") String mbrCd, @Param("unitId") String unitId);
+	
+	List<UnitResidentVO> selectUnitResidentListByUnitId(String unitId);
 
 }

@@ -94,29 +94,40 @@
                   <th>호실수</th>
                 </tr>
               </thead>
-              <tbody>
-                <c:choose>
-                  <c:when test="${empty buildingList}">
-                    <tr><td colspan="6">등록된 건물이 없습니다.</td></tr>
-                  </c:when>
-                  <c:otherwise>
-                    <c:forEach var="building" items="${buildingList}" varStatus="status">
-                      <tr>
-                        <td>${status.index + 1}</td>
-                        <td>
-                          <a href="/building/managed/detail?bldgId=${building.bldgId}" class="building-link">
-                            ${building.bldgNm}
-                          </a>
-                        </td>
-                        <td>${building.bldgAddr} ${building.bldgDtlAddr}</td>
-                        <td>${building.bldgTypeCode}</td>
-                        <td>${building.bldgFlrCnt}</td>
-                        <td>${building.bldgUnitCnt}</td>
-                      </tr>
-                    </c:forEach>
-                  </c:otherwise>
-                </c:choose>
-              </tbody>
+             <tbody id="buildingTableBody">
+			  <c:choose>
+			    <c:when test="${empty buildingList}">
+			      <tr><td colspan="6">등록된 건물이 없습니다.</td></tr>
+			    </c:when>
+			    <c:otherwise>
+			      <c:forEach var="building" items="${buildingList}" varStatus="status">
+			        <tr>
+			          <td>${status.index + 1}</td>
+			          <td>
+			            <!-- 건물명 클릭시 상세 펼침 (페이지 이동X) -->
+			            <a href="#" 
+			               class="building-detail-toggle font-weight-bold text-primary font-weight-bold"
+			               data-bldg-id="${building.bldgId}">
+			              ${building.bldgNm}
+			            </a>
+			            &nbsp;
+			            <a href="#"
+			               class="building-infom-link"
+			               data-bldg-id="${building.bldgId}"
+			               data-address="${building.bldgAddr}${building.bldgDtlAddr}">
+			              [호수 보기]
+			            </a>
+			          </td>
+			          <td>${building.bldgAddr} ${building.bldgDtlAddr}</td>
+			          <td>${building.bldgTypeCode}</td>
+			          <td>${building.bldgFlrCnt}</td>
+			          <td>${building.bldgUnitCnt}</td>
+			        </tr>
+			      </c:forEach>
+			    </c:otherwise>
+			  </c:choose>
+			</tbody>
+
             </table>
           </div>
           <div style="text-align:right; margin-top:20px;">

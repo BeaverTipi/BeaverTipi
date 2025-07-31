@@ -184,6 +184,12 @@
     WHERE LSTG_ID = #{lstgId}
       AND LSTG_DEL = 'N'
 </select>
+	<!-- 건물 이미지 저장되고 나서 빌딩 ID 부여해줘야함 -->
+	<update id="updateBuildingImagePath">
+	    UPDATE BUILDING
+	    SET BLDG_IMG_PATH = #{imgUrl}
+	    WHERE BLDG_ID = #{bldgId}
+	</update>
 	
 
 </mapper>

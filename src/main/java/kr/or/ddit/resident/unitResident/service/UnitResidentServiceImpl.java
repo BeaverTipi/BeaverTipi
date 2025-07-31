@@ -51,5 +51,11 @@ public class UnitResidentServiceImpl implements UnitResidentService {
 	public boolean isMyUnit(String mbrCd, String unitId) {
 		   return mapper.isMyUnit(mbrCd, unitId) > 0;
 	}
+	
+
+    @Override
+    public List<UnitResidentVO> selectUnitResidentListByUnitId(String unitId) {
+        return mapper.selectUnitResidentListByUnitId(unitId);
+    }
 
 }

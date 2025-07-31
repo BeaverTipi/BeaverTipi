@@ -15,4 +15,5 @@ public interface UnitResidentService {
     
     boolean isMyUnit(String mbrCd, String unitId);
 
+    List<UnitResidentVO> selectUnitResidentListByUnitId(String unitId);
 }

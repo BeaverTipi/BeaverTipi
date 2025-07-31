@@ -43,5 +43,9 @@ public interface BuildingManagedMapper {
 
     List<TenancyAccountVO> searchAccountsByRentalPtyId(@Param("rentalPtyId") String rentalPtyId);
     
+ 
+    void updateBuildingImagePath(@Param("bldgId") String bldgId, @Param("imgUrl") String imgUrl);
+
+    
 }
 

@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 	const resetBtn = document.querySelector('#resetBtn');
-	const tableBody = document.querySelector('#listingTableBody')
+	const tableBody = document.querySelector('#buildingTableBody')
 	// 초기화 버튼
 	resetBtn.addEventListener('click', () => {
 		const form = resetBtn.closest('form');
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// 호수 리스트 토글
 	tableBody.addEventListener('click', async (e) => {
-		if (!e.target.classList.contains('building-name-link')) return;
+		if (!e.target.classList.contains('building-infom-link')) return;
 		e.preventDefault();
 
 		const row = e.target.closest('tr');
@@ -62,41 +62,4 @@ document.addEventListener('DOMContentLoaded', () => {
 			td.innerHTML = '<div class="py-2 text-danger">호수 정보를 불러오는 중 오류가 발생했습니다.</div>';
 		}
 	});
-/* === 건물 퀵뷰 === */
-document.getElementById('buildingTableBody')
-  .addEventListener('click', async (e) => {
-    e.preventDefault();
-	
-    const link = e.target.closest('.building-detail-toggle');
-    if (!link) return;
-
-    const tr     = link.closest('tr');
-    const bldgId = link.dataset.bldgId;
-
-    /* 열려 있는 퀵뷰 전부 제거 */
-    document.querySelectorAll('#buildingTableBody .quick-detail-row').forEach(r => r.remove());
-
-    /* 같은 행 다시 클릭 → 토글 닫기 */
-    if (tr.nextElementSibling && tr.nextElementSibling.classList.contains('quick-detail-row')) return;
-
-    /* 자리 마련 */
-    const detailTr      = document.createElement('tr');
-    detailTr.className  = 'quick-detail-row';
-    const detailTd      = document.createElement('td');
-    detailTd.colSpan    = 6;            // <th> 개수
-    detailTd.innerHTML  = '<div class="text-muted py-2">불러오는 중…</div>';
-    detailTr.appendChild(detailTd);
-    tr.after(detailTr);
-
-    /* Ajax 호출 */
-    try {
-      const html = await fetch(`/building/managed/detail/quick/${bldgId}`).then(r => r.text());
-      detailTd.innerHTML = html;
-    } catch (err) {
-      console.error(err);
-      detailTd.innerHTML = '<div class="text-danger py-2">상세 정보를 불러오는 데 실패했습니다.</div>';
-    }
-  });
-
-
 });

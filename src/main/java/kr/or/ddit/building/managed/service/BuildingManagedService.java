@@ -42,5 +42,9 @@ public interface BuildingManagedService {
     List<BuildingVO> searchBuildingList(String rentalPtyId, BuildingSearchFormVO searchForm);
     List<TenancyAccountVO> searchAccountsByRentalPtyId(String rentalPtyId);
     
+    //이게 빌딩 아이디를 이미지파일에 덮어 씌우는 역할이얌
+    void updateBuildingImagePath(String bldgId, String imgUrl);
+
+    
 }
 

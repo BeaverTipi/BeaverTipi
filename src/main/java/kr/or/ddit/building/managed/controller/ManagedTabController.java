@@ -16,6 +16,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import kr.or.ddit.admin.code.service.CommonCodeService;
 import kr.or.ddit.building.managed.service.BuildingManagedService;
 import kr.or.ddit.building.product.service.RentalOwnerProductService;
+import kr.or.ddit.building.unitManaged.service.UnitManagedService;
+import kr.or.ddit.resident.unitResident.service.UnitResidentService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.util.validate.InsertGroup;
 import kr.or.ddit.util.validate.exception.ListingException;
@@ -35,6 +37,12 @@ public class ManagedTabController {
 
     @Autowired
     private CommonCodeService commonCodeService;
+    
+    @Autowired
+    private UnitManagedService unitService;
+
+    @Autowired
+    private UnitResidentService unitResidentService;
 
     @GetMapping("/tabList")
     public String tabList(
@@ -84,7 +92,6 @@ public class ManagedTabController {
         return "building/product/rentalOwnerProductList";
     }
 
-
-
+ 
 
 }

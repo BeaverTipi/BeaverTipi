@@ -35,5 +35,12 @@
       #{unitRoom}
     )
   </insert>
+  
+  <select id="selectUnitListByBldgId" parameterType="string" resultType="kr.or.ddit.vo.UnitVO">
+    SELECT *
+    FROM UNIT
+    WHERE BLDG_ID = #{bldgId}
+    ORDER BY UNIT_FLR_NO, UNIT_ROOM
+</select>
 
 </mapper>
