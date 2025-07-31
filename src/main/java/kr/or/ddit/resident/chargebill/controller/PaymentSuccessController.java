@@ -48,7 +48,7 @@ public class PaymentSuccessController {
 
     private final RestTemplate restTemplate = new RestTemplate();
     
-    private static final String PAYMENT_SUCCESS_URL = "http://localhost/ajax/resident/payment/success";
+    private static final String PAYMENT_SUCCESS_URL = "https://swdev.beavertipi.com/ajax/resident/payment/success";
     
     @PostMapping("/ready")
     public PaymentTosspamentsRawVO formProcess(@RequestBody PaymentTosspamentsRawVO paymentTosspamentsRawVO,

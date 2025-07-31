@@ -31,21 +31,43 @@ function renderNoticePosts(posts) {
   posts.forEach((post, idx) => {
     const titleShort = post.brdTitlNm.length > 30 ? `${post.brdTitlNm.slice(0, 30)}...` : post.brdTitlNm;
     const formattedDate = formatDate(post.brdPblsDtm);
-
+	
+	  let typeColor = "";
+	  let typeIcon = "";
+	  const type = post.noticeTypeCode?.codeName || "";
+	
+	  switch (type) {
+	    case "긴급":
+	      typeColor = "#e74c3c";
+	      typeIcon = "🚨";
+	      break;
+	    case "이벤트":
+	      typeColor = "#f39c12";
+	      typeIcon = "🎉";
+	      break;
+	    case "FAQ":
+	      typeColor = "#3498db";
+	      typeIcon = "❓";
+	      break;
+	    default:
+	      typeIcon = "";
+	      typeColor = "";
+	  }
+	
     const rowHtml = `
-      <tr>
-        <td>${idx + 1}</td>
-        <td>${post.noticeTypeCode?.codeName || ""}</td>
-        <td title="${post.brdTitlNm}">
-          <a href="/resident/notice/detail?noticeNo=${post.noticeNo}&bldgIdParam=${getSafeBldgId()}"
-             class="notice-title" title="${post.brdTitlNm}">
-            ${titleShort}
-          </a>
-        </td>
-        <td>${post.member?.mbrNnm || ""}</td>
-        <td>${formattedDate}</td>
-        <td>${post.brdVwCnt}</td>
-      </tr>
+	    <tr>
+	      <td>${typeIcon ? `<span class="type-icon">${typeIcon}</span>` : idx + 1}</td>
+	      <td style="${typeColor ? `color:${typeColor}` : ""}">${type}</td>
+	      <td title="${post.brdTitlNm}">
+	        <a href="/resident/notice/detail?noticeNo=${post.noticeNo}&bldgIdParam=${getSafeBldgId()}"
+	           class="notice-title" title="${post.brdTitlNm}">
+	          ${titleShort}
+	        </a>
+	      </td>
+	      <td>${post.member?.mbrNnm || ""}</td>
+	      <td>${formattedDate}</td>
+	      <td>${post.brdVwCnt}</td>
+	    </tr>
     `;
 
     tableBody.insertAdjacentHTML("beforeend", rowHtml);
