@@ -1,6 +1,8 @@
 package kr.or.ddit.building.managed.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,13 +10,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import kr.or.ddit.admin.code.service.CommonCodeService;
 import kr.or.ddit.building.mapper.BuildingManagedMapper;
 import kr.or.ddit.building.mapper.UnitManagedMapper;
 import kr.or.ddit.util.file.service.FileService;
+import kr.or.ddit.util.page.PaginationInfo;
+import kr.or.ddit.util.renderer.DefaultPaginationRenderer;
 import kr.or.ddit.util.validate.exception.BuildingException;
 import kr.or.ddit.util.validate.exception.BuildingUnitException;
 import kr.or.ddit.vo.BuildingSearchFormVO;
 import kr.or.ddit.vo.BuildingVO;
+import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.TenancyAccountVO;
@@ -26,7 +32,8 @@ public class BuildingManagedServiceImpl implements BuildingManagedService {
 	@Autowired
 	private BuildingManagedMapper buildingManagedMapper;
 	
-
+	@Autowired
+	private CommonCodeService codeService;
 	 @Autowired
 	    private UnitManagedMapper unitMapper;
 	 
@@ -111,10 +118,37 @@ public class BuildingManagedServiceImpl implements BuildingManagedService {
 	}
 
 	@Override
-	public List<BuildingVO> searchBuildingList(String rentalPtyId, BuildingSearchFormVO searchForm) {
-		searchForm.setRentalPtyId(rentalPtyId);
-		return buildingManagedMapper.searchBuildingList(searchForm);
+	public Map<String, Object> readPagingAndBuilding(BuildingSearchFormVO form, int currentPage) {
+	    Map<String, Object> result = new HashMap<>();
+
+	    PaginationInfo<BuildingSearchFormVO> pagingVO = new PaginationInfo<>();
+	    pagingVO.setCurrentPageNo(currentPage);
+	    pagingVO.setDetailSearch(form);
+
+	    int total = buildingManagedMapper.selectBuildingCount(pagingVO);
+	    pagingVO.setTotalRecordCount(total);
+
+	    List<BuildingVO> buildingList = List.of();
+	    if (total > 0) {
+	        buildingList = buildingManagedMapper.searchBuildingList(pagingVO);
+
+	        // ✅ 각 건물에 계좌 리스트 바인딩
+	        for (BuildingVO building : buildingList) {
+	            List<TenancyAccountVO> accList = buildingManagedMapper.selectAccountsByRentalPtyId(building.getRentalPtyId());
+	            building.setAccList(accList);
+	        }
+	    }
+
+	    List<CommonCodeVO> statusCodeList = codeService.readCommonCodeList("PRDST");
+
+	    result.put("pagingVO", pagingVO);
+	    result.put("buildingList", buildingList);
+	    result.put("statusCodeList", statusCodeList);
+	    result.put("pagingHTML", new DefaultPaginationRenderer().renderPagination(pagingVO, "fn_paging"));
+
+	    return result;
 	}
+
 
 	@Override
 	public List<TenancyAccountVO> searchAccountsByRentalPtyId(String rentalPtyId) {
@@ -125,6 +159,12 @@ public class BuildingManagedServiceImpl implements BuildingManagedService {
 	@Override
 	public void updateBuildingImagePath(String bldgId, String imgUrl) {
 		buildingManagedMapper.updateBuildingImagePath(bldgId, imgUrl);
+	}
+
+	@Override
+	public List<BuildingVO> searchBuildingList(String rentalPtyId, BuildingSearchFormVO searchForm) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

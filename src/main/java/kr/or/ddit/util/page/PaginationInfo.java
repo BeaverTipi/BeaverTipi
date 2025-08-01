@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+import kr.or.ddit.vo.BuildingSearchFormVO;
 import kr.or.ddit.vo.BusinessAdsSearchVO;
 import kr.or.ddit.vo.BusinessApproveSearchVO;
 import kr.or.ddit.vo.ListingSearchFormVO;
@@ -156,8 +157,11 @@ public class PaginationInfo<T> {
 			        if (vo.getMbrCd() != null && !vo.getMbrCd().isEmpty()) {
 			            sb.append("&detailSearch.mbrCd=").append(URLEncoder.encode(vo.getMbrCd(), StandardCharsets.UTF_8.toString()));
 			        }
-			        if (vo.getSearchBuildingName() != null && !vo.getSearchBuildingName().isEmpty()) {
-			            sb.append("&detailSearch.searchBuildingName=").append(URLEncoder.encode(vo.getSearchBuildingName(), StandardCharsets.UTF_8.toString()));
+			        if (vo.getRentalPtyId() != null && !vo.getRentalPtyId().isEmpty()) {
+			        	sb.append("&detailSearch.rentalPtyId=").append(URLEncoder.encode(vo.getMbrCd(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (vo.getSearchListingName() != null && !vo.getSearchListingName().isEmpty()) {
+			            sb.append("&detailSearch.searchListingName=").append(URLEncoder.encode(vo.getSearchListingName(), StandardCharsets.UTF_8.toString()));
 			        }
 			        if (vo.getSearchRoomNum() != null && !vo.getSearchRoomNum().isEmpty()) {
 			            sb.append("&detailSearch.searchRoomNum=").append(URLEncoder.encode(vo.getSearchRoomNum(), StandardCharsets.UTF_8.toString()));
@@ -204,8 +208,42 @@ public class PaginationInfo<T> {
 			        if (vo.getSearchRegDateTo() != null) {
 			            sb.append("&detailSearch.searchRegDateTo=").append(URLEncoder.encode(vo.getSearchRegDateTo().toString(), StandardCharsets.UTF_8.toString()));
 			        }
+			        if (vo.getActiveTab() != null) {
+			            sb.append("&detailSearch.activeTab=").append(vo.getActiveTab());
+			        }
 			    } catch (UnsupportedEncodingException e) {
 			        System.err.println("URL Encoding failed for ListingSearchFormVO: " + e.getMessage());
+			    }
+			}
+			else if (this.detailSearch instanceof BuildingSearchFormVO) {
+			    BuildingSearchFormVO vo = (BuildingSearchFormVO) this.detailSearch;
+			    try {
+			        if (vo.getRentalPtyId() != null && !vo.getRentalPtyId().isEmpty()) {
+			            sb.append("&detailSearch.rentalPtyId=").append(URLEncoder.encode(vo.getRentalPtyId(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (vo.getSearchBuildingName() != null && !vo.getSearchBuildingName().isEmpty()) {
+			            sb.append("&detailSearch.searchBuildingName=").append(URLEncoder.encode(vo.getSearchBuildingName(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (vo.getSearchBuildingRoomNum() != null && !vo.getSearchBuildingRoomNum().isEmpty()) {
+			            sb.append("&detailSearch.searchBuildingRoomNum=").append(URLEncoder.encode(vo.getSearchBuildingRoomNum(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (vo.getSearchBuildingStatus() != null && !vo.getSearchBuildingStatus().isEmpty()) {
+			            sb.append("&detailSearch.searchBuildingStatus=").append(URLEncoder.encode(vo.getSearchBuildingStatus(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (vo.getSearchBuildingType() != null && !vo.getSearchBuildingType().isEmpty()) {
+			            sb.append("&detailSearch.searchBuildingType=").append(URLEncoder.encode(vo.getSearchBuildingType(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (vo.getSearchBuildingRegDateFrom() != null && !vo.getSearchBuildingRegDateFrom().isEmpty()) {
+			            sb.append("&detailSearch.searchBuildingRegDateFrom=").append(URLEncoder.encode(vo.getSearchBuildingRegDateFrom(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (vo.getSearchBuildingRegDateTo() != null && !vo.getSearchBuildingRegDateTo().isEmpty()) {
+			            sb.append("&detailSearch.searchBuildingRegDateTo=").append(URLEncoder.encode(vo.getSearchBuildingRegDateTo(), StandardCharsets.UTF_8.toString()));
+			        }
+			        if (vo.getActiveTab() != null) {
+			            sb.append("&detailSearch.activeTab=").append(vo.getActiveTab());
+			        }
+			    } catch (UnsupportedEncodingException e) {
+			        System.err.println("URL Encoding failed for BuildingSearchFormVO: " + e.getMessage());
 			    }
 			}
 

@@ -82,6 +82,8 @@ function bindAreaUnitToggle() {
 
 	const supplyLabel = document.querySelector("#supplyAreaLabel");
 	const exclusiveLabel = document.querySelector("#exclusiveAreaLabel");
+	const supplyText = document.querySelector("#supplyAreaText");
+	const exclusiveAreaText = document.querySelector("#exclusiveAreaText");
 
 	const supplyHidden = document.querySelector("input[name='lstgGrArea']");
 	const exclusiveHidden = document.querySelector("input[name='lstgExArea']");
@@ -96,11 +98,13 @@ function bindAreaUnitToggle() {
 		if (isSupplyPyeong) {
 			supplyInput.value = toM2(parseFloat(supplyInput.value || 0));
 			supplyLabel.textContent = "공급면적 (m²)";
+			supplyText ="m²";
 			toggleSupplyBtn.textContent = "평 ▼ ";
 			isSupplyPyeong = false;
 		} else {
 			supplyInput.value = toPyeong(parseFloat(supplyInput.value || 0));
 			supplyLabel.textContent = "공급면적 (평)";
+			supplyText="평"
 			toggleSupplyBtn.textContent = "㎡ ▼";
 			isSupplyPyeong = true;
 		}
@@ -111,11 +115,13 @@ function bindAreaUnitToggle() {
 		if (isExclusivePyeong) {
 			exclusiveInput.value = toM2(parseFloat(exclusiveInput.value || 0));
 			exclusiveLabel.textContent = "전용면적 (m²)";
+			exclusiveAreaText.textContent = "m²";
 			toggleExclusiveBtn.textContent = "평 ▼";
 			isExclusivePyeong = false;
 		} else {
 			exclusiveInput.value = toPyeong(parseFloat(exclusiveInput.value || 0));
 			exclusiveLabel.textContent = "전용면적 (평)";
+			exclusiveAreaText.textContent = "평";
 			toggleExclusiveBtn.textContent = "㎡ ▼";
 			isExclusivePyeong = true;
 		}
@@ -495,7 +501,6 @@ function applySelectedUnit(unitId) {
 
 	const postalInput = document.querySelector("input[name='lstgPostal']");
 	if (postalInput) postalInput.value = unit.bldgZipNo || "";
-	console.log(unit.bldgZipCode);
 	// 층/호수 → 상세주소2 (lstgRoomNum)
 	const roomNumInput = document.querySelector("input[name='lstgRoomNum']");
 	if (roomNumInput) roomNumInput.value = unit.unitRoom || "";
@@ -591,18 +596,28 @@ function applySelectedUnit(unitId) {
 		if (modal) modal.hide();
 	}
 }
-// 현재 단위 상태 저장
+//단위 전환 옵션
+const unitOptions = {
+	jeonse: ["억", "만원", "원"],
+	deposit: ["억", "만원", "원"],
+	mnthRent: ["만원", "원"],
+	sale: ["억", "만원", "원"],
+	mngmt: ["만원", "원"], // 관리비
+};
+
+//현재 단위 상태 저장
 const unitState = {
 	jeonse: "억",
 	deposit: "만원",
 	mnthRent: "만원",
-	sale: "억"
+	sale: "억",
+	mngmt: "만원", // 관리비
 };
 
-// 단위별 원단위 변환 함수
+//단위별 원단위 환산
 function convertToWon(value, unit) {
 	if (!value) return "";
-	const raw = value.toString().replace(/,/g, ""); // 콤마 제거
+	const raw = value.toString().replace(/,/g, "");
 	const num = Number(raw);
 	if (isNaN(num)) return "";
 	switch (unit) {
@@ -613,7 +628,7 @@ function convertToWon(value, unit) {
 	}
 }
 
-// 원단위 값을 해당 단위로 환산 (보기용)
+//원 → 표시 단위로 변환
 function convertFromWon(value, unit) {
 	const num = Number(value);
 	if (isNaN(num)) return "";
@@ -625,40 +640,44 @@ function convertFromWon(value, unit) {
 	}
 }
 
-// 콤마 처리
+//숫자에 콤마 붙이기
 function formatWithComma(value) {
 	const num = Number(value);
 	if (isNaN(num)) return "";
 	return num.toLocaleString();
 }
 
-// 입력값 콤마 제거
+//콤마 제거
 function parseCommaNumber(value) {
 	return value.replace(/,/g, "");
 }
 
-// 라벨 업데이트
+//단위 라벨 텍스트 업데이트
 function updateUnitLabel(type, unit) {
 	const label = document.querySelector(`#${type}Label`);
+		const unitText = document.querySelector(`#${type}UnitText`);
 	if (label) {
 		const baseText = label.dataset.labelBase || label.textContent;
 		label.textContent = `${baseText} (${unit})`;
+		
 	}
+	if (unitText) unitText.textContent =unit;
 }
 
-// 단위 토글 버튼 핸들러
+//단위 토글 버튼 핸들러
 function toggleUnit(type) {
-	const units = ["억", "만원", "원"];
+	const units = unitOptions[type] || ["만원", "원"];
 	const current = unitState[type];
 	const nextIndex = (units.indexOf(current) + 1) % units.length;
 	const nextUnit = units[nextIndex];
 	unitState[type] = nextUnit;
 
-	// 다음 단위 기준으로 버튼 텍스트 설정
+	// 다음 단위 기준 버튼 텍스트 갱신
 	const nextNextUnit = units[(nextIndex + 1) % units.length];
 	const btn = document.querySelector(`#${type}UnitBtn`);
 	if (btn) btn.textContent = `${nextNextUnit} ▼`;
 
+	// 입력 필드 변환
 	const visibleInput = document.querySelector(`#${type}AmtView`);
 	const hiddenInput = document.querySelector(`#${type}Amt`);
 	if (!visibleInput || !hiddenInput) return;
@@ -670,7 +689,7 @@ function toggleUnit(type) {
 	updateUnitLabel(type, nextUnit);
 }
 
-// 입력 시 원단위로 변환 후 hidden input에 저장
+//사용자 입력 → 원단위 저장
 function handleVisibleInputChange(type) {
 	const visibleInput = document.querySelector(`#${type}AmtView`);
 	const hiddenInput = document.querySelector(`#${type}Amt`);
@@ -681,18 +700,20 @@ function handleVisibleInputChange(type) {
 	const won = convertToWon(raw, currentUnit);
 
 	hiddenInput.value = won;
-	visibleInput.value = formatWithComma(raw); // 콤마 다시 붙이기
+	visibleInput.value = formatWithComma(raw); // 보기용 콤마
 }
 
-// 필드와 이벤트 바인딩 연결
+//입력 필드 바인딩
 function bindUnitInputSync(type) {
 	const visibleInput = document.querySelector(`#${type}AmtView`);
 	if (visibleInput) {
 		visibleInput.addEventListener("input", () => handleVisibleInputChange(type));
 	}
 }
+
+//버튼 텍스트 초기화
 function updateUnitButtonText(type) {
-	const units = ["억", "만원", "원"];
+	const units = unitOptions[type] || ["만원", "원"];
 	const current = unitState[type];
 	const currentIndex = units.indexOf(current);
 	const nextIndex = (currentIndex + 1) % units.length;
@@ -701,6 +722,7 @@ function updateUnitButtonText(type) {
 		btn.textContent = `${units[nextIndex]} ▼`;
 	}
 }
+
 function bindOptionSelectAllCheckbox() {
 	document.querySelectorAll(".select-all").forEach(selectAllCheckbox => {
 		const container = selectAllCheckbox.closest(".form-group");
@@ -729,7 +751,14 @@ function bindOptionSelectAllCheckbox() {
 		selectAllCheckbox.checked = optionCheckboxes.length > 0 && initiallyChecked === optionCheckboxes.length;
 	});
 }
-
+function initUnitControls() {
+	const unitTypes = ["jeonse", "deposit", "mnthRent", "sale", "mngmt"];
+	unitTypes.forEach(type => {
+		bindUnitInputSync(type);
+		updateUnitButtonText(type);
+		updateUnitLabel(type, unitState[type]);
+	});
+}
 
 // 페이지 로드 시 초기 바인딩
 document.addEventListener("DOMContentLoaded", () => {
@@ -739,15 +768,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	document.querySelector("#lstgTypeSale")?.addEventListener("change", toggleLeaseFields);
 	document.querySelector("select[name='lstgTrdTypeCode']")?.addEventListener("change", toggleTradeFields);
 
-	// 콤마 및 단위 처리 바인딩
-	["jeonse", "deposit", "mnthRent", "sale"].forEach(type => {
-		bindUnitInputSync(type);
-		updateUnitButtonText(type);
-	});
-
-	// 초기화 시 필드 토글 + 이벤트 바인딩
-	toggleLeaseFields();
-	toggleTradeFields();
+	initUnitControls();
 
 	document.querySelector("#lstgTypeSale")?.addEventListener("change", toggleLeaseFields);
 	document.querySelector("select[name='lstgTrdTypeCode']")?.addEventListener("change", toggleTradeFields);
@@ -797,12 +818,9 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	});
 
-
 	const form = document.querySelector("#product-form");
-
 	form.addEventListener("submit", function(e) {
 		e.preventDefault(); // 항상 막고 시작
-
 		const lstgRoomNum = document.querySelector("input[name='lstgRoomNum']")?.value?.trim();
 		const lstgTypeSale = document.querySelector("#lstgTypeSale")?.value;
 		const lstgNm = document.querySelector("input[name='lstgNm']")?.value?.trim();
@@ -814,38 +832,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		// 필수: 호실 번호
 		if (!lstgRoomNum) {
-			return Swal.fire({ icon: "warning", title: "호실 번호 입력", text: "호실 번호는 필수입니다." });
+			Swal.fire({ icon: "warning", title: "호실 번호 입력", text: "호실 번호는 필수입니다." });
+			return;
 		}
 
 		// 필수: 거래 유형
 		if (!lstgTypeSale || lstgTypeSale === "000") {
-			return Swal.fire({ icon: "warning", title: "거래 유형 선택", text: "거래 유형을 선택해주세요." });
+			Swal.fire({ icon: "warning", title: "거래 유형 선택", text: "거래 유형을 선택해주세요." });
+			return;
 		}
 
 		// 필수: 매물명
 		if (!lstgNm) {
-			return Swal.fire({ icon: "warning", title: "매물명 입력", text: "매물명을 입력해주세요." });
+			Swal.fire({ icon: "warning", title: "매물명 입력", text: "매물명을 입력해주세요." });
+			return;
 		}
 
 		// 필수: 주소 (우편번호)
 		if (!lstgPostal) {
-			return Swal.fire({ icon: "warning", title: "주소 입력", text: "주소 검색을 통해 우편번호를 입력해주세요." });
+			Swal.fire({ icon: "warning", title: "주소 입력", text: "주소 검색을 통해 우편번호를 입력해주세요." });
+			return;
 		}
 
 		// 필수: 중개인 1명 이상
 		if (selectedBrokerInputs.length === 0) {
-			return Swal.fire({ icon: "warning", title: "중개인 선택 필수", text: "최소 1명의 중개인을 선택해야 합니다." });
+			Swal.fire({ icon: "warning", title: "중개인 선택 필수", text: "최소 1명의 중개인을 선택해야 합니다." });
+			return;
 		}
 
 		// 필수: 사진 최소 5장, 최대 10장
 		if (files.length < 5) {
-			return Swal.fire({ icon: "warning", title: "사진 부족", text: "사진은 최소 5장 이상 등록해야 합니다." });
+			Swal.fire({ icon: "warning", title: "사진 부족", text: "사진은 최소 5장 이상 등록해야 합니다." });
+			return;
 		}
 		if (files.length > 10) {
-			return Swal.fire({ icon: "warning", title: "사진 초과", text: "사진은 최대 10장까지만 등록할 수 있습니다." });
+			Swal.fire({ icon: "warning", title: "사진 초과", text: "사진은 최대 10장까지만 등록할 수 있습니다." });
+			return;
 		}
 
-		// ✅ 전부 통과했을 때 수동 제출
 		form.submit();
 	});
 

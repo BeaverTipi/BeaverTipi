@@ -1,4 +1,32 @@
-document.addEventListener('DOMContentLoaded', () => {
+// 탭 상태 전환 함수
+function showTab(tabNum) {
+  const tab1Panel = document.querySelector("#tab1Panel");
+  const tab2Panel = document.querySelector("#tab2Panel");
+  const tab1Btn = document.querySelector("#tab1Btn");
+  const tab2Btn = document.querySelector("#tab2Btn");
+
+  if (!tab1Panel || !tab2Panel || !tab1Btn || !tab2Btn) return;
+
+  tab1Panel.style.display = tabNum === 1 ? "" : "none";
+  tab2Panel.style.display = tabNum === 2 ? "" : "none";
+
+  tab1Btn.classList.toggle("active", tabNum === 1);
+  tab2Btn.classList.toggle("active", tabNum === 2);
+
+  // 폼에 hidden input 있을 경우 값 설정
+  const tabInputs = document.querySelectorAll("input[name='activeTab']");
+  tabInputs.forEach(input => input.value = tabNum);
+}
+
+// 초기 로딩 시 탭 유지
+document.addEventListener("DOMContentLoaded", function () {
+  const params = new URLSearchParams(location.search);
+  const activeTab = parseInt(params.get("activeTab")) || 1;
+  showTab(activeTab);
+
+  document.querySelector("#tab1Btn")?.addEventListener("click", () => showTab(1));
+  document.querySelector("#tab2Btn")?.addEventListener("click", () => showTab(2));
+
   // === 초기화 버튼 ===
   const resetBtn = document.querySelector('#resetBtn');
   if (resetBtn) {
@@ -11,7 +39,18 @@ document.addEventListener('DOMContentLoaded', () => {
       form.submit();
     });
   }
-
+  
+  const  resetBuildingBtn = document.querySelector('#resetBuildingBtn');
+  if (resetBuildingBtn) {
+    resetBuildingBtn.addEventListener('click', () => {
+      const form = resetBtn.closest('form');
+      form.querySelectorAll('input[type="text"], input[type="number"], select').forEach(el => {
+        el.value = '';
+      });
+      form.querySelector('input[name="page"]').value = "1";
+      form.submit();
+    });
+  }
   // === 매물 퀵뷰(상세 JSP) ===
   const listingTableBody = document.getElementById('listingTableBody');
   if (listingTableBody) {

@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.vo.BuildingSearchFormVO;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.ListingVO;
@@ -38,7 +39,7 @@ public interface BuildingManagedMapper {
     
     public ListingVO selectListingById(String lstgId);
     
-    List<BuildingVO> searchBuildingList(BuildingSearchFormVO searchForm);
+    List<BuildingVO> searchBuildingList(PaginationInfo<BuildingSearchFormVO> pagingVO);
 
 
     List<TenancyAccountVO> searchAccountsByRentalPtyId(@Param("rentalPtyId") String rentalPtyId);
@@ -47,6 +48,8 @@ public interface BuildingManagedMapper {
     void updateBuildingImagePath(@Param("bldgId") String bldgId, @Param("imgUrl") String imgUrl);
 
 	String selectNextBuildingId();
+
+	int selectBuildingCount(PaginationInfo<BuildingSearchFormVO> pagingVO);
 
     
 }

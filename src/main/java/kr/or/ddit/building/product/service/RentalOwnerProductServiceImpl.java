@@ -104,18 +104,17 @@ public class RentalOwnerProductServiceImpl implements RentalOwnerProductService 
 		pagingVO.setCurrentPageNo(currentPage);
 		pagingVO.setDetailSearch(form);
 
-		int total = productMapper.selectProductCount(pagingVO);
+		int total = productMapper.selectTenancyProductCount(pagingVO);
 		pagingVO.setTotalRecordCount(total);
 
 		List<ListingVO> listingList = List.of();
 		if (total > 0) {
-			listingList = productMapper.selectProductList(pagingVO);
+			listingList = productMapper.selectTenancyProductList(pagingVO);
 		}
 
 		List<CommonCodeVO> statusCodeList = codeService.readCommonCodeList("PRDST");
 		List<CommonCodeVO> typeSaleCodeList = codeService.readCommonCodeList("TRDST");
 
-		// ✅ JSP에서 쓸 map 구성
 
 		result.put("pagingVO", pagingVO);
 		result.put("dataList", listingList);

@@ -49,6 +49,7 @@ public class ManagedTabController {
         @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
         Model model,
         @ModelAttribute("searchForm") ListingSearchFormVO searchForm,
+        @ModelAttribute("searchBuildingForm") BuildingSearchFormVO searchBuildingForm,
         @RequestParam Map<String, String> paramMap // 추가 검색 파라미터가 있다면
     ) {
         MemberVO memberVO = principal.getRealUser();
@@ -59,14 +60,7 @@ public class ManagedTabController {
 
         // 로그인 정보 바인딩
         searchForm.setMbrCd(memberVO.getMbrCd());
-
-        // 파라미터 바인딩(옵션)
-        if(paramMap != null) {
-            searchForm.setSearchBuildingName(paramMap.get("searchBuildingName"));
-            searchForm.setSearchRoomNum(paramMap.get("searchRoomNum"));
-            searchForm.setSearchStatus(paramMap.get("searchStatus"));
-            searchForm.setSearchType(paramMap.get("searchType"));
-        }
+        searchForm.setRentalPtyId(rentalPtyId);
 
         // 매물 리스트
         Map<String, Object> resultMap = listingService.readPagingAndListing(searchForm, 1);
@@ -79,15 +73,17 @@ public class ManagedTabController {
         // 검색 폼 값 유지용 (필수)
         model.addAttribute("searchForm", searchForm);
 
-        // 건물 리스트
-        BuildingSearchFormVO buildingSearchForm = new BuildingSearchFormVO();
-        buildingSearchForm.setRentalPtyId(rentalPtyId);
-        List<BuildingVO> buildingList = buildingService.searchBuildingList(rentalPtyId, buildingSearchForm);
-        for (BuildingVO building : buildingList) {
-            List<TenancyAccountVO> accList = buildingService.selectAccountsByRentalPtyId(building.getRentalPtyId());
-            building.setAccList(accList);
-        }
-        model.addAttribute("buildingList", buildingList);
+        searchBuildingForm.setRentalPtyId(rentalPtyId);
+        Map<String, Object> resultBuildingMap = buildingService.readPagingAndBuilding(searchBuildingForm, 1);
+
+        // 💡 더 이상 계좌 바인딩 반복문 필요 없음
+
+        model.addAttribute("buildingList", resultBuildingMap.get("buildingList"));
+        model.addAttribute("buildingPagingVO", resultBuildingMap.get("pagingVO"));      // ✅ 이름 변경
+        model.addAttribute("buildingPagingHTML", resultBuildingMap.get("pagingHTML"));  // ✅ 이름 변경
+        model.addAttribute("buildingStatusCodeList", resultBuildingMap.get("statusCodeList")); // ✅ 이름 변경
+        model.addAttribute("searchBuildingForm", searchBuildingForm);
+
 
         return "building/product/rentalOwnerProductList";
     }

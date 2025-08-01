@@ -45,6 +45,8 @@ public interface RentalOwnerProductMapper {
 	public Integer selectProductCount(@Param("pagingVO")PaginationInfo<ListingSearchFormVO> pagingVO);
 
 	public List<ListingVO> selectProductList(@Param("pagingVO") PaginationInfo<ListingSearchFormVO>  pagingVO);
+	public List<ListingVO> selectTenancyProductList(@Param("pagingVO") PaginationInfo<ListingSearchFormVO>  pagingVO);
+	public Integer selectTenancyProductCount(@Param("pagingVO") PaginationInfo<ListingSearchFormVO>  pagingVO);
 
 
 	public List<ListingVO> selectRoomsList(ListingVO listing);

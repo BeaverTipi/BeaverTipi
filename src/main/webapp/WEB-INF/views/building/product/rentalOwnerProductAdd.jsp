@@ -146,8 +146,9 @@
 										<label class="form-label" id="depositLabel"
 											data-label-base="보증금">보증금 (만원)</label>
 										<div class="unit-input-group">
-											<input type="text" inputmode="numeric" pattern="[0-9]*"
+											<input type="text" inputmode="numeric" pattern="[0-9,]*"
 												class="form-control" id="depositAmtView" placeholder="보증금">
+											<span id="depositUnitText" class="ms-1 text-muted unit-text">만원</span>
 											<button type="button" class="btn btn-unit-toggle"
 												id="depositUnitBtn" onclick="toggleUnit('deposit')">원
 												▼</button>
@@ -156,10 +157,11 @@
 									</div>
 									<div class="col-md-6">
 										<label class="form-label" id="mnthRentLabel"
-											data-label-base="월세">월세 (만원)</label>
+											data-label-base="월세">월세 만원</label>
 										<div class="unit-input-group">
-											<input type="text" inputmode="numeric" pattern="[0-9]*"
+											<input type="text" inputmode="numeric"
 												class="form-control" id="mnthRentAmtView" placeholder="월세">
+												<span id="mnthRentUnitText" class="ms-1 text-muted unit-text">만원</span>
 											<button type="button" class="btn btn-unit-toggle"
 												id="mnthRentUnitBtn" onclick="toggleUnit('mnthRent')">
 												원 ▼</button>
@@ -176,8 +178,9 @@
 									<label class="form-label" id="saleAmtLabel"
 										data-label-base="매매가">매매가 (억)</label>
 									<div class="unit-input-group">
-										<input type="text" inputmode="numeric" pattern="[0-9]*"
+										<input type="text" inputmode="numeric" 
 											class="form-control" id="saleAmtView" placeholder="매매가">
+											<span id="saleUnitText" class="ms-1 text-muted unit-text">만원</span>
 										<button type="button" class="btn btn-unit-toggle"
 											id="saleUnitBtn" onclick="toggleUnit('sale')">만원 ▼</button>
 										<input type="hidden" name="meme" id="saleAmt">
@@ -194,6 +197,7 @@
 										<input type="text" class="form-control" id="supplyAreaField"
 											placeholder="예: 36.92"> <input type="hidden"
 											name="lstgGrArea" value="${listingVO.lstgGrArea}">
+											<span id="supplyAreaText" class="ms-1 text-muted ">평</span>
 										<button type="button" class="btn btn-unit-toggle"
 											id="toggleSupplyUnit">㎡ ▼</button>
 									</div>
@@ -208,6 +212,7 @@
 											id="exclusiveAreaField" placeholder="예: 51.35"> <input
 											type="hidden" name="lstgExArea"
 											value="${listingVO.lstgExArea}">
+											<span id="exclusiveAreaText" class="ms-1 text-muted ">평</span>
 										<button type="button" class="btn btn-unit-toggle"
 											id="toggleExclusiveUnit">㎡ ▼</button>
 									</div>
@@ -245,29 +250,37 @@
 							<h3>추가 정보</h3>
 						</div>
 						<div class="card-body">
-							<div class="form-group row mb-3">
-								<label class="col-sm-4 col-form-label">해당 층 수</label>
-								<div class="col-sm-8">
-									<input type="number" class="form-control" name="lstgFloor"
-										value="${listingVO.lstgFloor}" placeholder="예: 3" />
-								</div>
-							</div>
+							<!-- 🧱 1번째 줄: 해당 층수 + 욕실 수 -->
+<div class="form-group row mb-3">
+  <div class="col-sm-6">
+    <label class="form-label">해당 층수</label>
+    <input type="text" class="form-control" name="lstgFloor" placeholder="예: 3">
+  </div>
+  <div class="col-sm-6">
+    <label class="form-label">욕실 수</label>
+    <input type="text" class="form-control" name="lstgBathCnt" placeholder="예: 1">
+  </div>
+</div>
 
-							<div class="form-group row mb-3">
-								<label class="col-sm-4 col-form-label">욕실 수 *</label>
-								<div class="col-sm-8">
-									<input type="number" class="form-control" placeholder="예: 1" />
-
-								</div>
-							</div>
-
-							<div class="form-group row mb-3">
-								<label class="col-sm-4 col-form-label">방 수</label>
-								<div class="col-sm-8">
-									<input type="number" class="form-control" name="lstgRoomCnt"
-										value="${listingVO.lstgRoomCnt}" placeholder="예: 2" />
-								</div>
-							</div>
+<div class="form-group row mb-3">
+  <div class="col-sm-6">
+    <label class="form-label">방 수</label>
+    <input type="number" class="form-control" name="lstgRoomCnt" placeholder="예: 2">
+  </div>
+  <div class="col-sm-6">
+   <label class="form-label" id="mngmtLabel" data-label-base="관리비">관리비 (원)</label>
+  <div class="unit-input-group d-flex">
+    <input type="text" inputmode="numeric" pattern="[0-9,]*"
+           class="form-control" id="mngmtAmtView" placeholder="예: 10,000">
+             <span id="mngmtUnitText" class="ms-1 text-muted unit-text">만원</span>
+    <button type="button" class="btn btn-unit-toggle ms-2"
+            id="mngmtUnitBtn" onclick="toggleUnit('mngmt')">
+      원 ▼
+    </button>
+    <input type="hidden" name="lstgFee" id="mngmtAmt">
+  </div>
+  </div>
+</div>
 
 							<div class="form-group row mb-3">
 								<label class="col-sm-4 col-form-label">상태</label>
@@ -464,8 +477,8 @@
 				<button type="button" class="btn btn-cancel btn-lg"
 					onclick="history.back();">취소</button>
 			</div>
-	</form>
 </div>
+	</form>
 
 <!-- 중개인 선택 모달 -->
 <div class="modal fade" id="brokerModal" tabindex="-1"

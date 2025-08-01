@@ -2,6 +2,7 @@
 package kr.or.ddit.building.managed.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,6 +45,6 @@ public interface BuildingManagedService {
     //이게 빌딩 아이디를 이미지파일에 덮어 씌우는 역할이얌
     void updateBuildingImagePath(String bldgId, String imgUrl);
 
-    
+    public Map<String, Object> readPagingAndBuilding(BuildingSearchFormVO form, int currentPage);
 }
 

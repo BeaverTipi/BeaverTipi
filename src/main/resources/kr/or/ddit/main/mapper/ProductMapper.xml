@@ -166,19 +166,19 @@ AND EXISTS (
     <if test="pagingVO.detailSearch != null">
       AND L.MBR_CD = #{pagingVO.detailSearch.mbrCd}
 
-      <if test="pagingVO.detailSearch.searchBuildingName != null and pagingVO.detailSearch.searchBuildingName != ''">
-        AND L.LSTG_NM LIKE '%' || #{pagingVO.detailSearch.searchBuildingName} || '%'
+      <if test="pagingVO.detailSearch.searchListingName != null and pagingVO.detailSearch.searchListingName != ''">
+        AND L.LSTG_NM LIKE '%' || #{pagingVO.detailSearch.searchListingName} || '%'
       </if>
 
       <if test="pagingVO.detailSearch.searchRoomNum != null and pagingVO.detailSearch.searchRoomNum != ''">
         AND L.LSTG_ROOM_NUM LIKE '%' || #{pagingVO.detailSearch.searchRoomNum} || '%'
       </if>
 
-      <if test="pagingVO.detailSearch.searchStatus != null and pagingVO.detailSearch.searchStatus != ''">
+      <if test="pagingVO.detailSearch.searchStatus != null and pagingVO.detailSearch.searchStatus != ' and pagingVO.detailSearch.searchStatus != '000' '">
         AND L.LSTG_PROD_STAT = #{pagingVO.detailSearch.searchStatus}
       </if>
 
-      <if test="pagingVO.detailSearch.searchType != null and pagingVO.detailSearch.searchType != ''">
+      <if test="pagingVO.detailSearch.searchType != null and pagingVO.detailSearch.searchType != '' and pagingVO.detailSearch.searchType != '000' " >
         AND L.LSTG_TYPE_SALE = #{pagingVO.detailSearch.searchType}
 
         <!-- 전세 조건 -->
@@ -227,6 +227,75 @@ AND EXISTS (
     </if>
    ORDER BY L.LSTG_REG_DATE, L.LSTG_ID
 </select>
+<select id="selectTenancyProductCount">
+  SELECT COUNT(*)
+  FROM LISTING L
+  WHERE L.LSTG_DEL = 'N'
+    <if test="pagingVO.detailSearch != null">
+      AND L.RENTAL_PTY_ID = #{pagingVO.detailSearch.rentalPtyId}
+
+      <if test="pagingVO.detailSearch.searchListingName != null and pagingVO.detailSearch.searchListingName != ''">
+        AND L.LSTG_NM LIKE '%' || #{pagingVO.detailSearch.searchListingName} || '%'
+      </if>
+
+      <if test="pagingVO.detailSearch.searchRoomNum != null and pagingVO.detailSearch.searchRoomNum != ''">
+        AND L.LSTG_ROOM_NUM LIKE '%' || #{pagingVO.detailSearch.searchRoomNum} || '%'
+      </if>
+
+      <if test="pagingVO.detailSearch.searchStatus != null and pagingVO.detailSearch.searchStatus != ''  and pagingVO.detailSearch.searchStatus != '000' ">
+        AND L.LSTG_PROD_STAT = #{pagingVO.detailSearch.searchStatus}
+      </if>
+
+      <if test="pagingVO.detailSearch.searchType != null and pagingVO.detailSearch.searchType != '' and pagingVO.detailSearch.searchType != '000' " >
+        AND L.LSTG_TYPE_SALE = #{pagingVO.detailSearch.searchType}
+
+        <!-- 전세 조건 -->
+        <if test="pagingVO.detailSearch.searchType == '001'">
+          <if test="pagingVO.detailSearch.searchDepositMin != null and pagingVO.detailSearch.searchDepositMin != ''">
+            AND L.LSTG_LEASE <![CDATA[>=]]> #{pagingVO.detailSearch.searchDepositMin}
+          </if>
+          <if test="pagingVO.detailSearch.searchDepositMax != null and pagingVO.detailSearch.searchDepositMax != ''">
+            AND L.LSTG_LEASE <![CDATA[<=]]> #{pagingVO.detailSearch.searchDepositMax}
+          </if>
+        </if>
+
+        <!-- 월세 조건 -->
+        <if test="pagingVO.detailSearch.searchType == '002'">
+          <if test="pagingVO.detailSearch.searchDepositMin != null and pagingVO.detailSearch.searchDepositMin != ''">
+            AND L.LSTG_LEASE_AMT <![CDATA[>=]]> #{pagingVO.detailSearch.searchDepositMin}
+          </if>
+          <if test="pagingVO.detailSearch.searchDepositMax != null and pagingVO.detailSearch.searchDepositMax != ''">
+            AND L.LSTG_LEASE_AMT <![CDATA[<=]]> #{pagingVO.detailSearch.searchDepositMax}
+          </if>
+          <if test="pagingVO.detailSearch.searchMonthlyMin != null and pagingVO.detailSearch.searchMonthlyMin != ''">
+            AND L.LSTG_LEASE_M <![CDATA[>=]]> #{pagingVO.detailSearch.searchMonthlyMin}
+          </if>
+          <if test="pagingVO.detailSearch.searchMonthlyMax != null and pagingVO.detailSearch.searchMonthlyMax != ''">
+            AND L.LSTG_LEASE_M <![CDATA[<=]]> #{pagingVO.detailSearch.searchMonthlyMax}
+          </if>
+        </if>
+
+        <!-- 매매 조건 -->
+        <if test="pagingVO.detailSearch.searchType == '003'">
+          <if test="pagingVO.detailSearch.searchSaleMin != null and pagingVO.detailSearch.searchSaleMin != ''">
+            AND L.LSTG_SALE <![CDATA[>=]]> #{pagingVO.detailSearch.searchSaleMin}
+          </if>
+          <if test="pagingVO.detailSearch.searchSaleMax != null and pagingVO.detailSearch.searchSaleMax != ''">
+            AND L.LSTG_SALE <![CDATA[<=]]> #{pagingVO.detailSearch.searchSaleMax}
+          </if>
+        </if>
+      </if>
+      <if test="pagingVO.detailSearch.searchRegDateFrom != null">
+		  AND L.LSTG_REG_DATE &gt;= TO_DATE(#{pagingVO.detailSearch.searchRegDateFrom}, 'YYYY-MM-DD')
+		</if>
+		<if test="pagingVO.detailSearch.searchRegDateTo != null">
+		  AND L.LSTG_REG_DATE &lt;= TO_DATE(#{pagingVO.detailSearch.searchRegDateTo}, 'YYYY-MM-DD') + 1
+		</if>
+      
+    </if>
+   ORDER BY L.LSTG_REG_DATE, L.LSTG_ID
+</select>
+
 <select id="selectNearbyBrokers">
 SELECT *
 FROM (
@@ -356,19 +425,19 @@ AND LSTG_DEL = 'N'
       <if test="pagingVO.detailSearch != null">
         AND L.MBR_CD = #{pagingVO.detailSearch.mbrCd}
 
-        <if test="pagingVO.detailSearch.searchBuildingName != null and pagingVO.detailSearch.searchBuildingName != ''">
-          AND L.LSTG_NM LIKE '%' || #{pagingVO.detailSearch.searchBuildingName} || '%'
+        <if test="pagingVO.detailSearch.searchLisingName != null and pagingVO.detailSearch.searchLisingName != ''">
+          AND L.LSTG_NM LIKE '%' || #{pagingVO.detailSearch.searchLisingName} || '%'
         </if>
 
         <if test="pagingVO.detailSearch.searchRoomNum != null and pagingVO.detailSearch.searchRoomNum != ''">
           AND L.LSTG_ROOM_NUM LIKE '%' || #{pagingVO.detailSearch.searchRoomNum} || '%'
         </if>
 
-        <if test="pagingVO.detailSearch.searchStatus != null and pagingVO.detailSearch.searchStatus != ''">
+        <if test="pagingVO.detailSearch.searchStatus != null and pagingVO.detailSearch.searchStatus != ''  and pagingVO.detailSearch.searchStatus != '000' ">
           AND L.LSTG_PROD_STAT = #{pagingVO.detailSearch.searchStatus}
         </if>
 
-        <if test="pagingVO.detailSearch.searchType != null and pagingVO.detailSearch.searchType != ''">
+        <if test="pagingVO.detailSearch.searchType != null and pagingVO.detailSearch.searchType != ''  and pagingVO.detailSearch.searchType != '000' ">
           AND L.LSTG_TYPE_SALE = #{pagingVO.detailSearch.searchType}
 
           <!-- 전세 조건 -->
@@ -397,7 +466,132 @@ AND LSTG_DEL = 'N'
             </if>
           </if>
 
-          <!-- 🏠 매매 조건 추가 -->
+          <!-- 매매 조건 추가 -->
+          <if test="pagingVO.detailSearch.searchType == '003'">
+            <if test="pagingVO.detailSearch.searchSaleMin != null and pagingVO.detailSearch.searchSaleMin != ''">
+              AND L.LSTG_SALE <![CDATA[>=]]> #{pagingVO.detailSearch.searchSaleMin}
+            </if>
+            <if test="pagingVO.detailSearch.searchSaleMax != null and pagingVO.detailSearch.searchSaleMax != ''">
+              AND L.LSTG_SALE <![CDATA[<=]]> #{pagingVO.detailSearch.searchSaleMax}
+            </if>
+          </if>
+
+        </if>
+        <if test="pagingVO.detailSearch.searchRegDateFrom != null">
+		  AND L.LSTG_REG_DATE &gt;= TO_DATE(#{pagingVO.detailSearch.searchRegDateFrom}, 'YYYY-MM-DD')
+		</if>
+		<if test="pagingVO.detailSearch.searchRegDateTo != null">
+		  AND L.LSTG_REG_DATE &lt;= TO_DATE(#{pagingVO.detailSearch.searchRegDateTo}, 'YYYY-MM-DD') + 1
+		</if>
+		        
+      </if>
+  ) A_PAGING
+  WHERE RNUM BETWEEN #{pagingVO.firstRecordIndex} AND #{pagingVO.lastRecordIndex}
+</select>
+<select id="selectTenancyProductList">
+  SELECT
+    A_PAGING.LSTG_ID,
+    A_PAGING.MBR_CD,
+    A_PAGING.LSTG_TYPE_CODE2,
+    A_PAGING.LSTG_ADD,
+    A_PAGING.LSTG_ADD2,
+    A_PAGING.LSTG_EX_AREA,
+    A_PAGING.LSTG_GR_AREA,
+    A_PAGING.LSTG_ROOM_CNT,
+    A_PAGING.LSTG_ROOM_NUM,
+    A_PAGING.LSTG_DST,
+    A_PAGING.LSTG_TYPE_SALE,
+    A_PAGING.LSTG_LEASE,
+    A_PAGING.LSTG_LEASE_M,
+    A_PAGING.LSTG_LEASE_AMT,
+    A_PAGING.LSTG_FLOOR,
+    A_PAGING.LSTG_PARK_YN,
+    A_PAGING.LSTG_LAT,
+    A_PAGING.LSTG_LNG,
+    A_PAGING.LSTG_DEL,
+    A_PAGING.LSTG_REG_DATE,
+    A_PAGING.LSTG_PROD_STAT,
+    A_PAGING.LSTG_NM,
+    A_PAGING.LSTG_TYPE_CODE1,
+    A_PAGING.RENTAL_PTY_ID,
+    A_PAGING.LSTG_POSTAL,
+    A_PAGING.LSTG_FEE
+  FROM (
+    SELECT
+      ROW_NUMBER() OVER (ORDER BY L.LSTG_REG_DATE DESC) AS RNUM,
+      L.LSTG_ID,
+      L.MBR_CD,
+      L.LSTG_TYPE_CODE2,
+      L.LSTG_ADD,
+      L.LSTG_ADD2,
+      L.LSTG_EX_AREA,
+      L.LSTG_GR_AREA,
+      L.LSTG_ROOM_CNT,
+      L.LSTG_ROOM_NUM,
+      L.LSTG_DST,
+      L.LSTG_TYPE_SALE,
+      L.LSTG_LEASE,
+      L.LSTG_LEASE_M,
+      L.LSTG_LEASE_AMT,
+      L.LSTG_FLOOR,
+      L.LSTG_PARK_YN,
+      L.LSTG_LAT,
+      L.LSTG_LNG,
+      L.LSTG_DEL,
+      L.LSTG_REG_DATE,
+      L.LSTG_PROD_STAT,
+      L.LSTG_NM,
+      L.LSTG_TYPE_CODE1,
+      L.RENTAL_PTY_ID,
+      L.LSTG_POSTAL,
+      L.LSTG_FEE
+    FROM LISTING L
+    WHERE L.LSTG_DEL = 'N'
+      <if test="pagingVO.detailSearch != null">
+        AND L.RENTAL_PTY_ID = #{pagingVO.detailSearch.rentalPtyId}
+
+        <if test="pagingVO.detailSearch.searchListingName != null and pagingVO.detailSearch.searchListingName != ''">
+          AND L.LSTG_NM LIKE '%' || #{pagingVO.detailSearch.searchListingName} || '%'
+        </if>
+
+        <if test="pagingVO.detailSearch.searchRoomNum != null and pagingVO.detailSearch.searchRoomNum != ''">
+          AND L.LSTG_ROOM_NUM LIKE '%' || #{pagingVO.detailSearch.searchRoomNum} || '%'
+        </if>
+
+        <if test="pagingVO.detailSearch.searchStatus != null and pagingVO.detailSearch.searchStatus != ''  and pagingVO.detailSearch.searchStatus != '000' ">
+          AND L.LSTG_PROD_STAT = #{pagingVO.detailSearch.searchStatus}
+        </if>
+
+        <if test="pagingVO.detailSearch.searchType != null and pagingVO.detailSearch.searchType != ''  and pagingVO.detailSearch.searchType != '000' ">
+          AND L.LSTG_TYPE_SALE = #{pagingVO.detailSearch.searchType}
+
+          <!-- 전세 조건 -->
+          <if test="pagingVO.detailSearch.searchType == '001'">
+            <if test="pagingVO.detailSearch.searchDepositMin != null and pagingVO.detailSearch.searchDepositMin != ''">
+              AND L.LSTG_LEASE <![CDATA[>=]]> #{pagingVO.detailSearch.searchDepositMin}
+            </if>
+            <if test="pagingVO.detailSearch.searchDepositMax != null and pagingVO.detailSearch.searchDepositMax != ''">
+              AND L.LSTG_LEASE <![CDATA[<=]]> #{pagingVO.detailSearch.searchDepositMax}
+            </if>
+          </if>
+
+          <!-- 월세 조건 -->
+          <if test="pagingVO.detailSearch.searchType == '002'">
+            <if test="pagingVO.detailSearch.searchDepositMin != null and pagingVO.detailSearch.searchDepositMin != ''">
+              AND L.LSTG_LEASE_AMT <![CDATA[>=]]> #{pagingVO.detailSearch.searchDepositMin}
+            </if>
+            <if test="pagingVO.detailSearch.searchDepositMax != null and pagingVO.detailSearch.searchDepositMax != ''">
+              AND L.LSTG_LEASE_AMT <![CDATA[<=]]> #{pagingVO.detailSearch.searchDepositMax}
+            </if>
+            <if test="pagingVO.detailSearch.searchMonthlyMin != null and pagingVO.detailSearch.searchMonthlyMin != ''">
+              AND L.LSTG_LEASE_M <![CDATA[>=]]> #{pagingVO.detailSearch.searchMonthlyMin}
+            </if>
+            <if test="pagingVO.detailSearch.searchMonthlyMax != null and pagingVO.detailSearch.searchMonthlyMax != ''">
+              AND L.LSTG_LEASE_M <![CDATA[<=]]> #{pagingVO.detailSearch.searchMonthlyMax}
+            </if>
+          </if>
+
+          <!-- 매매 조건 추가 -->
           <if test="pagingVO.detailSearch.searchType == '003'">
             <if test="pagingVO.detailSearch.searchSaleMin != null and pagingVO.detailSearch.searchSaleMin != ''">
               AND L.LSTG_SALE <![CDATA[>=]]> #{pagingVO.detailSearch.searchSaleMin}

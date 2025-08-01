@@ -330,3 +330,8 @@
   background-color: #f0f0f0;
   color: #000;
 }
+.unit-text {
+  display: inline-block;
+  width: 60px; /* 단위들 중 가장 긴 문자열 길이에 맞춰서 조절 */
+  text-align: center;
+}

@@ -32,10 +32,11 @@
           <h2 class="mb-4">내 건물 관리</h2>
 
           <!-- 내 매물관리와 동일한 검색 폼 -->
-          <form:form modelAttribute="searchForm"
-            action="${pageContext.request.contextPath}/building/managed/list"
+          <form:form modelAttribute="searchBuildingForm"
+            action="${pageContext.request.contextPath}/building/product/tabList"
             method="get" class="search-section">
-            <input type="hidden" name="page" value="${pagingVO.currentPageNo}" id="currentPageNoInput" />
+            <input type="hidden" name="page" value="${buildingPagingVO.currentPageNo}" id="currentPageNoInput" />
+
 
             <div class="search-grid-container">
               <div class="search-grid-left">
@@ -47,29 +48,28 @@
 
                   <div class="search-item">
                     <label>주소</label>
-                    <form:select path="searchStatus" cssClass="form-control">
-                      <c:forEach var="code" items="${statusCodeList}">
-                        <form:option value="${code.codeValue}">${code.codeName}</form:option>
-                      </c:forEach>
+                    <form:select path="searchBuildingStatus" cssClass="form-control">
+                      <c:forEach var="buildingStatusCode" items="${buildingStatusCodeList}">
+						  <form:option value="${buildingStatusCode.codeValue}">${buildingStatusCode.codeName}</form:option>
+						</c:forEach>
                     </form:select>
                     </div>
                  
                   <div class="search-item  full-width">
                     <label>등록 기간</label>
                     <div class="d-flex">
-                      <form:input type="date" path="searchRegDateFrom" cssClass="form-control mr-1" />
+                      <form:input type="date" path="searchBuildingRegDateFrom" cssClass="form-control mr-1" />
                       <span class="date-separator">~</span>
-                      <form:input type="date" path="searchRegDateTo" cssClass="form-control" />
+                      <form:input type="date" path="searchBuildingRegDateTo" cssClass="form-control" />
                     </div>
                   </div>
-                 
+                 <input type="hidden" name="activeTab" id="activeTabInput" value="1" />
                 </div>
-                 
               </div>
             <div class="search-grid-right">
               <div class="button-area">
                 <button type="submit" class="btn-search">검색</button>
-                <button type="reset" class="btn-reset" id="resetBtn">초기화</button>
+                <button type="reset" class="btn-reset" id="resetBuildingBtn">초기화</button>
               </div>
             </div>
             </div>
@@ -121,6 +121,11 @@
 			</tbody>
 
             </table>
+            <div class="pagination-wrapper mt-4">
+            <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">${buildingPagingHTML}</ul>
+                  </nav>
+          </div>
           </div>
           <div style="text-align:right; margin-top:20px;">
             <a href="/building/managed/add" class="btn btn-success">새 건물등록</a>
@@ -137,14 +142,14 @@
         <div class="card-body">
           <h2 class="mb-4">내 매물 관리</h2>
           <form:form modelAttribute="searchForm"
-            action="${pageContext.request.contextPath}/building/product/list"
+            action="${pageContext.request.contextPath}/building/product/tabList"
             method="get" class="search-section">
             <div class="search-grid-container">
               <div class="search-grid-left">
                 <div class="search-grid-row">
                   <div class="search-item">
                     <label>건물명</label>
-                    <form:input path="searchBuildingName" cssClass="form-control" placeholder="건물명 입력" />
+                    <form:input path="searchListingName" cssClass="form-control" placeholder="건물명 입력" />
                   </div>
 
                   <div class="search-item">
@@ -171,7 +176,8 @@
                       <form:input type="date" path="searchRegDateTo" cssClass="form-control" />
                     </div>
                   </div>
-                 
+                 <input type="hidden" name="activeTab" id="activeTabInput" value="2" />
+                  <input type="hidden" name="page" value="${pagingVO.currentPageNo}" />
                 </div>
                  
               </div>
@@ -253,18 +259,6 @@
   </div>
 </div>
 
-<script>
-  // 탭 전환
-  function showTab(tabNum) {
-    document.getElementById("tab1Panel").style.display = tabNum === 1 ? "" : "none";
-    document.getElementById("tab2Panel").style.display = tabNum === 2 ? "" : "none";
-    document.getElementById("tab1Btn").classList.toggle("active", tabNum === 1);
-    document.getElementById("tab2Btn").classList.toggle("active", tabNum === 2);
-  }
-  window.onload = function() {
-    showTab(1);
-  }
-</script>
 <script src="${pageContext.request.contextPath}/app/js/building/product/listing-management.js"></script>
 
 

@@ -111,7 +111,6 @@
       BLDG_IMG_PATH = #{bldgImgPath}
     WHERE BLDG_ID = #{bldgId}
   </update>
-
   <!-- 건물 삭제(논리 삭제) -->
   <update id="deleteBuilding">
     UPDATE BUILDING
@@ -120,31 +119,64 @@
     AND RENTAL_PTY_ID = #{rentalPtyId}
   </update>
 
-	<select id="searchBuildingList" parameterType="kr.or.ddit.vo.BuildingSearchFormVO" resultMap="buildingResultMap">
-	    SELECT *
-	    FROM BUILDING
-	    WHERE DEL_YN = 'N'
-	      AND RENTAL_PTY_ID = #{rentalPtyId}
-	    <if test="searchBuildingName != null and searchBuildingName != ''">
-	      AND BLDG_NM LIKE '%' || #{searchBuildingName} || '%'
-	    </if>
-	    <if test="searchRoomNum != null and searchRoomNum != ''">
-	      -- 호수는 연관 테이블 있으면 JOIN, 없으면 조건 생략
-	    </if>
-	    <if test="searchStatus != null and searchStatus != ''">
-	      AND BLDG_TYPE_CODE = #{searchStatus}
-	    </if>
-	    <if test="searchType != null and searchType != ''">
-	      AND BLDG_TYPE_GROUP_CD = #{searchType}
-	    </if>
-	    <if test="searchRegDateFrom != null and searchRegDateFrom != ''">
-	      AND BLDG_CMPLTN_DT &gt;= #{searchRegDateFrom}
-	    </if>
-	    <if test="searchRegDateTo != null and searchRegDateTo != ''">
-	      AND BLDG_CMPLTN_DT &lt;= #{searchRegDateTo}
-	    </if>
-	    ORDER BY BLDG_ID ASC
-	</select>
+<select id="searchBuildingList" resultMap="buildingResultMap">
+  SELECT *
+  FROM BUILDING
+  WHERE DEL_YN = 'N'
+ <if test="detailSearch != null">
+      <if test="detailSearch.rentalPtyId != null and detailSearch.rentalPtyId != ''">
+        AND RENTAL_PTY_ID = #{detailSearch.rentalPtyId}
+      </if>
+      <if test="detailSearch.searchBuildingName != null and detailSearch.searchBuildingName != ''">
+        AND BLDG_NM LIKE '%' || #{detailSearch.searchBuildingName} || '%'
+      </if>
+      <if test="detailSearch.searchBuildingRoomNum != null and detailSearch.searchBuildingRoomNum != ''">
+        <!-- TODO: 호수 조건 처리 (필요 시 JOIN) -->
+      </if>
+      <if test="detailSearch.searchBuildingStatus != null and detailSearch.searchBuildingStatus != '' and detailSearch.searchBuildingStatus != '000'">
+        AND BLDG_TYPE_CODE = #{detailSearch.searchBuildingStatus}
+      </if>
+      <if test="detailSearch.searchBuildingType != null and detailSearch.searchBuildingType != ''">
+        AND BLDG_TYPE_GROUP_CD = #{detailSearch.searchBuildingType}
+      </if>
+      <if test="detailSearch.searchBuildingRegDateFrom != null and detailSearch.searchBuildingRegDateFrom != ''">
+        AND BLDG_CMPLTN_DT &gt;= TO_DATE(#{detailSearch.searchBuildingRegDateFrom}, 'YYYY-MM-DD')
+      </if>
+      <if test="detailSearch.searchBuildingRegDateTo != null and detailSearch.searchBuildingRegDateTo != ''">
+        AND BLDG_CMPLTN_DT &lt;= TO_DATE(#{detailSearch.searchBuildingRegDateTo}, 'YYYY-MM-DD') + 1
+      </if>
+    </if>
+  ORDER BY BLDG_CMPLTN_DT DESC
+</select>
+
+<select id="selectBuildingCount">
+  SELECT COUNT(BLDG_ID)
+  FROM BUILDING
+  WHERE DEL_YN = 'N'
+    <if test="detailSearch != null">
+      <if test="detailSearch.rentalPtyId != null and detailSearch.rentalPtyId != ''">
+        AND RENTAL_PTY_ID = #{detailSearch.rentalPtyId}
+      </if>
+      <if test="detailSearch.searchBuildingName != null and detailSearch.searchBuildingName != ''">
+        AND BLDG_NM LIKE '%' || #{detailSearch.searchBuildingName} || '%'
+      </if>
+      <if test="detailSearch.searchBuildingRoomNum != null and detailSearch.searchBuildingRoomNum != ''">
+        <!-- TODO: 호수 조건 처리 (필요 시 JOIN) -->
+      </if>
+      <if test="detailSearch.searchBuildingStatus != null and detailSearch.searchBuildingStatus != '' and detailSearch.searchBuildingStatus != '000'">
+        AND BLDG_TYPE_CODE = #{detailSearch.searchBuildingStatus}
+      </if>
+      <if test="detailSearch.searchBuildingType != null and detailSearch.searchBuildingType != ''">
+        AND BLDG_TYPE_GROUP_CD = #{detailSearch.searchBuildingType}
+      </if>
+      <if test="detailSearch.searchBuildingRegDateFrom != null and detailSearch.searchBuildingRegDateFrom != ''">
+        AND BLDG_CMPLTN_DT &gt;= TO_DATE(#{detailSearch.searchBuildingRegDateFrom}, 'YYYY-MM-DD')
+      </if>
+      <if test="detailSearch.searchBuildingRegDateTo != null and detailSearch.searchBuildingRegDateTo != ''">
+        AND BLDG_CMPLTN_DT &lt;= TO_DATE(#{detailSearch.searchBuildingRegDateTo}, 'YYYY-MM-DD') + 1
+      </if>
+    </if>
+</select>
 
 	
 	<select id="selectAccountsByRentalPtyId" parameterType="string" resultType="kr.or.ddit.vo.TenancyAccountVO">
@@ -204,6 +236,7 @@ FROM DUAL
 	    SET BLDG_IMG_PATH = #{imgUrl}
 	    WHERE BLDG_ID = #{bldgId}
 	</update>
+	
 	
 
 </mapper>

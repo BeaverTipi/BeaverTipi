@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/app/css/building/unit/unitDetailAdd.css" />
 </head>
 <body>
-
+<h2 class="board-title">건물 등록</h2>
 	<div class="container-wrap">
 		<form:form modelAttribute="buildingVO" method="post"
 			action="/building/managed/add" enctype="multipart/form-data">
