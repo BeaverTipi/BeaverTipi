@@ -297,6 +297,15 @@
 	</script>
   <script>
 	document.addEventListener('DOMContentLoaded', () => {
+		const urlParams = new URLSearchParams(window.location.search);
+		if (urlParams.get("success") === "true") {
+			Swal.fire({
+				icon: 'success',
+				title: '결제가 완료되었습니다!',
+				text: '이용해 주셔서 감사합니다.',
+				confirmButtonText: '확인'
+			})
+		}
 	  const unitSelect  = document.querySelector('select[name="unitIdParam"]');
 	  const yearSelect  = document.querySelector('select[name="yearSelect"]');
 	  const monthSelect = document.querySelector('select[name="monthSelect"]');

@@ -37,6 +37,7 @@
 		JOIN building b ON ur.bldg_id = b.bldg_id
 		JOIN unit u ON ur.unit_id = u.unit_id
 		WHERE ur.mbr_cd = #{mbrCd}
+		AND ur.unit_del_yn = 'N'
 	</select>
 
   <select id="selectMyUnitsInBuilding" parameterType="map" resultMap="unitResidentMap">
