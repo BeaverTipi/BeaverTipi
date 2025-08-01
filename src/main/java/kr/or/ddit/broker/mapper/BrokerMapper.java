@@ -56,6 +56,7 @@ public interface BrokerMapper {
 	 * @return 중개인의 매물 리스트
 	 */
 	public List<ListingVO> selectLstgList(String mbrCd);
+	public List<ListingVO> selectLstgListWithoutMbrCd();
 	/**
 	 * @param mbrCd :중개인의 멤버코드
 	 * @return 중개 가능한 상태의 매물 리스트
@@ -86,6 +87,13 @@ public interface BrokerMapper {
 	 * @return 성공: 1, 실패: 0
 	 */
 	public int updateListingProdStat(String lstgId);
+	
+	
+	/**
+	 * @param params: mbrCd
+	 * @return 그냥 계약 리스트
+	 */
+	public List<ContractVO> selectMngContractsList(String mbrCd);
 	
 	/**
 	 * @param params: mbrCd && contStatCd "001"

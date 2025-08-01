@@ -63,7 +63,7 @@ public interface BrokerContractService {
 	 */
 	public String modifyListingProdStat(String contId);
 	
-	
+	public List<ContractVO> readMngContractsList(String mbrCd);
 	public List<ContractVO> readProceedingContractsList(String mbrCd);
 	
 	/** 컨트롤러 다이어트 들어가야지...

@@ -76,6 +76,11 @@ public class MainKakaoMapServiceImpl implements MainKakaoMapService {
 	public int countListingView(LstgViewLogVO vo) {
 		return kakaoMapDataMapper.insertLstgViewCont(vo);
 	}
+	
+	@Override
+	public List<ListingVO> readListingDetailListWithoutNothing() {
+		return kakaoMapDataMapper.selectListingDetailListWithoutNothing();
+	}
 
 
 }

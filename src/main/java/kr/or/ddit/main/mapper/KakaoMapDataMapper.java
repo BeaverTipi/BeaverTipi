@@ -52,4 +52,8 @@ public interface KakaoMapDataMapper {
 	public int countWishListByLstgId(@Param("lstgId") String lstgId);
 	
 	public int insertLstgViewCont(LstgViewLogVO vo);
+	
+	
+	
+	public List<ListingVO> selectListingDetailListWithoutNothing();
 }

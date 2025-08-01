@@ -47,6 +47,7 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
 import kr.or.ddit.broker.service.BrokerContractService;
+import kr.or.ddit.building.account.service.TenancyAccountService;
 import kr.or.ddit.util.crypto.AES256Util;
 import kr.or.ddit.util.file.Base64DecodedMultipartFile;
 import kr.or.ddit.util.file.ToMultipartFileUtil;
@@ -58,6 +59,7 @@ import kr.or.ddit.vo.ContractVO;
 import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
+import kr.or.ddit.vo.TenancyAccountVO;
 import kr.or.ddit.broker.dto.StandardLeaseFormDTO;
 import kr.or.ddit.vo.TenancyVO;
 import lombok.extern.slf4j.Slf4j;
@@ -84,6 +86,8 @@ public class RestBrokerContractNewController {
 	BrokerAuthUnpackingService authUnpack;
 	@Autowired
 	ObjectMapper objectMapper;
+	@Autowired
+	TenancyAccountService taService;
 
 	@GetMapping("/listing")
 	public List<ListingVO> lstgListForContract(Principal principal) {
@@ -119,6 +123,7 @@ public class RestBrokerContractNewController {
 	public List<ListingWishlistVO> lesseeForContract(@RequestBody Map<String, String> requestBody) {
 		String lstgId = requestBody.get("lstgId");
 		List<ListingWishlistVO> wishlist = contService.readLesseeVolunteerList(lstgId);
+		log.debug("-------<><><><><><><><>---------<><><><> {}", wishlist);
 		return wishlist;
 	}
 	
@@ -144,6 +149,32 @@ public class RestBrokerContractNewController {
 		
 //		log.debug("------<><><><> {}", rentalPtyId);
 		return contService.readTenancyList(rentalPtyId);
+	}
+	
+	@PostMapping("/lessorAcc")
+	public TenancyAccountVO lessorAccount(@RequestBody Map<String, String> payload) {
+		String iv = payload.get("iv");
+		String encrypted = payload.get("encrypted");
+		if(encrypted==null) { throw new IllegalArgumentException("암호화된 요청 없음");}
+		String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
+		
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+		mapper.registerModule(new JavaTimeModule());
+		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		
+		String rentalPtyId = "";
+		TenancyAccountVO vo = null;
+		try {
+			Map<String, String> parsedRequest = mapper.readValue(decryptedJson, new TypeReference<>() {});
+			rentalPtyId = String.valueOf(parsedRequest.get("rentalPtyId"));
+			List<TenancyAccountVO> list = taService.retrieveAccountList(rentalPtyId);
+			vo = list.get(0);
+		} catch(JsonProcessingException e) { e.printStackTrace(); }
+		
+		return vo;
+		
 	}
 	
 	@PostMapping("/submit")

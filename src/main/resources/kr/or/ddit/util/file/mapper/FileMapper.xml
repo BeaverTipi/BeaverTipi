@@ -133,6 +133,24 @@ WHERE FILE_ID = #{fileId}
 	WHERE FILE_SOURCE_ID = #{contId}
 	  AND FILE_SOURCE_REF = 'CONTR'
 </select>
+<select id="selectTempContractFile">
+	SELECT 
+		    FILE_ID
+		    , FILE_ATTACH_SEQ
+		    , FILE_SOURCE_REF
+		    , FILE_SAVEDNAME
+		    , FILE_MIME
+		    , FILE_SIZE
+		    , DOC_TYPE_CD
+		    , FILE_PATH_URL
+		    , REG_DTM
+   		    , FILE_SOURCE_ID
+		    , FILE_DIR
+	FROM FILES
+	WHERE FILE_SOURCE_ID = #{contId}
+	  AND FILE_SOURCE_REF = 'TEMP_CONTR'
+	  AND FILE_ATTACH_SEQ = #{fileAttachSeq}
+</select>
 <update id="updateFileUrl">
   UPDATE FILES
   SET FILE_PATH_URL = #{newUrl}

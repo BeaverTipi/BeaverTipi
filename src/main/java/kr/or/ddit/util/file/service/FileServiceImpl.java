@@ -276,7 +276,7 @@ public class FileServiceImpl implements FileService {
 	}
 
 	@Override
-	public FileVO uploadAndSaveTempSignedContract(MultipartFile file, ContractDigitalSignVO digitalSign) {
+	public FileVO uploadAndSaveTempSignedContract(MultipartFile file, ContractDigitalSignVO digitalSign, String fileId) {
 		
 		Integer signedOrder = readMaxAttachSeq(digitalSign.getContId());
 		if(signedOrder == null) signedOrder = 1;
@@ -284,7 +284,9 @@ public class FileServiceImpl implements FileService {
 		if(signedOrder == 3) {}
 		
 	    String fileUrl;
-		try {fileUrl = s3Uploader.upload(file, "tempContr" +"/"+ digitalSign.getContDtSignHashVal());}
+		try {
+			fileUrl = s3Uploader.upload(file, "tempContr" +"/"+ digitalSign.getContDtSignHashVal());
+			}
 		catch (IOException e) {throw new FileIOException();}
 
 		String changedFileName = changedFileName(file.getOriginalFilename());
@@ -293,12 +295,12 @@ public class FileServiceImpl implements FileService {
 		LocalDate regDtm = instant.atZone(ZoneId.systemDefault()).toLocalDate();
 		
 	    FileVO vo = new FileVO();
-	    vo.setFileId(UUID.randomUUID().toString());
+	    vo.setFileId(fileId);
 	    vo.setFileAttachSeq(signedOrder);
 	    vo.setFileSourceRef("TEMP_CONTR");
 	    vo.setFileSourceId(digitalSign.getContId());
 	    vo.setFileOriginalname(file.getOriginalFilename());
-	    vo.setFileSavedname(changedFileName);
+	    vo.setFileSavedname(digitalSign.getContDtSignHashVal());
 	    vo.setFileMime(file.getContentType());
 	    vo.setFileSize((int) file.getSize());
 	    vo.setDocTypeCd("SIGNED_PDF");

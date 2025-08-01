@@ -30,7 +30,7 @@ public interface BrokerListingService {
 	 * @return
 	 */
 	public List<ListingVO> readLstgList(String mbrCd);
-	
+	public List<ListingVO> readLstgListWithoutMbrCd();
 	public ListingVO readLstgDetails(ListingVO listing);
 	public ListingVO readLstgDetailsById(String lstgId);
 	

@@ -8,6 +8,19 @@
 	- 2025-07-09 최초작성
 	- 2025-07-10 매일수정중
  -->
+ <resultMap id="ListingWishlistMap" type="ListingWishlistVO" autoMapping="true">
+    <!-- PK -->
+    <id property="lstgId" column="LSTG_ID"/>
+    <id property="mbrCd" column="MBR_CD"/>
+
+    <!-- WishlistVO -->
+    <result property="wishDt" column="WISH_DT"/>
+
+    <!-- FileVO -->
+    <association property="file" javaType="FileVO" autoMapping="true">
+        <id property="fileId" column="FILE_ID"/>
+    </association>
+</resultMap>
 <resultMap id="SignerResultMap" type="SignerVO">
     <result property="isJoined" column="IS_JOINED" typeHandler="kr.or.ddit.util.parse.BooleanYNTypeHandler"/>
     <result property="signedAt" column="SIGNED_AT" typeHandler="kr.or.ddit.util.parse.LocalDateTimeStringTypeHandler"/>
@@ -167,6 +180,9 @@
 	   AND L.LSTG_DEL = 'N'
 	 ORDER BY L.LSTG_REG_DATE DESC
 </select>
+<select id="selectLstgListWithoutMbrCd" parameterType="String" resultMap="ListingMap">
+	SELECT * FROM LISTING ORDER BY LSTG_ID DESC
+</select>
 <select id="selectLstgListForContract" parameterType="String" resultMap="ListingMap">
 	<include refid="sqlSelectLstgList" />
 	   AND L.LSTG_PROD_STAT = '001'
@@ -182,11 +198,13 @@
 	  FROM LISTING
 	 WHERE LSTG_ID = #{lstgId}
 </select>
-<select id="selectWishlistForLessee" parameterType="String" resultType="ListingWishlistVO">
+<select id="selectWishlistForLessee" parameterType="String" resultMap="ListingWishlistMap">
 	SELECT *
 	  FROM LISTING_WISHLIST LW
-	 INNER JOIN MEMBER M ON(LW.MBR_CD = M.MBR_CD) 
-	 WHERE LSTG_ID = #{lstgId}
+	 INNER JOIN MEMBER M ON(LW.MBR_CD = M.MBR_CD)
+     LEFT OUTER JOIN FILES F ON(M.MBR_PROFIL_IMAGE = F.FILE_ID)
+	 WHERE LW.LSTG_ID = 'L2508000065'
+       AND F.FILE_SOURCE_REF = 'MEMBER'
 	 ORDER BY M.MBR_NM
 </select>
 <select id="selectLesseeInfo" parameterType="String" resultType="MemberVO">
@@ -262,8 +280,15 @@
 	   SET LSTG_PROD_STAT = '002'
 	 WHERE LSTG_ID = #{lstgId}
 </update>
+<select id="selectMngContractsList" parameterType="String" resultMap="ContractMap">
+	SELECT CONT_ID, MBR_CD_BROK, LSTG_ID, CONT_TYPE_CODE, CONT_DEPOSIT, CONT_TAX_AMOUNT, CONT_AMOUNT, CONT_STAT_CD, CONT_DTM, CONT_TYPE_GROUP_CD, CONT_STAT_GROUP_CD, CONT_DEL_YN, CONT_SIGN_YN, CONT_LESSEE_TELNO, CONT_TENANCY_TELNO, CONT_BROKER_TELNO, MBR_CD_LS, MBR_ID_LS, MBR_PW_LS, MBR_NM_LS, MBR_TELNO_LS, MBR_EML_ADDR_LS, MBR_BASIC_ADDR_LS, MBR_DETAIL_ADDR_LS, MBR_PROFIL_IMAGE_LS, MBR_FRST_REG_DT_LS, MBR_STATUS_CODE_LS, MBR_DELETE_DATE_LS, MBR_ZIP_LS, MBR_CD_B, MBR_ID_B, MBR_PW_B, MBR_NM_B, MBR_NNM_B, MBR_TELNO_B, MBR_EML_ADDR_B, MBR_BASIC_ADDR_B, MBR_DETAIL_ADDR_B, MBR_PROFIL_IMAGE_B, MBR_FRST_REG_DT_B, MBR_STATUS_CODE_B, MBR_DELETE_DATE_B, MBR_ZIP_B, AUTH_APPR_YN_B, BROK_ADDR1, BROK_ADDR2, BROK_NM, BROK_REG_NO, CRTF_NO, REG_DTM, REPR_NM, REPR_TEL_NO, MBR_CD_T, MBR_ID_T, MBR_PW_T, MBR_NM_T, MBR_NNM_T, MBR_TELNO_T, MBR_EML_ADDR_T, MBR_BASIC_ADDR_T, MBR_DETAIL_ADDR_T, MBR_PROFIL_IMAGE_T, MBR_FRST_REG_DT_T, MBR_STATUS_CODE_T, MBR_DELETE_DATE_T, MBR_ZIP_T, AUTH_APPR_YN_T, LSR_TYPE_GROUP_CD, LSR_YN_TYPE_CD, RENTAL_PTY_BIZ_REG_FILE_PATH, RENTAL_PTY_BIZ_REG_NO, RENTAL_PTY_FILE, RENTAL_PTY_FILE2, RENTAL_PTY_ID_T, RENTAL_PTY_REG_BLDG_CNT, LSTG_NM, LSTG_ADD, LSTG_TYPE_CODE1, LSTG_TYPE_SALE, LSTG_EX_AREA, LSTG_ROOM_CNT, LSTG_PARK_YN
+	  FROM V_CONTRACT_INFO
+	 WHERE MBR_CD_B = #{mbrCd}
+	   AND CONT_DEL_YN = 'N'
+	 ORDER BY CONT_ID DESC
+</select>
 <select id="selectProceedingContractsList" parameterType="String" resultMap="ContractMap">
-	SELECT *
+	SELECT CONT_ID, MBR_CD_BROK, LSTG_ID, CONT_TYPE_CODE, CONT_DEPOSIT, CONT_TAX_AMOUNT, CONT_AMOUNT, CONT_STAT_CD, CONT_DTM, CONT_TYPE_GROUP_CD, CONT_STAT_GROUP_CD, CONT_DEL_YN, CONT_SIGN_YN, CONT_LESSEE_TELNO, CONT_TENANCY_TELNO, CONT_BROKER_TELNO, MBR_CD_LS, MBR_ID_LS, MBR_PW_LS, MBR_NM_LS, MBR_TELNO_LS, MBR_EML_ADDR_LS, MBR_BASIC_ADDR_LS, MBR_DETAIL_ADDR_LS, MBR_PROFIL_IMAGE_LS, MBR_FRST_REG_DT_LS, MBR_STATUS_CODE_LS, MBR_DELETE_DATE_LS, MBR_ZIP_LS, MBR_CD_B, MBR_ID_B, MBR_PW_B, MBR_NM_B, MBR_NNM_B, MBR_TELNO_B, MBR_EML_ADDR_B, MBR_BASIC_ADDR_B, MBR_DETAIL_ADDR_B, MBR_PROFIL_IMAGE_B, MBR_FRST_REG_DT_B, MBR_STATUS_CODE_B, MBR_DELETE_DATE_B, MBR_ZIP_B, AUTH_APPR_YN_B, BROK_ADDR1, BROK_ADDR2, BROK_NM, BROK_REG_NO, CRTF_NO, REG_DTM, REPR_NM, REPR_TEL_NO, MBR_CD_T, MBR_ID_T, MBR_PW_T, MBR_NM_T, MBR_NNM_T, MBR_TELNO_T, MBR_EML_ADDR_T, MBR_BASIC_ADDR_T, MBR_DETAIL_ADDR_T, MBR_PROFIL_IMAGE_T, MBR_FRST_REG_DT_T, MBR_STATUS_CODE_T, MBR_DELETE_DATE_T, MBR_ZIP_T, AUTH_APPR_YN_T, LSR_TYPE_GROUP_CD, LSR_YN_TYPE_CD, RENTAL_PTY_BIZ_REG_FILE_PATH, RENTAL_PTY_BIZ_REG_NO, RENTAL_PTY_FILE, RENTAL_PTY_FILE2, RENTAL_PTY_ID_T, RENTAL_PTY_REG_BLDG_CNT, LSTG_NM, LSTG_ADD, LSTG_TYPE_CODE1, LSTG_TYPE_SALE, LSTG_EX_AREA, LSTG_ROOM_CNT, LSTG_PARK_YN
 	  FROM V_CONTRACT_INFO
 	 WHERE MBR_CD_B = #{mbrCd}
 	   AND CONT_STAT_CD = '001'
@@ -482,6 +507,7 @@
       AND ROLE = #{role}
 </update>
 <select id="selectLatestSignedContractPdf" parameterType="String">
+/** 하하호호/pdf/download 연결이다 이 씨부랄탱탱부랑 ^0^ */
 SELECT *
 FROM (
     SELECT *
@@ -491,6 +517,5 @@ FROM (
     ORDER BY FILE_ATTACH_SEQ DESC
 ) 
 WHERE ROWNUM = 1
-	
 </select>
 </mapper>

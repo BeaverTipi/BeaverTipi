@@ -337,6 +337,14 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	}
 
 	@Override
+	public List<ContractVO> readMngContractsList(String mbrCd) {
+		List<ContractVO> mngContractsList = null;
+		mngContractsList = mapper.selectMngContractsList(mbrCd);
+		return mngContractsList;
+	}
+
+	
+	@Override
 	public List<ContractVO> readProceedingContractsList(String mbrCd) {
 		List<ContractVO> proceedingContractsList = null;
 		proceedingContractsList = mapper.selectProceedingContractsList(mbrCd);
@@ -395,7 +403,7 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 
 			/** 4. DB에 계약정보 레코드 입력 */
 
-			Long deposit = SafeParse.safeParseLong(Optional.ofNullable(contractInfo.getListingTypeCode1()).map(type -> {
+			Long deposit = SafeParse.safeParseLong(Optional.ofNullable(contractInfo.getListingTypeSale()).map(type -> {
 				// 전세 계약일 경우
 				if ("001".equals(type))
 					return contractInfo.getListingLease(); // 전세금 (String)
@@ -454,7 +462,9 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 
 	@Override
 	public FileVO readContractPDFFile(String contId) {
-		return fileMapper.selectContractFile(contId);
+		Integer fileAttachSeq = fileMapper.selectTempContrMaxAttachSeq(contId);
+		FileVO file = fileMapper.selectTempContractFile(contId, fileAttachSeq);
+		return file;
 	}
 
 	@Transactional

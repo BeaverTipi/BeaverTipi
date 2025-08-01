@@ -42,4 +42,7 @@ public interface MainKakaoMapService {
 	public int countWishListByLstgId(@Param("lstgId") String lstgId);
 	
 	public int countListingView(LstgViewLogVO vo);
+	
+	
+	public List<ListingVO> readListingDetailListWithoutNothing();
 }

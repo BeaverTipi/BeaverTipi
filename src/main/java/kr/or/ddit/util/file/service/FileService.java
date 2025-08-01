@@ -27,5 +27,5 @@ public interface FileService {
     
     public void updateFileUrl(String fileId, String newUrl);
     public Integer readMaxAttachSeq(String contId);
-    public FileVO uploadAndSaveTempSignedContract(MultipartFile file, ContractDigitalSignVO digitalSign);
+    public FileVO uploadAndSaveTempSignedContract(MultipartFile file, ContractDigitalSignVO digitalSign, String fileId);
 }

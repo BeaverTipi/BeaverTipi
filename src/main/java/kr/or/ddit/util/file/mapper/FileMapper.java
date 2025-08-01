@@ -3,6 +3,7 @@ package kr.or.ddit.util.file.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import kr.or.ddit.vo.FileVO;
 
@@ -16,6 +17,7 @@ public interface FileMapper {
 	public List<FileVO> selectFileList(FileVO file);
 	public int updateFile(FileVO file);
 	public FileVO selectContractFile(String contId);
+	public FileVO selectTempContractFile(@Param("contId") String contId, @Param("fileAttachSeq") Integer fileAttachSeq);
 	public int updateFileUrl(String fileId, String newUrl); // ^0^
 	public int selectTempContrMaxAttachSeq(String contId); // ^0^
 }

@@ -35,4 +35,5 @@ public class ListingWishlistVO extends MemberVO implements Serializable {
 	@NotBlank @Size(max = 11)
     private String lstgId;
 	private String wishDt;
+	private FileVO file;
 }

@@ -6,6 +6,25 @@
 <html lang="ko">
 <head>
 <style>
+.carousel-inner {
+  display: flex;
+  overflow: hidden;
+}
+
+.carousel-item {
+  flex: 0 0 100%;
+  display: none;
+}
+
+.carousel-item.active {
+  display: block;
+}
+.room-card {
+  height: 300px;
+}
+.room-card .card-body {
+  height: 100px;
+}
   #adSlider {
     height: 500px;    /* 원하는 고정 높이 */
     overflow: hidden; /* 넘치는 콘텐츠를 숨김 */

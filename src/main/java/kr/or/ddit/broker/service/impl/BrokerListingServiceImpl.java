@@ -123,4 +123,9 @@ public class BrokerListingServiceImpl implements BrokerListingService {
 		
 	}
 
+	@Override
+	public List<ListingVO> readLstgListWithoutMbrCd() {
+		return mapper.selectLstgListWithoutMbrCd();
+	}
+
 }

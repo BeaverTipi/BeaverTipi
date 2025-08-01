@@ -50,6 +50,37 @@ runWhenJQueryLoaded(function() {
                 });
             }
         }
+        
+        //매물 데이터를 가져와 캐러셀에 동적으로 로드하는 함수
+        function loadAnyRooms() {
+			const requestUrl_KCY = contextPath + `/ajax/broker/mainPageRooms/load`;
+			console.debug("AJAX 요청 KCYURL : ", requestUrl_KCY);
+			
+			$.ajax({
+				url: requestUrl_KCY,
+				type: 'GET',
+				dataType: 'json',
+				success: function(roomsList) {
+					console.log("메인 페이지용 랜덤 매물 데이터", roomsList);
+					const $roomCarouselInner = $('#roomCarousel');
+					$roomCarouselInner.empty(); //기존 정적 매물 내용 비우기
+					console.debug("roomCarouselInner 비우기 완료. 현재 HTML:", $roomCarouselInner.html());
+					
+					if(roomsList && roomsList.length > 0) {
+						console.debug("매물 데이터 존재함. 매물 수:", roomsList.length);
+						roomsList.forEach((room, index) => {
+							let roomTitle = room.lstgNm || '';
+							let roomContent = room.lstgNm + "\n" + room.lstgAdd + " " + room.lstgAdd2;
+							
+							// 파일 목록에서 이미지 찾기 (image/로 시작하는 mime type만 필터링)
+							//......
+							
+						});
+					}
+				}
+			})	
+		}
+        loadAnyRooms();
 
         // 광고 데이터를 가져와 캐러셀에 동적으로 로드하는 함수
         function loadApprovedAds() {

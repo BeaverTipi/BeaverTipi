@@ -46,8 +46,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("/rest/broker/myoffice/cont/proc")
-public class RestBrokerContractProceedingController {
+@RequestMapping("/rest/broker/myoffice/cont/mng")
+public class RestBrokerContractMngController {
 
 	@Autowired
 	BrokerAuthUnpackingService authService;
@@ -67,7 +67,7 @@ public class RestBrokerContractProceedingController {
 	
 	
 	@PostMapping("/list")
-	public Map<String, String> contractList(
+	public Map<String, String> contractListMng(
 			Principal principal
 			, @RequestBody Map<String, String> payload
 	) {
@@ -96,7 +96,7 @@ public class RestBrokerContractProceedingController {
 	| `deletedCount` 반환   | 클라이언트에서 몇 건 삭제됐는지 알 수 있음
 	 */
 	@PostMapping("delete")
-	public ResponseEntity<?> deleteBulk(
+	public ResponseEntity<?> deleteBulkMng(
 	        Principal principal,
 	        @RequestBody Map<String, String> payload
 	) {
@@ -123,7 +123,7 @@ public class RestBrokerContractProceedingController {
 	}
 
 	@PostMapping("/open-signpage")
-	public ResponseEntity<?> signPage(
+	public ResponseEntity<?> signPageMng(
 			Principal principal
 			, @RequestBody Map<String, String> payload
 			, HttpServletRequest request
@@ -174,7 +174,7 @@ public class RestBrokerContractProceedingController {
         	    .forJob(jobDetail)
         	    .withIdentity(triggerKey)
 //        	    .startAt(new Date(System.currentTimeMillis() + 5000))
-        	    .startAt(new Date(System.currentTimeMillis() + 3_600_000))
+        	    .startAt(new Date(System.currentTimeMillis() + 600_000))
         	    .withSchedule(SimpleScheduleBuilder.simpleSchedule()
         	        .withMisfireHandlingInstructionFireNow())
         	    .build();
@@ -255,7 +255,7 @@ public class RestBrokerContractProceedingController {
 	}
 	
 	@PostMapping("/sign-status")
-	public ResponseEntity<?> signPageStatus(
+	public ResponseEntity<?> signPageStatusMng(
 			Principal principal
 			, @RequestBody Map<String, String> payload
 	) throws JsonProcessingException {

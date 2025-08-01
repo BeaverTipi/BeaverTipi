@@ -212,12 +212,17 @@ public class RestContractSignatureController {
 				throw new IllegalStateException("전자서명 데이터 위변조 의심");
 			}
 
+			
 			// 3. 원본 PDF 로드
+			//먼저 tempContr을 검색 있으면 그거 불러오고, 가져다 서명 입혀서 update
+			//	public FileVO updateFile(String fileId, MultipartFile newFile);
 			FileVO originalFile = contService.readContractPDFFile(digitalSign.getContId());
+			String fileId = originalFile.getFileId();
 			if (originalFile == null) {
 				log.warn("📁 원본 파일이 존재하지 않음. contId: {}", digitalSign.getContId());
 				return badRequest("원본 계약서를 찾을 수 없습니다.");
 			}
+			
 			ResponseEntity<Resource> response = fileService.downloadFile(originalFile.getFileId());
 			Resource resource = response.getBody();
 			byte[] originalPdfBytes = resource != null ? StreamUtils.copyToByteArray(resource.getInputStream()) : null;
@@ -249,7 +254,7 @@ public class RestContractSignatureController {
 			// 6. 새 PDF를 S3에 업로드
 			MultipartFile signedPdf = new ByteArrayMultipartFile("contract-" + digitalSign.getContId() + "-signed.pdf",
 					signedPdfBytes, "application/pdf");
-			FileVO tempContr = fileService.uploadAndSaveTempSignedContract(signedPdf, digitalSign);
+			FileVO tempContr = fileService.uploadAndSaveTempSignedContract(signedPdf, digitalSign, fileId);
 
 			
 			// 7. 성공 응답
@@ -440,6 +445,8 @@ public class RestContractSignatureController {
 			//원본이 아니라, 최신 서명파일을 불러와야지 ㅇㅇ
 			FileVO latestFile = null;
 			latestFile = contService.readLatestSignedContractPdf(contId);
+			log.debug("컨트랙트 ID: {}", contId);
+			log.debug("가져온 파일 정보: {}", latestFile);
 			if(latestFile == null) {
 				latestFile = contService.readContractPDFFile(contId);
 			}
@@ -452,6 +459,13 @@ public class RestContractSignatureController {
 			InputStream is = fileService.getFileStream(latestFile.getFileId());
 			byte[] fileBytes = is.readAllBytes();
 			String base64Pdf = Base64.getEncoder().encodeToString(fileBytes);
+//			ResponseEntity<Resource> is = fileService.downloadFile(latestFile.getFileId());
+//			
+//			InputStream inputStream = is.getBody().getInputStream();
+//			byte[] fileBytes = inputStream.readAllBytes();
+//			
+//			String base64Pdf = Base64.getEncoder().encodeToString(fileBytes);
+			
 
 			return ResponseEntity.ok(Map.of("base64", base64Pdf));
 		} catch (Exception e) {
