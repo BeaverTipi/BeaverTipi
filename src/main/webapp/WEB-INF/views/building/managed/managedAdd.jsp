@@ -30,8 +30,10 @@
 					<div class="row g-3">
 						<!-- 건물 유형 -->
 						<div class="col-md-3">
-							<label class="form-label fw-semibold">건물 유형 <span class="text-danger">*</span></label> <select
-								class="form-select text-center text-center-select" id="bldgTypeCode" name="bldgTypeCode">
+							<label class="form-label fw-semibold">건물 유형 <span
+								class="text-danger">*</span></label> <select
+								class="form-select text-center text-center-select"
+								id="bldgTypeCode" name="bldgTypeCode">
 								<option value="">--선택--</option>
 								<c:forEach items="${bldgTypeList}" var="bldgType">
 									<option value="${bldgType.codeValue}">${bldgType.codeName}</option>
@@ -40,9 +42,9 @@
 						</div>
 						<!-- 건물 이름 -->
 						<div class="col-md-9">
-							<label class="form-label fw-semibold">건물 이름 <span class="text-danger">*</span></label> <input
-								type="text" class="form-control" name="bldgNm"
-								placeholder="예: 역삼동 현대타워" />
+							<label class="form-label fw-semibold">건물 이름 <span
+								class="text-danger">*</span></label> <input type="text"
+								class="form-control" name="bldgNm" placeholder="예: 역삼동 현대타워" />
 						</div>
 
 
@@ -63,8 +65,9 @@
 						</div>
 						<!-- 준공일 -->
 						<div class="col-md-6">
-							<label class="form-label fw-semibold">준공일 <span class="text-danger">*</span></label> <input
-								type="date" class="form-control" name="bldgCmpltnDt" />
+							<label class="form-label fw-semibold">준공일 <span
+								class="text-danger">*</span></label> <input type="date"
+								class="form-control" name="bldgCmpltnDt" />
 						</div>
 					</div>
 				</div>
@@ -78,16 +81,16 @@
 					<div class="row g-3">
 						<!-- 우편번호 -->
 						<div class="col-md-3">
-							<label class="form-label fw-semibold">우편번호 <span class="text-danger">*</span></label> <input
-								type="text" class="form-control" id="bldgZipNo" name="bldgZipNo"
-								readonly />
+							<label class="form-label fw-semibold">우편번호 <span
+								class="text-danger">*</span></label> <input type="text"
+								class="form-control" id="bldgZipNo" name="bldgZipNo" readonly />
 						</div>
 
 						<!-- 기본주소 -->
 						<div class="col-md-6">
 							<label class="form-label fw-semibold">기본 주소</label> <input
-								type="text" class="form-control" id="bldgAddr"
-								name="bldgAddr" readonly />
+								type="text" class="form-control" id="bldgAddr" name="bldgAddr"
+								readonly />
 						</div>
 
 						<!-- 주소 검색 버튼 -->
@@ -98,9 +101,10 @@
 
 						<!-- 상세주소 -->
 						<div class="col-md-12">
-							<label class="form-label fw-semibold">상세주소 <span class="text-danger">*</span></label> <input
-								type="text" class="form-control" name="bldgDtlAddr"
-								placeholder="예: 101호" id="bldgDtlAddr"/>
+							<label class="form-label fw-semibold">상세주소 <span
+								class="text-danger">*</span></label> <input type="text"
+								class="form-control" name="bldgDtlAddr" placeholder="예: 101호"
+								id="bldgDtlAddr" />
 						</div>
 					</div>
 				</div>
@@ -137,41 +141,63 @@
 
 	<!-- ✅ 제출 -->
 	<div class="submit-button-wrapper">
-		<button type="submit" id="submitBtn" class="btn btn-submit">다음 단계</button>
+		<button type="submit" id="submitBtn" class="btn btn-submit">다음
+			단계</button>
 		<button type="button" class="btn btn-cancel" onclick="history.back();">취소</button>
 	</div>
 
 	</form:form>
 	</div>
-<div class="modal fade" id="myListingsModal" tabindex="-1" aria-labelledby="myListingModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
 
-      <div class="modal-header">
-        <h5 class="modal-title" id="myListingModalLabel">내 매물 목록</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
-      </div>
 
-      <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
-        <div class="row row-cols-1 row-cols-md-2 g-3">
-          <c:forEach var="lstg" items="${listingList}">
-            <div class="col">
-              <div class="card h-100 selectable-card" onclick="fillListingInfo('${lstg.lstgId}')">
-                <div class="card-body">
-                  <h5 class="card-title mb-2">${lstg.lstgNm}</h5>
-                  <p class="card-text text-muted mb-1">${lstg.lstgAdd} ${lstg.lstgAdd2 }</p>
-                </div>
-              </div>
-            </div>
-          </c:forEach>
-        </div>
-      </div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-</div>
-    </div>
-  </div>
-</div>
+	<div class="modal fade" id="myListingsModal" tabindex="-1"
+		aria-labelledby="myListingModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h5 class="modal-title" id="myListingModalLabel">내 매물 목록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="닫기"></button>
+				</div>
+
+				<div class="modal-body" style="max-height: 500px; overflow-y: auto;">
+					<c:choose>
+						<c:when test="${not empty listingList}">
+							<div class="row row-cols-1 row-cols-md-2 g-3">
+								<c:forEach var="lstg" items="${listingList}">
+									<div class="col">
+										<div class="card h-100 selectable-card"
+											onclick="fillListingInfo('${lstg.lstgId}')">
+											<div class="card-body">
+												<h5 class="card-title mb-2">${lstg.lstgNm}</h5>
+												<p class="card-text text-muted mb-1">${lstg.lstgAdd}
+													${lstg.lstgAdd2}</p>
+											</div>
+										</div>
+									</div>
+								</c:forEach>
+							</div>
+						</c:when>
+
+						<c:otherwise>
+							<div style="text-align: center; padding: 2rem; color: #888;">
+								<i class="bi bi-exclamation-circle fs-3 mb-2 d-block"></i> 등록된
+								매물이 없습니다.
+							</div>
+						</c:otherwise>
+					</c:choose>
+				</div>
+
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">닫기</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
 
 
 	<script src="/app/js/building/managed/managedAdd.js"></script>

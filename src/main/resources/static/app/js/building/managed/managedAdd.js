@@ -68,9 +68,17 @@ document.addEventListener("DOMContentLoaded", function () {
           const modal = bootstrap.Modal.getInstance(modalEl);
           if (modal) modal.hide();
         }
+    })
+    .catch(() => {
+      // 네트워크 오류 등 처리
+      Swal.fire({
+        icon: "error",
+        title: "서버 오류",
+        text: "매물 정보를 불러오는 중 문제가 발생했습니다.",
+        confirmButtonText: "확인"
       });
-  };
-
+    });
+}
   // ③ 이미지 미리보기
   const fileInput = document.querySelector('#bldgImgFile');
   const previewImg = document.querySelector('#previewImg');

@@ -21,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kr.or.ddit.main.subscribe.service.SubscribeSubsriptionService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.util.validate.exception.CardException;
@@ -52,8 +53,8 @@ public class TossBillingController {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private static final String BILLING_SUCCESS_URL = "http://localhost/ajax/toss/billing-success";
-    private static final String PAYMENT_SUCCESS_URL = "http://localhost/ajax/toss/payment-success";
+    private static final String BILLING_SUCCESS_URL = "/ajax/toss/billing-success";
+    private static final String PAYMENT_SUCCESS_URL = "/ajax/toss/payment-success";
 
     @PostMapping("/billing-key")
     public ResponseEntity<Map> issueBillingKey(@RequestBody CardVO cardVO,
@@ -102,17 +103,21 @@ public class TossBillingController {
 
     @PostMapping("/ready")
     public PaymentTosspamentsRawVO formProcess(@RequestBody SolutionVO solution,
-                                               @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
+                                               @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
+                                               HttpServletRequest request) {
         SolutionVO sol = service.readSolution(solution.getSolId());
         String orderId = "ORD" + System.currentTimeMillis() + principal.getRealUser().getMbrCd();
         String customerKey = "CK-" + principal.getRealUser().getMbrCd();
+        
+        String origin = request.getScheme() + "://" + request.getServerName()
+        + ((request.getServerPort() == 80 || request.getServerPort() == 443) ? "" : ":" + request.getServerPort());
         
         PaymentTosspamentsRawVO toss = new PaymentTosspamentsRawVO();
         toss.setOrderId(orderId);
         toss.setAmount(sol.getSolPrice());
         toss.setOrderName(sol.getSolName());
         toss.setCustomerName(principal.getRealUser().getMbrNm());
-        toss.setSuccessUrl(PAYMENT_SUCCESS_URL);
+        toss.setSuccessUrl(origin + PAYMENT_SUCCESS_URL);
         toss.setClientKey(clientKey);
         toss.setCustomerKey(customerKey);
         return toss;
@@ -121,7 +126,8 @@ public class TossBillingController {
     @PostMapping("/billing-ready")
     public PaymentTosspamentsRawVO prepareBillingRegistration(
             @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
-            @RequestBody SolutionVO solution) {
+            @RequestBody SolutionVO solution,
+            HttpServletRequest request) {
 
         MemberVO member = principal.getRealUser();
         String customerKey = "CK-" + member.getMbrCd();
@@ -136,7 +142,10 @@ public class TossBillingController {
         }
 
         String orderId = "ORD" + System.currentTimeMillis() + member.getMbrCd();
-
+        String origin = request.getScheme() + "://" + request.getServerName()
+        + ((request.getServerPort() == 80 || request.getServerPort() == 443) ? "" : ":" + request.getServerPort());
+        
+        
         PaymentTosspamentsRawVO vo = new PaymentTosspamentsRawVO();
         vo.setOrderId(orderId);
         vo.setClientKey(clientKey);
@@ -144,8 +153,8 @@ public class TossBillingController {
         vo.setOrderName(sol.getSolName());
         vo.setAmount(sol.getSolPrice());
         vo.setCustomerName(member.getMbrNm());
-        vo.setSuccessUrl(BILLING_SUCCESS_URL);
-        vo.setFailUrl("/fail"); // 필요 시
+        vo.setSuccessUrl(origin + BILLING_SUCCESS_URL);
+        vo.setFailUrl("/fail"); // 필요 시WWWWW
         vo.setCustomerEmail(member.getMbrEmlAddr());
 
         return vo;
