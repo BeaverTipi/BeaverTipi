@@ -2,6 +2,7 @@
 <%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -238,6 +239,27 @@
             </span>
           </div>
         </c:forEach>
+        <c:set var="totalAmount" value="0" />
+			<c:forEach var="entry" items="${energyComparison[chargeMonth]}">
+			  <c:if test="${not empty entry.value}">
+			    <c:set var="totalAmount" value="${totalAmount + entry.value.chargeAmt}" />
+			  </c:if>
+			</c:forEach>
+			<c:forEach var="item" items="${currentCharges}">
+			  <c:if test="${item.chargeAmount != null}">
+			    <c:set var="totalAmount" value="${totalAmount + item.chargeAmount}" />
+			  </c:if>
+			</c:forEach>
+			
+			<div class="summary-entry" style="border-top: 1px solid #ccc; padding-top: 0.6rem; margin-top: 1rem; font-weight: bold;">
+			  <span>총합 관리비</span>
+			  <span class="price-item">
+			    <span class="won-symbol">₩</span>
+			    <span class="amount">
+			      <fmt:formatNumber value="${totalAmount}" type="number" groupingUsed="true" />
+			    </span> 원
+			  </span>
+			</div>
       </div>
       <div class="chart-box">
         <h3>💡 공과금 + 관리비 전월 비교 그래프</h3>

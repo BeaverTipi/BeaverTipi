@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kr.or.ddit.main.subscribe.service.SubscribeSubsriptionService;
 import kr.or.ddit.resident.chargebill.service.PaymentService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
@@ -48,19 +49,25 @@ public class PaymentSuccessController {
 
     private final RestTemplate restTemplate = new RestTemplate();
     
-    private static final String PAYMENT_SUCCESS_URL = "https://swdev.beavertipi.com/ajax/resident/payment/success";
+    private static final String PAYMENT_SUCCESS_URL = "/ajax/resident/payment/success";
     
     @PostMapping("/ready")
     public PaymentTosspamentsRawVO formProcess(@RequestBody PaymentTosspamentsRawVO paymentTosspamentsRawVO,
     			
-                                               @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
+                                               @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
+                                               HttpServletRequest request	
+    		) {
     	
         String orderId = "ORD" + System.currentTimeMillis() + principal.getRealUser().getMbrCd();
         String customerKey = "CK-" + principal.getRealUser().getMbrCd();
         
+        String origin = request.getScheme() + "://" + request.getServerName()
+        + ((request.getServerPort() == 80 || request.getServerPort() == 443) ? "" : ":" + request.getServerPort());
+        
+        
         paymentTosspamentsRawVO.setOrderId(orderId);
         paymentTosspamentsRawVO.setCustomerName(principal.getRealUser().getMbrNm());
-        paymentTosspamentsRawVO.setSuccessUrl(PAYMENT_SUCCESS_URL);
+        paymentTosspamentsRawVO.setSuccessUrl(origin + PAYMENT_SUCCESS_URL);
         paymentTosspamentsRawVO.setClientKey(clientKey);
         paymentTosspamentsRawVO.setCustomerKey(customerKey);
         return paymentTosspamentsRawVO;
