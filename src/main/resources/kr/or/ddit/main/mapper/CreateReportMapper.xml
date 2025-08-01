@@ -2,8 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.main.mapper.CreateReportMapper">
 
-    <!-- **새로 추가할 쿼리: BOARD 테이블에 신고 게시글 삽입** -->
-    <!-- ReportVO가 BoardVO를 상속하므로 ReportVO를 parameterType으로 받습니다. -->
+    <!-- ReportVO가 BoardVO를 상속하므로 ReportVO를 parameterType으로 받음 -->
     <insert id="insertReportBoard" parameterType="kr.or.ddit.vo.ReportVO">
         <selectKey keyProperty="brdNo" order="BEFORE" resultType="String">
 			SELECT TO_CHAR(SEQ_BRD_NO.NEXTVAL) FROM DUAL
@@ -39,7 +38,7 @@
             #{brdNo}
             , #{rptCode}
             , #{rptTargetId}
-            , 'REG' <!-- 초기 상태는 'REG'(등록)으로 고정 -->
+            , 'REG'
             , 'N'
         )
     </insert>

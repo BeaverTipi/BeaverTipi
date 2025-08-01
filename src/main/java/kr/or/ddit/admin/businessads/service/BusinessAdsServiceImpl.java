@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import jakarta.inject.Inject;
 import kr.or.ddit.admin.mapper.BusinessAdsMapper;
 import kr.or.ddit.util.file.service.FileService;
 import kr.or.ddit.util.page.PaginationInfo;

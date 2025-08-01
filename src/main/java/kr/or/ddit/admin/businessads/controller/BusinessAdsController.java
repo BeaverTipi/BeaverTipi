@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import jakarta.inject.Inject;
 import kr.or.ddit.admin.businessads.service.BusinessAdsService;
 import kr.or.ddit.util.page.PaginationInfo;
 import kr.or.ddit.util.renderer.DefaultPaginationRenderer;
