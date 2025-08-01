@@ -1,5 +1,6 @@
 package kr.or.ddit.building.product.service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,8 +109,12 @@ public class RentalOwnerProductServiceImpl implements RentalOwnerProductService 
 		pagingVO.setTotalRecordCount(total);
 
 		List<ListingVO> listingList = List.of();
+		List<String> formattedDateList = List.of();
 		if (total > 0) {
 			listingList = productMapper.selectTenancyProductList(pagingVO);
+			formattedDateList = listingList.stream()
+					.map(vo -> vo.getLstgRegDate() == null ? "-" : vo.getLstgRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+					.collect(Collectors.toList());
 		}
 
 		List<CommonCodeVO> statusCodeList = codeService.readCommonCodeList("PRDST");
@@ -120,6 +125,7 @@ public class RentalOwnerProductServiceImpl implements RentalOwnerProductService 
 		result.put("dataList", listingList);
 		result.put("statusCodeList", statusCodeList);
 		result.put("typeSaleCodeList", typeSaleCodeList);
+		result.put("formattedDateList", formattedDateList);
 		result.put("pagingHTML", new DefaultPaginationRenderer().renderPagination(pagingVO, "fn_paging"));
 
 		return result;

@@ -82,8 +82,6 @@ function bindAreaUnitToggle() {
 
 	const supplyLabel = document.querySelector("#supplyAreaLabel");
 	const exclusiveLabel = document.querySelector("#exclusiveAreaLabel");
-	const supplyText = document.querySelector("#supplyAreaText");
-	const exclusiveAreaText = document.querySelector("#exclusiveAreaText");
 
 	const supplyHidden = document.querySelector("input[name='lstgGrArea']");
 	const exclusiveHidden = document.querySelector("input[name='lstgExArea']");
@@ -98,14 +96,12 @@ function bindAreaUnitToggle() {
 		if (isSupplyPyeong) {
 			supplyInput.value = toM2(parseFloat(supplyInput.value || 0));
 			supplyLabel.textContent = "공급면적 (m²)";
-			supplyText ="m²";
-			toggleSupplyBtn.textContent = "평 ▼ ";
+			toggleSupplyBtn.textContent = "㎡ → 평 ";
 			isSupplyPyeong = false;
 		} else {
 			supplyInput.value = toPyeong(parseFloat(supplyInput.value || 0));
 			supplyLabel.textContent = "공급면적 (평)";
-			supplyText="평"
-			toggleSupplyBtn.textContent = "㎡ ▼";
+			toggleSupplyBtn.textContent = "평 →㎡";
 			isSupplyPyeong = true;
 		}
 		updateSupplyHidden();
@@ -115,14 +111,12 @@ function bindAreaUnitToggle() {
 		if (isExclusivePyeong) {
 			exclusiveInput.value = toM2(parseFloat(exclusiveInput.value || 0));
 			exclusiveLabel.textContent = "전용면적 (m²)";
-			exclusiveAreaText.textContent = "m²";
-			toggleExclusiveBtn.textContent = "평 ▼";
+			toggleExclusiveBtn.textContent = "㎡ → 평 ";
 			isExclusivePyeong = false;
 		} else {
 			exclusiveInput.value = toPyeong(parseFloat(exclusiveInput.value || 0));
 			exclusiveLabel.textContent = "전용면적 (평)";
-			exclusiveAreaText.textContent = "평";
-			toggleExclusiveBtn.textContent = "㎡ ▼";
+			toggleExclusiveBtn.textContent = "평 →㎡";
 			isExclusivePyeong = true;
 		}
 		updateExclusiveHidden();
@@ -655,13 +649,11 @@ function parseCommaNumber(value) {
 //단위 라벨 텍스트 업데이트
 function updateUnitLabel(type, unit) {
 	const label = document.querySelector(`#${type}Label`);
-		const unitText = document.querySelector(`#${type}UnitText`);
 	if (label) {
 		const baseText = label.dataset.labelBase || label.textContent;
 		label.textContent = `${baseText} (${unit})`;
 		
 	}
-	if (unitText) unitText.textContent =unit;
 }
 
 //단위 토글 버튼 핸들러
@@ -675,7 +667,7 @@ function toggleUnit(type) {
 	// 다음 단위 기준 버튼 텍스트 갱신
 	const nextNextUnit = units[(nextIndex + 1) % units.length];
 	const btn = document.querySelector(`#${type}UnitBtn`);
-	if (btn) btn.textContent = `${nextNextUnit} ▼`;
+	if (btn) btn.textContent = `${nextUnit} → ${nextNextUnit}`;
 
 	// 입력 필드 변환
 	const visibleInput = document.querySelector(`#${type}AmtView`);
@@ -719,7 +711,7 @@ function updateUnitButtonText(type) {
 	const nextIndex = (currentIndex + 1) % units.length;
 	const btn = document.querySelector(`#${type}UnitBtn`);
 	if (btn) {
-		btn.textContent = `${units[nextIndex]} ▼`;
+		btn.textContent = `${current} → ${units[nextIndex]}`;
 	}
 }
 

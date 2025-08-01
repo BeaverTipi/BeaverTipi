@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const wonValue = hiddenInput.value;
     const converted = convertFromWon(wonValue, nextUnit);
     viewInput.value = formatWithComma(converted);
-    btn.textContent = `${nextNextUnit} ▼`;
+    btn.textContent = `${nextUnit} → ${nextNextUnit}`;
 
     if (label) {
       label.textContent = label.dataset.labelBase + ` (${nextUnit})`;
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const m2Value = hiddenInput.value;
     const converted = convertFromM2(m2Value, nextUnit);
     viewInput.value = formatWithComma(converted);
-    btn.textContent = `${nextBtnUnit} ▼`;
+    btn.textContent = `${nextUnit} → ${nextBtnUnit}`;
 
     if (label) {
       label.textContent = label.dataset.labelBase + ` (${nextUnit})`;
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="unit-input-group">
               <input type="text" id="unitCmar_${i}View" class="form-control" inputmode="numeric" />
               <input type="hidden" id="unitCmar_${i}" name="unitList[${i}].unitCmar" />
-              <button type="button" class="btn btn-unit-toggle" id="unitCmar_${i}UnitBtn">㎡ ▼</button>
+              <button type="button" class="btn btn-unit-toggle" id="unitCmar_${i}UnitBtn">평 → ㎡</button>
             </div>
           </div>
           <div class="col-md-4">
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="unit-input-group">
               <input type="text" id="unitXuar_${i}View" class="form-control" inputmode="numeric" />
               <input type="hidden" id="unitXuar_${i}" name="unitList[${i}].unitXuar" />
-              <button type="button" class="btn btn-unit-toggle" id="unitXuar_${i}UnitBtn">㎡ ▼</button>
+              <button type="button" class="btn btn-unit-toggle" id="unitXuar_${i}UnitBtn">평 → ㎡</button>
             </div>
           </div>
           <div class="col-md-4">
@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="unit-input-group">
               <input type="text" id="unitDpstAmt_${i}View" name="unitList[${i}].unitDpstAmtDisplay" class="form-control" inputmode="numeric" />
               <input type="hidden" id="unitDpstAmt_${i}" name="unitList[${i}].unitDpstAmt" />
-              <button type="button" class="btn btn-unit-toggle" id="unitDpstAmt_${i}UnitBtn">원 ▼</button>
+              <button type="button" class="btn btn-unit-toggle" id="unitDpstAmt_${i}UnitBtn">만원 → 원</button>
             </div>
           </div>
           <div class="col-md-4">
@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="unit-input-group">
               <input type="text" id="unitDsrMnthRentAmt_${i}View" name="unitList[${i}].unitDsrMnthRentAmtDisplay" class="form-control" inputmode="numeric" />
               <input type="hidden" id="unitDsrMnthRentAmt_${i}" name="unitList[${i}].unitDsrMnthRentAmt" />
-              <button type="button" class="btn btn-unit-toggle" id="unitDsrMnthRentAmt_${i}UnitBtn">원 ▼</button>
+              <button type="button" class="btn btn-unit-toggle" id="unitDsrMnthRentAmt_${i}UnitBtn">만원 → 원</button>
             </div>
           </div>
           <div class="col-md-4">
@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="unit-input-group">
               <input type="text" id="unitDsrSaleAmt_${i}View" name="unitList[${i}].unitDsrSaleAmtDisplay" class="form-control" inputmode="numeric" />
               <input type="hidden" id="unitDsrSaleAmt_${i}" name="unitList[${i}].unitDsrSaleAmt" />
-              <button type="button" class="btn btn-unit-toggle" id="unitDsrSaleAmt_${i}UnitBtn">원 ▼</button>
+              <button type="button" class="btn btn-unit-toggle" id="unitDsrSaleAmt_${i}UnitBtn">만원 → 원</button>
             </div>
           </div>
           <div class="col-md-12">

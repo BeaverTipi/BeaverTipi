@@ -47,12 +47,8 @@
                   </div>
 
                   <div class="search-item">
-                    <label>주소</label>
-                    <form:select path="searchBuildingStatus" cssClass="form-control">
-                      <c:forEach var="buildingStatusCode" items="${buildingStatusCodeList}">
-						  <form:option value="${buildingStatusCode.codeValue}">${buildingStatusCode.codeName}</form:option>
-						</c:forEach>
-                    </form:select>
+                    <label>기본 주소</label>
+                    <form:input path="searchBuildingAddress" cssClass="form-control" placeholder="주소 입력"/>
                     </div>
                  
                   <div class="search-item  full-width">
@@ -81,10 +77,10 @@
                 <tr>
                   <th>순번</th>
                   <th>건물명</th>
-                  <th>주소</th>
-                  
+                  <th>기본 주소</th>
                   <th>층수</th>
                   <th>호실수</th>
+                  <th>등록 일자</th>
                 </tr>
               </thead>
              <tbody id="buildingTableBody">
@@ -114,6 +110,7 @@
 			          
 			          <td>${building.bldgFlrCnt}</td>
 			          <td>${building.bldgUnitCnt}</td>
+			          <td>${building.bldgCmpltnDt}</td>
 			        </tr>
 			      </c:forEach>
 			    </c:otherwise>
@@ -161,7 +158,7 @@
                     </form:select>
                     </div>
                   <div class="search-item ">
-                    <label>유형</label>
+                    <label>거래 유형</label>
                     <form:select path="searchType" id="searchTypeSelect" cssClass="form-control">
                       <c:forEach var="typeCode" items="${typeSaleCodeList}">
                         <form:option value="${typeCode.codeValue}">${typeCode.codeName}</form:option>
@@ -196,8 +193,8 @@
                   <th>순번</th>
                   <th>건물명</th>
                   <th>상태</th>
-                  <th>거래유형</th>
-                  <th>등록일자</th>
+                  <th>거래 유형</th>
+                  <th>등록 일자</th>
                 </tr>
               </thead>
               <tbody id="listingTableBody">
@@ -233,7 +230,7 @@
                             <c:otherwise>기타</c:otherwise>
                           </c:choose>
                         </td>
-                        <td>${empty listing.lstgRegDate ? '-' : listing.lstgRegDate}</td>
+                        <td>${formattedDateList[status.index]}</td>
                        
                         
                       </tr>

@@ -60,7 +60,7 @@
 									name="supplyAreaDisplay" id="supplyAreaDisplay"
 									placeholder="예: 36.92" />
 								<button type="button" class="btn btn-unit-toggle"
-									id="toggleUnitBtn">㎡ ▼</button>
+									id="toggleUnitBtn">평 → ㎡</button>
 							</div>
 							<input type="hidden" name="bldgGrossArea" id="supplyAreaHidden" />
 						</div>

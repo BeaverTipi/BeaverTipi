@@ -131,8 +131,8 @@
 										<input type="text" inputmode="numeric" pattern="[0-9]*"
 											class="form-control" id="jeonseAmtView" placeholder="전세금">
 										<button type="button" class="btn btn-unit-toggle"
-											id="jeonseUnitBtn" onclick="toggleUnit('jeonse')">
-											만원 ▼</button>
+											id="jeonseUnitBtn" onclick="toggleUnit('jeonse')">억
+											→ 만원</button>
 									</div>
 									<input type="hidden" name="lstgLease" id="jeonseAmt">
 								</div>
@@ -148,23 +148,21 @@
 										<div class="unit-input-group">
 											<input type="text" inputmode="numeric" pattern="[0-9,]*"
 												class="form-control" id="depositAmtView" placeholder="보증금">
-											<span id="depositUnitText" class="ms-1 text-muted unit-text">만원</span>
 											<button type="button" class="btn btn-unit-toggle"
-												id="depositUnitBtn" onclick="toggleUnit('deposit')">원
-												▼</button>
+												id="depositUnitBtn" onclick="toggleUnit('deposit')">만원
+												→ 원</button>
 											<input type="hidden" name="lstgLeaseAmt" id="depositAmt">
 										</div>
 									</div>
 									<div class="col-md-6">
 										<label class="form-label" id="mnthRentLabel"
-											data-label-base="월세">월세 만원</label>
+											data-label-base="월세">월세 (만원)</label>
 										<div class="unit-input-group">
-											<input type="text" inputmode="numeric"
-												class="form-control" id="mnthRentAmtView" placeholder="월세">
-												<span id="mnthRentUnitText" class="ms-1 text-muted unit-text">만원</span>
+											<input type="text" inputmode="numeric" class="form-control"
+												id="mnthRentAmtView" placeholder="월세">
 											<button type="button" class="btn btn-unit-toggle"
 												id="mnthRentUnitBtn" onclick="toggleUnit('mnthRent')">
-												원 ▼</button>
+												억 → 만원</button>
 											<input type="hidden" name="lstgLeaseM" id="mnthRentAmt">
 										</div>
 									</div>
@@ -178,11 +176,10 @@
 									<label class="form-label" id="saleAmtLabel"
 										data-label-base="매매가">매매가 (억)</label>
 									<div class="unit-input-group">
-										<input type="text" inputmode="numeric" 
-											class="form-control" id="saleAmtView" placeholder="매매가">
-											<span id="saleUnitText" class="ms-1 text-muted unit-text">만원</span>
+										<input type="text" inputmode="numeric" class="form-control"
+											id="saleAmtView" placeholder="매매가">
 										<button type="button" class="btn btn-unit-toggle"
-											id="saleUnitBtn" onclick="toggleUnit('sale')">만원 ▼</button>
+											id="saleUnitBtn" onclick="toggleUnit('sale')">억 → 만원</button>
 										<input type="hidden" name="meme" id="saleAmt">
 									</div>
 								</div>
@@ -197,9 +194,8 @@
 										<input type="text" class="form-control" id="supplyAreaField"
 											placeholder="예: 36.92"> <input type="hidden"
 											name="lstgGrArea" value="${listingVO.lstgGrArea}">
-											<span id="supplyAreaText" class="ms-1 text-muted ">평</span>
 										<button type="button" class="btn btn-unit-toggle"
-											id="toggleSupplyUnit">㎡ ▼</button>
+											id="toggleSupplyUnit">평 → ㎡</button>
 									</div>
 								</div>
 
@@ -212,15 +208,26 @@
 											id="exclusiveAreaField" placeholder="예: 51.35"> <input
 											type="hidden" name="lstgExArea"
 											value="${listingVO.lstgExArea}">
-											<span id="exclusiveAreaText" class="ms-1 text-muted ">평</span>
 										<button type="button" class="btn btn-unit-toggle"
-											id="toggleExclusiveUnit">㎡ ▼</button>
+											id="toggleExclusiveUnit">평 → ㎡</button>
 									</div>
 								</div>
 							</div>
+							<div class="row mt-3">
 
-
-
+								<div class="col-md-6">
+									<label class="form-label" id="mngmtLabel" data-label-base="관리비">관리비
+										(원)</label>
+									<div class="unit-input-group d-flex">
+										<input type="text" inputmode="numeric" class="form-control"
+											id="mngmtAmtView" placeholder="예: 10,000">
+										<button type="button" class="btn btn-unit-toggle"
+											id="mngmtUnitBtn" onclick="toggleUnit('mngmt')">원 ▼
+										</button>
+										<input type="hidden" name="lstgFee" id="mngmtAmt">
+									</div>
+								</div>
+							</div>
 
 							<%-- 중개인 연결 --%>
 							<div class="form-group row mt-4">
@@ -242,243 +249,231 @@
 						</div>
 					</div>
 				</div>
-</div>
-				<!-- 추가정보 -->
-				<div class="col-md-6">
-					<div class="card h-100">
-						<div class="card-header">
-							<h3>추가 정보</h3>
+			</div>
+			<!-- 추가정보 -->
+			<div class="col-md-6">
+				<div class="card h-100">
+					<div class="card-header">
+						<h3>추가 정보</h3>
+					</div>
+					<div class="card-body">
+						<!-- 🧱 1번째 줄: 해당 층수 + 욕실 수 -->
+						<div class="form-group row mb-3">
+							<div class="col-sm-6">
+								<label class="form-label">해당 층수</label> <input type="text"
+									class="form-control" name="lstgFloor" placeholder="예: 3">
+							</div>
+							<div class="col-sm-6">
+								<label class="form-label">욕실 수</label> <input type="text"
+									class="form-control" name="lstgBathCnt" placeholder="예: 1">
+							</div>
 						</div>
-						<div class="card-body">
-							<!-- 🧱 1번째 줄: 해당 층수 + 욕실 수 -->
-<div class="form-group row mb-3">
-  <div class="col-sm-6">
-    <label class="form-label">해당 층수</label>
-    <input type="text" class="form-control" name="lstgFloor" placeholder="예: 3">
-  </div>
-  <div class="col-sm-6">
-    <label class="form-label">욕실 수</label>
-    <input type="text" class="form-control" name="lstgBathCnt" placeholder="예: 1">
-  </div>
-</div>
 
-<div class="form-group row mb-3">
-  <div class="col-sm-6">
-    <label class="form-label">방 수</label>
-    <input type="number" class="form-control" name="lstgRoomCnt" placeholder="예: 2">
-  </div>
-  <div class="col-sm-6">
-   <label class="form-label" id="mngmtLabel" data-label-base="관리비">관리비 (원)</label>
-  <div class="unit-input-group d-flex">
-    <input type="text" inputmode="numeric" pattern="[0-9,]*"
-           class="form-control" id="mngmtAmtView" placeholder="예: 10,000">
-             <span id="mngmtUnitText" class="ms-1 text-muted unit-text">만원</span>
-    <button type="button" class="btn btn-unit-toggle ms-2"
-            id="mngmtUnitBtn" onclick="toggleUnit('mngmt')">
-      원 ▼
-    </button>
-    <input type="hidden" name="lstgFee" id="mngmtAmt">
-  </div>
-  </div>
-</div>
-
-							<div class="form-group row mb-3">
-								<label class="col-sm-4 col-form-label">상태</label>
-								<div class="col-sm-8 d-flex gap-3">
-									<div class="form-check">
-										<input class="form-check-input" type="radio" id="newRoom"
-											value="신축"> <label class="form-check-label"
-											for="newRoom">신축</label>
-									</div>
-									<div class="form-check">
-										<input class="form-check-input" type="radio" id="remodel"
-											value="리모델링"> <label class="form-check-label"
-											for="remodel">리모델링</label>
-									</div>
-								</div>
+						<div class="form-group row mb-3">
+							<div class="col-sm-6">
+								<label class="form-label">방 수</label> <input type="number"
+									class="form-control" name="lstgRoomCnt" placeholder="예: 2">
 							</div>
 
-							<div class="form-group row mb-3">
-								<label class="col-sm-4 col-form-label">방 구조</label>
-								<div class="col-sm-8 d-flex gap-3">
-									<div class="form-check">
-										<input class="form-check-input" type="radio" id="openType"
-											value="오픈형"> <label class="form-check-label"
-											for="openType">오픈형</label>
-									</div>
-									<div class="form-check">
-										<input class="form-check-input" type="radio" id="separateType"
-											value="분리형"> <label class="form-check-label"
-											for="separateType">분리형</label>
-									</div>
-								</div>
-							</div>
+						</div>
 
-							<div class="form-group row mb-3">
-								<label class="col-sm-4 col-form-label">주차 가능 여부 *</label>
-								<div class="col-sm-8 d-flex flex-wrap gap-3 align-items-center">
-									<div class="form-check form-check-inline">
-										<input class="form-check-input" type="radio" name="lstgParkYn"
-											value="Y"
-											<c:if test="${listingVO.lstgParkYn == 'Y'}">checked</c:if>>
-										<label class="form-check-label">가능</label>
-									</div>
-									<div class="form-check form-check-inline">
-										<input class="form-check-input" type="radio" name="lstgParkYn"
-											value="N"
-											<c:if test="${listingVO.lstgParkYn == 'N'}">checked</c:if>>
-										<label class="form-check-label">불가능</label>
-									</div>
-									<input type="number" class="form-control" placeholder="주차 대 수"
-										style="width: 120px;" />
+						<div class="form-group row mb-3">
+							<label class="col-sm-4 col-form-label">상태</label>
+							<div class="col-sm-8 d-flex gap-3">
+								<div class="form-check">
+									<input class="form-check-input" type="radio" id="newRoom"
+										value="신축"> <label class="form-check-label"
+										for="newRoom">신축</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" id="remodel"
+										value="리모델링"> <label class="form-check-label"
+										for="remodel">리모델링</label>
 								</div>
 							</div>
 						</div>
-					</div>
-				</div>
-			</div>
 
-
-			<!--  시설 정보 -->
-			<div class="card mb-4">
-				<div class="card-header">
-					<h3>시설 정보</h3>
-				</div>
-				<div class="card-body">
-					<!-- 난방 -->
-					<div class="form-group mb-3">
-						<label class="form-label d-block">난방 시설</label>
-						<c:forEach var="opt" items="${facilityMap['004']}"
-							varStatus="status">
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio"
-									name="facOptions[${status.index + facilityMap['001'].size() + facilityMap['002'].size() + facilityMap['003'].size()}].facOptId"
-									value="${opt.facOptId}" id="heat${status.index}"
-									<label class="form-check-label" for="heat${status.index}">${opt.facOptNm}</label>
+						<div class="form-group row mb-3">
+							<label class="col-sm-4 col-form-label">방 구조</label>
+							<div class="col-sm-8 d-flex gap-3">
+								<div class="form-check">
+									<input class="form-check-input" type="radio" id="openType"
+										value="오픈형"> <label class="form-check-label"
+										for="openType">오픈형</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" id="separateType"
+										value="분리형"> <label class="form-check-label"
+										for="separateType">분리형</label>
+								</div>
 							</div>
-						</c:forEach>
-					</div>
-
-
-					<!-- 냉방 -->
-					<div class="form-group mb-3">
-						<label class="form-label d-block">냉방 시설</label>
-						<div class="form-check form-check-inline">
-							<input class="form-check-input select-all" type="checkbox">
-							<label class="form-check-label">전체선택</label>
 						</div>
-						<c:forEach var="cooling" items="${facilityMap['005']}"
-							varStatus="status">
-							<div class="form-check form-check-inline">
-								<input class="form-check-input option" type="checkbox"
-									name="facOptions[${status.index  + facilityMap['001'].size() + facilityMap['002'].size() + facilityMap['003'].size()+ facilityMap['004'].size()}].facOptId"
-									value="${cooling.facOptId}"
-									<label class="form-check-label">${cooling.facOptNm}</label>
-							</div>
-						</c:forEach>
-					</div>
 
-					<!-- 생활시설 -->
-					<div id="life-section" class="form-group mt-3">
-						<label class="form-label d-block">생활 시설</label>
-						<div class="form-check form-check-inline">
-							<input class="form-check-input select-all" type="checkbox">
-							<label class="form-check-label">전체선택</label>
+						<div class="form-group row mb-3">
+							<label class="col-sm-4 col-form-label">주차 가능 여부 *</label>
+							<div class="col-sm-8 d-flex flex-wrap gap-3 align-items-center">
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="lstgParkYn"
+										value="Y"
+										<c:if test="${listingVO.lstgParkYn == 'Y'}">checked</c:if>>
+									<label class="form-check-label">가능</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="lstgParkYn"
+										value="N"
+										<c:if test="${listingVO.lstgParkYn == 'N'}">checked</c:if>>
+									<label class="form-check-label">불가능</label>
+								</div>
+								<input type="number" class="form-control" placeholder="주차 대 수"
+									style="width: 120px;" />
+							</div>
 						</div>
-						<c:forEach var="life" items="${facilityMap['001']}"
-							varStatus="status">
-							<div class="form-check form-check-inline">
-								<input class="form-check-input option" type="checkbox"
-									name="facOptions[${status.index}].facOptId"
-									value="${life.facOptId}"
-									<label class="form-check-label">${life.facOptNm}</label>
-							</div>
-						</c:forEach>
 					</div>
+				</div>
+			</div>
+		</div>
 
-					<!-- 보안시설 -->
-					<div id="security-section" class="form-group mt-4">
-						<label class="form-label d-block">보안 시설</label>
+
+		<!--  시설 정보 -->
+		<div class="card mb-4">
+			<div class="card-header">
+				<h3>시설 정보</h3>
+			</div>
+			<div class="card-body">
+				<!-- 난방 -->
+				<div class="form-group mb-3">
+					<label class="form-label d-block">난방 시설</label>
+					<c:forEach var="opt" items="${facilityMap['004']}"
+						varStatus="status">
 						<div class="form-check form-check-inline">
-							<input class="form-check-input select-all" type="checkbox">
-							<label class="form-check-label">전체선택</label>
+							<input class="form-check-input" type="radio"
+								name="facOptions[${status.index + facilityMap['001'].size() + facilityMap['002'].size() + facilityMap['003'].size()}].facOptId"
+								value="${opt.facOptId}" id="heat${status.index}"
+								<label class="form-check-label" for="heat${status.index}">${opt.facOptNm}</label>
 						</div>
-						<c:forEach var="security" items="${facilityMap['002']}"
-							varStatus="status">
-							<div class="form-check form-check-inline">
-								<input class="form-check-input option" type="checkbox"
-									name="facOptions[${status.index + facilityMap['001'].size()}].facOptId"
-									value="${security.facOptId}"
-									<label class="form-check-label">${security.facOptNm}</label>
-							</div>
-						</c:forEach>
-					</div>
+					</c:forEach>
+				</div>
 
-					<!-- 기타시설 -->
-					<div id="etc-section" class="form-group mt-4">
-						<label class="form-label d-block">기타 시설</label>
+
+				<!-- 냉방 -->
+				<div class="form-group mb-3">
+					<label class="form-label d-block">냉방 시설</label>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input select-all" type="checkbox">
+						<label class="form-check-label">전체선택</label>
+					</div>
+					<c:forEach var="cooling" items="${facilityMap['005']}"
+						varStatus="status">
 						<div class="form-check form-check-inline">
-							<input class="form-check-input select-all" type="checkbox">
-							<label class="form-check-label">전체선택</label>
+							<input class="form-check-input option" type="checkbox"
+								name="facOptions[${status.index  + facilityMap['001'].size() + facilityMap['002'].size() + facilityMap['003'].size()+ facilityMap['004'].size()}].facOptId"
+								value="${cooling.facOptId}"
+								<label class="form-check-label">${cooling.facOptNm}</label>
 						</div>
-						<c:forEach var="etc" items="${facilityMap['003']}"
-							varStatus="status">
-							<div class="form-check form-check-inline">
-								<input class="form-check-input option" type="checkbox"
-									name="facOptions[${status.index + facilityMap['001'].size() + facilityMap['002'].size()}].facOptId"
-									value="${etc.facOptId}"
-									<label class="form-check-label">${etc.facOptNm}</label>
-							</div>
-						</c:forEach>
+					</c:forEach>
+				</div>
+
+				<!-- 생활시설 -->
+				<div id="life-section" class="form-group mt-3">
+					<label class="form-label d-block">생활 시설</label>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input select-all" type="checkbox">
+						<label class="form-check-label">전체선택</label>
 					</div>
+					<c:forEach var="life" items="${facilityMap['001']}"
+						varStatus="status">
+						<div class="form-check form-check-inline">
+							<input class="form-check-input option" type="checkbox"
+								name="facOptions[${status.index}].facOptId"
+								value="${life.facOptId}"
+								<label class="form-check-label">${life.facOptNm}</label>
+						</div>
+					</c:forEach>
+				</div>
+
+				<!-- 보안시설 -->
+				<div id="security-section" class="form-group mt-4">
+					<label class="form-label d-block">보안 시설</label>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input select-all" type="checkbox">
+						<label class="form-check-label">전체선택</label>
+					</div>
+					<c:forEach var="security" items="${facilityMap['002']}"
+						varStatus="status">
+						<div class="form-check form-check-inline">
+							<input class="form-check-input option" type="checkbox"
+								name="facOptions[${status.index + facilityMap['001'].size()}].facOptId"
+								value="${security.facOptId}"
+								<label class="form-check-label">${security.facOptNm}</label>
+						</div>
+					</c:forEach>
+				</div>
+
+				<!-- 기타시설 -->
+				<div id="etc-section" class="form-group mt-4">
+					<label class="form-label d-block">기타 시설</label>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input select-all" type="checkbox">
+						<label class="form-check-label">전체선택</label>
+					</div>
+					<c:forEach var="etc" items="${facilityMap['003']}"
+						varStatus="status">
+						<div class="form-check form-check-inline">
+							<input class="form-check-input option" type="checkbox"
+								name="facOptions[${status.index + facilityMap['001'].size() + facilityMap['002'].size()}].facOptId"
+								value="${etc.facOptId}"
+								<label class="form-check-label">${etc.facOptNm}</label>
+						</div>
+					</c:forEach>
 				</div>
 			</div>
+		</div>
 
-			<!--상세 설명 -->
-			<div class="card mb-4">
-				<div class="card-header">
-					<h3>상세 설명</h3>
+		<!--상세 설명 -->
+		<div class="card mb-4">
+			<div class="card-header">
+				<h3>상세 설명</h3>
+			</div>
+			<div class="card-body">
+				<div class="form-group mb-3">
+					<label for="title" class="form-label">제목 *</label> <input
+						type="text" class="form-control" name="lstgNm" id="title"
+						maxlength="40" value="${listingVO.lstgNm}" placeholder="제목 입력" />
 				</div>
-				<div class="card-body">
-					<div class="form-group mb-3">
-						<label for="title" class="form-label">제목 *</label> <input
-							type="text" class="form-control" name="lstgNm" id="title"
-							maxlength="40" value="${listingVO.lstgNm}" placeholder="제목 입력" />
-					</div>
-					<div class="form-group mb-3">
-						<label for="description" class="form-label">상세설명</label>
-						<textarea class="form-control" name="lstgDtlDst" id="lstgDst"
-							rows="6" maxlength="1000" placeholder="상세 설명 입력">${listingVO.lstgDst}</textarea>
-					</div>
+				<div class="form-group mb-3">
+					<label for="description" class="form-label">상세설명</label>
+					<textarea class="form-control" name="lstgDtlDst" id="lstgDst"
+						rows="6" maxlength="1000" placeholder="상세 설명 입력">${listingVO.lstgDst}</textarea>
 				</div>
 			</div>
+		</div>
 
-			<!--사진 등록 -->
-			<div class="card mb-4">
-				<div class="card-header">
-					<h3>사진 등록</h3>
-				</div>
-				<div class="card-body">
-					<div class="form-group d-flex align-items-center gap-3">
-						<label class="form-label mb-0">일반 사진 *</label> <input type="file"
-							class="form-control w-auto" name="imageUpload" id="imageUpload"
-							accept="image/*" multiple />
+		<!--사진 등록 -->
+		<div class="card mb-4">
+			<div class="card-header">
+				<h3>사진 등록</h3>
+			</div>
+			<div class="card-body">
+				<div class="form-group d-flex align-items-center gap-3">
+					<label class="form-label mb-0">일반 사진 *</label> <input type="file"
+						class="form-control w-auto" name="imageUpload" id="imageUpload"
+						accept="image/*" multiple />
 
-						<button type="button" class="btn btn-outline-primary btn-sm">사진은
-							최소 5장, 최대 10장 업로드 할수 있습니다.</button>
-					</div>
+					<button type="button" class="btn btn-outline-primary btn-sm">사진은
+						최소 5장, 최대 10장 업로드 할수 있습니다.</button>
 				</div>
 			</div>
+		</div>
 
-			<!--  제출 버튼 -->
-			<div class="text-center my-5 d-flex gap-3 submit-button-wrapper">
-				<button type="submit" class="btn btn-submit btn-lg" id="submitBtn">매물
-					등록</button>
-				<button type="button" class="btn btn-cancel btn-lg"
-					onclick="history.back();">취소</button>
-			</div>
+		<!--  제출 버튼 -->
+		<div class="text-center my-5 d-flex gap-3 submit-button-wrapper">
+			<button type="submit" class="btn btn-submit btn-lg" id="submitBtn">매물
+				등록</button>
+			<button type="button" class="btn btn-cancel btn-lg"
+				onclick="history.back();">취소</button>
+		</div>
 </div>
-	</form>
+</form>
 
 <!-- 중개인 선택 모달 -->
 <div class="modal fade" id="brokerModal" tabindex="-1"

@@ -69,6 +69,7 @@ public class ManagedTabController {
         model.addAttribute("pagingHTML", resultMap.get("pagingHTML"));
         model.addAttribute("typeSaleCodeList", resultMap.get("typeSaleCodeList"));
         model.addAttribute("statusCodeList", resultMap.get("statusCodeList"));
+        model.addAttribute("formattedDateList", resultMap.get("formattedDateList"));
 
         // 검색 폼 값 유지용 (필수)
         model.addAttribute("searchForm", searchForm);
@@ -79,9 +80,9 @@ public class ManagedTabController {
         // 💡 더 이상 계좌 바인딩 반복문 필요 없음
 
         model.addAttribute("buildingList", resultBuildingMap.get("buildingList"));
-        model.addAttribute("buildingPagingVO", resultBuildingMap.get("pagingVO"));      // ✅ 이름 변경
-        model.addAttribute("buildingPagingHTML", resultBuildingMap.get("pagingHTML"));  // ✅ 이름 변경
-        model.addAttribute("buildingStatusCodeList", resultBuildingMap.get("statusCodeList")); // ✅ 이름 변경
+        model.addAttribute("buildingPagingVO", resultBuildingMap.get("pagingVO"));     
+        model.addAttribute("buildingPagingHTML", resultBuildingMap.get("pagingHTML"));  
+        model.addAttribute("buildingStatusCodeList", resultBuildingMap.get("statusCodeList")); 
         model.addAttribute("searchBuildingForm", searchBuildingForm);
 
 

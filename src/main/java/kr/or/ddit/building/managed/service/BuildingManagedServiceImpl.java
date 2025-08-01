@@ -139,11 +139,9 @@ public class BuildingManagedServiceImpl implements BuildingManagedService {
 	        }
 	    }
 
-	    List<CommonCodeVO> statusCodeList = codeService.readCommonCodeList("PRDST");
 
 	    result.put("pagingVO", pagingVO);
 	    result.put("buildingList", buildingList);
-	    result.put("statusCodeList", statusCodeList);
 	    result.put("pagingHTML", new DefaultPaginationRenderer().renderPagination(pagingVO, "fn_paging"));
 
 	    return result;

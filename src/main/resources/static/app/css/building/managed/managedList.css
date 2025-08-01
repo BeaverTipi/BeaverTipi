@@ -64,14 +64,14 @@ hr {
 
 /* 공통 버튼 스타일 */
 .btn {
-  padding: 10px 24px;
+  padding: 10px 20px;
   font-size: 15px;
   font-weight: 600;
   border-radius: 8px;
   border: none;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  min-width: 140px;
+  min-width: 95px;
 }
 
 /* 매물 등록 버튼 */
@@ -233,8 +233,8 @@ hr {
 
 .btn-unit-toggle {
   padding: 8px 10px;
-  max-width : 70px;
-  min-width : 70px;
+  max-width : 80px;
+  min-width : 80px;
   font-size: 14px;
   font-weight: 600;
   color: #e89200;

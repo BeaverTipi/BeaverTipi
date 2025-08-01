@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
               display.value = pyeong;
               hidden.value = sqm.toFixed(2);
               document.querySelector("#areaUnitLabel").textContent = "평";
-              document.querySelector("#toggleUnitBtn").textContent = "㎡ ▼";
+              document.querySelector("#toggleUnitBtn").textContent = "평 → ㎡";
               currentUnit = "평";
             } else {
               display.value = "";
@@ -118,14 +118,14 @@ document.addEventListener("DOMContentLoaded", function () {
       displayInput.value = sqm;
       hiddenInput.value = sqm;
       label.textContent = "㎡";
-      toggleBtn.textContent = "평 ▼";
+      toggleBtn.textContent = "㎡ → 평";
       currentUnit = "㎡";
     } else {
       const pyeong = (val / 3.305785).toFixed(2);
       displayInput.value = pyeong;
       hiddenInput.value = val.toFixed(2);
       label.textContent = "평";
-      toggleBtn.textContent = "㎡ ▼";
+      toggleBtn.textContent = "평 → ㎡";
       currentUnit = "평";
     }
   });

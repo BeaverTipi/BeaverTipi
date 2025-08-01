@@ -8,6 +8,7 @@ import lombok.Data;
 public class BuildingSearchFormVO implements Serializable {
     private String rentalPtyId;     // 임대 아이디
     private String searchBuildingName;  // 건물명
+    private String searchBuildingAddress;  // 건물명
     private String searchBuildingRoomNum;       // 호수
     private String searchBuildingStatus;         // 상태 코드
     private String searchBuildingType;           // 건물 유형 코드

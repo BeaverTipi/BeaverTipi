@@ -224,6 +224,9 @@ public class PaginationInfo<T> {
 			        if (vo.getSearchBuildingName() != null && !vo.getSearchBuildingName().isEmpty()) {
 			            sb.append("&detailSearch.searchBuildingName=").append(URLEncoder.encode(vo.getSearchBuildingName(), StandardCharsets.UTF_8.toString()));
 			        }
+			        if (vo.getSearchBuildingAddress() != null && !vo.getSearchBuildingAddress().isEmpty()) {
+			        	sb.append("&detailSearch.searchBuildingAddress=").append(URLEncoder.encode(vo.getSearchBuildingAddress(), StandardCharsets.UTF_8.toString()));
+			        }
 			        if (vo.getSearchBuildingRoomNum() != null && !vo.getSearchBuildingRoomNum().isEmpty()) {
 			            sb.append("&detailSearch.searchBuildingRoomNum=").append(URLEncoder.encode(vo.getSearchBuildingRoomNum(), StandardCharsets.UTF_8.toString()));
 			        }

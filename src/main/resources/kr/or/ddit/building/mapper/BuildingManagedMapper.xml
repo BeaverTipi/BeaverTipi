@@ -133,6 +133,9 @@
       <if test="detailSearch.searchBuildingRoomNum != null and detailSearch.searchBuildingRoomNum != ''">
         <!-- TODO: 호수 조건 처리 (필요 시 JOIN) -->
       </if>
+      <if test="detailSearch.searchBuildingAddress != null and detailSearch.searchBuildingAddress != ''">
+        AND BLDG_ADDR LIKE '%' ||#{detailSearch.searchBuildingAddress} ||'%'
+      </if>
       <if test="detailSearch.searchBuildingStatus != null and detailSearch.searchBuildingStatus != '' and detailSearch.searchBuildingStatus != '000'">
         AND BLDG_TYPE_CODE = #{detailSearch.searchBuildingStatus}
       </if>
@@ -162,6 +165,9 @@
       </if>
       <if test="detailSearch.searchBuildingRoomNum != null and detailSearch.searchBuildingRoomNum != ''">
         <!-- TODO: 호수 조건 처리 (필요 시 JOIN) -->
+      </if>
+      <if test="detailSearch.searchBuildingAddress != null and detailSearch.searchBuildingAddress != ''">
+        AND BLDG_ADDR LIKE '%' ||#{detailSearch.searchBuildingAddress} ||'%'
       </if>
       <if test="detailSearch.searchBuildingStatus != null and detailSearch.searchBuildingStatus != '' and detailSearch.searchBuildingStatus != '000'">
         AND BLDG_TYPE_CODE = #{detailSearch.searchBuildingStatus}
