@@ -107,4 +107,10 @@ public class ListingVO implements Serializable {
     private transient TenancyVO tenancyInfo;
     private transient BrokerVO brokerInfo;
 	
+    private String brokNm;
+    private String reprNm;
+    private String reprTelNo;
+    private String filePathUrl;
+    private int isWishlisted;
+    private List<FileVO> files;
 }

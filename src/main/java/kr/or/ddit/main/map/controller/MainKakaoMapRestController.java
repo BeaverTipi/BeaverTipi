@@ -69,23 +69,21 @@ public class MainKakaoMapRestController {
 
 	
 	@GetMapping("/detail")
-	public ResponseEntity<Map<String, Object>> getDetailInfo(
+	public ResponseEntity<ListingVO> getDetailInfo(
 	    @RequestParam String lstgId,
 	    @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
 	) {
 	    String mbrCd = (principal != null && principal.getRealUser() != null)
 	        ? principal.getRealUser().getMbrCd()
 	        : null;
-	    
-	    // 매물 상세 및 옵션 포함 정보 조회
-	    List<Map<String, Object>> detailList = service.selectListingDetailList(lstgId, mbrCd);
 
-	    if (detailList.isEmpty()) {
+	    ListingVO detail = service.selectListingDetailList(lstgId, mbrCd);
+
+	    if (detail == null) {
 	        return ResponseEntity.notFound().build();
 	    }
 
-	    // 항상 첫 번째 row에 모든 데이터가 포함됨 (facilityOptionList 포함)
-	    return ResponseEntity.ok(detailList.get(0));
+	    return ResponseEntity.ok(detail);
 	}
 
 	@PostMapping("/wishlist/toggle")

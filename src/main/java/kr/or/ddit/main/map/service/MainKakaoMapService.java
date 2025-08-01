@@ -34,7 +34,7 @@ public interface MainKakaoMapService {
 			Integer monthlyMin, Integer monthlyMax, // 월세
 			Integer saleMin, Integer saleMax // 매매가
 	);
-	public List<Map<String, Object>> selectListingDetailList(String lstgId, String mbrCd);
+	public ListingVO selectListingDetailList(String lstgId, String mbrCd);
 	public List<FacilityOptionVO> selectFacilityOptionsByListingId(String lstgId);
 	public int insertWishList(ListingWishlistVO vo);
 	public int deleteWishList(ListingWishlistVO vo);

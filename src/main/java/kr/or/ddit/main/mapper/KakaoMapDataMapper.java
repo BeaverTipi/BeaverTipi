@@ -42,8 +42,9 @@ public interface KakaoMapDataMapper {
 	    	@Param("saleMin") Integer saleMin,
 	    	@Param("saleMax") Integer saleMax
 		);
-	public List<Map<String, Object>> selectListingDetailList(
-				@Param("lstgId") String lstgId,  @Param("mbrCd") String mbrCd);
+	public ListingVO selectListingDetailList(
+			@Param("lstgId") String lstgId,  
+			@Param("mbrCd") String mbrCd);
 	public List<FacilityOptionVO> selectFacilityOptionsByListingId(@Param("lstgId") String lstgId);
 	public int insertWishList(ListingWishlistVO vo);
 	public int deleteWishList(ListingWishlistVO vo);

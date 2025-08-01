@@ -1,6 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.main.mapper.KakaoMapDataMapper">
+	<resultMap id="listingDetailResultMap" type="kr.or.ddit.vo.ListingVO">
+	  <result property="lstgId" column="LSTG_ID"/>
+	  <result property="mbrCd" column="MBR_CD"/>
+	  <result property="lstgTypeCode2" column="LSTG_TYPE_CODE2"/>
+	  <result property="lstgAdd" column="LSTG_ADD"/>
+	  <result property="lstgAdd2" column="LSTG_ADD2"/>
+	  <result property="lstgExArea" column="LSTG_EX_AREA"/>
+	  <result property="lstgGrArea" column="LSTG_GR_AREA"/>
+	  <result property="lstgRoomCnt" column="LSTG_ROOM_CNT"/>
+	  <result property="lstgRoomNum" column="LSTG_ROOM_NUM"/>
+	  <result property="lstgDst" column="LSTG_DST"/>
+	  <result property="lstgTypeSale" column="LSTG_TYPE_SALE"/>
+	  <result property="lstgLease" column="LSTG_LEASE"/>
+	  <result property="lstgLeaseM" column="LSTG_LEASE_M"/>
+	  <result property="lstgLeaseAmt" column="LSTG_LEASE_AMT"/>
+	  <result property="lstgFloor" column="LSTG_FLOOR"/>
+	  <result property="lstgParkYn" column="LSTG_PARK_YN"/>
+	  <result property="lstgRegDate" column="LSTG_REG_DATE"/>
+	  <result property="lstgNm" column="LSTG_NM"/>
+	  <result property="lstgTypeCode1" column="LSTG_TYPE_CODE1"/>
+	  <result property="rentalPtyId" column="RENTAL_PTY_ID"/>
+	  <result property="lstgPostal" column="LSTG_POSTAL"/>
+	  <result property="brokNm" column="BROK_NM"/>
+	  <result property="reprNm" column="REPR_NM"/>
+	  <result property="reprTelNo" column="REPR_TEL_NO"/>
+	  <result property="isWishlisted" column="IS_WISHLISTED"/>
+	  <association property="brokerInfo" javaType="kr.or.ddit.vo.BrokerVO">
+			<result property="brokNm" column="BROK_NM"/>
+			<result property="reprNm" column="REPR_NM"/>
+			<result property="reprTelNo" column="REPR_TEL_NO"/>
+			<result property="businessCardUrl" column="BUSINESS_CARD_URL"/>
+		</association>
+	
+		 <collection property="listingFiles" ofType="kr.or.ddit.vo.FileVO">
+		    <result property="filePathUrl" column="FILE_PATH_URL"/>
+		    <result property="fileSourceRef" column="FILE_SOURCE_REF"/>
+		    <result property="docTypeCd" column="DOC_TYPE_CD"/>
+		  </collection>
+	</resultMap>
+
+	<resultMap id="fileVOResultMap" type="kr.or.ddit.vo.FileVO">
+	  <result property="filePathUrl" column="BROKER_FILE_PATH_URL"/>
+	  <result property="fileSourceRef" column="BROKER_FILE_SOURCE_REF"/>
+	  <result property="docTypeCd" column="BROKER_DOC_TYPE_CD"/>
+	</resultMap>
+
+
+	
 <select id="selectNotLatLngList" resultType="kr.or.ddit.vo.ListingVO">
  	SELECT
  		LSTG_ID,
@@ -64,6 +112,7 @@
 	  WHERE
 	    LI.LSTG_LAT BETWEEN #{swLat} AND #{neLat}
 	    AND LI.LSTG_LNG BETWEEN #{swLng} AND #{neLng}
+	    AND LI.LSTG_DEL = 'N'
 	    
 	    <if test="typeCode1List != null and typeCode1List.size() > 0">
 	      AND LI.LSTG_TYPE_CODE1 IN
@@ -126,7 +175,6 @@
 	      AND LI.LSTG_GR_AREA &lt;= #{maxArea}
 	    </if>
 
-		<!-- 🆕 전세 필터 -->
 		<if test="jeonseMin != null">
 		  AND LI.LSTG_TYPE_SALE = '001' AND LI.LSTG_LEASE &gt;= #{jeonseMin}
 		</if>
@@ -134,7 +182,6 @@
 		  AND LI.LSTG_TYPE_SALE = '001' AND LI.LSTG_LEASE &lt;= #{jeonseMax}
 		</if>
 		
-		<!-- 🆕 월세 필터 -->
 		<if test="depositMin != null">
 		  AND LI.LSTG_TYPE_SALE = '002' AND LI.LSTG_LEASE_AMT &gt;= #{depositMin}
 		</if>
@@ -148,7 +195,6 @@
 		  AND LI.LSTG_TYPE_SALE = '002' AND LI.LSTG_LEASE_M &lt;= #{monthlyMax}
 		</if>
 		
-		<!-- 🆕 매매 필터 -->
 		<if test="saleMin != null">
 		  AND LI.LSTG_TYPE_SALE = '003' AND LI.LSTG_LEASE_AMT &gt;= #{saleMin}
 		</if>
@@ -168,7 +214,7 @@
 		    LI.LSTG_ID DESC
 </select>
 
-<select id="selectListingDetailList" resultType="map">
+<select id="selectListingDetailList" resultMap="listingDetailResultMap">
 	SELECT
 		LI.LSTG_ID, 
 		LI.MBR_CD, 
@@ -194,6 +240,17 @@
 		B.BROK_NM,
 		B.REPR_NM,
 		B.REPR_TEL_NO,
+		(
+			SELECT F.FILE_PATH_URL
+			FROM FILES F
+			WHERE F.FILE_SOURCE_ID = B.MBR_CD
+				AND F.FILE_SOURCE_REF = 'BROKER'
+				AND F.DOC_TYPE_CD = 'NAMECARD_MAIN'
+				AND ROWNUM = 1
+		) AS BUSINESS_CARD_URL,
+		F.FILE_PATH_URL,
+		F.FILE_SOURCE_REF,
+		F.DOC_TYPE_CD,
 		CASE 
 			WHEN W.MBR_CD IS NOT NULL THEN 1
 		ELSE 0
@@ -202,6 +259,8 @@
 			LISTING LI
 			LEFT JOIN BROKER B ON B.MBR_CD = LI.MBR_CD
 			LEFT JOIN LISTING_WISHLIST W ON W.LSTG_ID = LI.LSTG_ID AND W.MBR_CD = #{mbrCd}
+			LEFT OUTER JOIN FILES F ON F.FILE_SOURCE_ID = LI.LSTG_ID
+				AND F.FILE_SOURCE_REF = 'LISTING'
 		WHERE 
 			LI.LSTG_ID = #{lstgId}
 		  	AND LI.LSTG_DEL = 'N'

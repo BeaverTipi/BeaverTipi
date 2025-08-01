@@ -1222,3 +1222,31 @@ body {
 	border-style: solid;
 	border-color: #333 transparent transparent transparent;
 }
+
+/* 중개인 명함 카드 */
+.broker-namecard img {
+  margin-top: 10px;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+/* 평수 변환 버튼 */
+.btn-toggle-unit,
+.btn-toggle-unit-list {
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 12px;
+  padding: 2px 6px;
+  margin-left: 6px;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-toggle-unit:hover,
+.btn-toggle-unit-list:hover {
+  background-color: #e0e0e0;
+}

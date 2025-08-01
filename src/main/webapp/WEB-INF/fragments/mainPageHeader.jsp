@@ -14,7 +14,8 @@
 
 		<!-- 🔵 우측 메뉴 -->
 		<ul class="navbar-nav flex-row gap-4 align-items-center mb-0">
-			<li class="nav-item"><a class="nav-link" href="#">공지사항</a></li>
+			<li class="nav-item"><a class="nav-link" 
+				href="${pageContext.request.contextPath}/main/notice/list">공지사항</a></li>
 			<li class="nav-item"><a class="nav-link"
 				href="${pageContext.request.contextPath}/main/map">지도</a></li>
 			<li class="nav-item"><a class="nav-link"

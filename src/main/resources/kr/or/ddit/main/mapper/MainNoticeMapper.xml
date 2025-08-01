@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.main.mapper.MainNoticeMapper">
+
+  <select id="selectMainNoticeList" parameterType="kr.or.ddit.util.page.PaginationInfo" resultType="kr.or.ddit.vo.BoardVO">
+    SELECT *
+    FROM (
+      SELECT inner.*, ROWNUM rn
+      FROM (
+        SELECT
+          BD.BRD_NO,
+          BD.BRD_CODE,
+          BD.BRD_TITL_NM,
+          BD.BRD_CONT,
+          BD.BRD_PBLS_DTM,
+          BD.BRD_VW_CNT,
+          BD.BRD_END_DTM,
+          BD.BRD_DEL_YN,
+          BD.BRD_CTGRY_GRP_CD,
+          MEM.MBR_ID,
+          MEM.MBR_CD,
+          MEM.MBR_NM,
+          (SELECT C.CODE_NAME 
+             FROM BOARD_CARTEGORY BDC 
+             JOIN COMMON_CODE C ON BDC.BRD_CTGRY = C.CODE_VALUE
+            WHERE BDC.BRD_CODE = BD.BRD_CODE 
+              AND C.CODE_GROUP = 'BRDCT') AS brdCodeName,
+          (SELECT C.CODE_NAME 
+             FROM NOTICE N 
+             JOIN COMMON_CODE C ON N.NOTICE_TYPE = C.CODE_VALUE 
+            WHERE N.NOTICE_NO = BD.BRD_NO 
+              AND C.CODE_GROUP = 'NOTPE') AS noticeTypeName
+        FROM BOARD BD
+        LEFT JOIN MEMBER MEM ON BD.MBR_CD = MEM.MBR_CD
+        WHERE 
+          BD.BRD_CODE = 'S0001'
+          AND BD.BRD_DEL_YN = 'N'
+          AND (BD.BRD_END_DTM IS NULL OR BD.BRD_END_DTM &gt;= TRUNC(SYSDATE))
+        ORDER BY
+          CASE 
+            WHEN (SELECT N.NOTICE_TYPE FROM NOTICE N WHERE N.NOTICE_NO = BD.BRD_NO) = '002' THEN 1
+            WHEN (SELECT N.NOTICE_TYPE FROM NOTICE N WHERE N.NOTICE_NO = BD.BRD_NO) = '003' THEN 2
+            WHEN (SELECT N.NOTICE_TYPE FROM NOTICE N WHERE N.NOTICE_NO = BD.BRD_NO) = '001' THEN 3
+            ELSE 4
+          END ASC,
+          BD.BRD_PBLS_DTM DESC
+      ) inner
+      WHERE ROWNUM &lt;= #{lastRecordIndex}
+    )
+    WHERE rn &gt;= #{firstRecordIndex}
+  </select>
+
+<select id="getTotalMainNoticeCount" parameterType="kr.or.ddit.util.page.PaginationInfo" resultType="int">
+  SELECT COUNT(*)
+  FROM BOARD BD
+  WHERE 
+    BD.BRD_CODE = 'S0001'
+    AND BD.BRD_DEL_YN = 'N'
+    AND (BD.BRD_END_DTM IS NULL OR BD.BRD_END_DTM &gt;= TRUNC(SYSDATE))
+</select>
+
+</mapper>

@@ -1,12 +1,10 @@
 package kr.or.ddit.main.map.service;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.main.mapper.KakaoMapDataMapper;
-import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.FacilityOptionVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.ListingWishlistVO;
@@ -29,16 +27,11 @@ public class MainKakaoMapServiceImpl implements MainKakaoMapService {
 		return kakaoMapDataMapper.updateLatLng(vo);
 	}
 
-	@Override
-	public List<Map<String, Object>> selectListingDetailList(String lstgId, String mbrCd) {
-		List<Map<String, Object>> listingList = kakaoMapDataMapper.selectListingDetailList(lstgId, mbrCd);
-
+	public ListingVO selectListingDetailList(String lstgId, String mbrCd) {
+		ListingVO vo = kakaoMapDataMapper.selectListingDetailList(lstgId, mbrCd); 
 		List<FacilityOptionVO> options = kakaoMapDataMapper.selectFacilityOptionsByListingId(lstgId);
-		for (Map<String, Object> listing : listingList) {
-			listing.put("facilityOptionList", options);
-		}
-
-		return listingList;
+		vo.setFacOptions(options);
+		return vo;
 	}
 
 	@Override
