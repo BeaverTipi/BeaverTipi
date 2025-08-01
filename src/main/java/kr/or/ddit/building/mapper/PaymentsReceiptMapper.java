@@ -44,6 +44,6 @@ public interface PaymentsReceiptMapper {
 	
 	public ChargeBillHistoryDTO selectChargebill(@Param("chgbillChargeMonth") String chgbillChargeMonth, @Param("unitId") String unitId );
 	
-	
+	public int updateOverdue();
 	
 }

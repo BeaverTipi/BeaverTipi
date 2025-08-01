@@ -73,4 +73,10 @@ public class PaymentsReceiptServiceImpl implements PaymentsReceiptService {
 		return mapper.selectChargebill(chgbillChargeMonth, unitId);
 	}
 
+	@Override
+	public void modifyOverdue() {
+		mapper.updateOverdue();
+		
+	}
+
 }

@@ -140,4 +140,12 @@ WHERE a.CHGBILL_CHARGE_MONTH = #{chgbillChargeMonth}
 AND a.UNIT_ID = #{unitId}
 </select>
 
+<update id="updateOverdue">
+<![CDATA[
+UPDATE CHARGE_BILL
+SET CHGBILL_STATUS = '004'
+WHERE CHGBILL_STATUS = '001'
+AND TO_DATE(CHGBILL_DUE_DATE,'YYYYMMDD') < TRUNC(SYSDATE)
+]]>
+</update>
 </mapper>
