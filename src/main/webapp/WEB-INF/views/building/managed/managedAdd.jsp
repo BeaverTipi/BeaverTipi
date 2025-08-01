@@ -1,154 +1,179 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@taglib uri="jakarta.tags.core" prefix="c" %>
-<%@taglib uri="jakarta.tags.functions" prefix="fn" %>
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java"%>
+<%@taglib uri="jakarta.tags.core" prefix="c"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib uri="jakarta.tags.functions" prefix="fn"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>신규 건물 등록</title>
-  <link rel="stylesheet" href="/app/css/building/managed/managedAdd.css">
-  <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
- 	<style>
-.form-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  max-width: 700px;
-  margin: 0 auto;
-}
-
-.form-row {
-  display: flex;
-  flex-direction: column;
-}
-
-.inline-group {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.image-box {
-  border: 1px solid #ccc;
-  padding: 10px;
-  text-align: center;
-  border-radius: 6px;
-  background: #f9f9f9;
-  max-width: 240px;
-  margin: 0 auto;
-}
-</style>
+<meta charset="UTF-8">
+<title>신규 건물 등록</title>
+<link rel="stylesheet" href="/app/css/building/managed/managedAdd.css" />
 </head>
-
-
 <body>
 
-<body>
-<h2>신규 건물 등록</h2>
+	<div class="container-wrap">
+		<form:form modelAttribute="buildingVO" method="post"
+			action="/building/managed/add" enctype="multipart/form-data">
+			<form:hidden path="rentalPtyId" />
+			<form:hidden path="delYn" value="N" />
 
-<form:form modelAttribute="buildingVO" method="post" action="/building/managed/add">
-  <form:hidden path="rentalPtyId" />
-  <form:hidden path="delYn" value="N" />
+			<!-- 🏢 건물 기본 정보 카드 -->
+			<div class="card mb-4">
+				<div
+					class="card-header d-flex justify-content-between align-items-center">
+					<h3 class="mb-0">건물 기본정보</h3>
+					<button type="button" class="btn btn-outline-primary btn-sm"
+						data-bs-toggle="modal" data-bs-target="#myListingsModal">
+						내 매물정보 불러오기</button>
+				</div>
+				<div class="card-body">
+					<div class="row g-3">
+						<!-- 건물 유형 -->
+						<div class="col-md-3">
+							<label class="form-label fw-semibold">건물 유형 <span class="text-danger">*</span></label> <select
+								class="form-select text-center text-center-select" id="bldgTypeCode" name="bldgTypeCode">
+								<option value="">--선택--</option>
+								<c:forEach items="${bldgTypeList}" var="bldgType">
+									<option value="${bldgType.codeValue}">${bldgType.codeName}</option>
+								</c:forEach>
+							</select>
+						</div>
+						<!-- 건물 이름 -->
+						<div class="col-md-9">
+							<label class="form-label fw-semibold">건물 이름 <span class="text-danger">*</span></label> <input
+								type="text" class="form-control" name="bldgNm"
+								placeholder="예: 역삼동 현대타워" />
+						</div>
 
-  <div class="form-wrapper">
-    <div class="form-row">
-      <label for="bldgNm">건물 이름</label>
-      <form:input path="bldgNm" id="bldgNm" placeholder="입력해주세요" />
-    </div>
 
-    <c:if test="${not empty buildingVO.rentalPtyId}">
-      <div class="form-row">
-        <label>내 매물에서 불러오기</label>
-        <div class="inline-group">
-          <select class="form-select" id="listingSelectBox">
-            <option value="">선택</option>
-            <c:forEach var="listing" items="${listingList}">
-              <option value="${listing.lstgId}">
-                ${listing.lstgNm} - ${listing.lstgAdd} ${listing.lstgAdd2}
-              </option>
-            </c:forEach>
-          </select>
-          <button type="button" onclick="fillListingInfo()">불러오기</button>
-        </div>
-      </div>
-    </c:if>
 
-    <div class="form-row">
-      <label for="bldgZipNo">우편번호</label>
-      <div class="inline-group">
-        <form:input path="bldgZipNo" id="bldgZipNo" readonly="true" />
-        <button type="button" onclick="execDaumPostcode()">주소 찾기</button>
-      </div>
-    </div>
+						<!-- 공급면적 -->
+						<div class="col-md-6">
+							<label class="form-label fw-semibold">공급면적 (<span
+								id="areaUnitLabel">평</span>)<span class="text-danger">*</span>
+							</label>
+							<div class="d-flex unit-input-group">
+								<input type="number" class="form-control"
+									name="supplyAreaDisplay" id="supplyAreaDisplay"
+									placeholder="예: 36.92" />
+								<button type="button" class="btn btn-unit-toggle"
+									id="toggleUnitBtn">㎡ ▼</button>
+							</div>
+							<input type="hidden" name="bldgGrossArea" id="supplyAreaHidden" />
+						</div>
+						<!-- 준공일 -->
+						<div class="col-md-6">
+							<label class="form-label fw-semibold">준공일 <span class="text-danger">*</span></label> <input
+								type="date" class="form-control" name="bldgCmpltnDt" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 🏠 주소 카드 -->
+			<div class="card mb-4">
+				<div class="card-header">
+					<h3>주소 정보</h3>
+				</div>
+				<div class="card-body">
+					<div class="row g-3">
+						<!-- 우편번호 -->
+						<div class="col-md-3">
+							<label class="form-label fw-semibold">우편번호 <span class="text-danger">*</span></label> <input
+								type="text" class="form-control" id="bldgZipNo" name="bldgZipNo"
+								readonly />
+						</div>
 
-    <div class="form-row">
-      <label for="bldgAddr">기본주소</label>
-      <form:input path="bldgAddr" id="bldgAddr" readonly="true" />
-    </div>
+						<!-- 기본주소 -->
+						<div class="col-md-6">
+							<label class="form-label fw-semibold">기본 주소</label> <input
+								type="text" class="form-control" id="bldgAddr"
+								name="bldgAddr" readonly />
+						</div>
 
-    <div class="form-row">
-      <label for="bldgDtlAddr">상세주소</label>
-      <form:input path="bldgDtlAddr" id="bldgDtlAddr" />
-    </div>
+						<!-- 주소 검색 버튼 -->
+						<div class="col-md-3 d-flex align-items-end">
+							<button type="button" class="btn btn-dark w-100 btn-addr-search"
+								onclick="execDaumPostcode()">주소 검색</button>
+						</div>
 
-    <div class="form-row">
-      <label>수납계좌</label>
-      <div class="account-list">
-        <c:forEach var="account" items="${buildingVO.accList}">
-          <div class="account-line">
-            <input type="text" class="account-input" value="${account.accBank} / ${account.accNum}" readonly />
-            <input type="checkbox" name="accNum" value="${account.accNum}"
-              <c:if test="${fn:contains(buildingVO.accNum, account.accNum)}">checked</c:if> />
-          </div>
-        </c:forEach>
-      </div>
-    </div>
+						<!-- 상세주소 -->
+						<div class="col-md-12">
+							<label class="form-label fw-semibold">상세주소 <span class="text-danger">*</span></label> <input
+								type="text" class="form-control" name="bldgDtlAddr"
+								placeholder="예: 101호" id="bldgDtlAddr"/>
+						</div>
+					</div>
+				</div>
+			</div>
 
-    <div class="form-row">
-      <label for="bldgTypeCode">건물 유형</label>
-		<form:select path="bldgTypeCode" id="bldgTypeCode">
-		  <option value="">선택하세요</option>
-		  <c:forEach var="code" items="${bldgTypeList}">
-		    <option value="${code.codeValue}"
-		      <c:if test="${code.codeValue == buildingVO.bldgTypeCode}">selected</c:if>>
-		      ${code.codeName}
-		    </option>
-		  </c:forEach>
-		</form:select>
-    </div>
 
-    <div class="form-row">
-      <label for="bldgCmpltnDt">준공일</label>
-      <form:input path="bldgCmpltnDt" type="date" id="bldgCmpltnDt" />
-    </div>
-
-   
-    <div class="form-row">
-      <label for="bldgGrossArea">공급면적</label>
-      <form:input path="bldgGrossArea" id="bldgGrossArea" />
-    </div>
-
-    <!-- 이미지 -->
-	<div class="form-row">
-	  <div class="image-box">
-	    <img id="previewImg" src="/images/sample-building.jpg" alt="건물 이미지 미리보기" style="max-width: 200px; max-height: 140px;" />
-	    <label for="bldgImgFile" style="display: block; margin-top: 8px;">
-	      <button type="button" onclick="document.getElementById('bldgImgFile').click(); return false;">이미지 등록</button>
-	    </label>
-	    <input type="file" id="bldgImgFile" name="bldgImgFile" accept="image/*" style="display:none;" />
-	  </div>
+			<!-- 🖼️ 이미지 업로드 -->
+			<div class="card mb-4">
+				<div class="card-header">
+					<h3>건물 이미지</h3>
+				</div>
+				<div class="card-body">
+					<div class="form-group">
+						<label class="form-label d-block">대표 이미지</label>
+						<div class="d-flex align-items-center gap-4">
+							<div id="previewContainer" class="image-box">
+								<!-- 기본은 안보이고 JS로 설정될 때만 보임 -->
+								<img id="previewImg" alt="미리보기" style="display: none;" />
+								<div class="image-placeholder-text">아직 등록된 이미지가 없습니다</div>
+							</div>
+							<div class="image-upload-wrapper">
+								<input type="file" id="bldgImgFile" name="bldgImgFile"
+									accept="image/*" style="display: none;" />
+								<button type="button" class="btn btn-outline-dark mb-2"
+									id="triggerImgUpload">이미지 등록</button>
+								<div class="text-muted mt-2" style="font-size: 14px;">※ 한
+									개의 이미지만 등록 가능합니다.</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 	</div>
 
+	<!-- ✅ 제출 -->
+	<div class="submit-button-wrapper">
+		<button type="submit" id="submitBtn" class="btn btn-submit">다음 단계</button>
+		<button type="button" class="btn btn-cancel" onclick="history.back();">취소</button>
+	</div>
 
-    <div class="form-row" style="text-align: right;">
-      <button type="submit" class="submit-btn">상세정보 입력</button>
+	</form:form>
+	</div>
+<div class="modal fade" id="myListingsModal" tabindex="-1" aria-labelledby="myListingModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="myListingModalLabel">내 매물 목록</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+      </div>
+
+      <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+          <c:forEach var="lstg" items="${listingList}">
+            <div class="col">
+              <div class="card h-100 selectable-card" onclick="fillListingInfo('${lstg.lstgId}')">
+                <div class="card-body">
+                  <h5 class="card-title mb-2">${lstg.lstgNm}</h5>
+                  <p class="card-text text-muted mb-1">${lstg.lstgAdd} ${lstg.lstgAdd2 }</p>
+                </div>
+              </div>
+            </div>
+          </c:forEach>
+        </div>
+      </div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+</div>
     </div>
   </div>
-</form:form>
+</div>
 
 
-<script src="/app/js/building/managed/managedAdd.js" defer></script>
-
+	<script src="/app/js/building/managed/managedAdd.js"></script>
 </body>
 </html>

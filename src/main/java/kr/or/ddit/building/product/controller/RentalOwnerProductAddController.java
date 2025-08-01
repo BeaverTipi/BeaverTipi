@@ -96,7 +96,7 @@ public class RentalOwnerProductAddController {
                              @RequestParam(value = "imageUpload", required = false) List<MultipartFile> imageFiles
                              
     ) {
-    	String lvn = "redirect:/building/product/list";
+    	String lvn = "redirect:/building/product/tabList";
     	if(errors.hasErrors()) {
     		String errorName = BindingResult.MODEL_KEY_PREFIX+MODELNAME;
 			redirectAttributes.addFlashAttribute(MODELNAME, listingVO);
@@ -115,6 +115,7 @@ public class RentalOwnerProductAddController {
 	
 	        try {
 	         service.insertProduct(listingVO, brokerIds,imageFiles);
+	         redirectAttributes.addFlashAttribute("message", "매물 등록이 완료되었습니다.");
 		    } catch (ListingOptionException e) {
 		        log.error("옵션 처리 오류", e);
 		        lvn = "redirect:/building/product/add";

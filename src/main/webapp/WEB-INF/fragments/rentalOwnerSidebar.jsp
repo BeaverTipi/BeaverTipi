@@ -150,25 +150,12 @@
       
       
       <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
-      <li class="nav-item">
-        <a href="https://themesberg.com/docs/volt-bootstrap-5-dashboard/getting-started/quick-start/" target="_blank"
-          class="nav-link d-flex align-items-center">
-          <span class="sidebar-icon">
-           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person me-2" viewBox="0 0 16 16">
-  <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
-</svg>
-          </span>
-          <span class="sidebar-text">Documentation <span class="badge badge-sm bg-secondary ms-1 text-gray-800">v1.4</span></span>
-        </a>
-      </li>
-      
-      
-      <li class="nav-item">
-        <a href="https://themesberg.com" target="_blank" class="nav-link d-flex align-items-center">
+ <li class="nav-item">
+        <a href="https://beavertipi.com" target="_blank" class="nav-link d-flex align-items-center">
           <span class="sidebar-icon">
             <img src="${pageContext.request.contextPath}/volt/assets/img/themesberg.png" height="20"  alt="Themesberg Logo">
           </span>
-          <span class="sidebar-text">Themesberg</span>
+          <span class="sidebar-text">&nbsp;&nbsp;beavertipi</span>
         </a>
       </li>
     </ul>

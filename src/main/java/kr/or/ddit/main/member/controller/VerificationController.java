@@ -19,6 +19,7 @@ public class VerificationController {
 	@ResponseBody
 	public String verification(String phone, HttpSession session) {
 		int code = (int)((Math.random() * 900000) + 100000);
+//		DefaultMessageService messageService =  NurigoApp.INSTANCE.initialize("NCSNKMQPFYQLPR8T", "QRFR4UAKOVQ2C3U0MRAEDS3NFYNWL8EH", "https://api.solapi.com");
 		DefaultMessageService messageService =  NurigoApp.INSTANCE.initialize("NCSHFBLSXWPERSLO", "BCON1RDIIP3ZLZ3J7LVMXMWI1Q909NFJ", "https://api.solapi.com");
 		// Message 패키지가 중복될 경우 net.nurigo.sdk.message.model.Message로 치환하여 주세요
 		Message message = new Message();

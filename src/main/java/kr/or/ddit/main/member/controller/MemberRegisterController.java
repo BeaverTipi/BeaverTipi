@@ -105,6 +105,7 @@ public class MemberRegisterController {
 		    } else {
 		        lvn = "redirect:/member/register";
 		    }
+			log.error(errors.toString());
 		}else {
 			try {
 				service.createMember(member);

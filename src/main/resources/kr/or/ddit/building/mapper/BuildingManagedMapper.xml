@@ -157,17 +157,29 @@
 	  AND ACC_DEL_YN = 'N'
 	</select>
 
-	<!-- 내 매물에서 불러오기용: 매물(리스팅) 리스트 조회 -->
-	<select id="selectListingsByRentalPtyId" parameterType="string" resultType="kr.or.ddit.vo.ListingVO">
-	  SELECT 
-	    LSTG_ID,
-	    LSTG_NM,
-	    LSTG_ADD,
-	    LSTG_ADD2
-	  FROM LISTING
-	  WHERE RENTAL_PTY_ID = #{rentalPtyId}
-	    AND LSTG_DEL = 'N'
-	</select>
+<select id="selectListingsByRentalPtyId" parameterType="string" resultType="kr.or.ddit.vo.ListingVO">
+  SELECT L.LSTG_ID, L.LSTG_NM, L.LSTG_ADD, L.LSTG_ADD2
+  FROM (
+    SELECT *
+    FROM LISTING
+    WHERE RENTAL_PTY_ID = #{RENTALPTYID}
+      AND LSTG_DEL = 'N'
+  ) L
+  LEFT JOIN BUILDING B
+    ON B.RENTAL_PTY_ID = L.RENTAL_PTY_ID
+   AND TRIM(B.BLDG_ADDR) = TRIM(L.LSTG_ADD)
+   AND TRIM(B.BLDG_DTL_ADDR) = TRIM(L.LSTG_ADD2)
+  WHERE B.BLDG_ID IS NULL
+    AND L.LSTG_ID IN (
+      SELECT MIN(LSTG_ID)
+      FROM LISTING
+      WHERE RENTAL_PTY_ID = #{RENTALPTYID}
+        AND LSTG_DEL = 'N'
+      GROUP BY LSTG_ADD, LSTG_ADD2
+    )
+</select>
+
+
 	<select id="selectListingById" parameterType="string" resultType="kr.or.ddit.vo.ListingVO">
     SELECT 
         LSTG_ID,
@@ -176,6 +188,7 @@
         LSTG_ADD2,
         LSTG_GR_AREA,
         LSTG_TYPE_CODE1,
+        LSTG_TYPE_CODE2,
         LSTG_LEASE,
         LSTG_LEASE_M,
         LSTG_LEASE_AMT,

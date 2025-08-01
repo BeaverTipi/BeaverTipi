@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				}
 			});
 	});
-/* 
+
 	signupForm.addEventListener("submit", async (e) => {
 		e.preventDefault();
 
@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				}
 			});
 	});
-*/
+
 });
 
 function toggleOptionalInfo() {

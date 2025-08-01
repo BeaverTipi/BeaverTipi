@@ -261,7 +261,7 @@
 	</select>
 <select id="selectNextMbrCd">
 SELECT 'M'||TRIM(TO_CHAR(SYSDATE,'YYMM'))||TRIM(TO_CHAR(SEQ_MBR_CD.NEXTVAL,'000000'))
-FROM MEMBER
+FROM DUAL
 </select>
 
 	<insert id="insertMember">

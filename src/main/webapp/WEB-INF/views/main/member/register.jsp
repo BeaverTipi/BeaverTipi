@@ -17,7 +17,7 @@
   <div class="signup-container">
     <h2 class="signup-title">회원가입</h2>
 
-    <form:form class="signup-form" method="post" action="/member/register" modelAttribute="member">
+    <form:form class="signup-form" enctype="multipart/form-data" method="post" action="/member/register" modelAttribute="member">
       
       <!-- 양쪽 배치용 Flex -->
       <div class="form-flex-wrapper">

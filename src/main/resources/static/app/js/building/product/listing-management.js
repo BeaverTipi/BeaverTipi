@@ -65,10 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
 /* === 건물 퀵뷰 === */
 document.getElementById('buildingTableBody')
   .addEventListener('click', async (e) => {
-    e.preventDefault();
-	
     const link = e.target.closest('.building-detail-toggle');
     if (!link) return;
+    e.preventDefault();
+	
 
     const tr     = link.closest('tr');
     const bldgId = link.dataset.bldgId;

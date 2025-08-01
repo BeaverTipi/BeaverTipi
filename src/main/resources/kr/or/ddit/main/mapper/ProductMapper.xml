@@ -44,19 +44,14 @@
 		<result property="mbrCd" column="MBR_CD"/>
 </collection>
 </resultMap>
-	<insert id="insertOptionList">
-    INSERT INTO LISTING_OPTION (
-        LSTG_ID,
-        FAC_OPT_ID
-    )
-    VALUES
-    <foreach collection="list" item="opt" separator=",">
-        (
-            #{opt.lstgId},
-            #{opt.facOptId}
-        )
-    </foreach>
+<insert id="insertOptionList">
+  INSERT INTO LISTING_OPTION (LSTG_ID, FAC_OPT_ID)
+  <foreach collection="list" item="opt" separator="UNION ALL">
+    SELECT #{opt.lstgId}, #{opt.facOptId} FROM DUAL
+  </foreach>
 </insert>
+
+
 
 
     <!-- 매물 등록 -->
@@ -125,6 +120,7 @@
           , B.BLDG_ZIP_NO
           , B.BLDG_ADDR
           , B.BLDG_DTL_ADDR
+          , B.BLDG_TYPE_CODE
           , U.UNIT_ID
           , U.BLDG_ID U_BLDG_ID
           , U.RENTAL_PTY_ID U_RENTAL_PTY_ID
@@ -132,6 +128,7 @@
           , U.UNIT_DSR_SALE_AMT
           , U.UNIT_DPST_AMT
           , U.UNIT_FLR_NO
+          , U.UNIT_DTL_DESC_CN
           , U.UNIT_ROOM
           , U.MBR_CD
           , U.UNIT_CMAR

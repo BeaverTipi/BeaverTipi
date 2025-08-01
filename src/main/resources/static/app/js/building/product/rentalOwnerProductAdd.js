@@ -23,7 +23,7 @@ function toggleLeaseFields() {
 	else if (type === '003') sale.style.display = 'block';
 }
 
-// 📌 거래유형 코드(RENT/LEASE/SALE)에 따른 금액 필드 토글
+// 거래유형 코드(RENT/LEASE/SALE)에 따른 금액 필드 토글
 function toggleTradeFields() {
 	const tradeType = document.querySelector("select[name='lstgTrdTypeCode']")?.value;
 	const deposit = document.querySelector("#depositField")?.closest(".col-md-4");
@@ -47,7 +47,7 @@ function toggleTradeFields() {
 	}
 }
 
-// 📌 중개인 선택 요약 표시
+// 중개인 선택 요약 표시
 function renderSelectedBrokerSummary(selected) {
 	const countEl = document.querySelector("#brokerCount");
 	const badgeWrapper = document.querySelector("#brokerCountWrapper");
@@ -142,7 +142,7 @@ function bindAreaUnitToggle() {
 	updateExclusiveHidden();
 }
 
-// 📌 중개인 선택 완료 버튼 클릭
+// 중개인 선택 완료 버튼 클릭
 function handleBrokerConfirm() {
 	const brokerCheckboxes = document.querySelectorAll(".broker-check");
 	const selected = Array.from(brokerCheckboxes)
@@ -182,7 +182,7 @@ function handleBrokerConfirm() {
 	if (modal) modal.hide();
 }
 
-// 📌 전체선택 체크박스 상태 반영
+// 전체선택 체크박스 상태 반영
 function updateSelectAllCheckbox() {
 	const checkboxes = document.querySelectorAll(".broker-check");
 	const allChecked = Array.from(checkboxes).every(cb => cb.checked);
@@ -190,7 +190,7 @@ function updateSelectAllCheckbox() {
 	if (selectAll) selectAll.checked = allChecked;
 }
 
-// 📌 중개인 카드 클릭 시 체크 토글
+// 중개인 카드 클릭 시 체크 토글
 function bindBrokerCardToggle() {
 	document.querySelectorAll(".broker-card").forEach(card => {
 		card.addEventListener("click", (e) => {
@@ -204,7 +204,7 @@ function bindBrokerCardToggle() {
 	});
 }
 
-// 📌 전체선택/개별선택 바인딩
+// 전체선택/개별선택 바인딩
 function bindSelectAllCheckbox() {
 	const selectAll = document.querySelector("#selectAllBrokers");
 	if (!selectAll) return;
@@ -218,7 +218,7 @@ function bindSelectAllCheckbox() {
 	});
 }
 
-// 📌 모달 열기 버튼
+// 모달 열기 버튼
 document.querySelector("#openBrokerModalBtn")?.addEventListener("click", function(e) {
 	const addressInput = document.querySelector("#address");
 	const address = addressInput?.value?.trim();
@@ -238,7 +238,7 @@ document.querySelector("#openBrokerModalBtn")?.addEventListener("click", functio
 	});
 });
 
-// 📌 주소로 중개인 목록을 불러와 렌더링
+// 주소로 중개인 목록을 불러와 렌더링
 function loadNearbyBrokers(address) {
 	return new Promise((resolve, reject) => {
 		kakao.maps.load(() => {
@@ -252,7 +252,7 @@ function loadNearbyBrokers(address) {
 				const lat = result[0].y;
 				const lng = result[0].x;
 
-				// 📌 위경도 hidden 필드 삽입
+				// 위경도 hidden 필드 삽입
 				const hiddenFields = document.querySelector("#hiddenLocationFields");
 				if (hiddenFields) {
 					hiddenFields.innerHTML = `
@@ -261,7 +261,7 @@ function loadNearbyBrokers(address) {
           `;
 				}
 
-				// 📌 중개인 검색 요청
+				// 중개인 검색 요청
 				axios.post("/ajax/building/broker/list", { lat, lng, radiusKm: 5.0 })
 					.then(res => {
 						const brokers = res.data;
@@ -308,10 +308,10 @@ function loadNearbyBrokers(address) {
 
 						listArea.innerHTML = html;
 
-						// 📌 카드 클릭 시 체크박스 토글
+						// 카드 클릭 시 체크박스 토글
 						bindBrokerCardToggle();
 
-						// 📌 전체선택 체크박스 바인딩
+						// 전체선택 체크박스 바인딩
 						bindSelectAllCheckbox();
 
 						resolve();
@@ -322,7 +322,7 @@ function loadNearbyBrokers(address) {
 	});
 }
 
-// 📌 선택완료 버튼 이벤트 바인딩
+// 선택완료 버튼 이벤트 바인딩
 document.querySelector("#confirmBrokerSelection")?.addEventListener("click", handleBrokerConfirm);
 document.querySelector("#myBuildingModal").addEventListener("show.bs.modal", function() {
 	axios.get("/ajax/building/myList") // API 엔드포인트는 실제 URI에 맞게
@@ -356,7 +356,7 @@ document.querySelector("#myBuildingModal").addEventListener("show.bs.modal", fun
 			document.querySelector("#myBuildingListArea").innerHTML = `<p class="text-danger">불러오기 실패</p>`;
 		});
 });
-// 📌 내 건물 모달 제어 스크립트
+// 내 건물 모달 제어 스크립트
 
 function loadMyBuildings() {
 	const listArea = document.querySelector("#myBuildingListArea");
@@ -380,12 +380,12 @@ function loadMyBuildings() {
 			});
 			listArea.innerHTML = html;
 
-			// ✅ 바인딩은 이 시점에서 반드시 필요함
+			// 바인딩은 이 시점에서 반드시 필요함
 			document.querySelectorAll("#myBuildingListArea .list-group-item").forEach(btn => {
 				btn.addEventListener("click", () => {
 					const bldgId = btn.dataset.bldgId;
 					if (!bldgId) return alert("건물 ID가 없습니다.");
-					showUnitStep(bldgId); // ← 이 함수는 반드시 글로벌 범위에 있어야 함
+					showUnitStep(bldgId);
 				});
 			});
 		})
@@ -409,14 +409,17 @@ function showUnitStep(bldgId) {
 	axios.get(`/ajax/building/${bldgId}/units`).then(res => {
 		const buildings = res.data;
 		const unitArea = document.querySelector("#myUnitListArea");
-
-		// 🔥 unitCache에 flatten된 유닛 리스트 저장하면서 건물 주소 정보 포함
+		console.log("빌딩이둥 :  ", buildings);
+		// UnitCache에 flatten된 유닛 리스트 저장하면서 건물 주소 정보 포함
 		unitCache = buildings.flatMap(b =>
 			(b.unitList || []).map(u => ({
 				...u,
 				bldgAddr: b.bldgAddr,
 				bldgDtlAddr: b.bldgDtlAddr,
 				bldgNm: b.bldgNm,
+				bldgTypeCode: b.bldgTypeCode,
+				bldgZipNo: b.bldgZipNo,
+
 			}))
 		);
 		if (unitCache.length === 0) {
@@ -429,7 +432,7 @@ function showUnitStep(bldgId) {
 			return aEmpty === bEmpty ? 0 : aEmpty ? -1 : 1;
 		});
 
-		// 🔥 유닛 버튼 렌더링
+		// 유닛 버튼 렌더링
 		let html = '<div class="list-group">';
 		unitCache.forEach(u => {
 			html += `
@@ -465,13 +468,25 @@ if (backBtn) {
 	});
 }
 function applySelectedUnit(unitId) {
+	const bldgToLstgMap = {
+		"001": { lstg1: "003", lstg2: "008" }, // 아파트 → 공동주택-아파트
+		"002": { lstg1: "001", lstg2: "006" }, // 빌라 → 다세대-빌라/연립
+		"003": { lstg1: "001", lstg2: "003" }, // 오피스텔
+		"004": { lstg1: "001", lstg2: "004" }, // 단독주택
+		"005": { lstg1: "004", lstg2: "009" }, // 상가
+		"006": { lstg1: "002", lstg2: "007" }, // 오피스빌딩 → 사무실
+		"007": { lstg1: "004", lstg2: "009" }, // 상점 → 상가
+		"008": null,                            // 기타 → 선택 안함
+		"009": { lstg1: "001", lstg2: "001" }   // 다세대주택
+	};
+
 	const unit = unitCache.find(u => u.unitId === unitId);
 	if (!unit) {
 		Swal.fire("오류", "해당 유닛 정보를 찾을 수 없습니다.", "error");
 		return;
 	}
 	console.log("시밤바들아 unit이다 ", unit);
-	// 📌 주소 필드
+	// 주소 필드
 	const addrInput = document.querySelector("input[name='lstgAdd']");
 	if (addrInput) addrInput.value = unit.bldgAddr || "";
 
@@ -480,12 +495,12 @@ function applySelectedUnit(unitId) {
 
 	const postalInput = document.querySelector("input[name='lstgPostal']");
 	if (postalInput) postalInput.value = unit.bldgZipNo || "";
-
-	// 📌 층/호수 → 상세주소2 (lstgRoomNum)
+	console.log(unit.bldgZipCode);
+	// 층/호수 → 상세주소2 (lstgRoomNum)
 	const roomNumInput = document.querySelector("input[name='lstgRoomNum']");
 	if (roomNumInput) roomNumInput.value = unit.unitRoom || "";
 
-	// 📌 공급면적
+	// 공급면적
 	const grInput = document.querySelector("input[name='lstgGrArea']");
 	if (grInput) grInput.value = unit.unitCmar || "";
 
@@ -495,7 +510,7 @@ function applySelectedUnit(unitId) {
 		grView.value = py;
 	}
 
-	// 📌 전용면적
+	// 전용면적
 	const exInput = document.querySelector("input[name='lstgExArea']");
 	if (exInput) exInput.value = unit.unitXuar || "";
 
@@ -505,11 +520,11 @@ function applySelectedUnit(unitId) {
 		exView.value = py;
 	}
 
-	// 📌 해당 층수
+	// 해당 층수
 	const floorInput = document.querySelector("input[name='lstgFloor']");
 	if (floorInput) floorInput.value = unit.unitFlrNo || "";
 
-	// 📌 보증금
+	// 보증금
 	const dpstInput = document.querySelector("input[name='lstgLeaseAmt']");
 	const depositAmtView = document.querySelector("#depositAmtView");
 	if (dpstInput && depositAmtView) {
@@ -520,7 +535,7 @@ function applySelectedUnit(unitId) {
 		depositAmtView.value = formatWithComma(convertFromWon(raw, displayUnit));
 	}
 
-	// 📌 월세
+	// 월세
 	const rentInput = document.querySelector("input[name='lstgLeaseM']");
 	const mnthRentAmtView = document.querySelector("#mnthRentAmtView");
 
@@ -532,7 +547,7 @@ function applySelectedUnit(unitId) {
 		mnthRentAmtView.value = formatWithComma(convertFromWon(raw, displayUnit));
 	}
 
-	// 📌 전세가
+	// 전세가
 	const saleInput = document.querySelector("input[name='lstgLease']");
 	const jeonseAmtView = document.querySelector("#jeonseAmtView");
 	if (saleInput && jeonseAmtView) {
@@ -545,13 +560,38 @@ function applySelectedUnit(unitId) {
 	const lstgTitle = document.querySelector("input[name='lstgNm']");
 	if (lstgTitle) lstgTitle.value = unit.bldgNm || "";
 
-	// 📌 모달 닫기
+	const lstgDecs = document.querySelector("textarea[name='lstgDtlDst']");
+	if (lstgDecs) lstgDecs.value = unit.unitDtlDescCn || "";
+
+
+	const mapping = bldgToLstgMap[unit.bldgTypeCode]; // 예: { lstg1: "001", lstg2: "004" }
+
+	if (mapping) {
+		// 📌 1차 유형 라디오 선택
+		const type1Radio = document.querySelector(`input[name='lstgTypeCode1'][value='${mapping.lstg1}']`);
+		if (type1Radio) {
+			type1Radio.checked = true;
+			type1Radio.dispatchEvent(new Event("change")); // → AJAX로 lstgTypeCode2 라디오 생성됨
+		}
+
+		const trySelectLstg2 = setInterval(() => {
+			const lstg2Radio = document.querySelector(`input[name="lstgTypeCode2"][value="${mapping.lstg2}"]`);
+			if (lstg2Radio) {
+				lstg2Radio.checked = true;
+				clearInterval(trySelectLstg2);
+			}
+		}, 100);
+	}
+
+
+	// 모달 닫기
 	const modalEl = document.querySelector("#myBuildingModal");
 	if (modalEl) {
 		const modal = bootstrap.Modal.getInstance(modalEl);
 		if (modal) modal.hide();
 	}
-}// ✅ 현재 단위 상태 저장
+}
+// 현재 단위 상태 저장
 const unitState = {
 	jeonse: "억",
 	deposit: "만원",
@@ -559,7 +599,7 @@ const unitState = {
 	sale: "억"
 };
 
-// ✅ 단위별 원단위 변환 함수
+// 단위별 원단위 변환 함수
 function convertToWon(value, unit) {
 	if (!value) return "";
 	const raw = value.toString().replace(/,/g, ""); // 콤마 제거
@@ -573,7 +613,7 @@ function convertToWon(value, unit) {
 	}
 }
 
-// ✅ 원단위 값을 해당 단위로 환산 (보기용)
+// 원단위 값을 해당 단위로 환산 (보기용)
 function convertFromWon(value, unit) {
 	const num = Number(value);
 	if (isNaN(num)) return "";
@@ -585,19 +625,19 @@ function convertFromWon(value, unit) {
 	}
 }
 
-// ✅ 콤마 처리
+// 콤마 처리
 function formatWithComma(value) {
 	const num = Number(value);
 	if (isNaN(num)) return "";
 	return num.toLocaleString();
 }
 
-// ✅ 입력값 콤마 제거
+// 입력값 콤마 제거
 function parseCommaNumber(value) {
 	return value.replace(/,/g, "");
 }
 
-// ✅ 라벨 업데이트
+// 라벨 업데이트
 function updateUnitLabel(type, unit) {
 	const label = document.querySelector(`#${type}Label`);
 	if (label) {
@@ -606,7 +646,7 @@ function updateUnitLabel(type, unit) {
 	}
 }
 
-// ✅ 단위 토글 버튼 핸들러
+// 단위 토글 버튼 핸들러
 function toggleUnit(type) {
 	const units = ["억", "만원", "원"];
 	const current = unitState[type];
@@ -614,7 +654,7 @@ function toggleUnit(type) {
 	const nextUnit = units[nextIndex];
 	unitState[type] = nextUnit;
 
-	// ✅ 다음 단위 기준으로 버튼 텍스트 설정
+	// 다음 단위 기준으로 버튼 텍스트 설정
 	const nextNextUnit = units[(nextIndex + 1) % units.length];
 	const btn = document.querySelector(`#${type}UnitBtn`);
 	if (btn) btn.textContent = `${nextNextUnit} ▼`;
@@ -630,7 +670,7 @@ function toggleUnit(type) {
 	updateUnitLabel(type, nextUnit);
 }
 
-// ✅ 입력 시 원단위로 변환 후 hidden input에 저장
+// 입력 시 원단위로 변환 후 hidden input에 저장
 function handleVisibleInputChange(type) {
 	const visibleInput = document.querySelector(`#${type}AmtView`);
 	const hiddenInput = document.querySelector(`#${type}Amt`);
@@ -644,7 +684,7 @@ function handleVisibleInputChange(type) {
 	visibleInput.value = formatWithComma(raw); // 콤마 다시 붙이기
 }
 
-// ✅ 필드와 이벤트 바인딩 연결
+// 필드와 이벤트 바인딩 연결
 function bindUnitInputSync(type) {
 	const visibleInput = document.querySelector(`#${type}AmtView`);
 	if (visibleInput) {
@@ -662,36 +702,36 @@ function updateUnitButtonText(type) {
 	}
 }
 function bindOptionSelectAllCheckbox() {
-  document.querySelectorAll(".select-all").forEach(selectAllCheckbox => {
-    const container = selectAllCheckbox.closest(".form-group");
-    if (!container) return;
+	document.querySelectorAll(".select-all").forEach(selectAllCheckbox => {
+		const container = selectAllCheckbox.closest(".form-group");
+		if (!container) return;
 
-    const optionCheckboxes = container.querySelectorAll("input.option[type='checkbox']");
+		const optionCheckboxes = container.querySelectorAll("input.option[type='checkbox']");
 
-    // 전체선택 → 옵션 전체 체크
-    selectAllCheckbox.addEventListener("change", function () {
-      optionCheckboxes.forEach(cb => {
-        cb.checked = this.checked;
-      });
-    });
+		// 전체선택 → 옵션 전체 체크
+		selectAllCheckbox.addEventListener("change", function() {
+			optionCheckboxes.forEach(cb => {
+				cb.checked = this.checked;
+			});
+		});
 
-    // 개별 체크 시 → 전체선택 체크 여부 업데이트
-    optionCheckboxes.forEach(cb => {
-      cb.addEventListener("change", () => {
-        const total = optionCheckboxes.length;
-        const checkedCount = container.querySelectorAll("input.option[type='checkbox']:checked").length;
-        selectAllCheckbox.checked = total === checkedCount;
-      });
-    });
+		// 개별 체크 시 → 전체선택 체크 여부 업데이트
+		optionCheckboxes.forEach(cb => {
+			cb.addEventListener("change", () => {
+				const total = optionCheckboxes.length;
+				const checkedCount = container.querySelectorAll("input.option[type='checkbox']:checked").length;
+				selectAllCheckbox.checked = total === checkedCount;
+			});
+		});
 
-    // 최초 로딩 시 전체선택 체크 여부 설정
-    const initiallyChecked = container.querySelectorAll("input.option[type='checkbox']:checked").length;
-    selectAllCheckbox.checked = optionCheckboxes.length > 0 && initiallyChecked === optionCheckboxes.length;
-  });
+		// 최초 로딩 시 전체선택 체크 여부 설정
+		const initiallyChecked = container.querySelectorAll("input.option[type='checkbox']:checked").length;
+		selectAllCheckbox.checked = optionCheckboxes.length > 0 && initiallyChecked === optionCheckboxes.length;
+	});
 }
 
 
-// ✅ 페이지 로드 시 초기 바인딩
+// 페이지 로드 시 초기 바인딩
 document.addEventListener("DOMContentLoaded", () => {
 	toggleLeaseFields?.(); // 거래유형 필드 토글 함수 있으면 호출
 	toggleTradeFields?.(); // 거래구분 필드 토글 함수 있으면 호출
@@ -705,7 +745,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		updateUnitButtonText(type);
 	});
 
-	// 📌 초기화 시 필드 토글 + 이벤트 바인딩
+	// 초기화 시 필드 토글 + 이벤트 바인딩
 	toggleLeaseFields();
 	toggleTradeFields();
 
@@ -716,92 +756,97 @@ document.addEventListener("DOMContentLoaded", () => {
 	bindOptionSelectAllCheckbox();
 	bindAreaUnitToggle();
 	const type1Radios = document.querySelectorAll("input[name='lstgTypeCode1']");
-const type2Group = document.querySelector("#lstgTypeCode2Group");
+	const type2Group = document.querySelector("#lstgTypeCode2Group");
 
-type1Radios.forEach(radio => {
-  radio.addEventListener("change", function () {
-    const parentCodeValue = this.value;
+	type1Radios.forEach(radio => {
+		radio.addEventListener("change", function() {
+			const parentCodeValue = this.value;
 
-    axios.get("/ajax/building/product/selectLstg2List", {
-      params: {
-        lstg1: parentCodeValue
-      }
-    })
-    .then(res => {
-      const data = res.data.filter(c => c.codeValue != '000');
+			axios.get("/ajax/building/product/selectLstg2List", {
+				params: {
+					lstg1: parentCodeValue
+				}
+			})
+				.then(res => {
+					const data = res.data.filter(c => c.codeValue != '000');
 
-      if (!Array.isArray(data) || data.length === 0) {
-        type2Group.innerHTML = '<p class="text-muted">해당 유형에 대한 상세 유형이 없습니다.</p>';
-        type2Group.hidden = false;
-        return;
-      }
-	
-      // 📌 라디오 버튼 HTML 동적 생성
-      let html = '';
-      data.forEach(code => {
-        html += `
+					if (!Array.isArray(data) || data.length === 0) {
+						type2Group.innerHTML = '<p class="text-muted">해당 유형에 대한 상세 유형이 없습니다.</p>';
+						type2Group.hidden = false;
+						return;
+					}
+
+					// 라디오 버튼 HTML 동적 생성
+					let html = '';
+					data.forEach(code => {
+						html += `
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="lstgTypeCode2" id="lstg2_${code.codeValue}" value="${code.codeValue}">
             <label class="form-check-label" for="lstg2_${code.codeValue}">${code.codeName}</label>
           </div>
         `;
-      });
+					});
 
-      type2Group.innerHTML = html;
-      type2Group.hidden = false;
-    })
-    .catch(() => {
-      type2Group.innerHTML = '<p class="text-danger">상세 유형 정보를 불러오지 못했습니다.</p>';
-      type2Group.hidden = false;
-    });
-  });
-});
+					type2Group.innerHTML = html;
+					type2Group.hidden = false;
+				})
+				.catch(() => {
+					type2Group.innerHTML = '<p class="text-danger">상세 유형 정보를 불러오지 못했습니다.</p>';
+					type2Group.hidden = false;
+				});
+		});
+	});
 
-  	
-	const submitBtn = document.querySelector("#submitBtn");
 
-	if (!submitBtn) return;
+	const form = document.querySelector("#product-form");
 
-	submitBtn.addEventListener("click", function(e) {
+	form.addEventListener("submit", function(e) {
+		e.preventDefault(); // 항상 막고 시작
+
+		const lstgRoomNum = document.querySelector("input[name='lstgRoomNum']")?.value?.trim();
+		const lstgTypeSale = document.querySelector("#lstgTypeSale")?.value;
+		const lstgNm = document.querySelector("input[name='lstgNm']")?.value?.trim();
+		const lstgPostal = document.querySelector("input[name='lstgPostal']")?.value?.trim();
+
 		const selectedBrokerInputs = document.querySelectorAll("input[name='brokerIds']");
-		const imageInput = document.getElementById("imageUpload");
+		const imageInput = document.querySelector("#imageUpload");
 		const files = imageInput?.files || [];
 
+		// 필수: 호실 번호
+		if (!lstgRoomNum) {
+			return Swal.fire({ icon: "warning", title: "호실 번호 입력", text: "호실 번호는 필수입니다." });
+		}
+
+		// 필수: 거래 유형
+		if (!lstgTypeSale || lstgTypeSale === "000") {
+			return Swal.fire({ icon: "warning", title: "거래 유형 선택", text: "거래 유형을 선택해주세요." });
+		}
+
+		// 필수: 매물명
+		if (!lstgNm) {
+			return Swal.fire({ icon: "warning", title: "매물명 입력", text: "매물명을 입력해주세요." });
+		}
+
+		// 필수: 주소 (우편번호)
+		if (!lstgPostal) {
+			return Swal.fire({ icon: "warning", title: "주소 입력", text: "주소 검색을 통해 우편번호를 입력해주세요." });
+		}
+
+		// 필수: 중개인 1명 이상
 		if (selectedBrokerInputs.length === 0) {
-			e.preventDefault();
-			Swal.fire({
-				icon: "warning",
-				title: "중개인 선택 필수",
-				text: "매물을 등록하려면 최소 1명의 중개인을 선택해야 합니다.",
-				confirmButtonText: "확인",
-			});
-			return;
+			return Swal.fire({ icon: "warning", title: "중개인 선택 필수", text: "최소 1명의 중개인을 선택해야 합니다." });
 		}
 
+		// 필수: 사진 최소 5장, 최대 10장
 		if (files.length < 5) {
-			e.preventDefault();
-			Swal.fire({
-				icon: "warning",
-				title: "사진 부족",
-				text: "사진은 최소 5장 이상 등록해야 합니다.",
-				confirmButtonText: "확인",
-			});
-			return;
+			return Swal.fire({ icon: "warning", title: "사진 부족", text: "사진은 최소 5장 이상 등록해야 합니다." });
 		}
-
 		if (files.length > 10) {
-			e.preventDefault();
-			Swal.fire({
-				icon: "warning",
-				title: "사진 초과",
-				text: "사진은 최대 10장까지만 등록할 수 있습니다.",
-				confirmButtonText: "확인",
-			});
-			return;
+			return Swal.fire({ icon: "warning", title: "사진 초과", text: "사진은 최대 10장까지만 등록할 수 있습니다." });
 		}
 
-		// ✅ 모든 조건 통과 시 form 자동 제출
-		e.target.closest("form").submit();
+		// ✅ 전부 통과했을 때 수동 제출
+		form.submit();
 	});
 
 });
