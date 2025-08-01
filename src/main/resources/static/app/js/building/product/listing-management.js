@@ -1,102 +1,95 @@
 document.addEventListener('DOMContentLoaded', () => {
-	const resetBtn = document.querySelector('#resetBtn');
-	const tableBody = document.querySelector('#listingTableBody')
-	// 초기화 버튼
-	resetBtn.addEventListener('click', () => {
-		const form = resetBtn.closest('form');
-		form.querySelectorAll('input[type="text"], input[type="number"], select').forEach(el => {
-			el.value = '';
-		});
-		form.querySelector('input[name="page"]').value = "1";
-		form.submit();
-	});
+  // === 초기화 버튼 ===
+  const resetBtn = document.querySelector('#resetBtn');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      const form = resetBtn.closest('form');
+      form.querySelectorAll('input[type="text"], input[type="number"], select').forEach(el => {
+        el.value = '';
+      });
+      form.querySelector('input[name="page"]').value = "1";
+      form.submit();
+    });
+  }
 
-	// 호수 리스트 토글
-	tableBody.addEventListener('click', async (e) => {
-		if (!e.target.classList.contains('building-name-link')) return;
-		e.preventDefault();
+  // === 매물 퀵뷰(상세 JSP) ===
+  const listingTableBody = document.getElementById('listingTableBody');
+  if (listingTableBody) {
+    listingTableBody.addEventListener('click', async (e) => {
+      const link = e.target.closest('.building-name-link');
+      if (!link) return;
+      e.preventDefault();
 
-		const row = e.target.closest('tr');
-		const address = row.dataset.address;
-		const safeAddress = address.replace(/[^\w]/g, '').slice(0, 40);
-		const detailRowId = `detail-${safeAddress}`;
-		const existingDetailRow = document.getElementById(detailRowId);
+      const row = link.closest('tr');
+      const lstgId = link.dataset.lstgId;
+      const detailRowId = `listing-detail-${lstgId}`;
+      const existingDetailRow = document.getElementById(detailRowId);
 
-		if (existingDetailRow) {
-			existingDetailRow.remove();
-			return;
-		}
+      // 이미 열려있으면 닫기
+      if (existingDetailRow) {
+        existingDetailRow.remove();
+        return;
+      }
 
-		const detailRow = document.createElement('tr');
-		detailRow.setAttribute('id', detailRowId);
+      // 단일 오픈: 열려있는 퀵뷰 닫기
+      listingTableBody.querySelectorAll('.listing-quick-detail-row').forEach(r => r.remove());
 
-		const td = document.createElement('td');
-		td.setAttribute('colspan', '8');
-		td.className = 'bg-light border-top border-bottom text-secondary';
-		td.innerHTML = '<div class="py-2">불러오는 중...</div>';
+      // 새 퀵뷰 row 삽입
+      const detailRow = document.createElement('tr');
+      detailRow.setAttribute('id', detailRowId);
+      detailRow.className = 'listing-quick-detail-row';
 
-		detailRow.appendChild(td);
-		row.insertAdjacentElement('afterend', detailRow);
+      const detailTd = document.createElement('td');
+      detailTd.colSpan = row.children.length;
+      detailTd.innerHTML = '<div class="text-muted py-2">불러오는 중…</div>';
+      detailRow.appendChild(detailTd);
+      row.insertAdjacentElement('afterend', detailRow);
 
-		try {
-			const response = await axios.post(`/ajax/building/listing/rooms`, { address });
-			const list = response.data;
+      try {
+        const html = await fetch(`/building/product/detail/quick/${lstgId}`).then(r => r.text());
+        detailTd.innerHTML = html;
+      } catch (err) {
+        console.error(err);
+        detailTd.innerHTML = '<div class="text-danger py-2">상세 정보를 불러오는 데 실패했습니다.</div>';
+      }
+    });
+  }
 
-			if (Array.isArray(list) && list.length > 0) {
-				td.classList.remove('text-secondary');
-				td.innerHTML = list.map(room => `
-          <div class="mb-2 px-3 py-2 border rounded bg-white shadow-sm">
-            <div><strong>호수:</strong> ${room.lstgRoomNum || '-'}</div>
-            <div>
-              <strong>전세금:</strong> ${room.lstgLease || '-'} &nbsp; 
-              <strong>월세:</strong> ${room.lstgLeaseM || '-'} &nbsp; 
-              <strong>보증금:</strong> ${room.lstgLeaseAmt || '-'}
-            </div>
-          </div>
-        `).join('');
-			} else {
-				td.innerHTML = '<div class="py-2 text-muted">해당 주소의 다른 호수가 없습니다.</div>';
-			}
-		} catch (err) {
-			console.error(err);
-			td.innerHTML = '<div class="py-2 text-danger">호수 정보를 불러오는 중 오류가 발생했습니다.</div>';
-		}
-	});
-/* === 건물 퀵뷰 === */
-document.getElementById('buildingTableBody')
-  .addEventListener('click', async (e) => {
-    const link = e.target.closest('.building-detail-toggle');
-    if (!link) return;
-    e.preventDefault();
-	
+  // === 건물 퀵뷰(상세 JSP) ===
+  const buildingTableBody = document.getElementById('buildingTableBody');
+  if (buildingTableBody) {
+    buildingTableBody.addEventListener('click', async (e) => {
+      const link = e.target.closest('.building-detail-toggle');
+      if (!link) return;
+      e.preventDefault();
 
-    const tr     = link.closest('tr');
-    const bldgId = link.dataset.bldgId;
+      const tr = link.closest('tr');
+      const openRow = buildingTableBody.querySelector('.quick-detail-row');
+      if (openRow) {
+        if (tr.nextElementSibling === openRow) {
+          openRow.remove();
+          return;
+        } else {
+          openRow.remove();
+        }
+      }
 
-    /* 열려 있는 퀵뷰 전부 제거 */
-    document.querySelectorAll('#buildingTableBody .quick-detail-row').forEach(r => r.remove());
+      const bldgId = link.dataset.bldgId;
+      const detailTr = document.createElement('tr');
+      detailTr.className = 'quick-detail-row';
+      const detailTd = document.createElement('td');
+      detailTd.colSpan = 6;
+      detailTd.innerHTML = '<div class="text-muted py-2">불러오는 중…</div>';
+      detailTr.appendChild(detailTd);
+      tr.after(detailTr);
 
-    /* 같은 행 다시 클릭 → 토글 닫기 */
-    if (tr.nextElementSibling && tr.nextElementSibling.classList.contains('quick-detail-row')) return;
-
-    /* 자리 마련 */
-    const detailTr      = document.createElement('tr');
-    detailTr.className  = 'quick-detail-row';
-    const detailTd      = document.createElement('td');
-    detailTd.colSpan    = 6;            // <th> 개수
-    detailTd.innerHTML  = '<div class="text-muted py-2">불러오는 중…</div>';
-    detailTr.appendChild(detailTd);
-    tr.after(detailTr);
-
-    /* Ajax 호출 */
-    try {
-      const html = await fetch(`${ctx}/building/managed/detail/quick/${bldgId}`).then(r => r.text());
-      detailTd.innerHTML = html;
-    } catch (err) {
-      console.error(err);
-      detailTd.innerHTML = '<div class="text-danger py-2">상세 정보를 불러오는 데 실패했습니다.</div>';
-    }
-  });
-
-
+      try {
+        const html = await fetch(`/building/managed/detail/quick/${bldgId}`).then(r => r.text());
+        detailTd.innerHTML = html;
+      } catch (err) {
+        console.error(err);
+        detailTd.innerHTML = '<div class="text-danger py-2">상세 정보를 불러오는 데 실패했습니다.</div>';
+      }
+    });
+  }
 });
