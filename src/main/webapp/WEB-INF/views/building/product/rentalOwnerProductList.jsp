@@ -46,21 +46,14 @@
                   </div>
 
                   <div class="search-item">
-                    <label>상태</label>
+                    <label>주소</label>
                     <form:select path="searchStatus" cssClass="form-control">
                       <c:forEach var="code" items="${statusCodeList}">
                         <form:option value="${code.codeValue}">${code.codeName}</form:option>
                       </c:forEach>
                     </form:select>
                     </div>
-                  <div class="search-item ">
-                    <label>유형</label>
-                    <form:select path="searchType" id="searchTypeSelect" cssClass="form-control">
-                      <c:forEach var="typeCode" items="${typeSaleCodeList}">
-                        <form:option value="${typeCode.codeValue}">${typeCode.codeName}</form:option>
-                      </c:forEach>
-                    </form:select>
-                  </div>
+                 
                   <div class="search-item  full-width">
                     <label>등록 기간</label>
                     <div class="d-flex">
@@ -89,7 +82,7 @@
                   <th>순번</th>
                   <th>건물명</th>
                   <th>주소</th>
-                  <th>유형</th>
+                  
                   <th>층수</th>
                   <th>호실수</th>
                 </tr>
@@ -115,11 +108,10 @@
 			               class="building-infom-link"
 			               data-bldg-id="${building.bldgId}"
 			               data-address="${building.bldgAddr}${building.bldgDtlAddr}">
-			              [호수 보기]
-			            </a>
+			          </a>
 			          </td>
 			          <td>${building.bldgAddr} ${building.bldgDtlAddr}</td>
-			          <td>${building.bldgTypeCode}</td>
+			          
 			          <td>${building.bldgFlrCnt}</td>
 			          <td>${building.bldgUnitCnt}</td>
 			        </tr>
@@ -214,7 +206,10 @@
                       <tr class="listing-row" data-address="${listing.lstgAdd}">
                         <td>${status.index + 1}</td>
                         <td>
-                          <a href="#" class="building-name-link font-weight-bold text-primary">${listing.lstgNm}</a>
+                          <a href="#" class="building-name-link font-weight-bold text-primary" data-lstg-id="${listing.lstgId}">
+								  ${listing.lstgNm}
+						</a>
+
                         </td>
                         <td>
                           <c:choose>
@@ -241,6 +236,8 @@
                 </c:choose>
               </tbody>
             </table>
+            <div id="listingQuickView" style="display:none;"></div>
+            
           </div>
           <div class="pagination-wrapper mt-4">
             <nav aria-label="Page navigation">
@@ -269,5 +266,7 @@
   }
 </script>
 <script src="${pageContext.request.contextPath}/app/js/building/product/listing-management.js"></script>
+
+
 </body>
 </html>
