@@ -93,7 +93,7 @@ function fetchPdfOrImage(file) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         canvas.width = 1;
         canvas.height = 1;
-        Swal.fire({ // alert -> Swal.fire
+        Swal.fire({
             icon: 'info',
             title: '알림',
             text: '미리보기를 지원하지 않는 파일 형식입니다.',
@@ -132,7 +132,7 @@ function fetchPdf(fileId) {
     })
     .catch(err => {
         console.error("PDF 로딩 오류:", err);
-        Swal.fire({ // alert -> Swal.fire
+        Swal.fire({
             icon: 'error',
             title: '오류',
             text: 'PDF 미리보기 중 오류가 발생했습니다.',
@@ -178,7 +178,7 @@ function renderImage(fileId) {
         isRendering = false;
     };
     img.onerror = () => {
-        Swal.fire({ // alert -> Swal.fire
+        Swal.fire({
             icon: 'error',
             title: '오류',
             text: '이미지 로드 실패',
@@ -215,10 +215,331 @@ function updatePageIndicator() {
     }
 }
 
-let listingGalleryImages = []; // 매물 갤러리 이미지 URL 저장 배열
-let currentGalleryIndex = 0;   // 현재 보고 있는 이미지 인덱스
+// =====================================================================================================
+// 매물 상세 모달 관련 함수 (listRenderer.js의 로직을 userList.js에 맞춰 수정)
+// =====================================================================================================
 
-// window.openDetailModal 함수: 매물 상세 정보를 불러와 모달을 띄우는 핵심 함수
+// 매물 갤러리 이미지 URL 저장 배열 (listRenderer.js에서 사용)
+let listingGalleryImages = [];
+// 현재 보고 있는 이미지 인덱스 (listRenderer.js에서 사용)
+let currentGalleryIndex = 0;
+
+// listRenderer.js의 getDealType 함수 복사
+const getDealType = (code) => ({
+    '001': '전세',
+    '002': '월세',
+    '003': '매매'
+}[code] || '미정');
+
+// listRenderer.js의 getDepositText 함수 복사
+const getDepositText = (item) => {
+    const type = String(item.lstgTypeSale);
+    const lease = item.lstgLease || 0;
+    const leaseM = item.lstgLeaseM || 0;
+    const leaseAmt = item.lstgLeaseAmt || 0;
+
+    const format = (num) => !isNaN(num) ? Math.round(Number(num)).toLocaleString() + '원' : '-';
+
+    switch (type) {
+        case '001':
+            return `전세금: ${format(lease)}`;
+        case '002':
+            return `보증금: ${format(leaseAmt)} / 월세: ${format(leaseM)}`;
+        case '003':
+            return `매매가: ${format(leaseAmt)}`;
+        default:
+            return '-';
+    }
+};
+
+// listRenderer.js의 renderFacilityOptions 함수 복사 (facilityOptionList 대신 facOptions 사용)
+const renderFacilityOptions = (options = []) => {
+    if (!Array.isArray(options) || options.length === 0) return '<p>선택된 옵션 없음</p>';
+
+    return `
+    <ul class="facility-options" style="list-style: none; padding: 0;">
+        ${options.map(opt => `
+          <li style="display: inline-block; margin-right: 15px; background: #e9ecef; padding: 5px 10px; border-radius: 5px; margin-bottom: 5px;"><strong>${opt.facOptNm}</strong></li>
+        `).join('')}
+      </ul>
+      `;
+};
+
+// userList.js의 renderImageGallery 함수 수정
+const renderImageGallery = (fileList) => {
+    const fallback = `${contextPath}/volt/assets/img/illustrations/no-image.png`;
+
+    let imageUrls = [];
+    if (fileList && Array.isArray(fileList) && fileList.length > 0) {
+        fileList.sort((a, b) => (a.fileOrd || 0) - (b.fileOrd || 0));
+        fileList.forEach(file => {
+            imageUrls.push(file.filePathUrl);
+        });
+    }
+
+    listingGalleryImages = imageUrls;
+
+    const totalImages = imageUrls.length;
+    const thumbnailsToShow = imageUrls.slice(1, 5);
+
+    const hiddenCount = totalImages > 5 ? totalImages - 5 : 0;
+
+    return `
+    <div class="image-gallery" style="
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        grid-template-rows: repeat(2, 1fr);
+        gap: 12px;
+        width: 100%;
+        height: 240px;
+    ">
+        <div class="main-image" style="
+            grid-row: 1 / span 2;
+            grid-column: 1 / 2;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            height: auto; /* 이미지 비율에 따라 높이 자동 조정 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        ">
+            <img src="${imageUrls.length > 0 ? imageUrls [0] : fallback}" alt="대표 이미지" onerror="this.src='${fallback}'"
+                 style="cursor: pointer;
+                        width: 100%;
+                        max-height: 100%; /* 최대 높이 설정 */
+                        object-fit: contain; /* 이미지 비율 유지하며 모두 보이게 */
+                        border-radius: 8px;
+                        display: block;
+                 " />
+        </div>
+
+        <div class="thumbnail-grid" style="
+            grid-row: 1 / span 2;
+            grid-column: 2 / 3;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 6px;
+            width: 100%;
+            height: 100%;
+        ">
+            ${thumbnailsToShow.map((url, i) => {
+                const isLastThumbnailSlot = (i === thumbnailsToShow.length - 1);
+
+                const thumbnailItemStyle = `
+                    border-radius: 6px;
+                    overflow: hidden;
+                    border: 1px solid #ddd;
+                    position: relative;
+                `;
+
+                const imageTag = `<img src="${url}" alt="썸네일" onerror="this.src='${fallback}'" data-index="${i + 1}"
+                                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px; cursor: pointer; display: block;" />`;
+
+                if (isLastThumbnailSlot && hiddenCount > 0) {
+                    return `
+                        <div class="image-item thumbnail-more" style="${thumbnailItemStyle}">
+                            ${imageTag}
+                            <div class="more-count" style="
+                                position: absolute; top: 0; left: 0;
+                                width: 100%; height: 100%;
+                                background-color: rgba(0, 0, 0, 0.5);
+                                color: #fff;
+                                font-weight: 600; font-size: 16px;
+                                display: flex; align-items: center; justify-content: center;
+                                pointer-events: none; border-radius: 6px; z-index: 10;
+                            ">+${hiddenCount}</div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="image-item" style="${thumbnailItemStyle}">
+                        ${imageTag}
+                    </div>
+                `;
+            }).join('')}
+
+            ${imageUrls.length === 0 ? `
+                <div class="image-item" style="
+                    border-radius: 6px; overflow: hidden; border: 1px solid #ddd;
+                ">
+                    <img src="${fallback}" alt="No Image" style="width:100%; height:100%; object-fit:cover; border-radius: 6px;">
+                </div>
+            ` : ''}
+        </div>
+    </div>
+    `;
+};
+
+
+// 갤러리 확대 모달 열기 (기존 userList.js 함수 유지)
+function openGalleryModal(index) {
+    const modal = document.getElementById('imageGalleryModal');
+    const imgEl = document.getElementById('galleryFullImage');
+    const fallback = `${contextPath}/volt/assets/img/illustrations/no-image.png`;
+
+    if (typeof index !== 'number' || index < 0 || index >= listingGalleryImages.length) {
+        index = 0;
+    }
+    currentGalleryIndex = index;
+
+    imgEl.onerror = null;
+    imgEl.src = listingGalleryImages[currentGalleryIndex] || fallback;
+    imgEl.onerror = function() {
+        if (imgEl.src !== fallback) {
+            imgEl.src = fallback;
+        }
+    };
+
+    $(modal).modal('show');
+    updateGalleryControls();
+}
+
+// 갤러리 이미지 변경 (이전/다음 버튼) (기존 userList.js 함수 유지)
+function changeGalleryImage(delta) {
+    currentGalleryIndex += delta;
+    if (currentGalleryIndex < 0) currentGalleryIndex = listingGalleryImages.length - 1;
+    if (currentGalleryIndex >= listingGalleryImages.length) currentGalleryIndex = 0;
+
+    const imgEl = document.getElementById('galleryFullImage');
+    const fallback = `${contextPath}/volt/assets/img/illustrations/no-image.png`;
+
+    imgEl.onerror = null;
+    imgEl.src = listingGalleryImages[currentGalleryIndex] || fallback;
+    imgEl.onerror = function() {
+        if (imgEl.src !== fallback) {
+            imgEl.src = fallback;
+        }
+    };
+    updateGalleryControls();
+}
+
+// 갤러리 컨트롤 (이전/다음 버튼) 가시성 업데이트 및 이벤트 바인딩 (기존 userList.js 함수 유지)
+function updateGalleryControls() {
+    const prevBtn = document.getElementById('galleryPrevBtn');
+    const nextBtn = document.getElementById('galleryNextBtn');
+
+    if (listingGalleryImages.length <= 1) {
+        if (prevBtn) $(prevBtn).hide();
+        if (nextBtn) $(nextBtn).hide();
+    } else {
+        if (prevBtn) $(prevBtn).show().off('click').on('click', (e) => { e.preventDefault(); changeGalleryImage(-1); });
+        if (nextBtn) $(nextBtn).show().off('click').on('click', (e) => { e.preventDefault(); changeGalleryImage(1); });
+    }
+}
+
+// 매물 상세 정보를 모달에 표시하는 함수 (listRenderer.js의 showDetailModal을 기반으로 수정)
+window.showDetailModal = function(data) {
+    // userList.jsp의 매물 상세 모달 ID는 listingDetailModal
+    const modal = document.getElementById('listingDetailModal');
+    const body = document.querySelector('#listingDetailModal .modal-body');
+
+    if (!modal || !body) {
+        console.error("매물 상세 모달 요소(listingDetailModal)를 찾을 수 없습니다.");
+        return;
+    }
+
+    // listRenderer.js의 brokerInfo 구조를 따름 (brokerInfo 객체 안에 brokNm 등이 있음)
+    const broker = {
+      brokNm: data.brokerInfo?.brokNm || '-',
+      reprNm: data.brokerInfo?.reprNm || '-',
+      reprTelNo: data.brokerInfo?.reprTelNo || '-'
+    };
+
+    const nameCardImageUrl = data.brokerInfo?.businessCardUrl || null;
+
+
+
+    body.innerHTML = `
+    ${renderImageGallery(data.listingFiles)} <div class="detail-modal" style="padding: 20px;">
+        <div class="header" style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px;">
+            <h2 class="listing-title" style="font-size: 1.8rem; margin-bottom: 5px; color: #333;">${data.lstgNm || '-'}</h2>
+            <p class="listing-address" style="font-size: 1rem; color: #666;">${data.lstgAdd || ''} ${data.lstgAdd2 || ''}</p>
+        </div>
+
+        <div class="deal-section" style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
+            <h4 style="font-size: 1.4rem; color: #007bff; margin-bottom: 15px;">가격 정보</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 8px; font-size: 1.1rem;"><strong>거래유형:</strong> ${getDealType(data.lstgTypeSale)}</li>
+                <li style="margin-bottom: 8px; font-size: 1.1rem;"><strong>금액:</strong> ${getDepositText(data)}</li>
+                <li style="margin-bottom: 8px; font-size: 1.1rem;"><strong>관리비:</strong> ${data.lstgMgmtPrice ? `${data.lstgMgmtPrice.toLocaleString()}원` : '없음'}</li>
+                <li style="margin-bottom: 8px; font-size: 1.1rem;">
+                  <strong>면적:</strong>
+                  <span id="area-display" data-unit="m2" data-gr-area="${data.lstgGrArea}">
+                    ${data.lstgGrArea || 0}㎡
+                  </span>
+                  <button id="toggle-unit-btn" class="btn btn-sm btn-outline-secondary ml-2">㎡ → 평</button>
+                </li>
+                <li style="margin-bottom: 8px; font-size: 1.1rem;"><strong>방 개수:</strong> ${data.lstgRoomCnt || '-'}개</li>
+                <li style="margin-bottom: 8px; font-size: 1.1rem;"><strong>층수:</strong> ${data.lstgFloor || 'N/A'}</li>
+                <li style="margin-bottom: 8px; font-size: 1.1rem;"><strong>주차:</strong> ${data.lstgParkYn === 'Y' ? '가능' : '불가능'}</li>
+            </ul>
+        </div>
+
+        <div class="option-section" style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
+            <h4 style="font-size: 1.4rem; color: #007bff; margin-bottom: 15px;">시설 옵션</h4>
+           ${renderFacilityOptions(data.facOptions)}
+        </div>
+
+        <div class="broker-section" style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
+            <h4 style="font-size: 1.4rem; color: #007bff; margin-bottom: 15px;">중개사 정보</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 8px; font-size: 1.1rem;"><strong>중개사명:</strong> ${broker.brokNm || '-'}</li>
+                <li style="margin-bottom: 8px; font-size: 1.1rem;"><strong>대표자명:</strong> ${broker.reprNm || '-'}</li>
+                <li style="margin-bottom: 8px; font-size: 1.1rem;"><strong>연락처:</strong> ${formatPhoneNumber(broker.reprTelNo) || '-'}</li>
+            </ul>
+            ${nameCardImageUrl ? `<div class="namecard-wrapper" style="margin-top: 10px; text-align: center;"><img src="${nameCardImageUrl}" alt="명함 이미지" style="max-width: 100%; height: auto; border-radius: 4px;" /></div>` : ''}
+        </div>
+
+        <div class="detail-actions" style="display: flex; justify-content: flex-end; align-items: center; padding-top: 20px; border-top: 1px solid #eee;">
+            </div>
+    </div>
+    `;
+
+    // 면적 단위 토글 버튼 이벤트 리스너 (listRenderer.js에서 가져옴)
+    $(body).off('click', '#toggle-unit-btn').on('click', '#toggle-unit-btn', function() {
+        const areaDisplay = $(body).find('#area-display');
+        const currentUnit = areaDisplay.data('unit');
+        const grArea = parseFloat(areaDisplay.data('gr-area'));
+
+        if (isNaN(grArea)) return;
+
+        if (currentUnit === 'm2') {
+            const pyeong = (grArea * 0.3025).toFixed(2);
+            areaDisplay.text(`${pyeong}평`);
+            areaDisplay.data('unit', 'pyeong');
+            $(this).text('평 → ㎡');
+        } else {
+            areaDisplay.text(`${grArea}㎡`);
+            areaDisplay.data('unit', 'm2');
+            $(this).text('㎡ → 평');
+        }
+    });
+
+
+    // 이미지 클릭 이벤트 재바인딩 (body.innerHTML로 인해 기존 이벤트가 제거되었을 수 있음)
+    // .image-gallery .main-image img와 .thumbnail-grid .image-item img에 대한 클릭 이벤트는
+    // renderImageGallery 함수에 의해 생성된 HTML 요소에 대해 동작해야 합니다.
+    $(body).off('click', '.image-gallery .main-image img').on('click', '.image-gallery .main-image img', function() {
+        openGalleryModal(0);
+    });
+
+    $(body).off('click', '.thumbnail-grid .image-item img').on('click', '.thumbnail-grid .image-item img', function() {
+        const index = parseInt($(this).data('index'));
+        openGalleryModal(index);
+    });
+
+    // 매물 상세 모달 표시
+    $('#listingDetailModal').modal('show');
+
+    console.log('받은 상세 데이터:', data);
+    console.log('📦 brokerInfo:', data.brokerInfo);
+};
+
+// openDetailModal 함수는 userList.js에서 axios를 통해 데이터를 가져온 후
+// window.showDetailModal을 호출하는 역할을 합니다. (기존 userList.js 함수 유지)
 window.openDetailModal = function(lstgId) {
     console.log("매물 상세 확인용 모달 열기 요청:", lstgId);
     const mbrCd = window.loggedInUserId || '';
@@ -238,11 +559,11 @@ window.openDetailModal = function(lstgId) {
             if (!data || Object.keys(data).length === 0) {
                 throw new Error("매물 상세 데이터가 비어있습니다.");
             }
+            // 이제 이 showDetailModal은 listRenderer.js의 로직을 따르는 함수입니다.
             window.showDetailModal(data);
         })
         .catch(error => {
             console.error("매물 상세 정보 로드 실패:", error);
-            // Swal.fire는 이미 존재하므로, 기존 로직 유지
             if (typeof Swal !== 'undefined') {
                 Swal.fire({
                     icon: 'error',
@@ -256,175 +577,10 @@ window.openDetailModal = function(lstgId) {
         });
 };
 
-// 매물 상세 정보를 모달에 표시하는 함수
-window.showDetailModal = function(data) {
 
-	const getDealType = (code) => ({
-		'001': '전세',
-		'002': '월세',
-		'003': '매매'
-	}[code] || '미정');
-
-
-    $('#detailListingTitle').text(data.LSTG_NM || '-');
-    $('#detailListingAddress').text(`${data.LSTG_ADD || ''} ${data.LSTG_ADD2 || ''}`);
-    $('#detailListingTypeSale').text(`${getDealType(data.LSTG_TYPE_SALE)}`);
-    $('#detailListingPrice').text(getDepositText(data));
-	$('#detailListingMaintFee').text(data.LSTG_MGMT_PRICE ? `${data.LSTG_MGMT_PRICE.toLocaleString()}만원` : '없음');
-    $('#detailListingArea').text(`${data.LSTG_EX_AREA || '-'}㎡ / ${data.LSTG_GR_AREA || '-'}㎡`);
-    $('#detailListingRoomCnt').text(`${data.LSTG_ROOM_CNT}개`);
-    $('#detailListingFloor').text(data.LSTG_FLOOR || 'N/A');
-    $('#detailListingParkYn').text(`${data.LSTG_PARK_YN === 'Y' ? '가능' : '불가능'}`);
-    $('#detailListingOption').html(renderOptionsFromData(data.LSTG_OPTN, data.facilityOptionList));
-
-    const mainImgEl = document.getElementById('mainListingImage');
-    const thumbnailGrid = document.querySelector('#listingDetailModal .thumbnail-grid');
-    const noImageSrc = `${contextPath}/volt/assets/img/illustrations/no-image.png`;
-
-    listingGalleryImages = [];
-
-    if (data.fileList && Array.isArray(data.fileList) && data.fileList.length > 0) {
-        data.fileList.sort((a, b) => (a.fileOrd || 0) - (b.fileOrd || 0));
-        data.fileList.forEach(file => {
-            listingGalleryImages.push(`${contextPath}/file/read/${file.fileId}`);
-        });
-    }
-
-    mainImgEl.src = listingGalleryImages[0] || noImageSrc;
-    mainImgEl.onerror = function() { this.src = noImageSrc; };
-
-    let thumbnailHtml = '';
-    const thumbnailsToShow = listingGalleryImages.slice(1, 5);
-    const hiddenCount = listingGalleryImages.length > 5 ? listingGalleryImages.length - 5 : 0;
-
-    if (listingGalleryImages.length > 0) {
-        thumbnailsToShow.forEach((src, index) => {
-            const actualIndex = index + 1;
-            const isLastThumbnail = (index === thumbnailsToShow.length - 1);
-
-            if (isLastThumbnail && hiddenCount > 0) {
-                 thumbnailHtml += `
-                    <div class="image-item thumbnail-more" style="cursor:pointer; width:80px; height:80px; overflow:hidden; margin:5px; border:1px solid #ddd; position: relative;">
-                        <img src="${src}" alt="썸네일" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='${noImageSrc}'" data-index="${actualIndex}">
-                        <div class="more-count" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">+${hiddenCount}</div>
-                    </div>
-                `;
-            } else {
-                thumbnailHtml += `
-                    <div class="image-item" style="cursor:pointer; width:80px; height:80px; overflow:hidden; margin:5px; border:1px solid #ddd;">
-                        <img src="${src}" alt="썸네일" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='${noImageSrc}'" data-index="${actualIndex}">
-                    </div>
-                `;
-            }
-        });
-        if (listingGalleryImages.length === 1 && thumbnailsToShow.length === 0) {
-            thumbnailHtml = '';
-        }
-    } else {
-        thumbnailHtml = `
-            <div class="image-item" style="width:80px; height:80px; overflow:hidden; margin:5px; border:1px solid #ddd;">
-                <img src="${noImageSrc}" alt="No Image" style="width:100%; height:100%; object-fit:cover;">
-            </div>`;
-    }
-    thumbnailGrid.innerHTML = thumbnailHtml;
-
-    $(mainImgEl).off('click').on('click', function() {
-        openGalleryModal(0);
-    });
-
-    $(thumbnailGrid).off('click', '.image-item img').on('click', '.image-item img', function() {
-        const index = parseInt($(this).data('index'));
-        openGalleryModal(index);
-    });
-
-    $('#listingDetailModal').modal('show');
-};
-
-const getDepositText = (item) => {
-    const type = String(item.LSTG_TYPE_SALE);
-    const lease = item.LSTG_LEASE || 0;
-    const leaseM = item.LSTG_LEASE_M || 0;
-
-    switch (type) {
-        case '001': return `전세금: ${lease.toLocaleString()}원`;
-        case '002': return `보증금: ${lease.toLocaleString()}원 / 월세: ${leaseM.toLocaleString()}만원`;
-        case '003': return `매매가: ${lease.toLocaleString()}원`;
-        default: return '-';
-    }
-};
-
-const renderOptionsFromData = (lstgOptnString, facilityOptionList) => {
-    let optionsHtml = '';
-    if (lstgOptnString) {
-        optionsHtml += `<p>${lstgOptnString}</p>`;
-    } else if (Array.isArray(facilityOptionList) && facilityOptionList.length > 0) {
-        optionsHtml += `
-            <ul class="facility-options">
-                ${facilityOptionList.map(opt => `<li style="display: inline-block; margin-right: 10px;">${opt.facOptNm}</li>`).join('')}
-            </ul>
-        `;
-    } else {
-        optionsHtml = '<p>제공된 옵션 없음</p>';
-    }
-    return optionsHtml;
-};
-
-// 갤러리 확대 모달 열기
-function openGalleryModal(index) {
-    const modal = document.getElementById('imageGalleryModal');
-    const imgEl = document.getElementById('galleryFullImage');
-    const fallback = `${contextPath}/volt/assets/img/illustrations/no-image.png`;
-
-    if (typeof index !== 'number' || index < 0 || index >= listingGalleryImages.length) {
-        index = 0;
-    }
-    currentGalleryIndex = index;
-
-    imgEl.onerror = null;
-    imgEl.src = listingGalleryImages[currentGalleryIndex];
-    imgEl.onerror = function() {
-        if (imgEl.src !== fallback) {
-            imgEl.src = fallback;
-        }
-    };
-
-    $(modal).modal('show');
-    updateGalleryControls();
-}
-
-// 갤러리 이미지 변경 (이전/다음 버튼)
-function changeGalleryImage(delta) {
-    currentGalleryIndex += delta;
-    if (currentGalleryIndex < 0) currentGalleryIndex = listingGalleryImages.length - 1;
-    if (currentGalleryIndex >= listingGalleryImages.length) currentGalleryIndex = 0;
-
-    const imgEl = document.getElementById('galleryFullImage');
-    const fallback = `${contextPath}/volt/assets/img/illustrations/no-image.png`;
-
-    imgEl.onerror = null;
-    imgEl.src = listingGalleryImages[currentGalleryIndex];
-    imgEl.onerror = function() {
-        if (imgEl.src !== fallback) {
-            imgEl.src = fallback;
-        }
-    };
-    updateGalleryControls();
-}
-
-// 갤러리 컨트롤 (이전/다음 버튼) 가시성 업데이트 및 이벤트 바인딩
-function updateGalleryControls() {
-    const prevBtn = document.getElementById('galleryPrevBtn');
-    const nextBtn = document.getElementById('galleryNextBtn');
-
-    if (listingGalleryImages.length <= 1) {
-        if (prevBtn) $(prevBtn).hide();
-        if (nextBtn) $(nextBtn).hide();
-    } else {
-        if (prevBtn) $(prevBtn).show().off('click').on('click', (e) => { e.preventDefault(); changeGalleryImage(-1); });
-        if (nextBtn) $(nextBtn).show().off('click').on('click', (e) => { e.preventDefault(); changeGalleryImage(1); });
-    }
-}
-
+// =====================================================================================================
+// 신고 관리 페이지 로직 시작
+// =====================================================================================================
 
 document.addEventListener('DOMContentLoaded', function() {
     const searchForm = document.getElementById('searchForm');
@@ -555,24 +711,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         event.preventDefault();
                         event.stopPropagation();
                         const clickedLstgId = $(this).data('lstg-id');
-                        console.log("매물 상세 모달 열기 요청:", clickedLstgId);
+                        console.log("매물 상세 모달 열기 요청 (신고모달에서):", clickedLstgId);
 
                         if (typeof window.openDetailModal === 'function') {
-                            // 여기에서 reportDetailModal을 닫는 코드를 제거했습니다.
-                            // $('#reportDetailModal').modal('hide');
-                            window.openDetailModal(clickedLstgId); // 매물 상세 모달 열기
+                            window.openDetailModal(clickedLstgId);
                         } else {
                             console.error("window.openDetailModal 함수를 찾을 수 없습니다.");
-                            if (typeof Swal !== 'undefined') { // alert -> Swal.fire (이미 있는 부분 유지)
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: '오류',
-                                    text: '매물 상세 페이지를 불러올 수 없습니다.',
-                                    confirmButtonText: '확인'
-                                });
-                            } else {
-                                alert("매물 상세 페이지를 불러올 수 없습니다.");
-                            }
+                            Swal.fire({
+                                icon: 'error',
+                                title: '오류',
+                                text: '매물 상세 페이지를 불러올 수 없습니다.',
+                                confirmButtonText: '확인'
+                            });
                         }
                     });
 
@@ -647,7 +797,7 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('신고 상세 정보 로드 실패:', error);
-                Swal.fire({ // alert -> Swal.fire
+                Swal.fire({
                     icon: 'error',
                     title: '오류',
                     text: '신고 상세 정보를 불러오는 데 실패했습니다.',
@@ -750,7 +900,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (!changesMade) {
-            Swal.fire({ // alert -> Swal.fire
+            Swal.fire({
                 icon: 'info',
                 title: '알림',
                 text: '변경할 내용이 없습니다.',
@@ -759,7 +909,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        Swal.fire({ // confirm -> Swal.fire
+        Swal.fire({
             title: '모든 변경 사항을 저장하시겠습니까?',
             icon: 'warning',
             showCancelButton: true,
@@ -780,10 +930,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             finalMessage += errorMessages.join('\n');
                         }
 
-                        Swal.fire({ // alert -> Swal.fire
+                        Swal.fire({
                             title: '처리 완료',
                             text: finalMessage || "모든 변경 사항이 성공적으로 처리되었습니다.",
-                            icon: errorMessages.length > 0 ? 'warning' : 'success', // 오류 메시지가 있으면 경고, 아니면 성공
+                            icon: errorMessages.length > 0 ? 'warning' : 'success',
                             confirmButtonText: '확인'
                         }).then(() => {
                             $('#reportDetailModal').modal('hide');
@@ -792,7 +942,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     })
                     .catch(allErrors => {
                         console.error('모든 Promise 처리 중 오류 발생:', allErrors);
-                        Swal.fire({ // alert -> Swal.fire
+                        Swal.fire({
                             icon: 'error',
                             title: '오류',
                             text: '일부 변경 사항 처리 중 오류가 발생했습니다.',
@@ -820,11 +970,14 @@ document.addEventListener('DOMContentLoaded', function() {
         updatePageIndicator();
     });
 
-    // 매물 상세 모달이 닫힐 때 갤러리 상태 초기화
+    // 매물 상세 모달이 닫힐 때 갤러리 상태 초기화 (userList.js 기존 함수 유지)
     $('#listingDetailModal').on('hidden.bs.modal', function () {
         listingGalleryImages = [];
         currentGalleryIndex = 0;
-        document.getElementById('mainListingImage').src = `${contextPath}/volt/assets/img/illustrations/no-image.png`;
-        document.querySelector('#listingDetailModal .thumbnail-grid').innerHTML = '';
+        // listingDetailModal의 modal-body를 비워줍니다.
+        const modalBody = document.querySelector('#listingDetailModal .modal-body');
+        if (modalBody) {
+            modalBody.innerHTML = '';
+        }
     });
 });

@@ -236,45 +236,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="listing-image-gallery mb-4">
-                    <div class="main-image image-item">
-                        <img id="mainListingImage" class="img-fluid mb-2 border" style="max-height: 400px; object-fit: contain; cursor: pointer;" src="${pageContext.request.contextPath}/assets/img/illustrations/no-image.png" alt="대표 이미지">
-                    </div>
-                    <div class="thumbnail-grid d-flex flex-wrap justify-content-center">
-                        </div>
                 </div>
-
-                <div id="listingBasicInfo" class="mb-4">
-                    <h3 class="mb-3"><span id="detailListingTitle"></span></h3>
-                    <p><span id="detailListingAddress"></span></p>
-
-                    <h2>가격 정보</h2>
-                    <div class="d-flex align-items-center mb-2">
-                        <strong class="label-width">거래유형:</strong> <span id="detailListingTypeSale"></span>
-                    </div>
-                    <div class="d-flex align-items-center mb-2">
-                        <strong class="label-width">가격:</strong> <span id="detailListingPrice"></span>
-                    </div>
-                    <div class="d-flex align-items-center mb-2">
-                        <strong class="label-width">관리비:</strong> <span id="detailListingMaintFee"></span>
-                    </div>
-                    <div class="d-flex align-items-center mb-2">
-                        <strong class="label-width">면적:</strong> <span id="detailListingArea"></span>
-                    </div>
-                    <div class="d-flex align-items-center mb-2">
-                        <strong class="label-width">방 개수:</strong> <span id="detailListingRoomCnt"></span>
-                    </div>
-                    <div class="d-flex align-items-center mb-2">
-                        <strong class="label-width">층수:</strong> <span id="detailListingFloor"></span>
-                    </div>
-                    <div class="d-flex align-items-center mb-2">
-                        <strong class="label-width">주차:</strong> <span id="detailListingParkYn"></span>
-                    </div>
-
-                    <h2 class="mt-4">시설 옵션</h2>
-                    <div id="detailListingOption" class="d-flex flex-wrap"></div>
-                </div>
-            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="closeListingDetailModalBtn">닫기</button>
             </div>
