@@ -8,6 +8,7 @@
 <meta charset="UTF-8">
 <title>신규 건물 등록</title>
 <link rel="stylesheet" href="/app/css/building/managed/managedAdd.css" />
+<link rel="stylesheet" href="/app/css/building/unit/unitDetailAdd.css" />
 </head>
 <body>
 
@@ -17,11 +18,11 @@
 			<form:hidden path="rentalPtyId" />
 			<form:hidden path="delYn" value="N" />
 
-			<!-- 🏢 건물 기본 정보 카드 -->
+			<!-- 건물 기본 정보 카드 -->
 			<div class="card mb-4">
 				<div
 					class="card-header d-flex justify-content-between align-items-center">
-					<h3 class="mb-0">건물 기본정보</h3>
+					<h3 class="mb-0">건물 필수 정보</h3>
 					<button type="button" class="btn btn-outline-primary btn-sm"
 						data-bs-toggle="modal" data-bs-target="#myListingsModal">
 						내 매물정보 불러오기</button>
@@ -50,7 +51,7 @@
 
 
 						<!-- 공급면적 -->
-						<div class="col-md-6">
+						<div class="col-md-4">
 							<label class="form-label fw-semibold">공급면적 (<span
 								id="areaUnitLabel">평</span>)<span class="text-danger">*</span>
 							</label>
@@ -64,11 +65,19 @@
 							<input type="hidden" name="bldgGrossArea" id="supplyAreaHidden" />
 						</div>
 						<!-- 준공일 -->
-						<div class="col-md-6">
+						<div class="col-md-4">
 							<label class="form-label fw-semibold">준공일 <span
 								class="text-danger">*</span></label> <input type="date"
 								class="form-control" name="bldgCmpltnDt" />
 						</div>
+						<!-- 총 층수 -->
+						<div class="col-md-4">
+							<label class="form-label fw-semibold">총 층수 <span
+								class="text-danger">*</span></label> <input type="number"
+								class="form-control" name="bldgFlrCnt" placeholder="예: 15"
+								min="1" />
+						</div>
+
 					</div>
 				</div>
 			</div>
@@ -111,7 +120,7 @@
 			</div>
 
 
-			<!-- 🖼️ 이미지 업로드 -->
+			<!--  이미지 업로드 -->
 			<div class="card mb-4">
 				<div class="card-header">
 					<h3>건물 이미지</h3>
@@ -137,18 +146,33 @@
 					</div>
 				</div>
 			</div>
+ <div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h3 class="mb-0">세대 상세 정보</h3>
+      <div class="d-flex align-items-center gap-3">
+        <label class="mb-0">총 세대:</label>
+        <input type="number" id="unitCount" name="bldgUnitCnt" min="1" class="form-control" style="max-width: 120px" />
+        <button type="button" class="btn btn-primary btn-sm" id="generateBtn">입력폼 생성</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div id="unitInputContainer" class="unit-placeholder-box">
+        <div class="text-muted text-center py-5 fs-6">
+          총 세대를 입력하고 <strong>입력폼 생성</strong>을 눌러주세요.
+        </div>
+      </div>
+    </div>
+  </div>
 	</div>
 
-	<!-- ✅ 제출 -->
-	<div class="submit-button-wrapper">
-		<button type="submit" id="submitBtn" class="btn btn-submit">다음
-			단계</button>
-		<button type="button" class="btn btn-cancel" onclick="history.back();">취소</button>
-	</div>
 
-	</form:form>
-	</div>
+  <!-- 제출 버튼 -->
+  <div class="submit-button-wrapper">
+    <button type="submit" class="btn btn-submit">등록</button>
+    <button type="button" class="btn btn-cancel" onclick="history.back();">취소</button>
+  </div>
 
+</form:form>
 
 	<div class="modal fade" id="myListingsModal" tabindex="-1"
 		aria-labelledby="myListingModalLabel" aria-hidden="true">
@@ -201,5 +225,6 @@
 
 
 	<script src="/app/js/building/managed/managedAdd.js"></script>
+	<script src="/app/js/building/unit/unitDetailAdd.js"></script>
 </body>
 </html>

@@ -11,8 +11,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	const roleRadios = document.querySelectorAll('input[name="loginRole"]');
 
 	const presetAccounts = {
-		landlord: { id: "dev_tenancy", pw: "qwer" },
-		broker: { id: "dev_broker", pw: "qwer" },
+		landlord: { id: "dev_lhb", pw: "qwer" },
+		broker: { id: "dev", pw: "qwer" },
 		admin: { id: "dev_admin", pw: "qwer" },
 		resident: { id: "INXIA", pw: "java" },
 		member: { id: "", pw: "" }

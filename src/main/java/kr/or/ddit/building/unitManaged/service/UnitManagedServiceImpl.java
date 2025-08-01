@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.building.mapper.UnitManagedMapper;
+import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.UnitVO;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
@@ -29,4 +30,5 @@ public class UnitManagedServiceImpl implements UnitManagedService {
 	    public List<UnitVO> selectUnitListByBldgId(String bldgId) {
 	        return unitMapper.selectUnitListByBldgId(bldgId);
 }
+
 }

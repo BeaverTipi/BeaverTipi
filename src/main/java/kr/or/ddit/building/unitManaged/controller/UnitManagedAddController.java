@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kr.or.ddit.building.unitManaged.service.UnitManagedService;
+import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.UnitVO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +34,7 @@ public class UnitManagedAddController {
                                    @RequestParam String rentalPtyId,
                                    Model model) {
         log.info(">>> bldgId in GET: {}", bldgId);
-
+        
         model.addAttribute("bldgId", bldgId);
         model.addAttribute("rentalPtyId", rentalPtyId);
         return "building/unit/unitDetailAdd";

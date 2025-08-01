@@ -46,6 +46,8 @@ public interface BuildingManagedMapper {
  
     void updateBuildingImagePath(@Param("bldgId") String bldgId, @Param("imgUrl") String imgUrl);
 
+	String selectNextBuildingId();
+
     
 }
 

@@ -2,6 +2,7 @@ package kr.or.ddit.building.unitManaged.service;
 
 import java.util.List;
 
+import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.UnitVO;
 
 public interface UnitManagedService {

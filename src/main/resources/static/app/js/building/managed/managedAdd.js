@@ -188,9 +188,5 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    container.classList.add("slide-out-left");
-    container.addEventListener("animationend", () => {
-      document.forms[0].submit();
-    }, { once: true });
   });
 });

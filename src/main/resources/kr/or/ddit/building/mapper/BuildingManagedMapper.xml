@@ -36,9 +36,6 @@
 
   <!-- 건물 등록 -->
   <insert id="insertBuilding" parameterType="kr.or.ddit.vo.BuildingVO">
-    <selectKey keyProperty="bldgId" resultType="string" order="BEFORE">
-      SELECT LPAD(SEQ_BLDG_ID.NEXTVAL, 10, '0') FROM DUAL
-    </selectKey>
     INSERT INTO BUILDING (
       BLDG_ID, RENTAL_PTY_ID, BLDG_NM, BLDG_ZIP_NO, BLDG_ADDR,
       BLDG_DTL_ADDR, BLDG_TYPE_CODE, BLDG_FLR_CNT, BLDG_UNIT_CNT,
@@ -179,6 +176,10 @@
     )
 </select>
 
+<select id="selectNextBuildingId">
+SELECT 'B' || TO_CHAR(SYSDATE, 'YYYYMM') || LPAD(SEQ_BLDG_ID_NUM.NEXTVAL, 4, '0')
+FROM DUAL
+</select>
 
 	<select id="selectListingById" parameterType="string" resultType="kr.or.ddit.vo.ListingVO">
     SELECT 

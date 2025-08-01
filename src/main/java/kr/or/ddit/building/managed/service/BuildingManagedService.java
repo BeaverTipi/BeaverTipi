@@ -3,19 +3,18 @@ package kr.or.ddit.building.managed.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import kr.or.ddit.vo.BuildingSearchFormVO;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.TenancyAccountVO;
 
 
-
-
-
 public interface BuildingManagedService {
 
     // 건물 등록
-    int insertBuilding(BuildingVO building);
+    void insertBuilding(BuildingVO building, MultipartFile bldgImgFile);
 
     // 건물 + 세대 목록 조회 (bldgId 기준)
     List<BuildingVO> selectBuildingListByRentalPtyId(String rentalPtyId);

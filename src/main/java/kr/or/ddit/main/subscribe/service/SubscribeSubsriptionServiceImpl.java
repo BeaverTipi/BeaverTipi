@@ -2,15 +2,24 @@ package kr.or.ddit.main.subscribe.service;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.ddit.main.mapper.SubscribeSubscriptionMapper;
 import kr.or.ddit.util.file.service.FileService;
+import kr.or.ddit.util.security.auth.MemberVOWrapper;
+import kr.or.ddit.util.security.oauth2.OAuth2MemberVOWrapper;
+import kr.or.ddit.util.security.oauth2.OAuth2MemberVOWrapperForKakao;
 import kr.or.ddit.util.validate.exception.BrokerException;
 import kr.or.ddit.util.validate.exception.CardException;
 import kr.or.ddit.util.validate.exception.EasyPayException;
@@ -24,6 +33,7 @@ import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.CardVO;
 import kr.or.ddit.vo.EasyPayVO;
 import kr.or.ddit.vo.FileVO;
+import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.PaymentTosspamentsRawVO;
 import kr.or.ddit.vo.RoleAchievedVO;
 import kr.or.ddit.vo.SolutionSubscriptionPaymentVO;
@@ -322,6 +332,8 @@ public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionServ
  		if (mapper.insertSolutionSubscription(subscriptionVO) < 1) {
  			throw new SubscriptionException("구독권을 넣는데 오류가 생겼습니다.");
  		}   
+ 		
+ 		
 
 	}                                                    
 	public BrokerVO readBroker(String username) {
@@ -342,5 +354,46 @@ public class SubscribeSubsriptionServiceImpl implements SubscribeSubsriptionServ
 	}
 
 
+	public void updatePrincipalAfterPayment(MemberVO updatedMember) {
+	    Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+	    Object oldPrincipal = currentAuth.getPrincipal();
+	    Object details = currentAuth.getDetails();
+
+	    Authentication newAuth;
+
+	    if (oldPrincipal instanceof OAuth2MemberVOWrapperForKakao) {
+	        OAuth2MemberVOWrapperForKakao oldWrapper = (OAuth2MemberVOWrapperForKakao) oldPrincipal;
+	        newAuth = new UsernamePasswordAuthenticationToken(
+	            new OAuth2MemberVOWrapperForKakao(oldWrapper, updatedMember),
+	            null,
+	            getAuthorities(updatedMember)
+	        );
+	    } else if (oldPrincipal instanceof OAuth2MemberVOWrapper) {
+	        OAuth2MemberVOWrapper oldWrapper = (OAuth2MemberVOWrapper) oldPrincipal;
+	        newAuth = new UsernamePasswordAuthenticationToken(
+	            new OAuth2MemberVOWrapper(oldWrapper, updatedMember),
+	            null,
+	            getAuthorities(updatedMember)
+	        );
+	    } else {
+	        // 일반 로그인 사용자
+	        newAuth = new UsernamePasswordAuthenticationToken(
+	            new MemberVOWrapper(updatedMember, "DELETED"),  // "DELETED"는 deleteValue 상수
+	            null,
+	            getAuthorities(updatedMember)
+	        );
+	    }
+
+//	    newAuth.setDetails(details);
+	    SecurityContextHolder.getContext().setAuthentication(newAuth);
+	}
+
+	private Collection<GrantedAuthority> getAuthorities(MemberVO member) {
+	    return AuthorityUtils.createAuthorityList(
+	        member.getMemRoleList().stream()
+	            .map(RoleAchievedVO::getUserRoleId)
+	            .toArray(String[]::new)
+	    );
+	}
 
 }

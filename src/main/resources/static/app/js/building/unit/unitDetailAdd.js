@@ -183,8 +183,13 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-	// 기존 안내문 제거
+		// 기존 안내문 제거
 	container.innerHTML = "";
+	
+	// 👇 클래스 추가
+	container.classList.remove("unit-input-animate"); // 혹시 이전에 남아있다면 제거
+	void container.offsetWidth; // reflow로 다시 계산 (트리거)
+	container.classList.add("unit-input-animate");
 	
 	// 클래스 교체
 	container.classList.remove("unit-placeholder-box");
