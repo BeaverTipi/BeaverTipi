@@ -238,9 +238,15 @@ window.toggleFilterPopup = function(type, btn) {
 	}
 };
 
-document.getElementById('resetFilters')?.addEventListener('click', () => {
+window.resetAllMapFilters = function () {
 	document.querySelectorAll('.facilityOpt:checked').forEach(chk => chk.checked = false);
-
+	
+	const saleDetailBtn = document.getElementById('saleDetailTypeBtn');
+	if (saleDetailBtn) {
+	  saleDetailBtn.classList.add('disabled');
+	  saleDetailBtn.disabled = true;
+	}
+	
 	const hiddenInputs = [
 		'#saleTypeFilter', '#listingTypeFilter', '#saleDetailTypeFilter', '#areaFilter',
 		'#minFloor', '#maxFloor', '#minArea', '#maxArea', '#parkingYn'
@@ -259,7 +265,7 @@ document.getElementById('resetFilters')?.addEventListener('click', () => {
 
 	if (window._map && window._map.getBounds && window._clusterer) {
 		const bounds = window._map.getBounds();
-		const url = buildUrl(bounds, null); // 필터 초기화 후 기준으로 URL 생성
+		const url = buildUrl(bounds, null);
 
 		fetch(url)
 			.then(res => res.json())
@@ -270,7 +276,11 @@ document.getElementById('resetFilters')?.addEventListener('click', () => {
 	} else {
 		console.warn('window._map or window._clusterer is not defined.');
 	}
-});
+};
+
+document.getElementById('resetFilters')?.addEventListener('click', window.resetAllMapFilters);
+document.getElementById('resetFiltersTop')?.addEventListener('click', window.resetAllMapFilters);
+
 
 document.addEventListener('click', function(e) {
 	if (e.target?.id === 'toggle-unit-btn') {
@@ -338,7 +348,7 @@ window.setupPopupOptionClick = function(map, clusterer) {
 						<label>전세금 (만원)</label>
 						<div class="price-range">
 							<select name="jeonseMin">
-							  <option value="">최소</option>
+							  <option value="300">최소(300)</option>
 							  <option value="500">500</option>
 							  <option value="1000">1000</option>
 							  <option value="2000">2000</option>

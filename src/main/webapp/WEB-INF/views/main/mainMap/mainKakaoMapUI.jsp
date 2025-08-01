@@ -147,6 +147,7 @@
 					</div>
 					<input type="text" id="keywordFilter" placeholder="매물명 검색" /> 
 					<button id="keywordSearchBtn">검색하기</button>
+					<button id="resetFiltersTop">필터 초기화</button>
 				</div>
 			</div>
 			

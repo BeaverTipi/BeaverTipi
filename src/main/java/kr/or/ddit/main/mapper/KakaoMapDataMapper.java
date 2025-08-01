@@ -22,7 +22,7 @@ public interface KakaoMapDataMapper {
 			@Param("neLat")double neLat, 
 			@Param("neLng")double neLng, 
 			@Param("category")Integer category,
-			@Param("keyword")String Keyword,
+			@Param("keyword")String keyword,
 			@Param("typeCode1List") List<String> typeCode1List,
 	        @Param("typeCode2List") List<String> typeCode2List,
 	        @Param("saleTypeList") List<String> saleTypeList,

@@ -113,4 +113,8 @@ public class ListingVO implements Serializable {
     private String filePathUrl;
     private int isWishlisted;
     private List<FileVO> files;
+    private Integer wishCount;
+    private String lstgSaleNm;
+    private String lstgType1Nm;
+
 }

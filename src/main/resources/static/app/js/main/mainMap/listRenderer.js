@@ -24,19 +24,33 @@ window.renderListPage = function(data, map, page = 1, perPage = 5) {
 		const leaseM = item.lstgLeaseM || 0;
 		const leaseAmt = item.lstgLeaseAmt || 0;
 	
-		const format = (num) => !isNaN(num) ? Math.round(Number(num)).toLocaleString() + '원' : '-';
+		const format = (num) => {
+			if (isNaN(num)) return '-';
+			const val = Math.round(Number(num));
+			
+			if (val >= 100000000) {
+				// 억 단위
+				return (val / 100000000).toFixed(1).replace(/\.0$/, '') + '억';
+			}
+			if (val >= 10000) {
+				// 만원 단위
+				return (val / 10000).toFixed(1).replace(/\.0$/, '') + '만원';
+			}
+			return val.toLocaleString() + '원';
+		};
 	
 		switch (type) {
 			case '001':
-				return `전세금: ${format(lease)}`;
+				return `<span class="price-label">전세금:</span> <span class="price-value">${format(lease)}</span>`;
 			case '002':
-				return `보증금: ${format(leaseAmt)} / 월세: ${format(leaseM)}`;
+				return `<span class="price-label">보증금:</span> <span class="price-value">${format(leaseAmt)}</span> / <span class="price-label">월세:</span> <span class="price-value">${format(leaseM)}</span>`;
 			case '003':
-				return `매매가: ${format(leaseAmt)}`;
+				return `<span class="price-label">매매가:</span> <span class="price-value">${format(leaseAmt)}</span>`;
 			default:
-				return '이건 잘못되었습니다!';
+				return '-';
 		}
 	};
+
 
 
 
@@ -206,18 +220,44 @@ window.showDetailModal = function(data) {
 		const leaseM = item.lstgLeaseM || 0;
 		const leaseAmt = item.lstgLeaseAmt || 0;
 	
-		const format = (num) => !isNaN(num) ? Math.round(Number(num)).toLocaleString() + '원' : '-';
+		const format = (num) => {
+			if (isNaN(num)) return '-';
+			const val = Math.round(Number(num));
+			
+			if (val >= 100000000) {
+				// 억 단위
+				return (val / 100000000).toFixed(1).replace(/\.0$/, '') + '억';
+			}
+			if (val >= 10000) {
+				// 만원 단위
+				return (val / 10000).toFixed(1).replace(/\.0$/, '') + '만원';
+			}
+			return val.toLocaleString() + '원';
+		};
 	
 		switch (type) {
 			case '001':
-				return `전세금: ${format(lease)}`;
+				return `<span class="price-label">전세금:</span> <span class="price-value">${format(lease)}</span>`;
 			case '002':
-				return `보증금: ${format(leaseAmt)} / 월세: ${format(leaseM)}`;
+				return `<span class="price-label">보증금:</span> <span class="price-value">${format(leaseAmt)}</span> / <span class="price-label">월세:</span> <span class="price-value">${format(leaseM)}</span>`;
 			case '003':
-				return `매매가: ${format(leaseAmt)}`;
+				return `<span class="price-label">매매가:</span> <span class="price-value">${format(leaseAmt)}</span>`;
 			default:
 				return '-';
 		}
+	};
+	
+	const formatCurrency = (num) => {
+		if (isNaN(num)) return '-';
+		const val = Math.round(Number(num));
+	
+		if (val >= 100000000) {
+			return (val / 100000000).toFixed(1).replace(/\.0$/, '') + '억';
+		}
+		if (val >= 10000) {
+			return (val / 10000).toFixed(1).replace(/\.0$/, '') + '만원';
+		}
+		return val.toLocaleString() + '원';
 	};
 
 
@@ -283,7 +323,11 @@ window.showDetailModal = function(data) {
 		  <ul>
 		    <li><strong>거래유형:</strong> ${getDealType(data.lstgTypeSale)}</li>
 		    <li><strong>금액:</strong> ${getDepositText(data)}</li>
-		    <li><strong>관리비:</strong> ${data.lstgFee ? `${data.lstgFee}만원` : '없음'}</li>
+		   <li><strong>관리비:</strong> ${
+				data.lstgFee && data.lstgFee > 0 
+					? formatCurrency(data.lstgFee) 
+					: '없음'
+			}</li>
 		    <li>
 		      <strong>면적:</strong>
 		      <span id="area-display" data-unit="m2" data-gr-area="${data.lstgGrArea}">
@@ -348,8 +392,6 @@ window.showDetailModal = function(data) {
 	}
 
 	console.log('받은 상세 데이터:', data);
-	console.log('📦 brokerInfo:', data.brokerInfo);
-	console.log('📦 brokerInfo.files:', data.brokerInfo?.files);
 };
 
 

@@ -16,6 +16,7 @@
 	  <result property="lstgLease" column="LSTG_LEASE"/>
 	  <result property="lstgLeaseM" column="LSTG_LEASE_M"/>
 	  <result property="lstgLeaseAmt" column="LSTG_LEASE_AMT"/>
+	  <result property="lstgFee" column="LSTG_FEE"/>
 	  <result property="lstgFloor" column="LSTG_FLOOR"/>
 	  <result property="lstgParkYn" column="LSTG_PARK_YN"/>
 	  <result property="lstgRegDate" column="LSTG_REG_DATE"/>
@@ -33,21 +34,42 @@
 			<result property="reprTelNo" column="REPR_TEL_NO"/>
 			<result property="businessCardUrl" column="BUSINESS_CARD_URL"/>
 		</association>
-	
 		 <collection property="listingFiles" ofType="kr.or.ddit.vo.FileVO">
 		    <result property="filePathUrl" column="FILE_PATH_URL"/>
 		    <result property="fileSourceRef" column="FILE_SOURCE_REF"/>
 		    <result property="docTypeCd" column="DOC_TYPE_CD"/>
 		  </collection>
 	</resultMap>
-
-	<resultMap id="fileVOResultMap" type="kr.or.ddit.vo.FileVO">
-	  <result property="filePathUrl" column="BROKER_FILE_PATH_URL"/>
-	  <result property="fileSourceRef" column="BROKER_FILE_SOURCE_REF"/>
-	  <result property="docTypeCd" column="BROKER_DOC_TYPE_CD"/>
+	<resultMap id="latLngResultMap" type="kr.or.ddit.vo.ListingVO">
+	  <result property="lstgId" column="LSTG_ID"/>
+	  <result property="mbrCd" column="MBR_CD"/>
+	  <result property="lstgNm" column="LSTG_NM"/>
+	  <result property="lstgAdd" column="LSTG_ADD"/>
+	  <result property="lstgAdd2" column="LSTG_ADD2"/>
+	  <result property="lstgLat" column="LSTG_LAT"/>
+	  <result property="lstgLng" column="LSTG_LNG"/>
+	  <result property="lstgExArea" column="LSTG_EX_AREA"/>
+	  <result property="lstgGrArea" column="LSTG_GR_AREA"/>
+	  <result property="lstgTypeSale" column="LSTG_TYPE_SALE"/>
+	  <result property="lstgLease" column="LSTG_LEASE"/>
+	  <result property="lstgLeaseM" column="LSTG_LEASE_M"/>
+	  <result property="lstgLeaseAmt" column="LSTG_LEASE_AMT"/>
+	  <result property="lstgFloor" column="LSTG_FLOOR"/>
+	  <result property="lstgRoomCnt" column="LSTG_ROOM_CNT"/>
+	  <result property="lstgParkYn" column="LSTG_PARK_YN"/>
+	  <result property="lstgTypeCode1" column="LSTG_TYPE_CODE1"/>
+	  <result property="lstgTypeCode2" column="LSTG_TYPE_CODE2"/>
+	  <result property="lstgPostal" column="LSTG_POSTAL"/>
+	  <result property="isWishlisted" column="IS_WISHLISTED"/>
+	  <result property="wishCount" column="WISHCOUNT"/>
+	  <result property="lstgSaleNm" column="LSTG_SALE_NM"/>
+	   <result property="filePathUrl" column="FILE_PATH_URL"/>
+	  <collection property="listingFiles" ofType="kr.or.ddit.vo.FileVO">
+	    <result property="filePathUrl" column="FILE_PATH_URL"/>
+	    <result property="fileSourceRef" column="FILE_SOURCE_REF"/>
+	    <result property="docTypeCd" column="DOC_TYPE_CD"/>
+	  </collection>
 	</resultMap>
-
-
 	
 <select id="selectNotLatLngList" resultType="kr.or.ddit.vo.ListingVO">
  	SELECT
@@ -68,7 +90,7 @@
     	LSTG_ID = #{lstgId}
 </update>
 
-<select id="selectLatLngMarkList" resultType="kr.or.ddit.vo.ListingVO">
+	<select id="selectLatLngMarkList" resultMap="latLngResultMap">
 	  SELECT
 	    LI.LSTG_ID,
 	    LI.MBR_CD,
@@ -89,59 +111,74 @@
 	    LI.LSTG_TYPE_CODE1,
 	    LI.LSTG_TYPE_CODE2,
 	    LI.LSTG_POSTAL,
+	    (SELECT FILE_PATH_URL 
+	     FROM FILES F 
+	     WHERE F.FILE_SOURCE_ID = LI.LSTG_ID 
+	       AND F.FILE_SOURCE_REF = 'LISTING'
+	       AND ROWNUM = 1) AS FILE_PATH_URL,
+	    (SELECT CODE_NAME 
+	     FROM COMMON_CODE C 
+	     WHERE C.CODE_GROUP = 'TRDST' 
+	       AND C.CODE_VALUE = LI.LSTG_TYPE_SALE) AS LSTG_SALE_NM,
+	    (SELECT CODE_NAME 
+	     FROM COMMON_CODE C 
+	     WHERE C.CODE_GROUP = 'LSTG1' 
+	       AND C.CODE_VALUE = LI.LSTG_TYPE_CODE1) AS LSTG_TYPE1_NM,
+	
 	    <choose>
-		  <when test="mbrCd != null and mbrCd != ''">
-		    CASE 
-		      WHEN EXISTS (
-		        SELECT 1 
-		        FROM LISTING_WISHLIST W 
-		        WHERE W.LSTG_ID = LI.LSTG_ID 
-		        AND W.MBR_CD = #{mbrCd}
-		      ) THEN 1 ELSE 0 
-		    END AS isWishlisted
-		  </when>
-		  <otherwise>
-		    0 AS isWishlisted
-		  </otherwise>
-		</choose>,
-		(SELECT COUNT(*) 
-		 FROM LISTING_WISHLIST W2 
-		 WHERE W2.LSTG_ID = LI.LSTG_ID) AS wishCount
-	  FROM 
-	    LISTING LI
+	      <when test="mbrCd != null and mbrCd != ''">
+	        CASE 
+	          WHEN EXISTS (
+	            SELECT 1 
+	            FROM LISTING_WISHLIST W 
+	            WHERE W.LSTG_ID = LI.LSTG_ID 
+	            AND W.MBR_CD = #{mbrCd}
+	          ) THEN 1 ELSE 0 
+	        END AS isWishlisted
+	      </when>
+	      <otherwise>
+	        0 AS isWishlisted
+	      </otherwise>
+	    </choose>,
+	
+	    (SELECT COUNT(*) 
+	     FROM LISTING_WISHLIST W2 
+	     WHERE W2.LSTG_ID = LI.LSTG_ID) AS wishCount
+	
+	  FROM LISTING LI
 	  WHERE
 	    LI.LSTG_LAT BETWEEN #{swLat} AND #{neLat}
 	    AND LI.LSTG_LNG BETWEEN #{swLng} AND #{neLng}
 	    AND LI.LSTG_DEL = 'N'
-	    
+		
 	    <if test="typeCode1List != null and typeCode1List.size() > 0">
 	      AND LI.LSTG_TYPE_CODE1 IN
 	      <foreach item="type" collection="typeCode1List" open="(" separator="," close=")">
 	        #{type}
 	      </foreach>
 	    </if>
-	    
+	
 	    <if test="typeCode2List != null and typeCode2List.size() > 0">
 	      AND LI.LSTG_TYPE_CODE2 IN
 	      <foreach item="type" collection="typeCode2List" open="(" separator="," close=")">
 	        #{type}
 	      </foreach>
 	    </if>
-	    
+	
 	    <if test="saleTypeList != null and saleTypeList.size() > 0">
 	      AND LI.LSTG_TYPE_SALE IN
 	      <foreach item="type" collection="saleTypeList" open="(" separator="," close=")">
 	        #{type}
 	      </foreach>
 	    </if>
-	    
+	
 	    <if test="category != null">
 	      AND LI.LSTG_TYPE_CODE1 = #{category}
 	    </if>
 	
 	    <if test="keyword != null and keyword != ''">
 	      AND (
-	    	 LI.LSTG_NM LIKE '%' || #{keyword} || '%'
+	        LI.LSTG_NM LIKE '%' || #{keyword} || '%'
 	      )
 	    </if>
 	
@@ -150,10 +187,10 @@
 	        SELECT 1
 	        FROM LISTING_OPTION LOP
 	        WHERE LOP.LSTG_ID = LI.LSTG_ID
-	        AND LOP.FAC_OPT_ID IN
-	        <foreach item="opt" collection="facilityOptionList" open="(" separator="," close=")">
-	          #{opt}
-	        </foreach>
+	          AND LOP.FAC_OPT_ID IN
+	          <foreach item="opt" collection="facilityOptionList" open="(" separator="," close=")">
+	            #{opt}
+	          </foreach>
 	      )
 	    </if>
 	
@@ -174,45 +211,46 @@
 	    <if test="maxArea != null">
 	      AND LI.LSTG_GR_AREA &lt;= #{maxArea}
 	    </if>
+	
+	    <if test="jeonseMin != null">
+	      AND LI.LSTG_TYPE_SALE = '001' AND LI.LSTG_LEASE &gt;= #{jeonseMin}
+	    </if>
+	    <if test="jeonseMax != null">
+	      AND LI.LSTG_TYPE_SALE = '001' AND LI.LSTG_LEASE &lt;= #{jeonseMax}
+	    </if>
+	
+	    <if test="depositMin != null">
+	      AND LI.LSTG_TYPE_SALE = '002' AND LI.LSTG_LEASE_AMT &gt;= #{depositMin}
+	    </if>
+	    <if test="depositMax != null">
+	      AND LI.LSTG_TYPE_SALE = '002' AND LI.LSTG_LEASE_AMT &lt;= #{depositMax}
+	    </if>
+	    <if test="monthlyMin != null">
+	      AND LI.LSTG_TYPE_SALE = '002' AND LI.LSTG_LEASE_M &gt;= #{monthlyMin}
+	    </if>
+	    <if test="monthlyMax != null">
+	      AND LI.LSTG_TYPE_SALE = '002' AND LI.LSTG_LEASE_M &lt;= #{monthlyMax}
+	    </if>
+	
+	    <if test="saleMin != null">
+	      AND LI.LSTG_TYPE_SALE = '003' AND LI.LSTG_LEASE_AMT &gt;= #{saleMin}
+	    </if>
+	    <if test="saleMax != null">
+	      AND LI.LSTG_TYPE_SALE = '003' AND LI.LSTG_LEASE_AMT &lt;= #{saleMax}
+	    </if>
+	
+	   ORDER BY
+	    CASE 
+	      WHEN #{mbrCd} IS NOT NULL AND #{mbrCd} != '' AND EXISTS (
+	        SELECT 1 
+	        FROM LISTING_WISHLIST W 
+	        WHERE W.LSTG_ID = LI.LSTG_ID 
+	        AND W.MBR_CD = #{mbrCd}
+	      ) THEN 1 ELSE 0
+	    END DESC,
+	    LI.LSTG_ID DESC
+	</select>
 
-		<if test="jeonseMin != null">
-		  AND LI.LSTG_TYPE_SALE = '001' AND LI.LSTG_LEASE &gt;= #{jeonseMin}
-		</if>
-		<if test="jeonseMax != null">
-		  AND LI.LSTG_TYPE_SALE = '001' AND LI.LSTG_LEASE &lt;= #{jeonseMax}
-		</if>
-		
-		<if test="depositMin != null">
-		  AND LI.LSTG_TYPE_SALE = '002' AND LI.LSTG_LEASE_AMT &gt;= #{depositMin}
-		</if>
-		<if test="depositMax != null">
-		  AND LI.LSTG_TYPE_SALE = '002' AND LI.LSTG_LEASE_AMT &lt;= #{depositMax}
-		</if>
-		<if test="monthlyMin != null">
-		  AND LI.LSTG_TYPE_SALE = '002' AND LI.LSTG_LEASE_M &gt;= #{monthlyMin}
-		</if>
-		<if test="monthlyMax != null">
-		  AND LI.LSTG_TYPE_SALE = '002' AND LI.LSTG_LEASE_M &lt;= #{monthlyMax}
-		</if>
-		
-		<if test="saleMin != null">
-		  AND LI.LSTG_TYPE_SALE = '003' AND LI.LSTG_LEASE_AMT &gt;= #{saleMin}
-		</if>
-		<if test="saleMax != null">
-		  AND LI.LSTG_TYPE_SALE = '003' AND LI.LSTG_LEASE_AMT &lt;= #{saleMax}
-		</if>
-	    
-	    ORDER BY
-		    CASE 
-		      WHEN #{mbrCd} IS NOT NULL AND #{mbrCd} != '' AND EXISTS (
-		        SELECT 1 
-		        FROM LISTING_WISHLIST W 
-		        WHERE W.LSTG_ID = LI.LSTG_ID 
-		        AND W.MBR_CD = #{mbrCd}
-		      ) THEN 1 ELSE 0
-		    END DESC,
-		    LI.LSTG_ID DESC
-</select>
 
 <select id="selectListingDetailList" resultMap="listingDetailResultMap">
 	SELECT
@@ -237,6 +275,7 @@
 		LI.LSTG_TYPE_CODE1, 
 		LI.RENTAL_PTY_ID, 
 		LI.LSTG_POSTAL,
+		LI.LSTG_FEE,
 		B.BROK_NM,
 		B.REPR_NM,
 		B.REPR_TEL_NO,
