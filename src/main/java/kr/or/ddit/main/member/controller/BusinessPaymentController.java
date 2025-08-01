@@ -41,15 +41,6 @@ public class BusinessPaymentController {
 		model.addAttribute("solutionSubscription", solutionSubscription);
 		model.addAttribute("commonCodeRcPayList", commonCodeRcPayList);
 		model.addAttribute("commonCodePayList", commonCodePayList);
-		
-		// 자동 결제 카드 값 미리 넣어두기^0^
-	    CardVO card = new CardVO();
-	    card.setCardNumber("4455123456789010");
-	    card.setCardExpirationYear("26");
-	    card.setCardExpirationMonth("07");
-	    card.setCardPassword("12");
-	    card.setCustomerIdentityNumber("900101"); 
-		model.addAttribute("billingCard", card);
 		return "main/subscribe/payments";
 	}
 	@GetMapping("/payment/business/tenancy")
@@ -57,10 +48,18 @@ public class BusinessPaymentController {
 		List<SolutionVO> solList = service.readCommonCodeSolutionList("001");
 		MemberVO member = principal.getRealUser();
 		SolutionSubscriptionVO solutionSubscription = service.checkedSolutionSubscription(member.getMbrCd(),"001");
-		model.addAttribute("solutionList", solList);
+		CommonCodeVO common = new CommonCodeVO();
+		common.setCodeGroup("PAY");
+		common.setParentCodeGroup("RCPAY");
+		common.setParentCodeValue("Y");
+		List<CommonCodeVO> commonCodeRcPayList =  commonService.readCommonCodeList(common);
+		common.setParentCodeValue("N");
+		List<CommonCodeVO> commonCodePayList =  commonService.readCommonCodeList(common);
 		model.addAttribute("member", member);
+		model.addAttribute("solutionList", solList);
 		model.addAttribute("solutionSubscription", solutionSubscription);
-		model.addAttribute("card", new CardVO());
+		model.addAttribute("commonCodeRcPayList", commonCodeRcPayList);
+		model.addAttribute("commonCodePayList", commonCodePayList);
 		return "main/subscribe/payments";
 	}
 }
