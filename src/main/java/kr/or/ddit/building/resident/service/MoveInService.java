@@ -19,4 +19,9 @@ public interface MoveInService {
     List<BuildingVO> getBuildingsByRentalPtyId(String rentalPtyId); // 건물정보 셀렉트 줄거임
     List<Map<String, Object>> getUnitResidentWithVacancy(String bldgId); // 공실포함
     List<UnitVO> getVacantUnitList(String bldgId);		//어휴 복잡해 직접입력 모달 ㅡㅡ
+
+    int restoreResident(UnitResidentVO vo);				//재등록 안되는거 이걸로 대체
+    int setUnitMaster(Map<String, Object> param);		// 입주대표설정
+    List<Map<String, Object>> selectUnitResidentWithMaster(String bldgId); // 입주자 여러명
+
 }

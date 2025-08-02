@@ -55,4 +55,17 @@ public class MoveInServiceImpl implements MoveInService {
     public List<UnitVO> getVacantUnitList(String bldgId) {
         return mapper.selectVacantUnitList(bldgId);
     }
+    @Override
+    public int restoreResident(UnitResidentVO vo) {
+        return mapper.restoreResident(vo);
+    }
+    @Override
+    public int setUnitMaster(Map<String, Object> param) {
+        return mapper.setUnitMaster(param);
+    }
+    @Override
+    public List<Map<String, Object>> selectUnitResidentWithMaster(String bldgId) {
+        return mapper.selectUnitResidentWithMaster(bldgId);
+    }
+
 }

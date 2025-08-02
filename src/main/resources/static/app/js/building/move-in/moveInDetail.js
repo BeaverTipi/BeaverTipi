@@ -42,39 +42,46 @@ document.addEventListener("DOMContentLoaded", function() {
   loadBuildingList();
 
   // === [4] 입주 리스트 테이블 렌더 ===
-  function loadResidentTable(bldgId) {
-    tableBody.innerHTML = "";
-    if(!bldgId) return;
-    fetch("/building/move-in/list/"+bldgId)
-      .then(res => res.json())
-      .then(list => {
-        list.forEach((row, i) => {
-  var mbrCd = row.mbrCd || row.MBR_CD || "";
-  var vacant = !mbrCd || mbrCd.trim() === "";
-  var unitId = row.unitId || row.UNIT_ID;
-  var bldgId = row.bldgId || row.BLDG_ID;
-  var rentalPtyId = row.rentalPtyId || row.RENTAL_PTY_ID;
-  
-  console.log("unitId:", unitId, "bldgId:", bldgId, "rentalPtyId:", rentalPtyId);
-  var tr = document.createElement("tr");
-		  tr.innerHTML =
-		    `<td><input type="checkbox"></td>
-		     <td>${i+1}</td>
-		     <td>${row.mbrNm||row.MBR_NM||"-"}</td>
-		     <td>${row.mbrCd||row.MBR_CD||"-"}</td>
-		     <td>${row.moveInDt||row.MOVE_IN_DT||"-"}</td>
-		     <td>${unitId||"-"}</td>
-		     <td><input type="checkbox" ${vacant?"checked":""} disabled>${vacant?"공실":""}</td>
-		     <td>
-		       ${vacant ?
-		          `<button class="add-btn" data-unit-id="${unitId}" data-bldg-id="${bldgId}" data-rental-pty-id="${rentalPtyId}">추가</button>`
-		          : `<button class="edit-btn">수정</button><button class="del-btn">삭제</button>`
-		        }
-		     </td>`;
-		  tableBody.appendChild(tr);
-		});
+function loadResidentTable(bldgId) {
+  tableBody.innerHTML = "";
+  if(!bldgId) return;
+  fetch("/building/move-in/listMaster/"+bldgId)
+    .then(res => res.json())
+    .then(list => {
+      console.log("fetch 머저리:", list);
+      var arr = Array.isArray(list) ? list : (Array.isArray(list.data) ? list.data : []);
+      // 👇👇👇 이 아래 forEach 시작~끝 구간을 통째로 내가 준 코드로 교체 👇👇👇
+      arr.forEach((row, i) => {
+        var mbrCd = row.mbrCd || row.MBR_CD || "";
+        var vacant = !mbrCd || mbrCd.trim() === "";
+        var unitId = row.unitId || row.UNIT_ID;
+        var unitRoom = row.unitRoom || row.UNIT_ROOM;
+        var bldgId = row.bldgId || row.BLDG_ID;
+        var rentalPtyId = row.rentalPtyId || row.RENTAL_PTY_ID;
+        var isMaster = row.isMaster === "Y" || row.IS_MASTER === "Y";
+        var tr = document.createElement("tr");
+        tr.innerHTML =
+          `<td><input type="checkbox"></td>
+           <td>${i+1}</td>
+           <td>
+              ${row.mbrNm||row.MBR_NM||"-"}
+              ${isMaster ? '<span style="color:red;font-weight:bold;"> [대표]</span>' : ''}
+           </td>
+           <td>${row.mbrCd||row.MBR_CD||"-"}</td>
+           <td>${row.moveInDt||row.MOVE_IN_DT||"-"}</td>
+           <td>${unitRoom || "-"}</td>
+           <td><input type="checkbox" ${vacant?"checked":""} disabled>${vacant?"공실":""}</td>
+           <td>
+             ${vacant ?
+                `<button class="add-btn" data-unit-id="${unitId}" data-bldg-id="${bldgId}" data-rental-pty-id="${rentalPtyId}">추가</button>`
+                : `<button class="edit-btn" data-unit-id="${unitId}" data-bldg-id="${bldgId}" data-rental-pty-id="${rentalPtyId}">수정</button>
+                   <button class="del-btn" data-unit-id="${unitId}" data-bldg-id="${bldgId}" data-rental-pty-id="${rentalPtyId}">삭제</button>`
+              }
+           </td>`;
+        tableBody.appendChild(tr);
       });
-  }
+    });
+}
 
   // === [5] 건물 셀렉트 변경시 리스트 다시 로드 ===
   buildingFilter.addEventListener("change", function() {
@@ -103,22 +110,22 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   // === [7] 직접등록 모달: 건물 선택 → 공실호실 ===
-  document.getElementById("addModalBldgSel").addEventListener("change", function() {
-    var bldgId = this.value;
-    var uSel = document.getElementById("addModalUnitSel");
-    uSel.innerHTML = '<option value="">호실 선택</option>';
-    if(!bldgId) return;
-    fetch("/building/move-in/vacantUnits/"+bldgId)
-      .then(res => res.json())
-      .then(list => {
-        list.forEach(unit => {
-          var o = document.createElement("option");
-          o.value = unit.unitId;
-          o.textContent = unit.unitId;
-          uSel.appendChild(o);
-        });
-      });
-  });
+	document.getElementById("addModalBldgSel").addEventListener("change", function() {
+	  var bldgId = this.value;
+	  var uSel = document.getElementById("addModalUnitSel");
+	  uSel.innerHTML = '<option value="">호실 선택</option>';
+	  if(!bldgId) return;
+	  fetch("/building/move-in/vacantUnits/"+bldgId)
+	    .then(res => res.json())
+	    .then(list => {
+	      list.forEach(unit => {
+	        var o = document.createElement("option");
+	        o.value = unit.unitId;
+	        o.textContent = unit.unitRoom || unit.unitId;
+	        uSel.appendChild(o);
+	      });
+	    });
+	});
 
   // === [8] 직접등록 회원검색 + 엔터 처리 ===
   var manualSearchBtn = document.getElementById("manualSearchBtn");
@@ -148,7 +155,7 @@ document.addEventListener("DOMContentLoaded", function() {
     console.log("회원정보 나옴??? manualMbrCd value:", mbrCd);
   };
 
-  // === [9] 직접등록 실제 등록 ===
+  //  직접등록 실제 등록 
   document.getElementById("manualConfirmBtn").onclick = function() {
     var bldgId = document.getElementById("addModalBldgSel").value;
     var unitId = document.getElementById("addModalUnitSel").value;
@@ -180,24 +187,76 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   };
 
-  // === [10] 테이블 내 공실 "추가" 버튼 클릭 (동적 위임) ===
+  // 공실 추가버튼
   tableBody.onclick = function(e) {
-    if(e.target.classList.contains("add-btn")) {
-      var btn = e.target;
-      window.unitTarget = {
-        unitId: btn.getAttribute("data-unit-id"),
-        bldgId: btn.getAttribute("data-bldg-id"),
-        rentalPtyId: btn.getAttribute("data-rental-pty-id")
-      };
-      idModal.style.display = "block";
-      document.getElementById("idSearchInput").value = "";
-      document.getElementById("idSearchResult").innerHTML = "";
-      document.getElementById("selectedVacantMbrCd").value = "";
-      document.getElementById("hiddenRentalPtyId").value = window.unitTarget.rentalPtyId;
-    }
-  };
+  var btn = e.target.closest('.add-btn, .del-btn');
+  if (!btn) return; // 버튼이 아닌 곳 누르면 무시
 
-  // === [11] 공실모달 회원 검색 + 엔터 처리 ===
+  if(btn.classList.contains("add-btn")) {
+    // ==== 공실 추가 버튼 ====
+    window.unitTarget = {
+      unitId: btn.getAttribute("data-unit-id"),
+      bldgId: btn.getAttribute("data-bldg-id"),
+      rentalPtyId: btn.getAttribute("data-rental-pty-id")
+    };
+    idModal.style.display = "block";
+    document.getElementById("idSearchInput").value = "";
+    document.getElementById("idSearchResult").innerHTML = "";
+    document.getElementById("selectedVacantMbrCd").value = "";
+    document.getElementById("hiddenRentalPtyId").value = window.unitTarget.rentalPtyId;
+  }
+  else if (btn.classList.contains("del-btn")) {
+    // === [삭제 버튼 SweetAlert2] ===
+    var tr = btn.closest('tr');
+    var unitId = btn.getAttribute('data-unit-id');
+    var bldgId = btn.getAttribute('data-bldg-id');
+    var rentalPtyId = btn.getAttribute('data-rental-pty-id');
+    var mbrCd = tr.children[3].textContent.trim();
+
+    console.log('[삭제 fetch 보내기 전]', unitId, bldgId, rentalPtyId, mbrCd);
+
+    if(!unitId || !bldgId || !rentalPtyId || !mbrCd) {
+      Swal.fire('삭제 불가', '삭제에 필요한 데이터가 부족합니다.', 'error');
+      return;
+    }
+
+    Swal.fire({
+      title: '정말 삭제하시겠습니까?',
+      text: "삭제 후 복구할 수 없습니다.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: '네, 삭제할래요',
+      cancelButtonText: '취소'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch("/building/move-in/delete", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            unitId: unitId,
+            bldgId: bldgId,
+            rentalPtyId: rentalPtyId,
+            mbrCd: mbrCd
+          })
+        })
+        .then(r => r.text())
+        .then(msg => {
+          if(msg==="SUCCESS") {
+            Swal.fire('삭제 완료', '입주민이 삭제되었습니다.', 'success');
+            loadResidentTable(buildingFilter.value);
+          } else {
+            Swal.fire('삭제 실패', '잠시 후 다시 시도해 주세요.', 'error');
+          }
+        });
+      }
+    });
+  }
+};
+
+
+  // 공실모달 회원 검색  엔터 처리 
   var idSearchBtn = document.getElementById("idSearchBtn");
   idSearchBtn.onclick = function() { searchMemberForVacant(); };
   document.getElementById("idSearchInput").addEventListener("keydown", function(e) {
@@ -223,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("selectedVacantMbrCd").value = mbrCd;
   };
 
-  // === [12] 공실모달 등록 ===
+  // 공실모달
   document.getElementById("confirmSearchBtn").onclick = function() {
     var unitId = window.unitTarget.unitId;
     var bldgId = window.unitTarget.bldgId;
@@ -249,7 +308,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   };
 
-  // === [13] 히든 input 동적 생성 (모달 안에 없으면 추가) ===
+  // 히든 input 
   if(!document.getElementById("manualMbrCd")){
     var hidden1 = document.createElement("input");
     hidden1.type = "hidden";
@@ -263,10 +322,10 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("idSearchModal").appendChild(hidden2);
   }
 
-  // === [14] 최초 로드시 자동 진입 ===
+  // 자동 진입
   if(buildingFilter.value) loadResidentTable(buildingFilter.value);
   
-    // [모달 건물-호실 셀렉트 연동]
+    // 건물-호실 셀렉트
   var bldgSel = document.getElementById("addModalBldgSel");
   var unitSel = document.getElementById("addModalUnitSel");
   if (bldgSel && unitSel) {
@@ -279,10 +338,11 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(list => {
           list.forEach(function(unit){
             var uid = unit.unitId || unit.UNIT_ID;
+            var uroom = unit.unitRoom || unit.UNIT_ROOM;
             if (!uid) return;
             var o = document.createElement("option");
             o.value = uid;
-            o.textContent = uid;
+            o.textContent = uroom || uid;
             unitSel.appendChild(o);
             console.log("[모달] option 추가:", uid);
           });

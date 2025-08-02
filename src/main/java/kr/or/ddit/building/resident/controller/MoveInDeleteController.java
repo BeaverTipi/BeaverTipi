@@ -15,9 +15,10 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
 import kr.or.ddit.building.resident.service.MoveInService;
 
 import kr.or.ddit.vo.UnitResidentVO;

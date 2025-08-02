@@ -95,6 +95,7 @@
 	    ON u.UNIT_ID = ur.UNIT_ID
 	   AND u.BLDG_ID = ur.BLDG_ID
 	   AND u.RENTAL_PTY_ID = ur.RENTAL_PTY_ID
+	   AND ur.UNIT_DEL_YN = 'N'
 	  LEFT OUTER JOIN MEMBER m
 	    ON ur.MBR_CD = m.MBR_CD
 	  WHERE u.BLDG_ID = #{bldgId}
@@ -103,15 +104,72 @@
 
 	<!-- 직접입력 모달에 뿌릴거얌 진짜 개복잡해 ㅡㅡ -->
 	<select id="selectVacantUnitList" resultType="kr.or.ddit.vo.UnitVO">
-	  SELECT u.UNIT_ID, u.BLDG_ID, u.UNIT_FLR_NO
+	  SELECT 
+	    u.UNIT_ID as unitId, 
+	    u.BLDG_ID as bldgId, 
+	    u.UNIT_ROOM as unitRoom
 	  FROM UNIT u
 	  LEFT JOIN UNIT_RESIDENT r
 	    ON u.UNIT_ID = r.UNIT_ID
 	   AND u.BLDG_ID = r.BLDG_ID
 	   AND r.UNIT_DEL_YN = 'N'
 	  WHERE u.BLDG_ID = #{bldgId}
-	    AND (r.UNIT_ID IS NULL)  <!-- 공실인 호실만 -->
-	    
+	    AND (r.UNIT_ID IS NULL)
 	</select>
+	<!-- 1. UNIT 테이블에 대표입주자(master) 설정 -->
+	<update id="setUnitMaster" parameterType="map">
+	  UPDATE UNIT
+	     SET MBR_CD = 'master'
+	   WHERE UNIT_ID = #{unitId}
+	     AND BLDG_ID = #{bldgId}
+	     AND RENTAL_PTY_ID = #{rentalPtyId}
+	</update>
+	
+	<!-- 2. UNIT_RESIDENT 삭제 후 재등록 (복원) -->
+	<update id="restoreResident" parameterType="UnitResidentVO">
+	  UPDATE UNIT_RESIDENT
+	     SET UNIT_DEL_YN = 'N',
+	         MOVE_IN_DT = #{moveInDt}
+	   WHERE UNIT_ID = #{unitId}
+	     AND BLDG_ID = #{bldgId}
+	     AND RENTAL_PTY_ID = #{rentalPtyId}
+	     AND MBR_CD = #{mbrCd}
+	     AND UNIT_DEL_YN = 'Y'
+	</update>
+	
+	<!-- 3. 한 세대에 여러명 SELECT (대표입주자 포함 여부) -->
+		<select id="selectUnitResidentWithMaster" parameterType="string" resultType="map">
+		  SELECT
+		    u.UNIT_ID,
+		    u.BLDG_ID,
+		    u.RENTAL_PTY_ID,
+		    u.UNIT_ROOM,
+		    u.UNIT_FLR_NO,
+		    u.UNIT_STAT_CD,
+		    ur.MBR_CD,
+		    ur.MOVE_IN_DT,
+		    ur.MOVE_OUT_DT,
+		    ur.UNIT_DEL_YN,
+		    m.MBR_NM,
+		    m.MBR_ID,
+		    m.MBR_TELNO,
+		    u.MBR_CD AS UNIT_MASTER,
+		    CASE 
+		      WHEN u.MBR_CD = 'master' AND ur.MBR_CD IS NOT NULL THEN 'Y'
+		      ELSE 'N'
+		    END AS IS_MASTER
+		  FROM UNIT u
+		  LEFT OUTER JOIN UNIT_RESIDENT ur
+		    ON u.UNIT_ID = ur.UNIT_ID
+		   AND u.BLDG_ID = ur.BLDG_ID
+		   AND u.RENTAL_PTY_ID = ur.RENTAL_PTY_ID
+		   AND (ur.UNIT_DEL_YN = 'N' OR ur.UNIT_DEL_YN IS NULL)
+		  LEFT OUTER JOIN MEMBER m
+		    ON ur.MBR_CD = m.MBR_CD
+		  WHERE u.BLDG_ID = #{bldgId}
+		  ORDER BY u.UNIT_ID, ur.MBR_CD
+		</select>
+
+
 
 </mapper>

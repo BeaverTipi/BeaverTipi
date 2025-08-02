@@ -2,11 +2,11 @@ document.addEventListener('DOMContentLoaded', () => {
 	
 	console.log("✅ residentList.js 실행됨");
 	
-	// 🏢 건물 선택 셀렉터
+	//  건물 선택 셀렉터
 	const selector = document.querySelector('select[name="bldgIdParam"]');
 	const savedBldgId = localStorage.getItem("selectedBuildingId");
 	
-	// ✅ 첫 진입 시 unitIdParam 없으면 자동 리다이렉트
+	//  첫 진입 시 unitIdParam 없으면 자동 리다이렉트
 	if (!urlParams.get("unitIdParam") && savedBldgId) {
 	  axios.get("/ajax/resident/api/units", {
 	    params: { bldgId: savedBldgId }
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	  });
 	}
 	
-	// 🔄 납부 버튼 이벤트 등록
+	// 납부 버튼 이벤트 등록
 	const payButton = document.querySelector('.pay-button');
 	if (payButton) {
 		payButton.addEventListener('click', requestPayment);
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	    localStorage.setItem("selectedBuildingId", selectedBldgId);
 	    console.log("🔧 건물 선택 변경됨:", selectedBldgId);
 	
-	    // 🔍 새 건물에 대한 unitId 조회
+	    //  새 건물에 대한 unitId 조회
 	    axios.get("/ajax/resident/api/units", {
 	      params: { bldgId: selectedBldgId }
 	    })
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	      if (unitList.length > 0) {
 	        const newUnitId = unitList[0].unitId;
 	
-	        // ✅ URL 수동 구성 후 이동
+	        //  URL 수동 구성 후 이동
 	        const newUrl = new URL(window.location.origin + "/resident/payment");
 	        newUrl.searchParams.set("bldgIdParam", selectedBldgId);
 	        newUrl.searchParams.set("unitIdParam", newUnitId);

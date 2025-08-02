@@ -37,6 +37,12 @@ public interface MoveInMapper {
     
     //입력 모달에 또 뿌릴거야 ㅡㅡ
     List<UnitVO> selectVacantUnitList(String bldgId);
+    
+    //대표입주설정 뭐 이딴거 .. ㅡㅡ 그리고 재등록이 안되더라 그것도 포함임
+    int restoreResident(UnitResidentVO vo);
+    int setUnitMaster(Map<String, Object> param);
+    List<Map<String, Object>> selectUnitResidentWithMaster(String bldgId);
+
 
  
 

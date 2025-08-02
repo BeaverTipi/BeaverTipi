@@ -50,4 +50,10 @@ public class MoveInListController {
         List<Map<String, Object>> list = moveInService.getUnitResidentWithVacancy(bldgId);
         return ResponseEntity.ok(list);
     }
+    @GetMapping("/listMaster/{bldgId}")
+    public ResponseEntity<List<Map<String, Object>>> selectResidentsWithMaster(@PathVariable String bldgId) {
+        List<Map<String, Object>> list = moveInService.selectUnitResidentWithMaster(bldgId);
+        return ResponseEntity.ok(list);
+    }
+
 }
