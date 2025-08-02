@@ -14,9 +14,10 @@ public interface FileMapper {
 	public List<FileVO> selectFilesOlderThanFiveYears();
 	public int deleteFileById(String fileId);
 	public FileVO selectFile(String fileId);
+	public String selectFileSoureOne(String fileId);
 	public List<FileVO> selectFileList(FileVO file);
 	public int updateFile(FileVO file);
-	public FileVO selectContractFile(String contId);
+	public FileVO selectContractFile(@Param("contId")String contId,@Param("fileAttachSeq") Integer fileAttachSeq);
 	public FileVO selectTempContractFile(@Param("contId") String contId, @Param("fileAttachSeq") Integer fileAttachSeq);
 	public int updateFileUrl(String fileId, String newUrl); // ^0^
 	public int selectTempContrMaxAttachSeq(String contId); // ^0^

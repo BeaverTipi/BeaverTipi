@@ -463,7 +463,14 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	@Override
 	public FileVO readContractPDFFile(String contId) {
 		Integer fileAttachSeq = fileMapper.selectTempContrMaxAttachSeq(contId);
+		if(fileAttachSeq ==null || fileAttachSeq == 0) {
+			fileAttachSeq = 1;
+		}
+		
 		FileVO file = fileMapper.selectTempContractFile(contId, fileAttachSeq);
+		if(file == null) {
+			file = fileMapper.selectContractFile(contId, fileAttachSeq);
+		}
 		return file;
 	}
 
@@ -701,6 +708,7 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	@Override
 	public FileVO readLatestSignedContractPdf(String contId) {
 		FileVO file = mapper.selectLatestSignedContractPdf(contId);
+		if(file == null) file = fileMapper.selectContractFile(contId,1);
 		return file;
 	}
 

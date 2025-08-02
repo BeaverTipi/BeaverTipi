@@ -223,7 +223,7 @@ public class RestContractSignatureController {
 				return badRequest("원본 계약서를 찾을 수 없습니다.");
 			}
 			
-			ResponseEntity<Resource> response = fileService.downloadFile(originalFile.getFileId());
+			ResponseEntity<Resource> response = fileService.downloadContractFile(originalFile.getFileId());
 			Resource resource = response.getBody();
 			byte[] originalPdfBytes = resource != null ? StreamUtils.copyToByteArray(resource.getInputStream()) : null;
 			if (originalPdfBytes == null)
@@ -443,20 +443,16 @@ public class RestContractSignatureController {
 			
 			
 			//원본이 아니라, 최신 서명파일을 불러와야지 ㅇㅇ
-			FileVO latestFile = null;
-			latestFile = contService.readLatestSignedContractPdf(contId);
 			log.debug("컨트랙트 ID: {}", contId);
+			FileVO latestFile = contService.readContractPDFFile(contId);
 			log.debug("가져온 파일 정보: {}", latestFile);
-			if(latestFile == null) {
-				latestFile = contService.readContractPDFFile(contId);
-			}
 //			String fileUrl = latestFile.getFilePathUrl(); // 커스텀 서비스 메소드
 //			
 //			if (fileUrl == null || fileUrl.isBlank()) {
 //				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "원본 PDF URL 없음"));
 //			}
 			log.debug("--<><<><> 이건 뭘까 ^0^   {}",latestFile.getFileId());
-			InputStream is = fileService.getFileStream(latestFile.getFileId());
+			InputStream is = fileService.getContractFileStream(latestFile.getFileId());
 			byte[] fileBytes = is.readAllBytes();
 			String base64Pdf = Base64.getEncoder().encodeToString(fileBytes);
 //			ResponseEntity<Resource> is = fileService.downloadFile(latestFile.getFileId());

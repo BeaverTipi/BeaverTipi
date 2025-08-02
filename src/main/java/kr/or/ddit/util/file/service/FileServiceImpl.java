@@ -197,6 +197,30 @@ public class FileServiceImpl implements FileService {
 	        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileOriginalname() + "\"")
 	        .body(resource);
 	}
+	@Override
+	public ResponseEntity<Resource> downloadContractFile(String fileId) {
+		String contId = mapper.selectFileSoureOne(fileId);
+
+		Integer fileAttachSeq = mapper.selectTempContrMaxAttachSeq(contId); 
+		
+		if(fileAttachSeq ==null || fileAttachSeq == 0) {
+			fileAttachSeq = 1;
+		}
+		
+		log.info(String.format("-----<><><><><>downloadContractFile fileAttachSeq : %d", fileAttachSeq));
+		
+		
+		FileVO file = mapper.selectContractFile(contId,fileAttachSeq);
+		if (file == null) file = mapper.selectTempContractFile(contId, fileAttachSeq);
+		
+		S3Object s3Object = s3Uploader.getObject(file.getFileDir() + "/" +file.getFileSavedname());
+		InputStreamResource resource = new InputStreamResource(s3Object.getObjectContent());
+		
+		return ResponseEntity.ok()
+				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileOriginalname() + "\"")
+				.body(resource);
+	}
 	
 	@Override
 	public String generatePresignedDownloadUrl(String fileId, int expireMinutes) {
@@ -253,6 +277,29 @@ public class FileServiceImpl implements FileService {
             throw new FileIOException("파일 스트림을 가져오는 데 실패했습니다.", e);
         }
     }
+    @Override
+    public InputStream getContractFileStream(String fileId) {
+		String contId = mapper.selectFileSoureOne(fileId);
+
+    	Integer fileAttachSeq = mapper.selectTempContrMaxAttachSeq(contId);
+		if(fileAttachSeq ==null || fileAttachSeq == 0) {
+			fileAttachSeq = 1;
+		}
+		
+    	log.info(String.format("-----<><><><><>getContractFileStream fileAttachSeq : %d", fileAttachSeq));
+    	FileVO file = mapper.selectTempContractFile(contId, fileAttachSeq);
+    	if (file == null) {
+    		file = mapper.selectContractFile(contId, 1);
+    	}
+    	
+    	String s3Key = file.getFileDir() + "/" + file.getFileSavedname();
+    	
+    	try {
+    		return s3Uploader.getObject(s3Key).getObjectContent();
+    	} catch (Exception e) {
+    		throw new FileIOException("파일 스트림을 가져오는 데 실패했습니다.", e);
+    	}
+    }
 
     @Override
     public String getPresignedUrl(String fileId, int expireMinutes) {
@@ -279,9 +326,12 @@ public class FileServiceImpl implements FileService {
 	public FileVO uploadAndSaveTempSignedContract(MultipartFile file, ContractDigitalSignVO digitalSign, String fileId) {
 		
 		Integer signedOrder = readMaxAttachSeq(digitalSign.getContId());
-		if(signedOrder == null) signedOrder = 1;
-		if(signedOrder < 3) signedOrder++;
-		if(signedOrder == 3) {}
+		if(signedOrder ==null || signedOrder == 0) {
+			signedOrder = 1;
+		}
+		if(signedOrder<=3) {
+			signedOrder++;
+		}
 		
 	    String fileUrl;
 		try {

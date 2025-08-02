@@ -35,7 +35,7 @@ INSERT INTO FILES(
     SELECT MAX(FILE_ATTACH_SEQ)
     FROM FILES
     WHERE FILE_SOURCE_REF = #{fileSourceRef}
-      AND FILE_SOURCE_ID = #{fileSourceId}
+      AND FILE_ID = #{fileSourceId}
 </select>
 <select id="selectFilesOlderThanFiveYears">
     SELECT
@@ -72,6 +72,28 @@ INSERT INTO FILES(
 	FROM FILES
 	WHERE FILE_ID = #{fileId}
 </select>
+<select id="selectFileSoureOne">
+	SELECT DISTINCT FILE_SOURCE_ID
+	FROM FILES
+	WHERE FILE_ID = #{fileId}
+</select>
+<!-- <select id="selectContractFile"> -->
+<!-- 	SELECT  -->
+<!-- 		    FILE_ID -->
+<!-- 		    , FILE_SOURCE_REF -->
+<!-- 		    , FILE_SOURCE_REF -->
+<!-- 		    , FILE_SAVEDNAME -->
+<!-- 		    , FILE_MIME -->
+<!-- 		    , FILE_SIZE -->
+<!-- 		    , DOC_TYPE_CD -->
+<!-- 		    , FILE_PATH_URL -->
+<!-- 		    , REG_DTM -->
+<!--    		    , FILE_SOURCE_ID -->
+<!-- 		    , FILE_DIR -->
+<!-- 	FROM FILES -->
+<!-- 	WHERE FILE_ID = #{fileId} -->
+<!-- 	AND FILE_SOURCE_REF = #{fileSourceRef} -->
+<!-- </select> -->
 <select id="selectFileList" parameterType="kr.or.ddit.vo.FileVO" resultType="kr.or.ddit.vo.FileVO">
     SELECT 
     		FILE_ID
@@ -116,7 +138,7 @@ SET
 WHERE FILE_ID = #{fileId}
 </update>
 
-<select id="selectContractFile" parameterType="String">
+<select id="selectContractFile" >
 	SELECT 
 		    FILE_ID
 		    , FILE_ATTACH_SEQ
@@ -132,6 +154,7 @@ WHERE FILE_ID = #{fileId}
 	FROM FILES
 	WHERE FILE_SOURCE_ID = #{contId}
 	  AND FILE_SOURCE_REF = 'CONTR'
+	  AND FILE_ATTACH_SEQ = #{fileAttachSeq}
 </select>
 <select id="selectTempContractFile">
 	SELECT 

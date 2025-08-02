@@ -28,4 +28,6 @@ public interface FileService {
     public void updateFileUrl(String fileId, String newUrl);
     public Integer readMaxAttachSeq(String contId);
     public FileVO uploadAndSaveTempSignedContract(MultipartFile file, ContractDigitalSignVO digitalSign, String fileId);
+    public ResponseEntity<Resource> downloadContractFile(String fileId);
+    public InputStream getContractFileStream(String fileId);
 }
