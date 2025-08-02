@@ -74,28 +74,28 @@
         <div class="row justify-content-center">
           <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
             <div class="card room-card">
-              <img src="${pageContext.request.contextPath}/volt/assets/img/images/room1.png" class="card-img-top room-image" alt="room1">
+              <img src="${pageContext.request.contextPath}/volt/assets/img/images/매물4.png" class="card-img-top room-image" alt="room1">
               <div class="card-body">
-                <p class="room-title">원룸</p>
-                <p>월세 1000/80 | 관리비 5만</p>
+                <p class="room-title">오피스텔</p>
+                <p>월세 1400/80 | 관리비 5만</p>
               </div>
             </div>
           </div>
           <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
             <div class="card room-card">
-              <img src="${pageContext.request.contextPath}/volt/assets/img/images/room2.png" class="card-img-top room-image" alt="room2">
+              <img src="${pageContext.request.contextPath}/volt/assets/img/images/매물2.png" class="card-img-top room-image" alt="room2">
               <div class="card-body">
                 <p class="room-title">원룸</p>
-                <p>월세 500/60 | 관리비 8만</p>
+                <p>월세 500/60 | 관리비 13만</p>
               </div>
             </div>
           </div>
           <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
             <div class="card room-card">
-              <img src="${pageContext.request.contextPath}/volt/assets/img/images/room3.png" class="card-img-top room-image" alt="room3">
+              <img src="${pageContext.request.contextPath}/volt/assets/img/images/매물3.png" class="card-img-top room-image" alt="room3">
               <div class="card-body">
                 <p class="room-title">원룸</p>
-                <p>월세 1000/40 | 관리비 3만</p>
+                <p>월세 1000/40 | 관리비 8만</p>
               </div>
             </div>
           </div>
@@ -106,19 +106,28 @@
         <div class="row justify-content-center">
           <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
             <div class="card room-card">
-              <img src="${pageContext.request.contextPath}/volt/assets/img/images/room4.png" class="card-img-top room-image" alt="room4">
+              <img src="${pageContext.request.contextPath}/volt/assets/img/images/room1.png" class="card-img-top room-image" alt="room4">
               <div class="card-body">
-                <p class="room-title">원룸</p>
+                <p class="room-title">투룸</p>
                 <p>월세 700/70 | 관리비 4만</p>
               </div>
             </div>
           </div>
           <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
             <div class="card room-card">
-              <img src="${pageContext.request.contextPath}/volt/assets/img/images/room5.png" class="card-img-top room-image" alt="room5">
+              <img src="${pageContext.request.contextPath}/volt/assets/img/images/매물1.png" class="card-img-top room-image" alt="room5">
               <div class="card-body">
                 <p class="room-title">투룸</p>
                 <p>월세 1300/90 | 관리비 6만</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+            <div class="card room-card">
+              <img src="${pageContext.request.contextPath}/volt/assets/img/images/매물5.png" class="card-img-top room-image" alt="room5">
+              <div class="card-body">
+                <p class="room-title">빌라</p>
+                <p>월세 5200/55 | 관리비 14만</p>
               </div>
             </div>
           </div>

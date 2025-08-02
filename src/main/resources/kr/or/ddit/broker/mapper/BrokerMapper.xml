@@ -518,4 +518,9 @@ FROM (
 ) 
 WHERE ROWNUM = 1
 </select>
+<update id="updateConclusedContract" parameterType="String">
+	UPDATE CONTRACT
+	   SET CONT_STAT_CD = '002'
+	 WHERE CONT_ID = #{contId}
+</update>
 </mapper>

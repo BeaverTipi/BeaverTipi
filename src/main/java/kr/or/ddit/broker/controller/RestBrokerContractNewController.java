@@ -169,7 +169,10 @@ public class RestBrokerContractNewController {
 		try {
 			Map<String, String> parsedRequest = mapper.readValue(decryptedJson, new TypeReference<>() {});
 			rentalPtyId = String.valueOf(parsedRequest.get("rentalPtyId"));
-			List<TenancyAccountVO> list = taService.retrieveAccountList(rentalPtyId);
+			List<TenancyVO> tenancyList = contService.readTenancyList(rentalPtyId);
+//			TenancyVO tenancy = tenancyList.get(0);
+			String mbrCd = tenancyList.get(0).getMbrCd();
+			List<TenancyAccountVO> list = taService.retrieveAccountList(mbrCd);
 			vo = list.get(0);
 		} catch(JsonProcessingException e) { e.printStackTrace(); }
 		

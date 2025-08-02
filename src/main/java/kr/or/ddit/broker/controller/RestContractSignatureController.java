@@ -51,6 +51,8 @@ import kr.or.ddit.vo.ContractDigitalSignVO;
 import kr.or.ddit.vo.ContractVO;
 import kr.or.ddit.vo.FileVO;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.broker.dto.SignatureDTO;
+import kr.or.ddit.broker.dto.SignerDTO;
 import kr.or.ddit.broker.dto.SignerStatusAssembler;
 import kr.or.ddit.broker.dto.SignerStatusDTO;
 import kr.or.ddit.broker.dto.StandardLeaseFormDTO;
@@ -257,6 +259,17 @@ public class RestContractSignatureController {
 			FileVO tempContr = fileService.uploadAndSaveTempSignedContract(signedPdf, digitalSign, fileId);
 
 			
+			
+			
+			// 6-1. 계약 체결
+			if("AGENT".equals(signerRole)) {
+				contService.readContractList(digitalSign.getContId());
+			}
+			
+			// 6-2. 알림메시지
+			
+			
+			
 			// 7. 성공 응답
 			resultJson = objectMapper.writeValueAsString(
 					Map.of("success", true, "fileUrl", tempContr.getFilePathUrl(), "fileId", tempContr.getFileId()));
@@ -309,40 +322,7 @@ public class RestContractSignatureController {
 //	        		.map(vo -> {
 			/****** 이 부분을 Function<T,R> 함수명 = LAMBDA로 선언 **/
 			/** React에서 컴포넌트에 함수를 prop 넘겨주듯이 사용 ****/
-			// SignerStatusDTO vo = SignerStatusAssembler.toDTO(vo, contract);
-			//
-			// String raw = vo.getContDtBaseData()
-			// + vo.getMbrCd()
-			// + vo.getContId()
-			// + vo.getContDtSignType()
-			// + vo.getContDtSignDtm();
-			// String serverHash = DigestUtils.sha256Hex(raw);
-			// boolean isValid = serverHash.equals(vo.getContDtSignHashVal());
-			//
-			// dto.setIsValid(isValid);
-			// return dto;
-//	        		})
-//	        		.toList();
-//-=-=-=>
-//	        Function<ContractDigitalSignVO, SignerStatusDTO> toDTOWithValidation
-//	        	= sign -> {
-//	        		SignerStatusDTO dto = SignerStatusAssembler.toDTO(sign, contract);
-//                    
-//                    String raw = sign.getContDtBaseData()
-//                    		+ sign.getMbrCd()
-//                    		+ sign.getContId()
-//                    		+ sign.getContDtSignType()
-//                    		+ sign.getContDtSignDtm();
-//                    String serverHash = DigestUtils.sha256Hex(raw);
-//                    boolean isValid = serverHash.equals(sign.getContDtSignHashVal());
-//                    
-//                    dto.setIsValid(isValid);
-//                    return dto;
-//	        	};
-//	        	
-//	        List<SignerStatusDTO> dtoList = signs.stream()
-//	        		.map(toDTOWithValidation)
-//	        		.collect(Collectors.toList());
+
 
 			// 3. 현재 로그인한 사용자 정보
 			MemberVO user = authUnpack.getSigner(principal);

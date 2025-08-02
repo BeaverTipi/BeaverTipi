@@ -112,21 +112,21 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 	 */
 	@Override
 	public List<Map<String, Object>> readContractPartyInfo(Map<String, String> partyTelnoParam) {
-		
+
 		String lesseeTelno = partyTelnoParam.get("lesseeTelno");
 		String lessorTelno = partyTelnoParam.get("lessorTelno");
 		String agentTelno = partyTelnoParam.get("agentTelno");
 		String userRole = partyTelnoParam.get("userRole");
-		
+
 		MemberVO lesseeInfo = mapper.selectMemberByTelno(lesseeTelno);
 		MemberVO lessorInfo = mapper.selectMemberByTelno(lessorTelno);
 		MemberVO agentInfo = mapper.selectMemberByTelno(agentTelno);
-		
-	    if (lesseeInfo == null || lessorInfo == null || agentInfo == null) {
-	        throw new IllegalArgumentException("계약 참여자 중 일부 정보를 찾을 수 없습니다.");
-	    }
-		
-	    ///MAP.of로는 null값 불가능. 이렇게 만든 Map은 immutable(값도 수정 못함)
+
+		if (lesseeInfo == null || lessorInfo == null || agentInfo == null) {
+			throw new IllegalArgumentException("계약 참여자 중 일부 정보를 찾을 수 없습니다.");
+		}
+
+		/// MAP.of로는 null값 불가능. 이렇게 만든 Map은 immutable(값도 수정 못함)
 //		Map<String, Object> lessee = Map.of(
 //				"role", "LESSEE",
 //				"name", lesseeInfo.getMbrNm(),
@@ -157,134 +157,105 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 //				"isRejected", false,
 //				"tempPdfUrl", null
 //				);
-	    
-	    Map<String, Object> lessee = new HashMap<>();
-	    lessee.put("role", "LESSEE");
-	    lessee.put("code", lesseeInfo.getMbrCd());
-	    lessee.put("id", lesseeInfo.getMbrId());
-	    lessee.put("name", lesseeInfo.getMbrNm());
-	    lessee.put("telno", lesseeInfo.getMbrTelno());
-	    lessee.put("connected", false);
-	    lessee.put("signedAt", null);
-	    lessee.put("isValid", null);
-	    lessee.put("isRejected", false);
 
-	    Map<String, Object> lessor = new HashMap<>();
-	    lessor.put("role", "LESSOR");
-	    lessor.put("code", lessorInfo.getMbrCd());
-	    lessor.put("id", lessorInfo.getMbrId());
-	    lessor.put("name", lessorInfo.getMbrNm());
-	    lessor.put("telno", lessorInfo.getMbrTelno());
-	    lessor.put("connected", false);
-	    lessor.put("signedAt", null);
-	    lessor.put("isValid", null);
-	    lessor.put("isRejected", false);
+		Map<String, Object> lessee = new HashMap<>();
+		lessee.put("role", "LESSEE");
+		lessee.put("code", lesseeInfo.getMbrCd());
+		lessee.put("id", lesseeInfo.getMbrId());
+		lessee.put("name", lesseeInfo.getMbrNm());
+		lessee.put("telno", lesseeInfo.getMbrTelno());
+		lessee.put("connected", false);
+		lessee.put("signedAt", null);
+		lessee.put("isValid", null);
+		lessee.put("isRejected", false);
 
-	    Map<String, Object> agent = new HashMap<>();
-	    agent.put("role", "AGENT");
-	    agent.put("code", agentInfo.getMbrCd());
-	    agent.put("id", agentInfo.getMbrId());
-	    agent.put("name", agentInfo.getMbrNm());
-	    agent.put("telno", agentInfo.getMbrTelno());
-	    agent.put("connected", false);
-	    agent.put("signedAt", null);
-	    agent.put("isValid", null);
-	    agent.put("isRejected", false);
-		
+		Map<String, Object> lessor = new HashMap<>();
+		lessor.put("role", "LESSOR");
+		lessor.put("code", lessorInfo.getMbrCd());
+		lessor.put("id", lessorInfo.getMbrId());
+		lessor.put("name", lessorInfo.getMbrNm());
+		lessor.put("telno", lessorInfo.getMbrTelno());
+		lessor.put("connected", false);
+		lessor.put("signedAt", null);
+		lessor.put("isValid", null);
+		lessor.put("isRejected", false);
+
+		Map<String, Object> agent = new HashMap<>();
+		agent.put("role", "AGENT");
+		agent.put("code", agentInfo.getMbrCd());
+		agent.put("id", agentInfo.getMbrId());
+		agent.put("name", agentInfo.getMbrNm());
+		agent.put("telno", agentInfo.getMbrTelno());
+		agent.put("connected", false);
+		agent.put("signedAt", null);
+		agent.put("isValid", null);
+		agent.put("isRejected", false);
+
 //		if("LESSEE".equals(userRole))lessee.put("connected", true);
 //		if("LESSOR".equals(userRole))lessor.put("connected", true);
 //		if("AGENT".equals(userRole))agent.put("connected", true);
-		
+
 		switch (userRole) {
 		case "LESSEE" -> lessee.put("connected", true);
 		case "LESSOR" -> lessor.put("connected", true);
 		case "AGENT" -> agent.put("connected", true);
 		}
-		
+
 		List<Map<String, Object>> signers = List.of(lessee, lessor, agent);
 		return signers;
 	}
+
 	@Override
-	public Map<String, SignerDTO> readContractPartyInfo2(
-			Map<String, String> partyTelnoParam
-			, HttpServletRequest request
-	) {
+	public Map<String, SignerDTO> readContractPartyInfo2(Map<String, String> partyTelnoParam,
+			HttpServletRequest request) {
 		String lesseeTelno = partyTelnoParam.get("lesseeTelno");
 		String lessorTelno = partyTelnoParam.get("lessorTelno");
 		String agentTelno = partyTelnoParam.get("agentTelno");
 		String userRole = partyTelnoParam.get("userRole");
 		String contId = partyTelnoParam.get("contId");
-		
+
 		MemberVO lesseeInfo = mapper.selectMemberByTelno(lesseeTelno);
 		MemberVO lessorInfo = mapper.selectMemberByTelno(lessorTelno);
 		MemberVO agentInfo = mapper.selectMemberByTelno(agentTelno);
-		
-	    if (lesseeInfo == null || lessorInfo == null || agentInfo == null) {
-	        throw new IllegalArgumentException("계약 참여자 중 일부 정보를 찾을 수 없습니다.");
-	    }
-	    
-	    SignerDTO lessor = SignerDTO.builder()
-	    		.contId(contId)
-	    		.role("LESSOR")
-	    		.code(lessorInfo.getMbrCd())
-	    		.id(lessorInfo.getMbrId())
-	    		.name(lessorInfo.getMbrNm())
-	    		.telno(lessorInfo.getMbrTelno())
-	    		.signerStatus("")
-	    		.ipAddr("")
-	    		.isJoined(false)
-	    		.signedAt(null)
-	    		.isSigned(false)
-	    		.hashVal("")
-	    		.isValid(false)
-	    		.base64("")
-	    		.build();
-	    SignerDTO lessee = SignerDTO.builder()
-	    		.contId(contId)
-	    		.role("LESSEE")
-	    		.code(lesseeInfo.getMbrCd())
-	    		.id(lesseeInfo.getMbrId())
-	    		.name(lesseeInfo.getMbrNm())
-	    		.telno(lesseeInfo.getMbrTelno())
-	    		.signerStatus("")
-	    		.ipAddr("")
-	    		.isJoined(false)
-	    		.signedAt(null)
-	    		.isSigned(false)
-	    		.hashVal("")
-	    		.isValid(false)
-	    		.base64("")
-	    		.build();
-	    SignerDTO agent = SignerDTO.builder()
-	    		.contId(contId)
-	    		.role("AGENT")
-	    		.code(agentInfo.getMbrCd())
-	    		.id(agentInfo.getMbrId())
-	    		.name(agentInfo.getMbrNm())
-	    		.telno(agentInfo.getMbrTelno())
-	    		.signerStatus("")
-	    		.ipAddr("")
-	    		.isJoined(false)
-	    		.signedAt(null)
-	    		.isSigned(false)
-	    		.hashVal("")
-	    		.isValid(false)
-	    		.base64("")
-	    		.build();
-		switch (userRole) {
-			case "LESSOR" -> {lessor.setIsJoined(true); lessor.setIpAddr(request.getRemoteAddr());}
-			case "LESSEE" -> {lessee.setIsJoined(true); lessee.setIpAddr(request.getRemoteAddr());}
-			case "AGENT"  -> {agent.setIsJoined(true);  agent.setIpAddr(request.getRemoteAddr());}
+
+		if (lesseeInfo == null || lessorInfo == null || agentInfo == null) {
+			throw new IllegalArgumentException("계약 참여자 중 일부 정보를 찾을 수 없습니다.");
 		}
-		
+
+		SignerDTO lessor = SignerDTO.builder().contId(contId).role("LESSOR").code(lessorInfo.getMbrCd())
+				.id(lessorInfo.getMbrId()).name(lessorInfo.getMbrNm()).telno(lessorInfo.getMbrTelno()).signerStatus("")
+				.ipAddr("").isJoined(false).signedAt(null).isSigned(false).hashVal("").isValid(false).base64("")
+				.build();
+		SignerDTO lessee = SignerDTO.builder().contId(contId).role("LESSEE").code(lesseeInfo.getMbrCd())
+				.id(lesseeInfo.getMbrId()).name(lesseeInfo.getMbrNm()).telno(lesseeInfo.getMbrTelno()).signerStatus("")
+				.ipAddr("").isJoined(false).signedAt(null).isSigned(false).hashVal("").isValid(false).base64("")
+				.build();
+		SignerDTO agent = SignerDTO.builder().contId(contId).role("AGENT").code(agentInfo.getMbrCd())
+				.id(agentInfo.getMbrId()).name(agentInfo.getMbrNm()).telno(agentInfo.getMbrTelno()).signerStatus("")
+				.ipAddr("").isJoined(false).signedAt(null).isSigned(false).hashVal("").isValid(false).base64("")
+				.build();
+		switch (userRole) {
+		case "LESSOR" -> {
+			lessor.setIsJoined(true);
+			lessor.setIpAddr(request.getRemoteAddr());
+		}
+		case "LESSEE" -> {
+			lessee.setIsJoined(true);
+			lessee.setIpAddr(request.getRemoteAddr());
+		}
+		case "AGENT" -> {
+			agent.setIsJoined(true);
+			agent.setIpAddr(request.getRemoteAddr());
+		}
+		}
+
 		Map<String, SignerDTO> signers = new HashMap<>();
 		signers.put("LESSOR", lessor);
 		signers.put("LESSEE", lessee);
 		signers.put("AGENT", agent);
 		return signers;
 	}
-	
-	
+
 	/**
 	 *
 	 */
@@ -343,7 +314,6 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 		return mngContractsList;
 	}
 
-	
 	@Override
 	public List<ContractVO> readProceedingContractsList(String mbrCd) {
 		List<ContractVO> proceedingContractsList = null;
@@ -457,18 +427,17 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(aes256Util.encryptWithDynamicIV(resultJson));
 		}
-
 	}
 
 	@Override
 	public FileVO readContractPDFFile(String contId) {
 		Integer fileAttachSeq = fileMapper.selectTempContrMaxAttachSeq(contId);
-		if(fileAttachSeq ==null || fileAttachSeq == 0) {
+		if (fileAttachSeq == null || fileAttachSeq == 0) {
 			fileAttachSeq = 1;
 		}
-		
+
 		FileVO file = fileMapper.selectTempContractFile(contId, fileAttachSeq);
-		if(file == null) {
+		if (file == null) {
 			file = fileMapper.selectContractFile(contId, fileAttachSeq);
 		}
 		return file;
@@ -554,162 +523,122 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 
 	@Override
 	public List<Map<String, Object>> validateSignerStatus(String contId) {
-		
-		//계약 레코드에서는 계약 참여자의 전화번호가 식별자
-	    ContractVO contract = mapper.selectContractInfo(contId);
-	    List<Map<String, Object>> defaultSigners = new ArrayList<>();
 
-	    //계약 참여자의 기본 정보
-	    defaultSigners.add(Map.of(
-	        "role", "AGENT",
-	        "name", contract.getContBrokerTelno(),
-	        "signedAt", null,
-	        "isValid", null
-	    ));
-	    defaultSigners.add(Map.of(
-	        "role", "LESSOR",
-	        "name", contract.getContTenancyTelno(),
-	        "signedAt", null,
-	        "isValid", null
-	    ));
-	    defaultSigners.add(Map.of(
-	        "role", "LESSEE",
-	        "name", contract.getContLesseeTelno(),
-	        "signedAt", null,
-	        "isValid", null
-	    ));
-	    
-	    //계약 참여자의 서명 데이터
-	    //제네릭 타입 추론의 실패 유의
-    /*
-		    return defaultSigners.stream().map(participant -> {
-	        String role = (String) participant.get("role");
-	        String name = (String) participant.get("name");
-	
-	        ContractDigitalSignVO sign = signedMap.get(role);
-	        if (sign != null) {
-	            String raw = sign.getContDtBaseData()
-	                    + sign.getMbrCd()
-	                    + sign.getContId()
-	                    + sign.getContDtSignType()
-	                    + sign.getContDtSignDtm();
-	
-	            String serverHash = DigestUtils.sha256Hex(raw);
-	            boolean isValid = serverHash.equals(sign.getContDtSignHashVal());
-	
-	            return Map.of(
-	                "role", role,
-	                "name", name,
-	                "signedAt", sign.getContDtSignDtm(),
-	                "isValid", isValid,
-	                "isRejected", sign.getIsRejected(),
-	                "tempPdfUrl", sign.getTempPdfUrl()
-	            );
-	        } else {
-	            return participant; // 서명되지 않음
-	        }
-	    }).collect(Collectors.toList());
-    
-    	map(...) 안에서 Function<...> 제네릭 타입 추론에 실패.
-    	why?
-    	- stream().map(...).collect(Collectors.toList()) 부분이 복잡
-    	- 연산식이 복잡해지면 타입 추론에 실패
-    	why?
-    	- Map<String, Object> 형태는 Java 타입추론에 있어 금쪽이.
-    	- 그냥 타입 안정성이라곤 쥐뿔도 없는 형태
-    	- Stream 내에서 처리하기 위해선 캐스팅을 명확하게 하거나 DTO로 전환.
-    	
-    	
-    	To..
-    	1. 람다식은 명확한 입력 타입 선언
-    	list.stream().map(item -> { ... })    // 🚫 sometimes fails
-		list.stream().map((Function<MyType, MyReturnType>) item -> { ... })  // ✅ good
-		- `map((Function<Target, Result> lambda)` 처럼 람다 타입을 명시한다!
+		// 계약 레코드에서는 계약 참여자의 전화번호가 식별자
+		ContractVO contract = mapper.selectContractInfo(contId);
+		List<Map<String, Object>> defaultSigners = new ArrayList<>();
 
-		2. .collect(Collectors.toMap(...)) 반환 타입에 유의
-		Map<String, User> map = list.stream()
-    		.collect(Collectors.toMap(User::getId, Function.identity()));
-		- key 또는 value mapper가 null 반환 시, IllegalStateException 발생
-		- 키의 중복에 대응하거나(1), 명시적 타입을 지정(2)한다.
-		
-		3. Map<String, Object>는 제네릭 타입 추론의 금쪽이
-		- String role = (String) participant.get("role");
-		
-		4. .stream().map(...).collect(...) 반환타입을 변수로 고정시킨다.
-		List<Map<String, Object>> result = list.stream()
-		    .map(...)  // ↔ 컴파일러가 여기서 타입 추론
-		    .collect(Collectors.toList());  // 🔐 변수가 타입을 고정해줌
-		- 익명으로 선언하지 말고, 변수 선언을 통해 타입을 못 박아버린다.
-		
-		5. Function/Predicate/Supplier 함수형 인터페이스 사용
-		Function<T, R> mapper = t -> ...
-		list.stream().map(mapper).collect(...)
-		- 람다 함수의 로직이 복잡해도 컴파일러의 타입추론이 수월해짐
-		
-		6. 어지간한 컴파일 오류의 근본 원인은 람다식의 타입추론 실패.
-		- 그러니 람다에 꼭 타입 붙인다. Function<T, R>
-		
-		7. 금쪽이 Map<String, Object> 대신 DTO 활용
-		- Map은 코드가 항상 복잡해지는데다, IDE도 타입 추적을 못함.
-		
-| 구간                        | 설명                 		| 대처 방법                      			|
-| --------------------------- | --------------------------- | ----------------------------------------- |
-| `stream().map(...)`         | 람다 복잡할 때           	| 람다에 타입명시 or Function 객체 사용 	|
-| `Collectors.toMap(...)`     | 키 중복, 타입 추론 불가     | 타입 지정 + mergeFunction 지정   			|
-| `List<Map<String, Object>>` | 캐스팅 필요, 추론 불가      | DTO 전환 권장                 			|
-| `Optional.map(...)`         | Optional 내부 타입 미확정 	| 명시적 람다 또는 타입 고정 변수 사용      |
+		// 계약 참여자의 기본 정보
+		defaultSigners
+				.add(Map.of("role", "AGENT", "name", contract.getContBrokerTelno(), "signedAt", null, "isValid", null));
+		defaultSigners.add(
+				Map.of("role", "LESSOR", "name", contract.getContTenancyTelno(), "signedAt", null, "isValid", null));
+		defaultSigners.add(
+				Map.of("role", "LESSEE", "name", contract.getContLesseeTelno(), "signedAt", null, "isValid", null));
 
-     */
-	    List<ContractDigitalSignVO> signs = mapper.selectDtSignList(contId);
-	    
-	    // role 기준으로 서명된 데이터 매핑
-	    Map<String, ContractDigitalSignVO> signedMap = signs.stream()
-	        .collect(Collectors.toMap(ContractDigitalSignVO::getContDtSignType, Function.identity()));
+		// 계약 참여자의 서명 데이터
+		// 제네릭 타입 추론의 실패 유의
+		/*
+		 * return defaultSigners.stream().map(participant -> { String role = (String)
+		 * participant.get("role"); String name = (String) participant.get("name");
+		 * 
+		 * ContractDigitalSignVO sign = signedMap.get(role); if (sign != null) { String
+		 * raw = sign.getContDtBaseData() + sign.getMbrCd() + sign.getContId() +
+		 * sign.getContDtSignType() + sign.getContDtSignDtm();
+		 * 
+		 * String serverHash = DigestUtils.sha256Hex(raw); boolean isValid =
+		 * serverHash.equals(sign.getContDtSignHashVal());
+		 * 
+		 * return Map.of( "role", role, "name", name, "signedAt",
+		 * sign.getContDtSignDtm(), "isValid", isValid, "isRejected",
+		 * sign.getIsRejected(), "tempPdfUrl", sign.getTempPdfUrl() ); } else { return
+		 * participant; // 서명되지 않음 } }).collect(Collectors.toList());
+		 * 
+		 * map(...) 안에서 Function<...> 제네릭 타입 추론에 실패. why? -
+		 * stream().map(...).collect(Collectors.toList()) 부분이 복잡 - 연산식이 복잡해지면 타입 추론에 실패
+		 * why? - Map<String, Object> 형태는 Java 타입추론에 있어 금쪽이. - 그냥 타입 안정성이라곤 쥐뿔도 없는 형태 -
+		 * Stream 내에서 처리하기 위해선 캐스팅을 명확하게 하거나 DTO로 전환.
+		 * 
+		 * 
+		 * To.. 1. 람다식은 명확한 입력 타입 선언 list.stream().map(item -> { ... }) // 🚫 sometimes
+		 * fails list.stream().map((Function<MyType, MyReturnType>) item -> { ... }) //
+		 * ✅ good - `map((Function<Target, Result> lambda)` 처럼 람다 타입을 명시한다!
+		 * 
+		 * 2. .collect(Collectors.toMap(...)) 반환 타입에 유의 Map<String, User> map =
+		 * list.stream() .collect(Collectors.toMap(User::getId, Function.identity())); -
+		 * key 또는 value mapper가 null 반환 시, IllegalStateException 발생 - 키의 중복에 대응하거나(1),
+		 * 명시적 타입을 지정(2)한다.
+		 * 
+		 * 3. Map<String, Object>는 제네릭 타입 추론의 금쪽이 - String role = (String)
+		 * participant.get("role");
+		 * 
+		 * 4. .stream().map(...).collect(...) 반환타입을 변수로 고정시킨다. List<Map<String, Object>>
+		 * result = list.stream() .map(...) // ↔ 컴파일러가 여기서 타입 추론
+		 * .collect(Collectors.toList()); // 🔐 변수가 타입을 고정해줌 - 익명으로 선언하지 말고, 변수 선언을 통해
+		 * 타입을 못 박아버린다.
+		 * 
+		 * 5. Function/Predicate/Supplier 함수형 인터페이스 사용 Function<T, R> mapper = t -> ...
+		 * list.stream().map(mapper).collect(...) - 람다 함수의 로직이 복잡해도 컴파일러의 타입추론이 수월해짐
+		 * 
+		 * 6. 어지간한 컴파일 오류의 근본 원인은 람다식의 타입추론 실패. - 그러니 람다에 꼭 타입 붙인다. Function<T, R>
+		 * 
+		 * 7. 금쪽이 Map<String, Object> 대신 DTO 활용 - Map은 코드가 항상 복잡해지는데다, IDE도 타입 추적을 못함.
+		 * 
+		 * | 구간 | 설명 | 대처 방법 | | --------------------------- |
+		 * --------------------------- | ----------------------------------------- | |
+		 * `stream().map(...)` | 람다 복잡할 때 | 람다에 타입명시 or Function 객체 사용 | |
+		 * `Collectors.toMap(...)` | 키 중복, 타입 추론 불가 | 타입 지정 + mergeFunction 지정 | |
+		 * `List<Map<String, Object>>` | 캐스팅 필요, 추론 불가 | DTO 전환 권장 | |
+		 * `Optional.map(...)` | Optional 내부 타입 미확정 | 명시적 람다 또는 타입 고정 변수 사용 |
+		 * 
+		 */
+		List<ContractDigitalSignVO> signs = mapper.selectDtSignList(contId);
 
-	    return defaultSigners.stream()
-	        .map((Function<Map<String, Object>, Map<String, Object>>) participant -> {
-	            String role = (String) participant.get("role");
-	            String name = (String) participant.get("name");
+		// role 기준으로 서명된 데이터 매핑
+		Map<String, ContractDigitalSignVO> signedMap = signs.stream()
+				.collect(Collectors.toMap(ContractDigitalSignVO::getContDtSignType, Function.identity()));
 
-	            ContractDigitalSignVO sign = signedMap.get(role);
-	            if (sign != null) {
-	                String raw = sign.getContDtBaseData()
-	                        + sign.getMbrCd()
-	                        + sign.getContId()
-	                        + sign.getContDtSignType()
-	                        + sign.getContDtSignDtm();
+		return defaultSigners.stream().map((Function<Map<String, Object>, Map<String, Object>>) participant -> {
+			String role = (String) participant.get("role");
+			String name = (String) participant.get("name");
 
-	                String serverHash = DigestUtils.sha256Hex(raw);
-	                boolean isValid = serverHash.equals(sign.getContDtSignHashVal());
+			ContractDigitalSignVO sign = signedMap.get(role);
+			if (sign != null) {
+				String raw = sign.getContDtBaseData() + sign.getMbrCd() + sign.getContId() + sign.getContDtSignType()
+						+ sign.getContDtSignDtm();
 
-	                return Map.of(
-	                    "role", role,
-	                    "name", name,
-	                    "signedAt", sign.getContDtSignDtm(),
-	                    "isValid", isValid
-	                );
-	            } else {
-	                return participant; // 서명되지 않은 상태 그대로 유지
-	            }
-	        })
-	        .collect(Collectors.toList());
+				String serverHash = DigestUtils.sha256Hex(raw);
+				boolean isValid = serverHash.equals(sign.getContDtSignHashVal());
+
+				return Map.of("role", role, "name", name, "signedAt", sign.getContDtSignDtm(), "isValid", isValid);
+			} else {
+				return participant; // 서명되지 않은 상태 그대로 유지
+			}
+		}).collect(Collectors.toList());
 	}
 
 	/**
 	 * contId에 대한 전자서명 정보를 조회, List로 반환하는 단순 조회
+	 * 
 	 * @param contId
 	 * @return List<ContractDigitalSignVO>
 	 */
 	@Override
 	public List<ContractDigitalSignVO> readSignatureList(String contId) {
-	    return mapper.selectDtSignList(contId);
+		return mapper.selectDtSignList(contId);
 	}
 
 	@Override
 	public FileVO readLatestSignedContractPdf(String contId) {
 		FileVO file = mapper.selectLatestSignedContractPdf(contId);
-		if(file == null) file = fileMapper.selectContractFile(contId,1);
+		if (file == null)
+			file = fileMapper.selectContractFile(contId, 1);
 		return file;
+	}
+
+	@Override
+	public void conclusionContract(String contId) {
+		mapper.updateConclusedContract(contId);
 	}
 
 }

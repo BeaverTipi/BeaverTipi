@@ -118,4 +118,6 @@ public interface BrokerContractService {
 	 * @return List<ContractDigitalSignVO>
 	 */
 	public List<ContractDigitalSignVO> readSignatureList(String contId);
+	
+	public void conclusionContract(String contId);
 }

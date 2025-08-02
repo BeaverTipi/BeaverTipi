@@ -146,4 +146,6 @@ public interface BrokerMapper {
 	 * @return
 	 */
 	public List<ContractDigitalSignVO> selectDtSignList(String contId);
+	
+	public int updateConclusedContract(String contId);
 }
