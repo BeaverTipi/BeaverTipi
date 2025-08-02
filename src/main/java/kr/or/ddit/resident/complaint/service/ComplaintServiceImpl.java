@@ -57,7 +57,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         complaint.setReqStatus("001");
 
         // 3) BOARD + RESIDENT_BOARD 동시 INSERT
-        mapper.insertComplaintBoard(complaint);
+//        mapper.insertComplaintBoard(complaint);
         mapper.insertComplaint(complaint);
     }
 
@@ -66,14 +66,14 @@ public class ComplaintServiceImpl implements ComplaintService {
     public void updateComplaint(ResidentBoardVO complaint) {
         complaint.setRsdBrdModDtm(LocalDateTime.now());
 
-        mapper.updateComplaintBoard(complaint);
+//        mapper.updateComplaintBoard(complaint);
         mapper.updateComplaint(complaint);
     }
 
     @Override
     @Transactional
     public void deleteComplaint(String rsdBrdId) {
-        mapper.softDeleteResidentBoard(rsdBrdId);
+//        mapper.softDeleteResidentBoard(rsdBrdId);
         mapper.softDeleteComplaint(rsdBrdId);
     }
 

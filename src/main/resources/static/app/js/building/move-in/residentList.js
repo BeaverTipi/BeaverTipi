@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-	
+    const urlParams = new URLSearchParams(window.location.search);
 	console.log("✅ residentList.js 실행됨");
 	
 	//  건물 선택 셀렉터

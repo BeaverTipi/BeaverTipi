@@ -53,7 +53,6 @@ function renderNoticePosts(posts) {
 	      typeIcon = "";
 	      typeColor = "";
 	  }
-	
     const rowHtml = `
 	    <tr>
 	      <td>${typeIcon ? `<span class="type-icon">${typeIcon}</span>` : idx + 1}</td>
@@ -69,9 +68,12 @@ function renderNoticePosts(posts) {
 	      <td>${post.brdVwCnt}</td>
 	    </tr>
     `;
-
+    	console.log(post.member?.mbrNnm)
+		console.log("📋 post:", post);
+		console.log("🙋 member:", post.member);
     tableBody.insertAdjacentHTML("beforeend", rowHtml);
   });
+  
 }
 
 // 📌 페이징 HTML 렌더링

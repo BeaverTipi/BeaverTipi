@@ -295,17 +295,34 @@ td .type-icon {
 
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    setupGlobalBuildingSelector({
-      param: "bldgIdParam",
-      storageKey: "selectedBuildingId",
-      onChange: (bldgId, page) => {
-        loadNotices(page);
-      },
-      pageParam: "page",
-      pageSize: 10
-    });
-  });
+document.addEventListener("DOMContentLoaded", () => {
+	  const selector = document.querySelector('select[name="bldgIdParam"]');
+	  const savedBldgId = localStorage.getItem("selectedBuildingId");
+
+	  // 🟧 1. 초기 selectedBuildingId 없으면 첫 옵션으로 설정
+	  if ((!savedBldgId || savedBldgId === "null") && selector && selector.options.length > 0) {
+	    const defaultBldgId = selector.options[0].value;
+	    localStorage.setItem("selectedBuildingId", defaultBldgId);
+	    selector.value = defaultBldgId;
+	  }
+
+	  // 🟧 2. 건물 선택기 활성화
+	  setupGlobalBuildingSelector({
+	    param: "bldgIdParam",
+	    storageKey: "selectedBuildingId",
+	    onChange: (bldgId, page) => {
+	      loadNotices(page);
+	    },
+	    pageParam: "page",
+	    pageSize: 10
+	  });
+
+	  // 🟧 3. 최초 진입 시에도 공지사항 목록 로딩
+	  const initialBldgId = localStorage.getItem("selectedBuildingId");
+	  if (initialBldgId && initialBldgId !== "null") {
+	    loadNotices(1); // ✅ 직접 첫 페이지 로드
+	  }
+	});
 </script>
 <!-- ✅ axios CDN 추가 (필수) -->
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
