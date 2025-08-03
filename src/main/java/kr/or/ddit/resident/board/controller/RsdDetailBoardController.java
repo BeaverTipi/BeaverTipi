@@ -98,11 +98,18 @@ public class RsdDetailBoardController {
     	
     	service.softDeleteBoard(rsdBrdId);
     	return """
-    	        <script>
-    	          alert('삭제되었습니다.');
-    	          location.href='/resident/board?bldgIdParam=%s&page=%d';
-    	        </script>
-    	        """.formatted(bldgIdParam,page);
+    		    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+    		    <script>
+    		      Swal.fire({
+    		        icon: 'success',
+    		        title: '삭제되었습니다.',
+    		        confirmButtonColor: '#E17100',
+    		        confirmButtonText: '확인'
+    		      }).then(() => {
+    		        location.href = '/resident/board?bldgIdParam=%s&page=%d';
+    		      });
+    		    </script>
+    		    """.formatted(bldgIdParam, page);
     }
 }
 

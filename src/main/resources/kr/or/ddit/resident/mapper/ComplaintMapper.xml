@@ -6,22 +6,22 @@
 
   <!-- 1) resultMap 정의 -->
   <resultMap id="complaintMap" type="kr.or.ddit.vo.ResidentBoardVO">
-    <id     column="RSD_BRD_ID"       property="rsdBrdId"/>
-    <result column="OPEN_YN"          property="openYn"/>
-    <result column="REQ_STATUS"       property="reqStatus"/>
-    <result column="BRD_CODE"         property="brdCode"/>
-    <result column="BLDG_ID"          property="bldgId"/>
-    <result column="MBR_CD"           property="mbrCd"/>
-    <result column="BRD_TITL_NM"      property="rsdBrdTitl"/>
-    <result column="BRD_CONT"         property="rsdBrdCont"/>
-    <result column="BRD_PBLS_DTM"     property="rsdBrdPblsDtm"/>
-    <result column="BRD_VW_CNT"       property="rsdBrdCnt"/>
-    <result column="BRD_MOD_DTM"      property="rsdBrdModDtm"/>
-    <result column="BRD_DEL_YN"       property="brdDelYn"/>        <!-- BOARD 삭제 플래그 -->
-    <result column="RSD_BRD_DEL_YN"   property="rsdBrdDelYn"/>    <!-- RESIDENT_BOARD 삭제 플래그 -->
-    <result column="MBR_NNM"          property="mbrNnm"/>
-    <result column="REPLY_CONT" property="replyCont"/>
-	<result column="ANS_DT" property="ansDt"/>
+  <id     column="RSD_BRD_ID"       property="rsdBrdId"/>
+  <result column="RSD_BRD_TITL"     property="rsdBrdTitl"/>
+  <result column="RSD_BRD_CONT"     property="rsdBrdCont"/>
+  <result column="RSD_BRD_PBLS_DTM" property="rsdBrdPblsDtm"/>
+  <result column="RSD_BRD_CNT"      property="rsdBrdCnt"/>
+  <result column="RSD_BRD_MOD_DTM"  property="rsdBrdModDtm"/>
+  <result column="OPEN_YN"          property="openYn"/>
+  <result column="REQ_STATUS"       property="reqStatus"/>
+  <result column="BRD_CODE"         property="brdCode"/>
+  <result column="BLDG_ID"          property="bldgId"/>
+  <result column="MBR_CD"           property="mbrCd"/>
+  <result column="RSD_BRD_DEL_YN"   property="rsdBrdDelYn"/>
+  <result column="BRD_DEL_YN"       property="brdDelYn"/>
+  <result column="MBR_NNM"          property="mbrNnm"/>
+  <result column="REPLY_CONT"       property="replyCont"/>
+  <result column="ANS_DT"           property="ansDt"/>
   </resultMap>
 
   <!-- 2) 페이징 처리된 민원 목록 조회 -->
@@ -43,15 +43,17 @@
         R.RSD_BRD_CNT,
         R.RSD_BRD_MOD_DTM,
         R.RSD_BRD_DEL_YN,
+        B.BRD_DEL_YN,
         M.MBR_NNM,
         R.REPLY_CONT
       FROM RESIDENT_BOARD R
+      JOIN BOARD    B ON R.RSD_BRD_ID = B.BRD_NO
       JOIN MEMBER   M ON R.MBR_CD   = M.MBR_CD
       JOIN BUILDING H ON R.BLDG_ID  = H.BLDG_ID
       JOIN TENANCY  T ON H.RENTAL_PTY_ID = T.RENTAL_PTY_ID
       <where>
         AND R.RSD_BRD_DEL_YN = 'N'
-
+		AND B.BRD_DEL_YN = 'N'
         <if test="search.bldgId != null and search.bldgId != ''">
           AND R.BLDG_ID = #{search.bldgId}
         </if>
@@ -212,13 +214,13 @@
   </insert>
 
   <!-- 8) UPDATE: BOARD -->
-<!--   <update id="updateComplaintBoard" parameterType="kr.or.ddit.vo.ResidentBoardVO"> -->
-<!--     UPDATE BOARD -->
-<!--        SET BRD_TITL_NM  = #{rsdBrdTitl}, -->
-<!--            BRD_CONT      = #{rsdBrdCont}, -->
-<!--            BRD_MOD_DTM   = #{rsdBrdModDate} -->
-<!--      WHERE BRD_NO       = #{rsdBrdId} -->
-<!--   </update> -->
+  <update id="updateComplaintBoard" parameterType="kr.or.ddit.vo.ResidentBoardVO">
+    UPDATE BOARD
+       SET BRD_TITL_NM  = #{rsdBrdTitl},
+           BRD_CONT      = #{rsdBrdCont},
+           BRD_MOD_DTM   = #{rsdBrdModDate}
+     WHERE BRD_NO       = #{rsdBrdId}
+  </update>
 
   <!-- 9) UPDATE: RESIDENT_BOARD -->
   <update id="updateComplaint" parameterType="kr.or.ddit.vo.ResidentBoardVO">
@@ -235,11 +237,11 @@
   </update>
 
   <!-- 10) 소프트 삭제 -->
-<!--   <update id="softDeleteComplaint" parameterType="String"> -->
-<!--     UPDATE BOARD -->
-<!--        SET BRD_DEL_YN = 'Y' -->
-<!--      WHERE BRD_NO     = #{rsdBrdId} -->
-<!--   </update> -->
+  <update id="softDeleteComplaint" parameterType="String">
+    UPDATE BOARD
+       SET BRD_DEL_YN = 'Y'
+     WHERE BRD_NO     = #{rsdBrdId}
+  </update>
   <update id="softDeleteResidentBoard" parameterType="String">
     UPDATE RESIDENT_BOARD
        SET RSD_BRD_DEL_YN = 'Y'

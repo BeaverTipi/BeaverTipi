@@ -197,7 +197,7 @@
 	</insert>
 	
 	<select id="getNextNoticeNo" resultType="String">
-	  SELECT TO_CHAR(SEQ_NOTICE_NO.NEXTVAL) FROM DUAL
+	  SELECT TO_CHAR(SEQ_BRD_NO.NEXTVAL) FROM DUAL
 	</select>
 
   <!-- ✅ 수정 -->
