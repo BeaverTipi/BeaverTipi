@@ -68,15 +68,21 @@ public class NoticeRestController {
 
         final String targetBldgId = bldgIdParam;
         List<NoticeVO> filteredList = boardList.stream()
-            .filter(notice -> {
-                if (notice.getBldgId() == null) {
-                    List<String> ownerBldgIds = unitResidentService.getUnitsByMember(notice.getMbrCd())
-                        .stream().map(UnitResidentVO::getBldgId).distinct().toList();
-                    return ownerBldgIds.contains(targetBldgId);
-                } else {
-                    return residentBldgIds.contains(notice.getBldgId());
-                }
-            }).toList();
+        	    .filter(notice -> {
+        	        // 전체공지 모드일 때는 모든 공지 다 표시
+        	        if ("ALL".equalsIgnoreCase(targetBldgId)) {
+        	            return true;
+        	        }
+
+        	        if (notice.getBldgId() == null) {
+        	            // 전체 공지 → 작성자의 건물과 현재 대상 건물 비교
+        	            List<String> ownerBldgIds = unitResidentService.getUnitsByMember(notice.getMbrCd())
+        	                .stream().map(UnitResidentVO::getBldgId).distinct().toList();
+        	            return ownerBldgIds.contains(targetBldgId);
+        	        } else {
+        	            return residentBldgIds.contains(notice.getBldgId());
+        	        }
+        	    }).toList();
 
         Map<String, Object> pagination = Map.of(
             "currentPageNo", paging.getCurrentPageNo(),

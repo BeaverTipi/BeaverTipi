@@ -67,11 +67,11 @@ public class NoticeController {
 
         // 2) 건물 선택이 안 됐으면 빈 리스트 리턴
         String selectedBldgId = bldgIdParam;
-        if(selectedBldgId == null || selectedBldgId.isBlank()) {
-        	selectedBldgId = units.stream()
-        		.min(Comparator.comparing(UnitResidentVO::getMoveInDt))
-        		.map(UnitResidentVO::getBldgId)
-        		.orElse(units.get(0).getBldgId());
+        if (selectedBldgId == null || selectedBldgId.isBlank() || "ALL".equalsIgnoreCase(selectedBldgId)) {
+            selectedBldgId = units.stream()
+                .min(Comparator.comparing(UnitResidentVO::getMoveInDt))
+                .map(UnitResidentVO::getBldgId)
+                .orElse(units.get(0).getBldgId());
         }
 
         // 3) 선택된 건물이 있으면 VO에 세팅
