@@ -329,7 +329,7 @@ public class FileServiceImpl implements FileService {
 		if(signedOrder ==null || signedOrder == 0) {
 			signedOrder = 1;
 		}
-		if(signedOrder<=3) {
+		if(signedOrder<=4) {
 			signedOrder++;
 		}
 		

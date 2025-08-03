@@ -25,6 +25,7 @@ import kr.or.ddit.broker.dto.SignerDTO;
 import kr.or.ddit.broker.service.BrokerContractService;
 import kr.or.ddit.main.member.service.MemberService;
 import kr.or.ddit.util.crypto.AES256Util;
+import kr.or.ddit.util.crypto.UrlSafeBase64;
 import kr.or.ddit.util.file.service.FileService;
 import kr.or.ddit.vo.ContractVO;
 import kr.or.ddit.vo.FileVO;
@@ -91,7 +92,8 @@ public class RestContractAuthorizationController {
 				}
 
 				String encryptedContId = String.valueOf(parsedRequest.get("encryptedContId"));
-				String contId = aes256Util.decrypt(encryptedContId); ///<---- /signin에서 contId 줄 방법
+				String decodedEncryptedContId = UrlSafeBase64.decode(encryptedContId);
+				String contId = aes256Util.decrypt(decodedEncryptedContId); ///<---- /signin에서 contId 줄 방법
 				// String contId = String.valueOf(parsedRequest.get("contId"));
 				log.debug("-----<> 계약 ID 출력:: {}", contId);
 				ContractVO contract = contService.readContractInfo(contId);

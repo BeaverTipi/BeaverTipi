@@ -36,6 +36,7 @@ import kr.or.ddit.broker.service.BrokerContractService;
 import kr.or.ddit.broker.service.BrokerListingService;
 import kr.or.ddit.util.batch.contract.ContractSignatureExpireJob;
 import kr.or.ddit.util.crypto.AES256Util;
+import kr.or.ddit.util.crypto.UrlSafeBase64;
 import kr.or.ddit.util.notifications.service.NotificationsService;
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.ContractVO;
@@ -194,7 +195,8 @@ public class RestBrokerContractProceedingController {
 			String lstgName = lstg.getLstgNm();
 			String notifTitle = "[계약페이지 개설]";
 			String notifMsg = String.format("문의하신 매물 '%s'의 계약이 진행 중입니다. 임대인의 서명을 기다리는 중...", lstgName);
-			String notifRefUrl = String.format("https://dev.beavertipi.com/contract/%s", aes256Util.encrypt(contId));
+			String encodedEncryptedContId = UrlSafeBase64.encode(aes256Util.encrypt(contId));
+			String notifRefUrl = String.format("https://dev.beavertipi.com/contract/%s", encodedEncryptedContId);
 			
 			Map<String, String> partyTelnoParam = Map.of(
 					"lesseeTelno", lesseeTelno,

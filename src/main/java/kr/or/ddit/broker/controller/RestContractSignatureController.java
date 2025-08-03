@@ -39,18 +39,23 @@ import jakarta.validation.Validator;
 import kr.or.ddit.broker.mapper.BrokerAuthUnpackingMapper;
 import kr.or.ddit.broker.service.BrokerAuthUnpackingService;
 import kr.or.ddit.broker.service.BrokerContractService;
+import kr.or.ddit.broker.service.BrokerListingService;
 import kr.or.ddit.main.member.service.MemberService;
 import kr.or.ddit.util.crypto.AES256Util;
+import kr.or.ddit.util.crypto.UrlSafeBase64;
 import kr.or.ddit.util.file.Base64DecodedMultipartFile;
 import kr.or.ddit.util.file.ByteArrayMultipartFile;
 import kr.or.ddit.util.file.ToMultipartFileUtil;
 import kr.or.ddit.util.file.service.FileService;
+import kr.or.ddit.util.notifications.service.NotificationsService;
 import kr.or.ddit.util.pdf.SignerRole;
 import kr.or.ddit.util.pdf.service.PDFService;
 import kr.or.ddit.vo.ContractDigitalSignVO;
 import kr.or.ddit.vo.ContractVO;
 import kr.or.ddit.vo.FileVO;
+import kr.or.ddit.vo.ListingVO;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.NotificationVO;
 import kr.or.ddit.broker.dto.SignatureDTO;
 import kr.or.ddit.broker.dto.SignerDTO;
 import kr.or.ddit.broker.dto.SignerStatusAssembler;
@@ -83,6 +88,10 @@ public class RestContractSignatureController {
 	private SignerStatusAssembler dtoAssembler;
 	@Autowired
 	private PDFService pdfService;
+	@Autowired
+	private BrokerListingService lstgService;
+	@Autowired
+	private NotificationsService notifService;
 
 	@GetMapping("/{encryptedContId}")
 	public ResponseEntity<Void> redirectToReactSignaturePage(@PathVariable String encryptedContId) {
@@ -177,6 +186,7 @@ public class RestContractSignatureController {
 			Principal principal
 			, @RequestBody Map<String, String> payload
 			, @PathVariable(name = "signerRole") String signerRole
+			, HttpServletRequest request
 	) {
 		String resultJson = "";
 		try {
@@ -219,11 +229,11 @@ public class RestContractSignatureController {
 			//먼저 tempContr을 검색 있으면 그거 불러오고, 가져다 서명 입혀서 update
 			//	public FileVO updateFile(String fileId, MultipartFile newFile);
 			FileVO originalFile = contService.readContractPDFFile(digitalSign.getContId());
-			String fileId = originalFile.getFileId();
 			if (originalFile == null) {
 				log.warn("📁 원본 파일이 존재하지 않음. contId: {}", digitalSign.getContId());
 				return badRequest("원본 계약서를 찾을 수 없습니다.");
 			}
+			String fileId = originalFile.getFileId();
 			
 			ResponseEntity<Resource> response = fileService.downloadContractFile(originalFile.getFileId());
 			Resource resource = response.getBody();
@@ -260,15 +270,84 @@ public class RestContractSignatureController {
 
 			
 			
+			String contId = digitalSign.getContId();
 			
 			// 6-1. 계약 체결
 			if("AGENT".equals(signerRole)) {
-				contService.readContractList(digitalSign.getContId());
+				ContractVO contract = contService.readContractInfo(contId);
+				contService.conclusionContract(contId);
 			}
 			
 			// 6-2. 알림메시지
+
+			ContractVO contract = contService.readContractInfo(contId);
+			String lesseeTelno = contract.getContLesseeTelno();
+			String lessorTelno = contract.getContTenancyTelno();
+			String agentTelno = contract.getContBrokerTelno();
+			String userRole = "AGENT";
 			
+			ListingVO lstg = lstgService.readLstgDetailsById(contract.getLstgId());
 			
+			Map<String, String> partyTelnoParam = Map.of(
+					"lesseeTelno", lesseeTelno,
+					"lessorTelno", lessorTelno,
+					"agentTelno", agentTelno,
+					"userRole", userRole,
+					"contId", contId);
+			Map<String, SignerDTO> signers = contService.readContractPartyInfo2(partyTelnoParam, request);
+	        SignerDTO lessee = signers.get("LESSEE");
+	        SignerDTO lessor = signers.get("LESSOR");
+	        SignerDTO agent = signers.get("AGENT");
+	        String lesseeCd = lessee.getCode();
+	        String lessorCd = lessor.getCode();
+	        String agentCd = agent.getCode();
+			
+	        String lstgName = lstg.getLstgNm();
+			String encodedEncryptedContId = UrlSafeBase64.encode(aes256Util.encrypt(contId));
+			String notifRefUrl = String.format("https://dev.beavertipi.com/contract/%s", encodedEncryptedContId);
+			String notifTitle = "";
+	        String notifMsg = "";
+	        
+			NotificationVO notif = new NotificationVO();
+			
+			switch(signerRole) {
+			case "LESSOR":
+				notifTitle = "[전자서명 진행 중]";
+				notifMsg = String.format("임대인이 서명을 완료했습니다. 임차인의 서명을 기다리는 중... 매물 '%s'.", lstgName);
+				
+				notif.setNotifTitle(notifTitle);
+				notif.setNotifMsg(notifMsg);
+				notif.setNotifRefUrl(notifRefUrl);
+				notif.setNotifTypeCd("092");
+				break;
+			case "LESSEE":
+				notifTitle = "[전자서명 진행 중]";
+				notifMsg = String.format("임차인이 서명을 완료했습니다. 중개인의 확인을 기다리는 중... 매물 '%s'.", lstgName);
+				
+				notif.setNotifTitle(notifTitle);
+				notif.setNotifMsg(notifMsg);
+				notif.setNotifRefUrl(notifRefUrl);
+				notif.setNotifTypeCd("093");
+				break;
+			case "AGENT":
+				notifTitle = "[전자계약 체결]";
+				notifMsg = String.format("중개인이 계약 체결을 확인했습니다. 매물 '%s'.", lstgName);
+				
+				notif.setNotifTitle(notifTitle);
+				notif.setNotifMsg(notifMsg);
+				notif.setNotifRefUrl(notifRefUrl);
+				notif.setNotifTypeCd("094");
+				break;
+			default: break;
+			}
+			
+			notif.setMbrCd(lessorCd);
+	        notifService.createNotificationSignautrePageOpened(notif);
+	        notif.setMbrCd(lesseeCd);
+	        notifService.createNotificationSignautrePageOpened(notif);
+	        notif.setMbrCd(agentCd);
+	        notifService.createNotificationSignautrePageOpened(notif);
+
 			
 			// 7. 성공 응답
 			resultJson = objectMapper.writeValueAsString(
