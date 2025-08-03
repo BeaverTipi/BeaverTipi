@@ -57,7 +57,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         complaint.setReqStatus("001");
 
         // 3) BOARD + RESIDENT_BOARD 동시 INSERT
-//        mapper.insertComplaintBoard(complaint);
+        mapper.insertComplaintBoard(complaint);
         mapper.insertComplaint(complaint);
     }
 

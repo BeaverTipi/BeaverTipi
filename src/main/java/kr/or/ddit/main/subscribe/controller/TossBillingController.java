@@ -22,6 +22,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import kr.or.ddit.main.subscribe.service.SubscribeSubsriptionService;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.util.validate.exception.CardException;
@@ -166,7 +168,10 @@ public class TossBillingController {
                                                  @RequestParam("solId") String solId,
                                                  @RequestParam("current") String current,
                                                  @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
-                                                 RedirectAttributes redirectAttributes) {
+                                                 RedirectAttributes redirectAttributes,
+                                                 HttpServletRequest req,
+                                                 HttpServletResponse resp)
+    {
         try {
             // 💡 Toss 인증 헤더 수동 처리
             HttpHeaders headers = new HttpHeaders();
@@ -196,7 +201,7 @@ public class TossBillingController {
             
             String mbrCd = principal.getRealUser().getMbrCd();
 
-            service.saveAutopayAndFirstPayment(result,mbrCd,customerKey,role,solId);
+            service.saveAutopayAndFirstPayment(result,mbrCd,customerKey,role,solId,req,resp);
             
             redirectAttributes.addFlashAttribute("message", "결제에 성공했습니다.");
             return new RedirectView("/account/read?success=true");
@@ -230,7 +235,9 @@ public class TossBillingController {
                                                    @RequestParam("solId") String solId,
                                                    @RequestParam("current") String current,
                                                    @AuthenticationPrincipal RealUserWrapper<MemberVO> principal,
-                                                   RedirectAttributes redirectAttributes) {
+                                                   RedirectAttributes redirectAttributes
+                                                   ,HttpServletRequest req,
+                                                   HttpServletResponse resp) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -253,7 +260,7 @@ public class TossBillingController {
                 Map<String, Object> data = response.getBody();
                 String mbrCd = principal.getRealUser().getMbrCd();
 
-                service.savePaymentResult(data,mbrCd,solId,role);
+                service.savePaymentResult(data,mbrCd,solId,role,req,resp);
                 
               
                 redirectAttributes.addFlashAttribute("message", "결제에 성공했습니다.");

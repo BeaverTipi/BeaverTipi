@@ -176,21 +176,21 @@
 
   <!-- 5) PK 채번용 시퀀스 조회 -->
   <select id="getNextComplaintId" resultType="String">
-    SELECT TO_CHAR(SEQ_RSD_BRD_ID.NEXTVAL) FROM DUAL
+    SELECT TO_CHAR(SEQ_BRD_NO.NEXTVAL) FROM DUAL
   </select>
 
   <!-- 6) INSERT: BOARD -->
-<!--   <insert id="insertComplaintBoard" parameterType="kr.or.ddit.vo.ResidentBoardVO"> -->
-<!--     INSERT INTO BOARD ( -->
-<!--       BRD_NO, BRD_CODE, BLDG_ID, MBR_CD, -->
-<!--       BRD_TITL_NM, BRD_CONT, BRD_PBLS_DTM, -->
-<!--       BRD_VW_CNT, BRD_DEL_YN -->
-<!--     ) VALUES ( -->
-<!--       #{rsdBrdId}, #{brdCode}, #{bldgId}, #{mbrCd}, -->
-<!--       #{rsdBrdTitl}, #{rsdBrdCont}, #{rsdBrdPblsDate}, -->
-<!--       0, 'N' -->
-<!--     ) -->
-<!--   </insert> -->
+  <insert id="insertComplaintBoard" parameterType="kr.or.ddit.vo.ResidentBoardVO"> 
+    INSERT INTO BOARD ( 
+      BRD_NO, BRD_CODE, BLDG_ID, MBR_CD, 
+      BRD_TITL_NM, BRD_CONT, BRD_PBLS_DTM, 
+       BRD_VW_CNT, BRD_DEL_YN 
+    ) VALUES ( 
+       #{rsdBrdId}, #{brdCode}, #{bldgId}, #{mbrCd}, 
+       #{rsdBrdTitl}, #{rsdBrdCont}, #{rsdBrdPblsDate}, 
+       0, 'N' 
+     ) 
+   </insert>
 
   <!-- 7) INSERT: RESIDENT_BOARD (삭제 플래그 기본 'N') -->
   <insert id="insertComplaint" parameterType="kr.or.ddit.vo.ResidentBoardVO">

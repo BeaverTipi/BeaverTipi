@@ -299,12 +299,20 @@ input {
       storageKey: 'selectedBuildingId',
       onChange: loadPosts
     });
+	  const selector = document.querySelector('select[name="bldgIdParam"]');
+	  const savedBldgId = localStorage.getItem("selectedBuildingId");
 
-    // 📌 첫 진입 시 자동 게시글 로딩
-    const selectedBldgId = localStorage.getItem('selectedBuildingId');
-    if (selectedBldgId) {
-      loadPosts(selectedBldgId, 1);
-    }
+	  // 🟧 1. 초기 selectedBuildingId 없으면 첫 옵션으로 설정
+	  if ((!savedBldgId || savedBldgId === "null") && selector && selector.options.length > 0) {
+	    const defaultBldgId = selector.options[0].value;
+	    localStorage.setItem("selectedBuildingId", defaultBldgId);
+	    selector.value = defaultBldgId;
+	  }
+
+	  const initialBldgId = localStorage.getItem("selectedBuildingId");
+	  if (initialBldgId && initialBldgId !== "null") {
+		  loadPosts(initialBldgId,1); // ✅ 직접 첫 페이지 로드
+	  }
     const myPostsOnlyCheckbox = document.querySelector('#myPostsOnly');
     if (myPostsOnlyCheckbox) {
       myPostsOnlyCheckbox.addEventListener('change', () => {
@@ -315,6 +323,7 @@ input {
       });
     }
   });
+  
  
   // 📌 검색 폼 제출 시 비동기 게시글 로딩
   document.querySelector('.search-form').addEventListener('submit', function (e) {

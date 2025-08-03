@@ -3,6 +3,8 @@ package kr.or.ddit.main.subscribe.service;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.SolutionSubscriptionVO;
 import kr.or.ddit.vo.SolutionVO;
@@ -21,7 +23,7 @@ public interface SubscribeSubsriptionService {
 	public int checkedTenancyCount(String username);
 	public SolutionSubscriptionVO checkedSolutionSubscription(String username, String SolutionCode);
 	public List<SolutionSubscriptionVO> checkedSolutionSubscriptionList(String username);
-	void savePaymentResult(Map<String, Object> data, String mbrCd, String solId, String role);
+	void savePaymentResult(Map<String, Object> data,String mbrCd,String solId,String role,HttpServletRequest req, HttpServletResponse resp);
 	void saveAutopayAndFirstPayment(Map<String, Object> result, String mbrCd, String customerKey, String role,
-			String solId);
+			String solId,HttpServletRequest req, HttpServletResponse resp);
 }
