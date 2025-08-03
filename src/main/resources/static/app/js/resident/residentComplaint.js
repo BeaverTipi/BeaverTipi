@@ -27,9 +27,13 @@ function renderComplaintPosts(posts, loginMbrCd, isLandlord, currentPageNo,pageS
     const isVisible = isPublic || isOwner || isLandlord;
 
     const titleHtml = isVisible
-      ? post.rsdBrdTitl
-      : `<span class="text-muted">비공개 글입니다.</span>`;
-
+    ? `<a href="/resident/complaint/view?rsdBrdId=${post.rsdBrdId}&bldgIdParam=${post.bldgId}" 
+           class="notice-title" title="${post.rsdBrdTitl}">
+         ${post.rsdBrdTitl}
+       </a>`
+    : `<a href="javascript:void(0)" onclick="showPrivateAlert()" class="notice-title text-muted">
+         🔒 비공개 글입니다.
+       </a>`;
     const 공개여부 = post.openYn === "Y"
       ? `<span class="badge badge-blue">공개</span>`
       : `<span class="badge badge-dark">비공개</span>`;
@@ -43,12 +47,7 @@ function renderComplaintPosts(posts, loginMbrCd, isLandlord, currentPageNo,pageS
       <tr>
         <td>${startIdx + idx}</td>
         <td>${post.mbrNnm}</td>
-          <td>
-          <a href="/resident/complaint/view?rsdBrdId=${post.rsdBrdId}&bldgIdParam=${post.bldgId}" 
-             class="notice-title" title="${post.rsdBrdTitl}">
-            ${titleHtml}
-          </a>
-        </td>
+        <td>${titleHtml}</td>
         <td>${공개여부}</td>
         <td>${처리상태}</td>
         <td>${formatDate(post.rsdBrdPblsDate)}</td>

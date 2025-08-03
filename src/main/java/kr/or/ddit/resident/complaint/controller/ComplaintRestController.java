@@ -104,14 +104,15 @@ public class ComplaintRestController {
         
         // 민원 목록 조회
         List<ResidentBoardVO> rawPostList = complaintService.selectComplaintList(paramMap);
-        List<ResidentBoardVO> postList = rawPostList.stream()
-        								.filter(post->{
-        									boolean isPublic = "Y".equals(post.getOpenYn());
-        									boolean isMine = post.getMbrCd().equals(member.getMbrCd());
-        									boolean canView = complaintService.canViewComplaint(post.getRsdBrdId(), member.getMbrCd());
-        									return isPublic || isMine || canView;
-        								})
-        								.toList();
+        List<ResidentBoardVO> postList = rawPostList;
+//        List<ResidentBoardVO> postList = rawPostList.stream()
+//        								.filter(post->{
+//        									boolean isPublic = "Y".equals(post.getOpenYn());
+//        									boolean isMine = post.getMbrCd().equals(member.getMbrCd());
+//        									boolean canView = complaintService.canViewComplaint(post.getRsdBrdId(), member.getMbrCd());
+//        									return isPublic || isMine || canView;
+//        								})
+//        								.toList();
         // 페이징 HTML 생성
         String pagingHtml = paginationRenderer.renderPagination(pagingInfo, "loadComplaints");
 
