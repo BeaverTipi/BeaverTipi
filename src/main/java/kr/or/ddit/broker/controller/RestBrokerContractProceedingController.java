@@ -175,7 +175,7 @@ public class RestBrokerContractProceedingController {
         	    .forJob(jobDetail)
         	    .withIdentity(triggerKey)
 //        	    .startAt(new Date(System.currentTimeMillis() + 5000))
-        	    .startAt(new Date(System.currentTimeMillis() + 3_600_000))
+        	    .startAt(new Date(System.currentTimeMillis() + 1_200_000))
         	    .withSchedule(SimpleScheduleBuilder.simpleSchedule()
         	        .withMisfireHandlingInstructionFireNow())
         	    .build();

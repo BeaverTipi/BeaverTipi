@@ -155,6 +155,17 @@ public class RestContractAuthorizationController {
 						.agentSignedPdfPath("")
 						.build();
 				
+//				if(!"AGENT".equals(userRole)) {
+				SignerDTO lessor = contService.readSigner(Map.of("contId", contId, "role", "LESSOR"));
+				SignerDTO lessee = contService.readSigner(Map.of("contId", contId, "role", "LESSEE"));
+				SignerDTO agent = contService.readSigner(Map.of("contId", contId, "role", "AGENT"));
+				signers.put("LESSOR", lessor);
+				signers.put("LESSEE", lessee);
+				signers.put("AGENT", agent);
+				log.debug("^0^^0^^0^^0^^0^ {}", signers.toString());
+				signers.get(userRole.toString()).setIsJoined(true);
+				signers.get(userRole.toString()).setIpAddr(request.getRemoteAddr());
+				
 				/** 4. 응답 데이터 구성 */
 				Map<String, Object> responseMap = new LinkedHashMap<>();
 				responseMap.put("myRole", userRole);

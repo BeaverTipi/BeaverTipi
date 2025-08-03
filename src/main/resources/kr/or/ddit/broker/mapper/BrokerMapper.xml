@@ -21,7 +21,7 @@
         <id property="fileId" column="FILE_ID"/>
     </association>
 </resultMap>
-<resultMap id="SignerResultMap" type="SignerVO">
+<resultMap id="SignerResultMap" type="kr.or.ddit.broker.dto.SignerDTO">
     <result property="isJoined" column="IS_JOINED" typeHandler="kr.or.ddit.util.parse.BooleanYNTypeHandler"/>
     <result property="signedAt" column="SIGNED_AT" typeHandler="kr.or.ddit.util.parse.LocalDateTimeStringTypeHandler"/>
     <result property="isSigned" column="IS_SIGNED" typeHandler="kr.or.ddit.util.parse.BooleanYNTypeHandler"/>
@@ -452,7 +452,7 @@
     WHERE CONT_ID = #{contId}
       AND ROLE = #{role}
 </select>
-<insert id="insertSigner" parameterType="SignerVO">
+<insert id="insertSigner" parameterType="kr.or.ddit.broker.dto.SignerDTO">
     INSERT INTO SIGNER (
         CONT_ID,
         ROLE,
@@ -487,7 +487,7 @@
         #{tempPdfUrl}
     )
 </insert> 
-<update id="updateSigner" parameterType="SignerVO">
+<update id="updateSigner" parameterType="kr.or.ddit.broker.dto.SignerDTO">
     UPDATE SIGNER
     SET
         CODE          = #{code},
@@ -523,4 +523,22 @@ WHERE ROWNUM = 1
 	   SET CONT_STAT_CD = '002'
 	 WHERE CONT_ID = #{contId}
 </update>
+<insert id="insertSingerDTO" parameterType="kr.or.ddit.broker.dto.SignerDTO">
+	INSERT INTO SIGNER
+	VALUES(#{contId}
+			, #{role}
+			, #{code}
+			, #{id}
+			, #{name}
+			, #{telno}
+			, #{signerStatus}
+			, #{ipAddr}
+			, #{isJoined}
+			, #{signedAt}
+			, #{isSigned}
+			, #{hashVal}
+			, #{isValid}
+			, #{base64}
+			, #{tempPdfUrl})
+</insert>
 </mapper>

@@ -65,7 +65,10 @@ import lombok.extern.slf4j.Slf4j;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @RestController
@@ -269,8 +272,21 @@ public class RestContractSignatureController {
 			FileVO tempContr = fileService.uploadAndSaveTempSignedContract(signedPdf, digitalSign, fileId);
 
 			
-			
 			String contId = digitalSign.getContId();
+			
+			String signDateTime = digitalSign.getContDtSignDtm();
+			LocalDateTime dateTime = Instant.parse(signDateTime)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+			
+			// 6-0. SIGNER 업데이트
+			SignerDTO signer = contService.readSigner(Map.of("contId", contId, "role", signerRole));
+			signer.setIsSigned(true);
+			signer.setIsValid(true);
+			signer.setIpAddr(request.getRemoteAddr());
+			signer.setSignedAt(dateTime);
+			signer.setIsJoined(false);
+			contService.updateSigner(signer);
 			
 			// 6-1. 계약 체결
 			if("AGENT".equals(signerRole)) {
@@ -348,6 +364,9 @@ public class RestContractSignatureController {
 	        notif.setMbrCd(agentCd);
 	        notifService.createNotificationSignautrePageOpened(notif);
 
+	        // 6-3. 서명상태 저장
+	        
+	        
 			
 			// 7. 성공 응답
 			resultJson = objectMapper.writeValueAsString(

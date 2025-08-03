@@ -18,6 +18,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import kr.or.ddit.broker.dto.SignerDTO;
 import kr.or.ddit.vo.BrokerVO;
 import kr.or.ddit.vo.CommonCodeVO;
 import kr.or.ddit.vo.ContractDigitalSignVO;
@@ -124,10 +125,10 @@ public interface BrokerMapper {
 	public int existsSignature(String contId);
 	public int insertSignature(SignatureVO signature);
 	public int updateSignature(SignatureVO signature);
-	public SignerVO selectSigner(Map<String, String> contIdAndRole);
+	public SignerDTO selectSigner(Map<String, String> contIdAndRole);
 	public int existsSigner(Map<String, String> contIdAndRole);
-	public int insertSigner(SignerVO singer);
-	public int updateSigner(SignerVO signer);
+	public int insertSigner(SignerDTO singer);
+	public int updateSigner(SignerDTO signer);
 	
 	public FileVO selectLatestSignedContractPdf(String contId);
 	
@@ -148,4 +149,5 @@ public interface BrokerMapper {
 	public List<ContractDigitalSignVO> selectDtSignList(String contId);
 	
 	public int updateConclusedContract(String contId);
+	
 }

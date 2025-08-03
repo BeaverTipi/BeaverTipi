@@ -235,18 +235,18 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 				.ipAddr("").isJoined(false).signedAt(null).isSigned(false).hashVal("").isValid(false).base64("")
 				.build();
 		switch (userRole) {
-		case "LESSOR" -> {
-			lessor.setIsJoined(true);
-			lessor.setIpAddr(request.getRemoteAddr());
-		}
-		case "LESSEE" -> {
-			lessee.setIsJoined(true);
-			lessee.setIpAddr(request.getRemoteAddr());
-		}
-		case "AGENT" -> {
-			agent.setIsJoined(true);
-			agent.setIpAddr(request.getRemoteAddr());
-		}
+			case "LESSOR" -> {
+				lessor.setIsJoined(true);
+				lessor.setIpAddr(request.getRemoteAddr());
+			}
+			case "LESSEE" -> {
+				lessee.setIsJoined(true);
+				lessee.setIpAddr(request.getRemoteAddr());
+			}
+			case "AGENT" -> {
+				agent.setIsJoined(true);
+				agent.setIpAddr(request.getRemoteAddr());
+			}
 		}
 
 		Map<String, SignerDTO> signers = new HashMap<>();
@@ -323,7 +323,7 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 
 	@Transactional
 	@Override
-	public ResponseEntity<?> processOfCreatingContract(String decryptedJson, Principal principal)
+	public ResponseEntity<?> processOfCreatingContract(String decryptedJson, Principal principal, HttpServletRequest request)
 			throws JsonProcessingException {
 		// TODO 컨트롤러 다이어트 들어가야지...
 		try {
@@ -409,6 +409,34 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 			String lstgId = contract.getLstgId();
 			int lstgRec = mapper.updateListingProdStat(lstgId);
 
+			/** 7. DTO 레코드 생성 */
+			String lessorTelno = contract.getContTenancyTelno();
+			String lesseeTelno = contract.getContLesseeTelno();
+			String agentTelno = contract.getContBrokerTelno();
+			String userRole = "AGENT";
+			
+			Map<String, String> partyTelnoParam = Map.of(
+					"lesseeTelno", lesseeTelno,
+					"lessorTelno", lessorTelno,
+					"agentTelno", agentTelno,
+					"userRole", userRole,
+					"contId", contId);
+			Map<String, SignerDTO> party = readContractPartyInfo2(partyTelnoParam, request);
+			SignerDTO lessor = party.get("LESSOR");
+			SignerDTO lessee = party.get("LESSEE");
+			SignerDTO agent = party.get("AGENT");
+			
+			lessor.setIsJoined(false);
+			lessee.setIsJoined(false);
+			agent.setIsJoined(false);
+			
+			createSigner(lessor);
+			createSigner(lessee);
+			createSigner(agent);
+			
+			
+			
+			
 //			/** DEBUG__병합된 파일 디렉토리에서 확인하기 ^0^ */
 //			File debugCopy = new File("D:/debug/merged-" + System.currentTimeMillis() + ".pdf");
 //			Files.copy(merged.toPath(), debugCopy.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
@@ -641,4 +669,20 @@ public class BrokerContractServiceImpl implements BrokerContractService {
 		mapper.updateConclusedContract(contId);
 	}
 
+	@Override
+	public void createSigner(SignerDTO signer) {
+		mapper.insertSigner(signer);
+	}
+	
+	@Override
+	public SignerDTO readSigner(Map<String, String> signerAndRole) {
+		return mapper.selectSigner(signerAndRole);
+	}
+	
+	@Override
+	public void updateSigner(SignerDTO signer) {
+		mapper.updateSigner(signer);
+	}
+	
+	
 }

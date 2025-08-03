@@ -41,6 +41,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -184,6 +185,7 @@ public class RestBrokerContractNewController {
 	public ResponseEntity<?> encryptedNewContract(
 			Principal principal,
 			@RequestBody Map<String, String> payload
+			, HttpServletRequest request
 	) {
 		/** 1. 복호화 */
 		String iv = payload.get("iv");
@@ -191,9 +193,12 @@ public class RestBrokerContractNewController {
 		if (encrypted == null)
 			throw new IllegalArgumentException("암호화된 요청 없음");
 		String decryptedJson = aes256Util.decryptWithDynamicIV(encrypted, iv);
+
+		
+		
 		
 		try {
-	        return contService.processOfCreatingContract(decryptedJson, principal);
+	        return contService.processOfCreatingContract(decryptedJson, principal, request);
 	    } catch (JsonProcessingException e) {
 	        log.error("[Controller] JSON 파싱 실패", e);
 	        return ResponseEntity.badRequest().body("잘못된 JSON 데이터입니다.");

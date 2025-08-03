@@ -70,7 +70,7 @@ public interface BrokerContractService {
 	 * @return
 	 * @throws JsonProcessingException 
 	 */
-	public ResponseEntity<?> processOfCreatingContract(String decryptedJson, Principal principal) throws JsonProcessingException;
+	public ResponseEntity<?> processOfCreatingContract(String decryptedJson, Principal principal, HttpServletRequest request) throws JsonProcessingException;
 	
 	public FileVO readContractPDFFile(String contId);
 	
@@ -120,4 +120,11 @@ public interface BrokerContractService {
 	public List<ContractDigitalSignVO> readSignatureList(String contId);
 	
 	public void conclusionContract(String contId);
+	
+	public void createSigner(SignerDTO signer);
+
+	SignerDTO readSigner(Map<String, String> signerAndRole);
+
+	public void updateSigner(SignerDTO signer);
+	
 }
