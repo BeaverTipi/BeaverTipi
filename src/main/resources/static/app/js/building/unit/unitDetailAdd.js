@@ -270,6 +270,93 @@ document.addEventListener('DOMContentLoaded', function () {
       initAreaUnitInput(`unitXuar_${i}`,  "평");
     }
   }
+function fillDummyUnits() {
+  const unitCount = parseInt(document.querySelector("#unitCount").value, 10);
+  const floorCount = parseInt(document.querySelector("#bldgFlrCnt").value, 10); // 총 층수 입력 필드
+  if (isNaN(unitCount) || isNaN(floorCount) || unitCount < 1 || floorCount < 1) return;
+
+  const unitsPerFloor = Math.ceil(unitCount / floorCount);
+
+  for (let i = 0; i < unitCount; i++) {
+    // 층수 및 호실 번호 계산
+    const floor = Math.floor(i / unitsPerFloor) + 1;
+    const roomNum = (i % unitsPerFloor) + 1;
+    const roomLabel = `${floor}${roomNum.toString().padStart(2, "0")}`;
+
+    // 호실
+    const roomInput = document.querySelector(`[name="unitList[${i}].unitRoom"]`);
+    if (roomInput) roomInput.value = roomLabel;
+
+    // 층수
+    const floorInput = document.querySelector(`[name="unitList[${i}].unitFlrNo"]`);
+    if (floorInput) floorInput.value = floor.toString();
+
+    // 공급면적
+    const cmarKey = `unitCmar_${i}`;
+    const cmarUnit = areaUnitStates[cmarKey];
+    const cmarVal = cmarUnit === "㎡" ? 75 + i : (75 + i) / 3.3058;
+    const cmarView = document.querySelector(`#${cmarKey}View`);
+    const cmarHidden = document.querySelector(`#${cmarKey}`);
+    if (cmarView && cmarHidden) {
+      cmarView.value = formatWithComma(cmarVal.toFixed(2));
+      cmarHidden.value = convertToM2(cmarVal, cmarUnit);
+    }
+
+    // 전용면적
+    const xuarKey = `unitXuar_${i}`;
+    const xuarUnit = areaUnitStates[xuarKey];
+    const xuarVal = xuarUnit === "㎡" ? 55 + i : (55 + i) / 3.3058;
+    const xuarView = document.querySelector(`#${xuarKey}View`);
+    const xuarHidden = document.querySelector(`#${xuarKey}`);
+    if (xuarView && xuarHidden) {
+      xuarView.value = formatWithComma(xuarVal.toFixed(2));
+      xuarHidden.value = convertToM2(xuarVal, xuarUnit);
+    }
+
+    // 보증금
+    const dpstKey = `unitDpstAmt_${i}`;
+    const dpstUnit = unitStates[dpstKey];
+    const dpstRaw = 1000 + i * 100;
+    const dpstView = document.querySelector(`#${dpstKey}View`);
+    const dpstHidden = document.querySelector(`#${dpstKey}`);
+    if (dpstView && dpstHidden) {
+      dpstView.value = formatWithComma(dpstRaw.toString());
+      dpstHidden.value = convertToWon(dpstRaw, dpstUnit);
+    }
+
+    // 월세
+    const rentKey = `unitDsrMnthRentAmt_${i}`;
+    const rentUnit = unitStates[rentKey];
+    const rentRaw = 40 + i * 5;
+    const rentView = document.querySelector(`#${rentKey}View`);
+    const rentHidden = document.querySelector(`#${rentKey}`);
+    if (rentView && rentHidden) {
+      rentView.value = formatWithComma(rentRaw.toString());
+      rentHidden.value = convertToWon(rentRaw, rentUnit);
+    }
+
+    // 전세
+    const saleKey = `unitDsrSaleAmt_${i}`;
+    const saleUnit = unitStates[saleKey];
+    const saleRaw = 5000 + i * 200;
+    const saleView = document.querySelector(`#${saleKey}View`);
+    const saleHidden = document.querySelector(`#${saleKey}`);
+    if (saleView && saleHidden) {
+      saleView.value = formatWithComma(saleRaw.toString());
+      saleHidden.value = convertToWon(saleRaw, saleUnit);
+    }
+
+    // 상세설명
+    const descInput = document.querySelector(`[name="unitList[${i}].unitDtlDescCn"]`);
+    if (descInput) descInput.value = `${roomLabel},호 깔끔하고 좋은집 입니다.`;
+  }
+}
+
+
+
+document.querySelector('#fillDummyBtn')?.addEventListener('click', fillDummyUnits);
 
   document.querySelector('#generateBtn')?.addEventListener('click', generateUnitInputs);
 });
+
+

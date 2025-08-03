@@ -28,7 +28,7 @@
 
 <div class="container mt-5">
     <h2 class="mb-4">광고 요청 작성</h2>
-    
+    <button id="writeBtn">광고</button>
     <%-- multipart/form-data 인코딩 타입 설정 및 commandName 지정 --%>
     <form:form id="adsRequestForm" action="${pageContext.request.contextPath}/member/ads/request" 
                method="post" enctype="multipart/form-data" 

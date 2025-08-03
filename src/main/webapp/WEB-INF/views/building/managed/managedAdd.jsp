@@ -74,7 +74,7 @@
 						<div class="col-md-4">
 							<label class="form-label fw-semibold">총 층수 <span
 								class="text-danger">*</span></label> <input type="number"
-								class="form-control" name="bldgFlrCnt" placeholder="예: 15"
+								class="form-control" name="bldgFlrCnt" id="bldgFlrCnt" placeholder="예: 15"
 								min="1" />
 						</div>
 
@@ -148,7 +148,8 @@
 			</div>
  <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
-      <h3 class="mb-0">세대 상세 정보</h3>
+      <h3 class="mb-0">세대 상세 정보</h3><button type="button" id="fillDummyBtn">호실</button>
+      
       <div class="d-flex align-items-center gap-3">
         <label class="mb-0">총 세대:</label>
         <input type="number" id="unitCount" name="bldgUnitCnt" min="1" class="form-control" style="max-width: 120px" />

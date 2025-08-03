@@ -384,3 +384,19 @@ $(document).ready(function() {
         });
     });
 });
+document.addEventListener("DOMContentLoaded",()=>{
+	const writeDummyBtn = document.querySelector("#writeDummyBtn");
+	const writeBtn = document.querySelector("#writeBtn");
+	const brdTitlNm = document.querySelector("#brdTitlNm");
+	const brdCont = document.querySelector("#brdCont");
+	writeBtn.addEventListener("click",()=>{
+		brdTitlNm.value="중개사를 신고합니다.";
+		brdCont.value="갑자기 매물을 안한다고 하지않나 되게 불친절하고 매물도 대충 올리는거보니 신고를 안할수가 없네요 신고합니다.";
+	})
+	writeDummyBtn.addEventListener("click",()=>{
+		brdTitlNm.value="매물을 신고합니다.";
+		brdCont.value="매물 자체가 현재 없는 매물인것같은데 허위매물같아요 그리고 사진들도 이상합니디";
+		
+	})
+	
+})

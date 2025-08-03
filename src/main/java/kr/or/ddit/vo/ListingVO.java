@@ -25,6 +25,7 @@ public class ListingVO implements Serializable {
     private String lstgId;
 
     private String mbrCd;
+    private String mbrNm;
 
     @Size(max = 13)
     private String rentalPtyId;

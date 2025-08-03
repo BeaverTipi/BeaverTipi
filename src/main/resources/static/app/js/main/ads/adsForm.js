@@ -1,5 +1,26 @@
 // src/main/resources/static/js/main/ads/adsForm.js
 
+
+document.addEventListener("DOMContentLoaded",()=>{
+	const writeBtn = document.querySelector("#writeBtn");
+	writeBtn.addEventListener("click",()=>{
+		const title = document.querySelector("#brdTitlNm");
+		const cont = document.querySelector("#brdCont");
+		const adsBp = document.querySelector("#adsBp");
+		const adsPic = document.querySelector("#adsPic");
+		const adsPicTelno = document.querySelector("#adsPicTelno");
+		const adsReqPblsStartDt = document.querySelector("#adsReqPblsStartDt");
+		const adsReqPblsEndDt = document.querySelector("#adsReqPblsEndDt");
+		
+		title.value="여운선";
+		cont.value="나베가 맛있고 술이 맛있는 언덕위의 작은 요리주점";
+		adsBp.value="여운선";
+		adsPic.value="이학범";
+		adsPicTelno.value="010-5674-3422";
+		adsReqPblsStartDt.value="2025-08-05";
+		adsReqPblsEndDt.value="2025-09-30";
+	})
+})
 // --- 전역 변수 및 헬퍼 함수 ---
 // 현재 선택된 파일들을 저장할 배열
 let selectedFiles = [];

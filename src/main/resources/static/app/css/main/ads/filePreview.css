@@ -94,3 +94,8 @@
     color: #888;
     font-size: 1.1em;
 }
+#writeBtn, #writeDummyBtn{
+	color : #888;
+	background: #ffffff;
+	border : none;
+}

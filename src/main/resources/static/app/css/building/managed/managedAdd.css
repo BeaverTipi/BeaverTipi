@@ -265,3 +265,8 @@ select.text-center-select {
 .unit-input-animate {
   animation: slideFadeIn 0.4s ease-out;
 }
+#fillDummyBtn{
+	color : #888;
+	background: #ffffff;
+	border : none;
+}

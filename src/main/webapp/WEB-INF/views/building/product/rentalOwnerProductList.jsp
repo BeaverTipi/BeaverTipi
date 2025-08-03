@@ -92,7 +92,7 @@
 			      <c:forEach var="building" items="${buildingList}" varStatus="status">
 			        <tr>
 			          <td>${status.index + 1}</td>
-			          <td>
+			          <td class="text-start">
 			            <!-- 건물명 클릭시 상세 펼침 (페이지 이동X) -->
 			            <a href="#" 
 			               class="building-detail-toggle font-weight-bold text-primary font-weight-bold"
@@ -192,6 +192,7 @@
                 <tr>
                   <th>순번</th>
                   <th>건물명</th>
+                  <th>중개사</th>
                   <th>상태</th>
                   <th>거래 유형</th>
                   <th>등록 일자</th>
@@ -208,11 +209,14 @@
                     <c:forEach var="listing" items="${listingProductList}" varStatus="status">
                       <tr class="listing-row" data-address="${listing.lstgAdd}">
                         <td>${status.index + 1}</td>
-                        <td>
+                        <td class="text-start">
                           <a href="#" class="building-name-link font-weight-bold text-primary" data-lstg-id="${listing.lstgId}">
 								  ${listing.lstgNm}
 						</a>
 
+                        </td>
+                        <td>
+                        ${listing.mbrNm }
                         </td>
                         <td>
                           <c:choose>

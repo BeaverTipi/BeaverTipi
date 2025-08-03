@@ -35,7 +35,7 @@
 </script>
 
 <div class="container mt-5">
-    <h2 class="mb-4">신고 작성</h2>
+    <h2 class="mb-4">신고 작성</h2><button id="writeDummyBtn">매물</button><button id="writeBtn">회원</button>
     
     <%-- multipart/form-data 인코딩 타입 설정 및 commandName 지정 --%>
     <form:form id="createReportForm" action="${pageContext.request.contextPath}/member/report/create" 
