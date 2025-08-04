@@ -14,11 +14,6 @@
 .carousel-item {
   flex: 0 0 100%;
   display: none;
-  
-}
-#adsBox {
-  margin-left: 110px;
-  margin-bottom: 100px;
 }
 
 .carousel-item.active {
@@ -30,22 +25,10 @@
 .room-card .card-body {
   height: 100px;
 }
-.room-card .room-image { /* room-image 클래스에 직접 스타일을 적용합니다. */
-  width: 100%; /* 이미지를 부모 요소 너비에 꽉 채웁니다. */
-  height: 200px; /* 이미지의 높이를 고정합니다. (300px - 100px = 200px) */
-  object-fit: contain; /* 이미지가 잘리지 않고 고정된 공간에 맞춰집니다. */
-}
-
-#adSlider {
+  #adSlider {
     height: 500px;    /* 원하는 고정 높이 */
-}
-
-/* 광고 이미지에 대한 스타일 추가 */
-#adSlider .carousel-item img { /* adSlider 내부의 carousel-item 안의 이미지에 적용 */
-    width: 100%; /* 너비를 부모 요소에 꽉 채웁니다. */
-    height: 500px; /* adSlider의 높이에 맞춰 이미지 높이를 고정합니다. */
-    object-fit: contain; /* 이미지가 잘리지 않고 고정된 공간에 맞춰집니다. */
-}
+    overflow: hidden; /* 넘치는 콘텐츠를 숨김 */
+  }
 </style>
   <meta charset="UTF-8">
   <title>main</title>
