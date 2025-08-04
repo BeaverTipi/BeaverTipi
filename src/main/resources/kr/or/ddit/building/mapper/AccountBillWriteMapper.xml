@@ -78,13 +78,17 @@ where c.mbr_cd = #{mbrCd}
 </select>
 
 <select id="selectUnits" resultType="UnitVO">
-select a.unit_id, a.unit_room
-from unit a
-inner join unit_resident b on (a.unit_id = b.unit_id)
-inner join building c on (a.bldg_id = c.bldg_id and a.rental_pty_id = c.rental_pty_id)
-where c.bldg_id = #{bldgId}
-and c.rental_pty_id = #{rentalPtyId}
-and b.unit_del_yn ='N'
+SELECT a.unit_id, a.unit_room
+FROM unit a
+INNER JOIN building c ON a.bldg_id = c.bldg_id AND a.rental_pty_id = c.rental_pty_id
+WHERE c.bldg_id = #{bldgId}
+  AND c.rental_pty_id = #{rentalPtyId}
+  AND EXISTS (
+    SELECT 1
+    FROM unit_resident b
+    WHERE b.unit_id = a.unit_id
+      AND b.unit_del_yn = 'N'
+  )
 </select>
 
 <select id="selectRentalPty" resultType= "string">

@@ -279,6 +279,7 @@ async function saveChargeData() {
 
 		if (!res.ok) throw new Error(`HTTP ${res.status}`);
 		alert("청구 저장 완료!");
+		location.href = "/building/payments/receipt/list"
 	} catch (err) {
 		console.error("저장 실패:", err);
 		alert("저장 중 오류 발생");
