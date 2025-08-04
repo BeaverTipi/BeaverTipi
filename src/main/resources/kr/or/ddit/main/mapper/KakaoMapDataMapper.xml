@@ -252,7 +252,6 @@
 	    LI.LSTG_ID DESC
 	</select>
 
-
 <select id="selectListingDetailList" resultMap="listingDetailResultMap">
 	SELECT
 		LI.LSTG_ID, 
@@ -284,8 +283,8 @@
 		  SELECT F.FILE_PATH_URL
 		  FROM FILES F
 		  WHERE F.FILE_SOURCE_ID = B.MBR_CD
-		    AND F.FILE_SOURCE_REF = 'BROKER'
-		    AND F.DOC_TYPE_CD = 'BROKER_INTRO'
+		    AND F.FILE_SOURCE_REF = 'BROKER_INTRO'
+		    AND F.DOC_TYPE_CD = 'DESC_' || B.MBR_CD
 		    AND ROWNUM = 1
 		) AS BROKER_INTRO,
 		(
@@ -378,15 +377,6 @@
 		SYSDATE
 	)	
 </insert>
-
-
-
-
-
-
-
-
-
 
 <select id="selectListingDetailListWithoutNothing" resultMap="listingDetailResultMap">
 	SELECT

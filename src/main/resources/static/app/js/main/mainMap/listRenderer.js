@@ -362,11 +362,11 @@ window.showDetailModal = function(data) {
 		  }
 		
 		  ${data.brokerIntro ? `
-		    <div class="broker-intro" style="margin-top: 10px;">
-		      <strong>소개글:</strong><br/>
-		      <p style="white-space: pre-line; margin-top: 4px;">${data.brokerIntro}</p>
-		    </div>` : ''
-		  }
+			  <div class="broker-intro" style="margin-top: 10px;">
+			    <strong>소개글:</strong><br/>
+			    <img src="${data.brokerIntro}" alt="중개사 소개 이미지" style="max-width: 100%; margin-top: 4px;" onerror="this.style.display='none';" />
+			  </div>
+			` : ''}
 		</div>
 		
 		<div class="detail-actions">

@@ -348,6 +348,7 @@ window.setupPopupOptionClick = function(map, clusterer) {
 						<label>전세금 (만원)</label>
 						<div class="price-range">
 							<select name="jeonseMin">
+							  <option value="">금액설정</option>
 							  <option value="100000000">최소(1억)</option>
 							  <option value="200000000">2억</option>
 							  <option value="300000000">3억</option>
@@ -355,10 +356,12 @@ window.setupPopupOptionClick = function(map, clusterer) {
 							</select>
 							<span class="range-separator">~</span>
 							<select name="jeonseMax">
-							  <option value="">최대</option>
+							  <option value="">금액설정</option>
 							  <option value="1000000000">10억</option>
 							  <option value="2000000000">20억</option>
 							  <option value="3000000000">30억</option>
+							  <option value="5000000000">50억</option>
+							  <option value="">최대</option>
 							</select>
 						</div>
 					</div>
@@ -369,15 +372,18 @@ window.setupPopupOptionClick = function(map, clusterer) {
 						<label>보증금 (만원)</label>
 						<div class="price-range">
 							<select name="depositMin">
-							  <option value="">최소</option>
-							  <option value="500">500</option>
-							  <option value="1000">1000</option>
+							  <option value="">금액설정</option>
+							  <option value="200">200만원</option>
+							  <option value="500">500만원</option>
+							  <option value="1000">1000만원</option>
 							</select>
 							<span class="range-separator">~</span>
 							<select name="depositMax">
+							  <option value="">금액설정</option>
+							  <option value="2000">2000만원</option>
+							  <option value="3000">3000만원</option>
+							  <option value="5000">5000만원</option>
 							  <option value="">최대</option>
-							  <option value="3000">3000</option>
-							  <option value="5000">5000</option>
 							</select>
 						</div>
 					</div>
@@ -385,15 +391,18 @@ window.setupPopupOptionClick = function(map, clusterer) {
 						<label>월세 (만원)</label>
 						<div class="price-range">
 							<select name="monthlyMin">
-							  <option value="">최소</option>
-							  <option value="30">30</option>
-							  <option value="50">50</option>
+							  <option value="">금액설정</option>
+							  <option value="30">30만원</option>
+							  <option value="50">50만원</option>
+							  <option value="100">100만원</option>
 							</select>
 							<span class="range-separator">~</span>
 							<select name="monthlyMax">
+							  <option value="">금액설정</option>
+							  <option value="150">150만원</option>
+							  <option value="200">200만원</option>
+							  <option value="300">300만원</option>
 							  <option value="">최대</option>
-							  <option value="100">100</option>
-							  <option value="150">150</option>
 							</select>
 						</div>
 					</div>
@@ -404,15 +413,19 @@ window.setupPopupOptionClick = function(map, clusterer) {
 						<label>매매가 (만원)</label>
 						<div class="price-range">
 							<select name="saleMin">
-							  <option value="">최소</option>
-							  <option value="10000">1억</option>
-							  <option value="20000">2억</option>
+							  <option value="">금액설정</option>
+							  <option value="100000000">최소(1억)</option>
+							  <option value="300000000">3억</option>
+							  <option value="500000000">5억</option>
+							  <option value="1000000000">10억</option>
 							</select>
 							<span class="range-separator">~</span>
 							<select name="saleMax">
+							  <option value="">금액설정</option>
+							  <option value="5000000000">50억</option>
+							  <option value="10000000000">100억</option>
+							  <option value="20000000000">200억</option>
 							  <option value="">최대</option>
-							  <option value="30000">3억</option>
-							  <option value="50000">5억</option>
 							</select>
 						</div>
 					</div>
@@ -480,18 +493,16 @@ window.setupHeartClickEvent = function(data) {
 	const heartIcon = document.getElementById("heartIcon");
 	if (!heartIcon) return;
 
-	const isWishlisted = data.IS_WISHLISTED === 1 || data.IS_WISHLISTED === '1' || data.isWishlisted === true;
+	const rawWish = data.IS_WISHLISTED ?? data.isWishlisted ?? 0;
+	const isWishlisted = rawWish === 1 || rawWish === '1' || rawWish === true;
+
 	heartIcon.dataset.active = isWishlisted ? "true" : "false";
 	heartIcon.src = isWishlisted
 		? "/volt/assets/img/heart-filled.svg"
 		: "/volt/assets/img/heart-svgrepo-com.svg";
 
-	const clonedHeartIcon = heartIcon.cloneNode(true);
-	heartIcon.parentNode.replaceChild(clonedHeartIcon, heartIcon);
-	const newHeartIcon = document.getElementById("heartIcon");
-
-	newHeartIcon.addEventListener("click", () => {
-		const lstgId = newHeartIcon.dataset.lstgId;
+	heartIcon.onclick = () => {
+		const lstgId = heartIcon.dataset.lstgId;
 		const mbrCd = window.loggedInUserId;
 
 		if (!mbrCd || mbrCd === "null" || mbrCd === "") {
@@ -509,14 +520,11 @@ window.setupHeartClickEvent = function(data) {
 			headers: { "Content-Type": "application/x-www-form-urlencoded" },
 			body: `lstgId=${encodeURIComponent(lstgId)}`
 		})
-			.then(res => {
-				if (!res.ok) throw new Error("서버 오류");
-				return res.json();
-			})
+			.then(res => res.json())
 			.then(count => {
-				const nowActive = newHeartIcon.dataset.active === "true";
-				newHeartIcon.dataset.active = !nowActive ? "true" : "false";
-				newHeartIcon.src = !nowActive
+				const nowActive = heartIcon.dataset.active === "true";
+				heartIcon.dataset.active = !nowActive ? "true" : "false";
+				heartIcon.src = !nowActive
 					? "/volt/assets/img/heart-filled.svg"
 					: "/volt/assets/img/heart-svgrepo-com.svg";
 
@@ -529,10 +537,10 @@ window.setupHeartClickEvent = function(data) {
 					}, 2000);
 				}
 
-				refreshDetailModal(lstgId);
+				//refreshDetailModal(lstgId); ← 주석 유지 또는 재호출 시 isWishlisted 보장 필요
 			})
 			.catch(console.error);
-	});
+	};
 };
 
 let galleryImages = [];
