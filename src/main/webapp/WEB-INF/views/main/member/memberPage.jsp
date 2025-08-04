@@ -51,7 +51,7 @@
 				<label>프로필 이미지</label>
 				<div style="text-align: center;">
 					<img id="previewImage"
-						src="${empty member.mbrProfilImage ? '/volt/assets/img/images/beaver.png' : member.memberFile.filePathUrl}"
+						src="${empty member.mbrProfilImage ? '/volt/assets/img/images/기본프로필.png' : member.memberFile.filePathUrl}"
 						alt="프로필 이미지" class="profile-image-preview" />
 				</div>
 			</div>

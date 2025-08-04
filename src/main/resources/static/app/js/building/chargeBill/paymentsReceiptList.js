@@ -196,7 +196,7 @@ document.getElementById("chgbillChargeMonth")?.addEventListener("change", functi
 	const rawMonth = this.value;
 	if (!rawMonth) return;
 	const [year, monthStr] = rawMonth.split("-");
-	document.getElementById("monthHeader").innerText = `📅 ${year}년 ${monthStr}월 납부현황`;
+	document.getElementById("monthHeader").innerText = `${year}년 ${monthStr}월 납부현황`;
 
 	const chgbillChargeMonth = rawMonth.replace("-", "");
 	loadSummaryData(chgbillChargeMonth);
@@ -263,9 +263,9 @@ function openDetailModal(item) {
     unitId: item.unitId
   });
 
-  fetch(`/building/payments/receipt/list/history/details?${params.toString()}`)
+  fetch(`/building/payments/receipt/list/history/details?${params.toString()}&popup=true`)
     .then(res => res.text())
-    .then(html => renderModalContent(html))
+    .then(html =>{ renderModalContent(html)})
     .catch(err => {
       console.error("상세 모달 로딩 실패", err);
       alert("상세 정보를 불러오는 데 실패했습니다. 잠시 후 다시 시도해주세요.");

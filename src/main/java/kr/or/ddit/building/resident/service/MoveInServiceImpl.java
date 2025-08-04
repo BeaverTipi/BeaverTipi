@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.or.ddit.building.mapper.MoveInMapper;
+import kr.or.ddit.building.resident.dto.residentListDTO;
 import kr.or.ddit.vo.BuildingVO;
 
 import kr.or.ddit.vo.MemberVO;
@@ -67,5 +68,11 @@ public class MoveInServiceImpl implements MoveInService {
     public List<Map<String, Object>> selectUnitResidentWithMaster(String bldgId) {
         return mapper.selectUnitResidentWithMaster(bldgId);
     }
+
+	@Override
+	public List<residentListDTO> readBuildingsUnitAll(String rentalPtyId) {
+		// TODO Auto-generated method stub
+		return mapper.selectBuildingUnitAll(rentalPtyId);
+	}
 
 }

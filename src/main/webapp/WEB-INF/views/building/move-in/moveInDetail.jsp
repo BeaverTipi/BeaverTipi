@@ -146,6 +146,7 @@
           <tr>
             <th><input type="checkbox" id="selectAll"></th>
             <th>NO</th>
+            <th>건물</th>
             <th>입주민</th>
             <th>ID</th>
             <th>입주일</th>
@@ -154,7 +155,95 @@
             <th>조작</th>
           </tr>
         </thead>
-        <tbody><!-- 비동기 채움 --></tbody>
+<tbody>
+  <c:forEach items="${buildingList}" var="building" varStatus="index">
+    <tr>
+      <td><input type="checkbox" /></td>
+      <td>${index.index + 1}</td>
+
+      <!-- 건물명 -->
+      <td>
+        <c:choose>
+          <c:when test="${not empty building.bldgNm}">
+            ${building.bldgNm}
+          </c:when>
+          <c:otherwise>-</c:otherwise>
+        </c:choose>
+      </td>
+
+      <!-- 입주민명 -->
+      <td>
+        <c:choose>
+          <c:when test="${not empty building.mbrNm}">
+            ${building.mbrNm}
+          </c:when>
+          <c:otherwise>-</c:otherwise>
+        </c:choose>
+        <c:if test="${isMaster}">
+          <span style="color:red;font-weight:bold;"> [대표]</span>
+        </c:if>
+      </td>
+
+      <!-- ID -->
+      <td>
+        <c:choose>
+          <c:when test="${not empty building.mbrId}">
+            ${building.mbrId}
+          </c:when>
+          <c:otherwise>-</c:otherwise>
+        </c:choose>
+      </td>
+
+      <!-- 입주일 -->
+      <td>
+        <c:choose>
+          <c:when test="${not empty building.moveInDt}">
+            ${building.moveInDt}
+          </c:when>
+          <c:otherwise>-</c:otherwise>
+        </c:choose>
+      </td>
+
+      <!-- 호실정보 -->
+      <td>
+        <c:choose>
+          <c:when test="${not empty unitRoom}">
+            ${unitRoom}
+          </c:when>
+          <c:otherwise>-</c:otherwise>
+        </c:choose>
+      </td>
+
+      <!-- 공실 여부 -->
+      <td>
+        <input type="checkbox" <c:if test="${vacant}">checked</c:if> disabled />
+        <c:if test="${vacant}">공실</c:if>
+      </td>
+
+      <!-- 조작 버튼 -->
+      <td>
+        <c:if test="${vacant}">
+          <button class="add-btn"
+                  data-unit-id="${unitId}"
+                  data-bldg-id="${bldgId}"
+                  data-rental-pty-id="${rentalPtyId}">추가</button>
+        </c:if>
+
+        <c:if test="${not vacant}">
+          <button class="edit-btn"
+                  data-unit-id="${unitId}"
+                  data-bldg-id="${bldgId}"
+                  data-rental-pty-id="${rentalPtyId}">수정</button>
+          <button class="del-btn"
+                  data-unit-id="${unitId}"
+                  data-bldg-id="${bldgId}"
+                  data-rental-pty-id="${rentalPtyId}">삭제</button>
+        </c:if>
+      </td>
+    </tr>
+  </c:forEach>
+</tbody>
+
       </table>
     </div>
 

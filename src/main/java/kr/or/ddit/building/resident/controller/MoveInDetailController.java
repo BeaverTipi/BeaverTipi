@@ -17,13 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.or.ddit.building.resident.dto.residentListDTO;
 import kr.or.ddit.building.resident.service.MoveInService;
-import kr.or.ddit.building.resident.service.MoveInServiceImpl;
 import kr.or.ddit.util.security.auth.RealUserWrapper;
 import kr.or.ddit.vo.BuildingVO;
 import kr.or.ddit.vo.MemberVO;
@@ -54,8 +54,12 @@ public class MoveInDetailController {
 	private MoveInService moveInService;
 
     @GetMapping("/detail")
-    public String moveInDetailView() {
-        log.info("입주관리 상세 페이지 진입");
+    public String moveInDetailView(@AuthenticationPrincipal RealUserWrapper<MemberVO> principal,Model model) {
+        MemberVO member = principal.getRealUser();
+        String rentalPtyId = member.getTenancy().getRentalPtyId();
+    	log.info("입주관리 상세 페이지 진입");
+        List<residentListDTO> buildingList = moveInService.readBuildingsUnitAll(rentalPtyId);
+        model.addAttribute("buildingList", buildingList);
         return "building/move-in/moveInDetail";
         
     }

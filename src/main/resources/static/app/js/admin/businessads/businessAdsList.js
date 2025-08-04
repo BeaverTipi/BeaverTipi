@@ -296,9 +296,13 @@ $(document).ready(function() {
                     modalAdsRejectMessage.val(''); // 다른 상태일 경우 내용 비우기
                 }
 
-                $('#modalAdsBp').text(data.adsClientVO ? data.adsClientVO.adsBp : 'N/A');
+				var test = data.brdCont;
+				if(test){
+					test = test.replace("<","&lt;").replace(">","&gt;");
+				}
+			    $('#modalAdsBp').text(data.adsClientVO ? data.adsClientVO.adsBp : 'N/A');
                 $('#modalBrdTitlNm').text(data.brdTitlNm);
-                $('#modalBrdCont').html(data.brdCont); // HTML 내용이므로 .html() 사용
+                $('#modalBrdCont').html(test); // HTML 내용이므로 .html() 사용
                 $('#modalAdsPic').text(data.adsClientVO ? data.adsClientVO.adsPic : 'N/A');
                 $('#modalAdsPicTelno').text(formatPhoneNumber(data.adsClientVO ? data.adsClientVO.adsPicTelno : null));
                 $('#modalAdsReqPblsStartDt').text(formatDateString(data.adsClientVO ? data.adsClientVO.adsReqPblsStartDt : null));

@@ -203,8 +203,7 @@
 	  FROM LISTING_WISHLIST LW
 	 INNER JOIN MEMBER M ON(LW.MBR_CD = M.MBR_CD)
      LEFT OUTER JOIN FILES F ON(M.MBR_PROFIL_IMAGE = F.FILE_ID)
-	 WHERE LW.LSTG_ID = 'L2508000065'
-       AND F.FILE_SOURCE_REF = 'MEMBER'
+	 WHERE LW.LSTG_ID = #{lstgId}
 	 ORDER BY M.MBR_NM
 </select>
 <select id="selectLesseeInfo" parameterType="String" resultType="MemberVO">

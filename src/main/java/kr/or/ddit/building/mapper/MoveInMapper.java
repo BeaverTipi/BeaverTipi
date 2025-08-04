@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import kr.or.ddit.building.resident.dto.residentListDTO;
 import kr.or.ddit.vo.BuildingVO;
 
 import kr.or.ddit.vo.MemberVO;
@@ -42,6 +43,8 @@ public interface MoveInMapper {
     int restoreResident(UnitResidentVO vo);
     int setUnitMaster(Map<String, Object> param);
     List<Map<String, Object>> selectUnitResidentWithMaster(String bldgId);
+
+	public List<residentListDTO> selectBuildingUnitAll(String rentalPtyId);
 
 
  

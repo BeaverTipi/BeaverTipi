@@ -101,7 +101,35 @@
 	  WHERE u.BLDG_ID = #{bldgId}
 	  ORDER BY u.UNIT_ID, ur.MBR_CD
 	</select>
-
+<select id="selectBuildingUnitAll" resultType ="kr.or.ddit.building.resident.dto.residentListDTO">
+SELECT 
+		u.UNIT_ID,
+	    u.BLDG_ID,
+	    u.RENTAL_PTY_ID,
+	    u.UNIT_ROOM,
+	    u.UNIT_FLR_NO,
+	    u.UNIT_STAT_CD,
+	    ur.MBR_CD,
+	    ur.MOVE_IN_DT,
+	    ur.MOVE_OUT_DT,
+	    ur.UNIT_DEL_YN,
+	    m.MBR_NM,
+	    m.MBR_ID,
+	    m.MBR_TELNO,
+	    b.BLDG_NM
+	  FROM UNIT u
+	  LEFT OUTER JOIN UNIT_RESIDENT ur
+	    ON u.UNIT_ID = ur.UNIT_ID
+	   AND u.BLDG_ID = ur.BLDG_ID
+	   AND u.RENTAL_PTY_ID = ur.RENTAL_PTY_ID
+	   AND ur.UNIT_DEL_YN = 'N'
+	  LEFT OUTER JOIN MEMBER m
+	    ON ur.MBR_CD = m.MBR_CD
+	  LEFT OUTER JOIN BUILDING b
+	  	ON u.BLDG_ID = b.BLDG_ID
+	  WHERE u.RENTAL_PTY_ID = #{rentalPtyId}
+	  ORDER BY u.UNIT_ID, ur.MBR_CD
+</select>
 	<!-- 직접입력 모달에 뿌릴거얌 진짜 개복잡해 ㅡㅡ -->
 	<select id="selectVacantUnitList" resultType="kr.or.ddit.vo.UnitVO">
 	  SELECT 

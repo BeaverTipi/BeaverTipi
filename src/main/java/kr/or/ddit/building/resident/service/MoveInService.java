@@ -3,6 +3,7 @@ package kr.or.ddit.building.resident.service;
 import java.util.List;
 import java.util.Map;
 
+import kr.or.ddit.building.resident.dto.residentListDTO;
 import kr.or.ddit.vo.BuildingVO;
 
 import kr.or.ddit.vo.MemberVO;
@@ -23,5 +24,6 @@ public interface MoveInService {
     int restoreResident(UnitResidentVO vo);				//재등록 안되는거 이걸로 대체
     int setUnitMaster(Map<String, Object> param);		// 입주대표설정
     List<Map<String, Object>> selectUnitResidentWithMaster(String bldgId); // 입주자 여러명
+	List<residentListDTO> readBuildingsUnitAll(String rentalPtyId);
 
 }

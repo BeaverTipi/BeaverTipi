@@ -320,7 +320,7 @@ public class RestContractSignatureController {
 			
 	        String lstgName = lstg.getLstgNm();
 			String encodedEncryptedContId = UrlSafeBase64.encode(aes256Util.encrypt(contId));
-			String notifRefUrl = String.format("https://dev.beavertipi.com/contract/%s", encodedEncryptedContId);
+			String notifRefUrl = String.format("https://react.beavertipi.com/contract/%s", encodedEncryptedContId);
 			String notifTitle = "";
 	        String notifMsg = "";
 	        

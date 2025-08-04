@@ -128,7 +128,7 @@
 									<label class="form-label" id="jeonseLabel"
 										data-label-base="전세가">전세가 (억)</label>
 									<div class="unit-input-group">
-										<input type="text" inputmode="numeric" pattern="[0-9]*"
+										<input type="text" inputmode="numeric" 
 											class="form-control" id="jeonseAmtView" placeholder="전세금">
 										<button type="button" class="btn btn-unit-toggle"
 											id="jeonseUnitBtn" onclick="toggleUnit('jeonse')">억
@@ -146,7 +146,7 @@
 										<label class="form-label" id="depositLabel"
 											data-label-base="보증금">보증금 (만원)</label>
 										<div class="unit-input-group">
-											<input type="text" inputmode="numeric" pattern="[0-9,]*"
+											<input type="text" inputmode="numeric"
 												class="form-control" id="depositAmtView" placeholder="보증금">
 											<button type="button" class="btn btn-unit-toggle"
 												id="depositUnitBtn" onclick="toggleUnit('deposit')">만원

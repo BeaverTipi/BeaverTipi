@@ -196,7 +196,7 @@ public class RestBrokerContractProceedingController {
 			String notifTitle = "[계약페이지 개설]";
 			String notifMsg = String.format("문의하신 매물 '%s'의 계약이 진행 중입니다. 임대인의 서명을 기다리는 중...", lstgName);
 			String encodedEncryptedContId = UrlSafeBase64.encode(aes256Util.encrypt(contId));
-			String notifRefUrl = String.format("/beavertipi.com/contract/%s", encodedEncryptedContId);
+			String notifRefUrl = String.format("https://react.beavertipi.com/contract/%s", encodedEncryptedContId);
 			
 			Map<String, String> partyTelnoParam = Map.of(
 					"lesseeTelno", lesseeTelno,
