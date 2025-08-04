@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
       modal.hide();
       resetModal();
     } catch (error) {
-      Swal.fire("오류 발생", "일정 처리 중 문제가 발생했습니다.", "error");
+      Swal.fire("오류 발생", "임대인만 일정을 설정할 수 있습니다.", "error");
     }
   });
 

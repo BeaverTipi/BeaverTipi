@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -82,7 +83,8 @@ public class PaymentSuccessController {
     		  @RequestParam("current") String current,
     		  @RequestParam("unitId")String unitId,
     		  @RequestParam("chgbillChargeMonth")String chgbillChargeMonth,
-    		  @AuthenticationPrincipal RealUserWrapper<MemberVO> principal) {
+    		  @AuthenticationPrincipal RealUserWrapper<MemberVO> principal
+    		  ,RedirectAttributes redirect) {
         MemberVO member = principal.getRealUser();
         
         try {
@@ -114,7 +116,7 @@ public class PaymentSuccessController {
                 Map<String, Object> vaMap = (Map<String, Object>) data.get("virtualAccount");
                 
                 paymentService.confirmAndPayFromToss(data, approvedAtRaw, approvedAt, mbrCd, cardMap, easyPayMap, vaMap, unitId, chgbillChargeMonth);
-                
+                redirect.addFlashAttribute("message", "결제가 완료되었습니다.");
                 log.info("성공 URL 타고 들어옴 ^0^");
                 log.info("✅ Toss API 응답 결과: {}");
                 return new RedirectView("/resident/dataState/bill");
