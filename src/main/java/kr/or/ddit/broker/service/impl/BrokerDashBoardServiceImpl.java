@@ -124,9 +124,9 @@ public class BrokerDashBoardServiceImpl implements BrokerDashBoardService {
 
 
 		@Override
-		public Map<String, Object> readCommissionTrend(String mbrCd, String period) {
+		public List<Map<String, Object>> readCommissionTrend(String mbrCd, String period) {
 			// TODO Auto-generated method stub
-			return null;
+			return mapper.selectCommissionTrend(mbrCd, period);
 		}
 
 

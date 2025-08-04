@@ -58,7 +58,7 @@ public class RestBrokerDashBoardController {
         String period = decrypted.getOrDefault("period", "month");
 
         validatePeriod(period);
-        Map<String, Object> trend = dashboardService.readCommissionTrend(mbrCd, period);
+        List<Map<String, Object>> trend = dashboardService.readCommissionTrend(mbrCd, period);
         return ResponseEntity.ok(BrokerCryptUtil.encryptResponsePayload(trend));
     }
 

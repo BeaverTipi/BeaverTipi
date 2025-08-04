@@ -11,7 +11,7 @@ import kr.or.ddit.vo.ScheduleVO;
 @Mapper
 public interface BrokerDashBoardMapper {
     public Long selectCommissionTotal(@Param("mbrCd") String mbrCd, @Param("period") String period);
-    public Map<String, Object> selectCommissionTrend(@Param("mbrCd") String mbrCd, @Param("period") String period);
+    public List<Map<String, Object>> selectCommissionTrend(@Param("mbrCd") String mbrCd, @Param("period") String period);
     public Map<String, Object> selectContractStatusSummary(@Param("mbrCd") String mbrCd, @Param("period") String period);
     public List<Map<String, Object>> selectContractTrend(@Param("mbrCd") String mbrCd, @Param("period") String period);
     public List<Object> selectNewListings(@Param("mbrCd") String mbrCd);
