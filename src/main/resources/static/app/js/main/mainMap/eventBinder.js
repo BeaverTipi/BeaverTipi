@@ -348,17 +348,17 @@ window.setupPopupOptionClick = function(map, clusterer) {
 						<label>전세금 (만원)</label>
 						<div class="price-range">
 							<select name="jeonseMin">
-							  <option value="300">최소(300)</option>
-							  <option value="500">500</option>
-							  <option value="1000">1000</option>
-							  <option value="2000">2000</option>
+							  <option value="100000000">최소(1억)</option>
+							  <option value="200000000">2억</option>
+							  <option value="300000000">3억</option>
+							  <option value="400000000">4억</option>
 							</select>
 							<span class="range-separator">~</span>
 							<select name="jeonseMax">
 							  <option value="">최대</option>
-							  <option value="3000">3000</option>
-							  <option value="5000">5000</option>
-							  <option value="10000">10000</option>
+							  <option value="1000000000">10억</option>
+							  <option value="2000000000">20억</option>
+							  <option value="3000000000">30억</option>
 							</select>
 						</div>
 					</div>

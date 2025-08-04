@@ -117,5 +117,6 @@ public class ListingVO implements Serializable {
     private Integer wishCount;
     private String lstgSaleNm;
     private String lstgType1Nm;
+    private String brokerIntro;
 
 }

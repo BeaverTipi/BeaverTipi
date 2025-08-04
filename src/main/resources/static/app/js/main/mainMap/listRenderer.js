@@ -335,7 +335,7 @@ window.showDetailModal = function(data) {
 		      </span>
 		      <button id="toggle-unit-btn" class="btn-toggle-unit">㎡ → 평</button>
 		    </li>
-		    <li><strong>방 개수:</strong> ${data.lstgRoomCnt}개</li>
+		    <li><strong>방 개수:</strong> ${data.lstgRoomCnt && data.lstgRoomCnt > 0 ? data.lstgRoomCnt + '개' : '-'}</li>
 		    <li><strong>층수:</strong> ${data.lstgFloor}</li>
 		    <li><strong>주차:</strong> ${data.lstgParkYn === 'Y' ? '가능' : '불가능'}</li>
 		  </ul>
@@ -354,8 +354,19 @@ window.showDetailModal = function(data) {
 		    <li><strong>대표자명:</strong> ${broker.reprNm || '-'}</li>
 		    <li><strong>연락처:</strong> ${broker.reprTelNo || '-'}</li>
 		  </ul>
-		  ${nameCardImageUrl ? `<div class="namecard-wrapper">
-		  <img src="${nameCardImageUrl}" alt="명함 이미지" style="max-width: 100%; margin-top: 10px;" /></div>` : ''}
+		
+		  ${nameCardImageUrl ? `
+		    <div class="namecard-wrapper">
+		      <img src="${nameCardImageUrl}" alt="명함 이미지" style="max-width: 100%; margin-top: 10px;" />
+		    </div>` : ''
+		  }
+		
+		  ${data.brokerIntro ? `
+		    <div class="broker-intro" style="margin-top: 10px;">
+		      <strong>소개글:</strong><br/>
+		      <p style="white-space: pre-line; margin-top: 4px;">${data.brokerIntro}</p>
+		    </div>` : ''
+		  }
 		</div>
 		
 		<div class="detail-actions">

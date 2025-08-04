@@ -28,6 +28,7 @@
 	  <result property="reprNm" column="REPR_NM"/>
 	  <result property="reprTelNo" column="REPR_TEL_NO"/>
 	  <result property="isWishlisted" column="IS_WISHLISTED"/>
+	  <result property="brokerIntro" column="BROKER_INTRO"/>
 	  <association property="brokerInfo" javaType="kr.or.ddit.vo.BrokerVO">
 			<result property="brokNm" column="BROK_NM"/>
 			<result property="reprNm" column="REPR_NM"/>
@@ -279,6 +280,14 @@
 		B.BROK_NM,
 		B.REPR_NM,
 		B.REPR_TEL_NO,
+		(
+		  SELECT F.FILE_PATH_URL
+		  FROM FILES F
+		  WHERE F.FILE_SOURCE_ID = B.MBR_CD
+		    AND F.FILE_SOURCE_REF = 'BROKER'
+		    AND F.DOC_TYPE_CD = 'BROKER_INTRO'
+		    AND ROWNUM = 1
+		) AS BROKER_INTRO,
 		(
 			SELECT F.FILE_PATH_URL
 			FROM FILES F
