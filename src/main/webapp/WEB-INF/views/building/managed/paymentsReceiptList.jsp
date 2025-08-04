@@ -61,22 +61,22 @@
 
     <!-- 📊 요약 카드 하단 1줄 -->
     <div class="d-flex flex-wrap justify-content-between gap-3 mt-4">
-      <div class="summary-card orange">
+      <div class="summary-card orange" data-status="">
         청구서 현황
         <span id="summaryTotalCount">-</span>
         <span id="summaryTotalAmount">-</span>
       </div>
-      <div class="summary-card red">
+      <div class="summary-card red"  data-status="001">
         미납 현황
         <span id="summaryUnpaidCount">-</span>
         <span id="summaryUnpaidAmount">-</span>
       </div>
-      <div class="summary-card blue">
+      <div class="summary-card blue"  data-status="002">
         수납 현황
         <span id="summaryPaidCount">-</span>
         <span id="summaryPaidAmount">-</span>
       </div>
-      <div class="summary-card purple">
+      <div class="summary-card purple"  data-status="003">
         연체 현황
         <span id="summaryLateCount">-</span>
         <span id="summaryLateAmount">-</span>

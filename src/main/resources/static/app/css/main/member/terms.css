@@ -31,14 +31,17 @@
 }
 
 .btn {
-  padding: 12px 24px;
-  background-color: #007bff;
-  border: none;
-  color: white;
-  font-size: 15px;
-  cursor: pointer;
+    background-color: #d8bfa5;  /* 베이지 톤 */
+    color: #5a3e2b;             /* 짙은 갈색 텍스트 */
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
 }
 
 .btn:hover {
-  background-color: #0056b3;
+background-color: #cdb096;  /* hover 시 좀 더 진한 베이지 */
 }

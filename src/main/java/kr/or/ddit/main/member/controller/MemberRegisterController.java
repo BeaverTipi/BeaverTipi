@@ -2,6 +2,7 @@ package kr.or.ddit.main.member.controller;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -18,6 +19,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import kr.or.ddit.main.member.service.MemberService;
 import kr.or.ddit.util.validate.InsertGroup;
 import kr.or.ddit.util.validate.exception.OidcUserNotRegisteredException;
@@ -32,7 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MemberRegisterController {
 	private final MemberService service;
-	
+	@Value("${myapp.register-url}")
+	private String registerUrl;
 	private static final String MODELNAME = "member";
 	private final String DONE = "회원가입이 완료 되었습니다.";
 	@ModelAttribute(MODELNAME)
@@ -79,9 +82,26 @@ public class MemberRegisterController {
 		String uri = request.getRequestURI();
 	    return uri.contains("/member/oauth2/register");
 	}
+	@GetMapping("/member/register/before")
+	public String registerBeforePage() {
+		return "main/member/termsAgreement";
+	}
+	@PostMapping("/member/register/before/agree")
+	public String agreeTerms(HttpSession session) {
+	    session.setAttribute("AGREED_TO_TERMS", true);
+	    return "redirect:" +registerUrl; // 일반 회원가입으로 이동
+	}
+	
 	@GetMapping("${myapp.register-url}")
-	public String registerPage() {
-		return "main/member/register";
+	public String registerPage(HttpSession session, RedirectAttributes redirectAttributes) {
+	    Boolean agreed = (Boolean) session.getAttribute("AGREED_TO_TERMS");
+
+	    if (agreed == null || !agreed) {
+	        redirectAttributes.addFlashAttribute("message", "회원가입을 위해 약관에 동의해 주세요.");
+	        return "redirect:/member/register/before";
+	    }
+
+	    return "main/member/register";
 	}
 	@GetMapping("${myapp.oauth2-register-url}")
 	public String oauthRegisterPage() {
@@ -94,6 +114,7 @@ public class MemberRegisterController {
 			, @Validated(InsertGroup.class) @ModelAttribute(MODELNAME) MemberVO member
 			, BindingResult errors
 			, RedirectAttributes redirectAttributes
+			, HttpSession session
 			) {
 		String lvn = null;
 		if(errors.hasErrors()) {
@@ -110,6 +131,7 @@ public class MemberRegisterController {
 			try {
 				service.createMember(member);
 				redirectAttributes.addFlashAttribute("message", DONE);
+				session.removeAttribute("AGREED_TO_TERMS");
 				lvn = "redirect:/";
 				  if (lastException instanceof OAuth2AuthenticationException oauth2Ex) {
 		                Throwable cause = oauth2Ex.getCause();

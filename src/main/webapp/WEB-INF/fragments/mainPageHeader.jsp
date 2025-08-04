@@ -149,7 +149,7 @@
 
 			<security:authorize access="isAnonymous()">
 				<li class="nav-item"><a class="nav-link"
-					href="${pageContext.request.contextPath}/member/register">회원가입</a></li>
+					href="${pageContext.request.contextPath}/member/register/before">회원가입</a></li>
 				<li class="nav-item"><a class="nav-link" href="#"
 					data-bs-toggle="modal" data-bs-target="#loginModal"> <i
 						class="bi bi-person-circle fs-4"></i>
@@ -173,38 +173,6 @@
 						aria-label="닫기"></button>
 				</div>
 				<div class="modal-body">
-
-					<!-- 역할 선택 -->
-					<div class="mb-3">
-						<label class="form-label">로그인 유형 선택</label>
-						<div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="loginRole"
-									id="roleLandlord" value="landlord"> <label
-									class="form-check-label" for="roleLandlord">임대인</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="loginRole"
-									id="roleBroker" value="broker"> <label
-									class="form-check-label" for="roleBroker">공인중개사</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="loginRole"
-									id="roleAdmin" value="admin"> <label
-									class="form-check-label" for="roleAdmin">시스템 관리자</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="loginRole"
-									id="roleResident" value="resident"> <label
-									class="form-check-label" for="roleResident">입주민</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="loginRole"
-									id="roleMember" value="member" checked> <label
-									class="form-check-label" for="roleMember">일반회원</label>
-							</div>
-						</div>
-					</div>
 
 					<div class="mb-3">
 						<label for="username" class="form-label">아이디</label> <input

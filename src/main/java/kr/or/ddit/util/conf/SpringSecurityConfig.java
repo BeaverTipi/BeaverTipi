@@ -150,6 +150,8 @@ public class SpringSecurityConfig {
 			,"/v3/api-docs/**"
 			,"/v3/api-docs.yaml" // /를 빼고 전부다 묶임. 정적자원도 다. ==> 폐쇄형 사이트를 가지고 있다. 잘해얗마..
 			,"/oauth2/**"
+			,"/member/register/before"
+			,"/member/register/before/agree"
 			 
 	};
 	

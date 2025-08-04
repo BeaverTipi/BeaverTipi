@@ -453,3 +453,36 @@
   to   { opacity: 1; transform: scale(1); }
 }
     
+/* 공통 카드 스타일 */
+/* 개별 배경 색상 */
+.summary-card.orange:hover{
+  background-color: #f79646; /* 청구서 현황 */
+  color: white;
+}
+.summary-card.red:hover {
+  background-color: #e74c3c; /* 미납 현황 */
+  color: white;
+}
+.summary-card.blue:hover {
+  background-color: #4aacc5; /* 수납 현황 */
+  color: white;
+}
+.summary-card.purple:hover {
+  background-color: #9b59b6; /* 연체 현황 */
+  color: white;
+}
+
+
+/* ✅ 클릭된 카드 강조 - 밑줄 효과 */
+.summary-card.active::after {
+  content: "";
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50%;
+  height: 2px;
+  background-color: white;
+  border-radius: 1px;
+}
+    
