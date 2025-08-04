@@ -16,7 +16,7 @@
 
     <!-- 날짜 선택 -->
     <div class="box">
-      <h2 class="section-title">아직 수정 안함(임시로 만듬)</h2>
+      <h2 class="section-title"></h2>
       <div class="date-range">
         <label for="start-date">시작일:</label>
         <input type="date" id="start-date">
@@ -28,14 +28,14 @@
 
     <!-- 공시 비율 -->
     <div class="box">
-      <h3 class="section-title">공시 비율</h3>
+      <h3 class="section-title">회원 현황</h3>
       <div class="charts-row">
         <div class="chart-block">
-          <div class="chart-title">A 건물</div>
+          <div class="chart-title">7월달</div>
           <canvas id="gongsiChartA"></canvas>
         </div>
         <div class="chart-block">
-          <div class="chart-title">B 건물</div>
+          <div class="chart-title">8월달</div>
           <canvas id="gongsiChartB"></canvas>
         </div>
       </div>
@@ -43,14 +43,14 @@
 
     <!-- 납부 금액 -->
     <div class="box">
-      <h3 class="section-title">납부 금액</h3>
+      <h3 class="section-title"></h3>
       <div class="charts-row">
         <div class="chart-block">
-          <div class="chart-title">A 건물</div>
+          <div class="chart-title"></div>
           <canvas id="paymentChartA"></canvas>
         </div>
         <div class="chart-block">
-          <div class="chart-title">B 건물</div>
+          <div class="chart-title"></div>
           <canvas id="paymentChartB"></canvas>
         </div>
       </div>
@@ -58,7 +58,7 @@
 
   </div>
 
-<script src="/app/js/building/main.js"></script>
+<script src="/app/js/admin/main.js"></script>
 </body>
 </html>
 
