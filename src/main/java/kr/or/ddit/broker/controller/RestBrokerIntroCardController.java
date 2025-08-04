@@ -48,30 +48,38 @@ public class RestBrokerIntroCardController {
     // 2. 소개카드 이미지 저장 (기존 파일 있으면 교체, 없으면 새로 저장)
     @PostMapping("/save")
     public Map<String, Object> saveIntroCard(
+            Principal principal,
             @RequestPart("file") MultipartFile file,
-            @RequestParam("sourceRef") String sourceRef,
-            @RequestParam("sourceId") String sourceId,
-            @RequestParam("docTypeCd") String docTypeCd
+            @RequestParam("sourceRef") String sourceRef
+            // 더 이상 sourceId, docTypeCd 안 받아도 됨!
     ) {
         Map<String, Object> result = new HashMap<>();
         try {
-            // 기존 파일 있는지 먼저 확인
+            // 👇 여기서 로그인 정보로부터 mbrCd 추출!
+            MemberVO memberVO = authService.getRealUser(principal);
+            if (memberVO == null) {
+                result.put("result", "fail");
+                result.put("message", "로그인 정보 없음");
+                return result;
+            }
+            String mbrCd = memberVO.getMbrCd();
+            String docTypeCd = "DESC_" + mbrCd;
+
             Map<String, Object> param = new HashMap<>();
-            param.put("mbrCd", sourceId);
+            param.put("mbrCd", mbrCd);
             param.put("docTypeCd", docTypeCd);
+
             FileVO oldFile = introCardService.selectIntroCardByMember(param);
+            log.info("컨트롤러 진입: mbrCd={}, docTypeCd={}", mbrCd, docTypeCd);
 
             if (oldFile != null && oldFile.getFileId() != null) {
-                // 있으면 교체(=S3 삭제, DB 업데이트)
                 introCardService.replaceAndSaveIntroCard(oldFile.getFileId(), file);
-                // 교체 후 새 파일 정보 다시 조회
                 FileVO saved = introCardService.selectIntroCardByMember(param);
                 result.put("result", "success");
                 result.put("file", saved);
             } else {
-                // 없으면 새로 저장
                 FileVO saved = introCardService.uploadAndSaveIntroCard(
-                    file, "public/broker/introcard", sourceRef, sourceId, docTypeCd
+                    file, "public/broker/introcard", sourceRef, mbrCd, docTypeCd
                 );
                 result.put("result", "success");
                 result.put("file", saved);
@@ -83,6 +91,7 @@ public class RestBrokerIntroCardController {
         }
         return result;
     }
+
 
     // 3. 소개카드 이미지 삭제
     @DeleteMapping("/delete")

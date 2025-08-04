@@ -74,7 +74,9 @@ public class BrokerIntroCardServiceImpl implements BrokerIntroCardService {
 	    oldFile.setFileMime(newFile.getContentType());
 	    oldFile.setFileSize((int) newFile.getSize());
 	    oldFile.setRegDtm(LocalDate.now()); // 업데이트 시점으로 덮어쓰기
-
+	    
+	    
+	    log.info("[replaceAndSaveIntroCard] 최종 저장될 oldFile 정보: {}", oldFile);
 	    mapper.updateFile(oldFile);
 	    
 	    
