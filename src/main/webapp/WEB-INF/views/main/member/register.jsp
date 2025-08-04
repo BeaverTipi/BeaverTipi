@@ -15,9 +15,9 @@
   <!-- container -->
 <div class="register-wrapper">
   <div class="signup-container">
-    <h2 class="signup-title">회원가입</h2>
+    <h2 class="signup-title">회원가입</h2> 
 
-    <form:form class="signup-form" enctype="multipart/form-data" method="post" action="/member/register" modelAttribute="member">
+    <form:form class="signup-form" id="signup-form" enctype="multipart/form-data" method="post" action="/member/register" modelAttribute="member">
       
       <!-- 양쪽 배치용 Flex -->
       <div class="form-flex-wrapper">
@@ -27,19 +27,19 @@
           <!-- 아이디 -->
    		  <div class="form-group">
             <label for="mbrId">회원 ID</label>
-            <form:input path="mbrId" class="form-control" placeholder="회원 ID (선택)" />
+            <form:input path="mbrId" class="form-control" placeholder="회원 ID"  />
             <form:errors path="mbrId" class="text-danger" />
           </div>
           <!-- 비밀번호 -->
           <div class="form-group">
             <label for="mbrPw">비밀번호</label>
-            <form:input path="mbrPw" type="password" class="form-control" placeholder="비밀번호 입력" required="true" />
+            <form:input path="mbrPw" type="password" class="form-control" placeholder="비밀번호 입력"  />
             <form:errors path="mbrPw" class="text-danger" />
           </div>
           <!-- 이름 -->
           <div class="form-group">
             <label for="mbrNm">이름</label>
-            <form:input path="mbrNm" class="form-control" placeholder="이름 입력" required="true" />
+            <form:input path="mbrNm" class="form-control" placeholder="이름 입력"  />
             <form:errors path="mbrNm" class="text-danger" />
           </div>
 
@@ -47,20 +47,39 @@
           <div class="form-group">
             <label for="mbrTelno">전화번호</label>
             <div class="phone-auth-group">
-              <form:input path="mbrTelno" type="tel" class="form-control" placeholder="전화번호 입력" />
+              <form:input path="mbrTelno" type="tel" class="form-control" placeholder="전화번호 입력"  />
               <button type="button" id="requestAuthBtn" class="btn-auth-code">인증요청</button>
             </div>
             <form:errors path="mbrTelno" class="text-danger" />
           </div>
 
-          <!-- 인증번호  required 넣기 -->
-          <div class="form-group hidden" id="authCodeWrapper">
-            <label for="authCode">인증번호</label>
-            <input type="text" name="authCode" id="authCode" class="form-control" placeholder="인증번호 6자 입력" maxlength="6" />
-			  <span id="timerText" style="margin-left: 10px; color: red;"></span>
-			</div>
-        </div>
+<div class="form-group hidden" id="authCodeWrapper" style="margin-top: 20px;">
+  <label for="authCode" class="form-label fw-semibold mb-2">인증번호</label>
+  <div class="d-flex align-items-center gap-2">
+    <input
+      type="text"
+      name="authCode"
+      id="authCode"
+      class="form-control"
+      placeholder="인증번호 6자 입력"
+      maxlength="6"
+      required = "true"
+      style="flex: 1; min-width: 160px;"
+    />
+    <button
+      type="button"
+      id="checkAuthCodeBtn"
+      class="btn small"
+      style="height: 42px; background-color: #6c757d; color: white; border-radius: 6px; white-space: nowrap; font-size: 13px;"
+    >
+      인증번호 확인
+    </button>
+  </div>
+  <span id="timerText" class="small text-danger mt-1 d-block"></span>
+</div>
 
+<button type="button" id="fillDummyBtn" class="btn-dummy">더미입력</button>
+</div>
 
 
         <!-- ✅ 선택 정보 오른쪽 -->
