@@ -195,6 +195,7 @@ public class SpringSecurityConfig {
 					.requestMatchers(WHITE_LIST).permitAll()
 					.requestMatchers("/ajax/toss/payment-success", "/ajax/toss/billing-success").permitAll()
 					.requestMatchers(new AntPathRequestMatcher(registerUrl)).anonymous()
+					.requestMatchers(new AntPathRequestMatcher(oauth2RegisterUrl)).anonymous()
 					.requestMatchers(new AntPathRequestMatcher("/account/login/**")).anonymous()
 					.requestMatchers(new AntPathRequestMatcher("/account/logout/**")).authenticated()
 					.requestMatchers(new AntPathRequestMatcher("/main/report/createForm/**")).authenticated()

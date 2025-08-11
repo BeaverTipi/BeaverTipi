@@ -27,13 +27,13 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 
 	fillDummyBtn?.addEventListener("click", () => {
-		document.querySelector("#mbrId").value = "dummyUser01";
+		document.querySelector("#mbrId").value = "test";
 		document.querySelector("#mbrPw").value = "qwer";
 		document.querySelector("input[name='mbrNm']").value = "누구로하냐";
 
 		const phoneInput = document.querySelector("#mbrTelno");
 		const itiInstance = window.intlTelInputGlobals.getInstance(phoneInput);
-		itiInstance.setNumber("+821089526419");
+		itiInstance.setNumber("+821046709350");
 
 		toggleOptionalInfo();
 
@@ -186,7 +186,7 @@ signupForm?.addEventListener("submit", async (e) => {
 	const mbrPw = document.querySelector("#mbrPw").value.trim();
 	const mbrNm = document.querySelector("#mbrNm").value.trim();
 	const mbrTelnoInput = document.querySelector("#mbrTelno");
-	const authCode = document.querySelector("#authCode").value.trim();
+	const authCode = document.querySelector("#authCode")?.value.trim();
 
 	if (!verified) {
 		Swal.fire({ icon: 'warning', title: '전화번호 인증을 먼저 완료해주세요.', confirmButtonText: '확인' });

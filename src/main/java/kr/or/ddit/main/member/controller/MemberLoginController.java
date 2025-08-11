@@ -50,7 +50,7 @@ public class MemberLoginController {
 				.path("/")
 				.httpOnly(true)
 				.domain(".beavertipi.com")
-				.secure(true) // ✅ HTTPS 통신 시 반드시 필요
+				.secure(true) // HTTPS 통신 시 반드시 필요
 			    .sameSite("None")
 //				.sameSite(SameSite.STRICT.attributeValue()) // http..
 				.maxAge(JwtProvider.VALID_TERM / 1000)

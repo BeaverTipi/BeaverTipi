@@ -26,11 +26,11 @@ public class VerificationController {
 	    int code = (int)((Math.random() * 900000) + 100000);
 
 	    DefaultMessageService messageService = NurigoApp.INSTANCE.initialize(
-	        "NCSHFBLSXWPERSLO", "BCON1RDIIP3ZLZ3J7LVMXMWI1Q909NFJ", "https://api.solapi.com"
+	        "NCS94IQAH2EE4WQ5", "CRBCGUU3N1NWADBFKHC6DGHTUOCIIVED", "https://api.solapi.com"
 	    );
 
 	    Message message = new Message();
-	    message.setFrom("01021959621");
+	    message.setFrom("01053242051");
 	    message.setTo(phone);
 	    String sendMessage = String.format("[beaverTipi] 인증번호는 [%s]입니다.\n- 유효시간 5분입니다.\n- 타인 노출 주의", code);
 	    message.setText(sendMessage);
